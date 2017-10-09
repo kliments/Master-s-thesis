@@ -25,6 +25,7 @@ public abstract class DatasetImporter : MonoBehaviour {
             if (hasheader) { start++; };
 
             string[] fileContent = System.IO.File.ReadAllLines(pathToData);
+            if ((fileContent.Length == 0 && !hasheader) || (fileContent.Length == 1 && hasheader)) { throw new FileLoadException("Data File " + pathToData + " does not contain any Values!"); };
             string[][] fileContentSplit = new string[fileContent.Length - start][];
             int amountOfCols = fileContent[0].Split(delimiter.ToCharArray()).Length;
             
