@@ -5,17 +5,25 @@ using UnityEngine;
 
 public class NumericDatamodel : MonoBehaviour {
 
+    
+
     public string nameOfDatafile;
     public bool hasheader;
     public string delimiter;
 
     private float[][] myData;
+    private float[][] unfilteredNormalizedData;
+    private float[][] filteredNormalizedData;
+    private float[][] unfilteredGlobalyNormalizedData;
+    private float[][] filteredGlobalyNormalizedData;
     private string[] myHeaders;
     private Vector2[] myFilterValues;               // Do not directly read this. Use getCurrentFilterValues() instead. May be inconsistent otherwise.
     private bool[] currentlyFiltered;               // Do not directly read this. Use getCurrentlyFiltered() instead. May be inconsistent otherwise.
     private Vector2[] filteredMinMaxValues;         // Do not directly read this. Use getMinMaxValues(bool ignoreFilter) instead. May be inconsistent otherwise.
     private bool minMaxIsDirty = true;
     private bool filteredRowsIsDirty = true;
+    private bool filteredNormalizationIsDirty = true;
+    private bool filteredGlobalNormalizationIsDirty = true;
     private Vector2[] unfilteredMinMaxValues;       // Do not directly read this. Use getMinMaxValues(bool ignoreFilter) instead. May be inconsistent otherwise.
     private int amountOfRows;
     private int amountOfCols;
@@ -23,7 +31,7 @@ public class NumericDatamodel : MonoBehaviour {
     private List<IDatamodelListener> myListeners = new List<IDatamodelListener>();
 
     // Use this for initialization
-    void Start () {
+    void Awake () {
         if (nameOfDatafile.EndsWith(".csv"))
         {
             myData = DatasetImporter.readNumericCSV(nameOfDatafile, hasheader, delimiter);
@@ -31,7 +39,9 @@ public class NumericDatamodel : MonoBehaviour {
             amountOfCols = myData[0].Length;
             myHeaders = DatasetImporter.getHeader(nameOfDatafile, delimiter);
             initFilter();
-            test();
+            recalculateUnfilteredNormalizedData();
+            recalculateUnfilteredGlobalyNormalizedData();
+            //test();
             return;
         }
 
@@ -51,6 +61,65 @@ public class NumericDatamodel : MonoBehaviour {
         Debug.Log("Global Min Max: " + getGlobalMinMaxValues(false));
         Debug.Log("Global Min Max ignoring filters: " + getGlobalMinMaxValues(true));
         Debug.Log(getCurrentData(false).Length);
+    }
+
+    private void recalculateFilteredNormalizedData()
+    {
+        filteredNormalizedData = new float[amountOfRows][];
+        Vector2[] minmax = getMinMaxValues(false);
+        for (int i = 0; i < amountOfRows; i++)
+        {
+            filteredNormalizedData[i] = new float[amountOfCols];
+            for (int j = 0; j < amountOfCols; j++)
+            {
+                filteredNormalizedData[i][j] = (myData[i][j] - minmax[j].x) / (minmax[j].y - minmax[j].x);
+            }
+        }
+    }
+
+    private void recalculateFilteredGlobalyNormalizedData()
+    {
+        filteredGlobalyNormalizedData = new float[amountOfRows][];
+        Vector2 minmax = getGlobalMinMaxValues(false);
+        for (int i = 0; i < amountOfRows; i++)
+        {
+            filteredGlobalyNormalizedData[i] = new float[amountOfCols];
+            for (int j = 0; j < amountOfCols; j++)
+            {
+                filteredGlobalyNormalizedData[i][j] = (myData[i][j] - minmax.x) / (minmax.y - minmax.x);
+            }
+        }
+    }
+
+    
+
+
+    private void recalculateUnfilteredNormalizedData()
+    {
+        unfilteredNormalizedData = new float[amountOfRows][];
+        Vector2[] minmax = getMinMaxValues(true);
+        for(int i = 0; i < amountOfRows; i++)
+        {
+            unfilteredNormalizedData[i] = new float[amountOfCols];
+            for(int j = 0; j < amountOfCols; j++)
+            {
+                unfilteredNormalizedData[i][j] = (myData[i][j] - minmax[j].x) / (minmax[j].y - minmax[j].x);
+            }
+        }
+    }
+
+    private void recalculateUnfilteredGlobalyNormalizedData()
+    {
+        unfilteredGlobalyNormalizedData = new float[amountOfRows][];
+        Vector2 minmax = getGlobalMinMaxValues(true);
+        for (int i = 0; i < amountOfRows; i++)
+        {
+            unfilteredGlobalyNormalizedData[i] = new float[amountOfCols];
+            for (int j = 0; j < amountOfCols; j++)
+            {
+                unfilteredGlobalyNormalizedData[i][j] = (myData[i][j] - minmax.x) / (minmax.y - minmax.x);
+            }
+        }
     }
 
     /**
@@ -210,21 +279,64 @@ public class NumericDatamodel : MonoBehaviour {
      * */
     public float[][] getCurrentData(bool ignoreFilters)
     {
+        // TODO implement normalization
         float[][] returnvalue = myData;
         if (!ignoreFilters) {
-            int amountOfUnfilteredDP = getNumberOfUnfilteredDatapoints();
-            bool[] filterArray = getCurrentlyFiltered();
-            returnvalue = new float[amountOfUnfilteredDP][];
-            int currentIndex = 0;
-            for(int i = 0; i < amountOfUnfilteredDP; i++)
-            {
-                if (!filterArray[i])
-                {
-                    returnvalue[currentIndex] = myData[i];
-                    currentIndex++;
-                }
-            }
+            returnvalue = doFiltering(returnvalue);
         };
+        return returnvalue;
+    }
+
+    /**
+     * Returns the data normalized. If globalyNormalized the global min and max values are used for normalization.
+     * If globalyNormalized = false, the min and max values of each column is used.
+     * If ignoreFiltersForNormalization = true, the normalization will be done without filtering the data.
+     * If ignoreFiltersForNormalization = false, the normalization will be done by using the max and min values among the non-filtered rows.
+     * For documentation on ignoreFilters see the getCurrentData(bool ignoreFilters) method.
+     * Calling this function several times without the normalized values changing (for example by changing the filter)
+     * will not recalculate the normalization again, so it should be performant.
+     * */
+    public float[][] getNormalizedData(bool ignoreFilters, bool ignoreFiltersForNormalization, bool globalyNormalized)
+    {
+        float[][] returnvalue = myData;
+        if(ignoreFiltersForNormalization && globalyNormalized)
+        {
+            returnvalue = unfilteredGlobalyNormalizedData;
+        }
+        if (!ignoreFiltersForNormalization && globalyNormalized)
+        {
+            returnvalue = filteredGlobalyNormalizedData;
+        }
+        if (ignoreFiltersForNormalization && !globalyNormalized)
+        {
+            returnvalue = unfilteredNormalizedData;
+        }
+        if (!ignoreFiltersForNormalization && !globalyNormalized)
+        {
+            returnvalue = filteredNormalizedData;
+        }
+        if (!ignoreFilters)
+        {
+            returnvalue = doFiltering(returnvalue);
+        };
+        return returnvalue;
+    }
+
+    private float[][] doFiltering(float[][] unfilteredData)
+    {
+        float[][] returnvalue = unfilteredData;
+        int amountOfUnfilteredDP = getNumberOfUnfilteredDatapoints();
+        bool[] filterArray = getCurrentlyFiltered();
+        returnvalue = new float[amountOfUnfilteredDP][];
+        int currentIndex = 0;
+        for (int i = 0; i < amountOfUnfilteredDP; i++)
+        {
+            if (!filterArray[i])
+            {
+                returnvalue[currentIndex] = unfilteredData[i];
+                currentIndex++;
+            }
+        }
         return returnvalue;
     }
 
@@ -269,6 +381,8 @@ public class NumericDatamodel : MonoBehaviour {
             }
         }
         minMaxIsDirty = true;
+        filteredNormalizationIsDirty = true;
+        filteredGlobalNormalizationIsDirty = true;
         notifyListenersOnFilterChange();
     }
 
@@ -290,6 +404,25 @@ public class NumericDatamodel : MonoBehaviour {
         }
     }
 
+    private void checkForDirtyFilteredNormalization()
+    {
+        if (filteredNormalizationIsDirty)
+        {
+            recalculateFilteredNormalizedData();
+        }
+    }
+
+    private void checkForDirtyFilteredGlobalNormalization()
+    {
+        if (filteredNormalizationIsDirty)
+        {
+            recalculateFilteredGlobalyNormalizedData();
+        }
+    }
+
+
+    
+
     /**
      * Forces a recalculation of the filtered rows.
      * This is automatically done if they are needed for another calculation. 
@@ -305,6 +438,18 @@ public class NumericDatamodel : MonoBehaviour {
     {
         minMaxIsDirty = true;
         checkForDirtyMinMax();
+    }
+
+    public void forceFilteredNormalizationRecalculation()
+    {
+        filteredNormalizationIsDirty = true;
+        checkForDirtyFilteredNormalization();
+    }
+
+    public void forceFilteredGlobalNormalizationRecalculation()
+    {
+        filteredGlobalNormalizationIsDirty = true;
+        checkForDirtyFilteredGlobalNormalization();
     }
 
     /**
