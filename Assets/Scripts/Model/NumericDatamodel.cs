@@ -10,6 +10,7 @@ public class NumericDatamodel : MonoBehaviour {
     public string nameOfDatafile;
     public bool hasheader;
     public string delimiter;
+    public bool debugMode;
 
     private float[][] myData;
     private float[][] unfilteredNormalizedData;
@@ -30,8 +31,15 @@ public class NumericDatamodel : MonoBehaviour {
     private int amountOfUnfilteredDatapoints;
     private List<IDatamodelListener> myListeners = new List<IDatamodelListener>();
 
+    // TODO create seperate method for getting global normalized data. 
+    // TODO add a debug bool that will create console prints of which method is called.
+
     // Use this for initialization
     void Awake () {
+        if (debugMode)
+        {
+            Debug.Log("Awake NumericalDatamodel");
+        }
         if (nameOfDatafile.EndsWith(".csv"))
         {
             myData = DatasetImporter.readNumericCSV(nameOfDatafile, hasheader, delimiter);
@@ -42,6 +50,10 @@ public class NumericDatamodel : MonoBehaviour {
             recalculateUnfilteredNormalizedData();
             recalculateUnfilteredGlobalyNormalizedData();
             //test();
+            if (debugMode)
+            {
+                Debug.Log("Finished awaking NumericalDatamodel");
+            }
             return;
         }
 
@@ -65,6 +77,10 @@ public class NumericDatamodel : MonoBehaviour {
 
     private void recalculateFilteredNormalizedData()
     {
+        if (debugMode)
+        {
+            Debug.Log("Recalculating filtered normalized data in numerical Datamodel.");
+        }
         filteredNormalizedData = new float[amountOfRows][];
         Vector2[] minmax = getMinMaxValues(false);
         for (int i = 0; i < amountOfRows; i++)
@@ -79,6 +95,10 @@ public class NumericDatamodel : MonoBehaviour {
 
     private void recalculateFilteredGlobalyNormalizedData()
     {
+        if (debugMode)
+        {
+            Debug.Log("Recalculating global filtered normalized data in numerical Datamodel.");
+        }
         filteredGlobalyNormalizedData = new float[amountOfRows][];
         Vector2 minmax = getGlobalMinMaxValues(false);
         for (int i = 0; i < amountOfRows; i++)
@@ -96,6 +116,10 @@ public class NumericDatamodel : MonoBehaviour {
 
     private void recalculateUnfilteredNormalizedData()
     {
+        if (debugMode)
+        {
+            Debug.Log("Recalculating unfiltered normalized data in numerical Datamodel.");
+        }
         unfilteredNormalizedData = new float[amountOfRows][];
         Vector2[] minmax = getMinMaxValues(true);
         for(int i = 0; i < amountOfRows; i++)
@@ -110,6 +134,10 @@ public class NumericDatamodel : MonoBehaviour {
 
     private void recalculateUnfilteredGlobalyNormalizedData()
     {
+        if (debugMode)
+        {
+            Debug.Log("Recalculating global unfiltered normalized data in numerical Datamodel.");
+        }
         unfilteredGlobalyNormalizedData = new float[amountOfRows][];
         Vector2 minmax = getGlobalMinMaxValues(true);
         for (int i = 0; i < amountOfRows; i++)
@@ -129,7 +157,17 @@ public class NumericDatamodel : MonoBehaviour {
      * */
     public void addListener(IDatamodelListener listener)
     {
+        if (debugMode)
+        {
+            Debug.Log("Adding a listener to numerical Datamodel.");
+        }
         myListeners.Add(listener);
+
+        if (debugMode)
+        {
+            Debug.Log("Now containing " + myListeners.Count + " listeners.");
+        }
+        
     }
 
     /**
@@ -137,7 +175,16 @@ public class NumericDatamodel : MonoBehaviour {
      * */
     public void removeListener(IDatamodelListener listener)
     {
+        if (debugMode)
+        {
+            Debug.Log("Removing a Listener to numerical Datamodel.");
+        }
         myListeners.Remove(listener);
+
+        if (debugMode)
+        {
+            Debug.Log("Now containing " + myListeners.Count + " listeners.");
+        }
     }
 
     /**
@@ -145,7 +192,11 @@ public class NumericDatamodel : MonoBehaviour {
      * */
     private void notifyListenersOnFilterChange()
     {
-        foreach(IDatamodelListener listener in myListeners)
+        if (debugMode)
+        {
+            Debug.Log("Notifying Listeners of numerical Datamodel about filter change. " + myListeners.Count + " listeners are found.");
+        }
+        foreach (IDatamodelListener listener in myListeners)
         {
             listener.datamodelFilterChange(this);
         }
@@ -156,6 +207,10 @@ public class NumericDatamodel : MonoBehaviour {
      * */
     private void notifyListenersOnMinMaxChange()
     {
+        if (debugMode)
+        {
+            Debug.Log("Notifying Listeners of numerical Datamodel about minmax change. " + myListeners.Count + " listeners are found.");
+        }
         foreach (IDatamodelListener listener in myListeners)
         {
             listener.datamodelFilterChange(this);
@@ -167,6 +222,10 @@ public class NumericDatamodel : MonoBehaviour {
      * */
     private void initFilter()
     {
+        if (debugMode)
+        {
+            Debug.Log("Initializing filters of numreical datamodel.");
+        }
         currentlyFiltered = new bool[amountOfRows];
         for (int i = 0; i < amountOfRows; i++)
         {
@@ -190,6 +249,10 @@ public class NumericDatamodel : MonoBehaviour {
      * */
     private Vector2 getGlobalMinMaxValues(bool ignoreFilter)
     {
+        if (debugMode)
+        {
+            Debug.Log("Getting global MinMax values of numreical datamodel.");
+        }
         Vector2[] minMax = getMinMaxValues(ignoreFilter);
         float min = float.MaxValue;
         float max = float.MinValue;
@@ -213,6 +276,10 @@ public class NumericDatamodel : MonoBehaviour {
      * */
     private void recalculateMinMaxValues()
     {
+        if (debugMode)
+        {
+            Debug.Log("Recalculating MinMax values of numreical datamodel.");
+        }
         unfilteredMinMaxValues = new Vector2[amountOfCols];
         filteredMinMaxValues = new Vector2[amountOfCols];
         bool[] filteredValues = getCurrentlyFiltered();
@@ -258,6 +325,10 @@ public class NumericDatamodel : MonoBehaviour {
      * */
     private Vector2[] getMinMaxValues(bool ignoreFilter)
     {
+        if (debugMode)
+        {
+            Debug.Log("Getting MinMax values per column of numreical datamodel.");
+        }
         checkForDirtyMinMax();
         if (ignoreFilter)
         {
@@ -279,6 +350,10 @@ public class NumericDatamodel : MonoBehaviour {
      * */
     public float[][] getCurrentData(bool ignoreFilters)
     {
+        if (debugMode)
+        {
+            Debug.Log("Getting current data of numreical datamodel.");
+        }
         // TODO implement normalization
         float[][] returnvalue = myData;
         if (!ignoreFilters) {
@@ -298,6 +373,10 @@ public class NumericDatamodel : MonoBehaviour {
      * */
     public float[][] getNormalizedData(bool ignoreFilters, bool ignoreFiltersForNormalization, bool globalyNormalized)
     {
+        if (debugMode)
+        {
+            Debug.Log("Getting normalized MinMax values of numreical datamodel.");
+        }
         float[][] returnvalue = myData;
         if(ignoreFiltersForNormalization && globalyNormalized)
         {
@@ -305,6 +384,7 @@ public class NumericDatamodel : MonoBehaviour {
         }
         if (!ignoreFiltersForNormalization && globalyNormalized)
         {
+            checkForDirtyFilteredGlobalNormalization();
             returnvalue = filteredGlobalyNormalizedData;
         }
         if (ignoreFiltersForNormalization && !globalyNormalized)
@@ -313,6 +393,7 @@ public class NumericDatamodel : MonoBehaviour {
         }
         if (!ignoreFiltersForNormalization && !globalyNormalized)
         {
+            checkForDirtyFilteredNormalization();
             returnvalue = filteredNormalizedData;
         }
         if (!ignoreFilters)
@@ -324,6 +405,10 @@ public class NumericDatamodel : MonoBehaviour {
 
     private float[][] doFiltering(float[][] unfilteredData)
     {
+        if (debugMode)
+        {
+            Debug.Log("Find out which data is filtered in numerical Datamodel.");
+        }
         float[][] returnvalue = unfilteredData;
         int amountOfUnfilteredDP = getNumberOfUnfilteredDatapoints();
         bool[] filterArray = getCurrentlyFiltered();
@@ -345,6 +430,10 @@ public class NumericDatamodel : MonoBehaviour {
      * */ 
     public int getNumberOfUnfilteredDatapoints()
     {
+        if (debugMode)
+        {
+            Debug.Log("Checking number of unfiltered points in numerical datamodel.");
+        }
         checkForDirtyFilter();
         return amountOfUnfilteredDatapoints;
     }
@@ -358,6 +447,10 @@ public class NumericDatamodel : MonoBehaviour {
      * */
     public void setFilter(int dimension, float min, float max, bool instantlyRecalculateFilteredRows)
     {
+        if (debugMode)
+        {
+            Debug.Log("Setting a filter in a numerical datamodel.");
+        }
         myFilterValues[dimension] = new Vector2(min, max);
         filteredRowsIsDirty = true;
         minMaxIsDirty = true;
@@ -366,6 +459,10 @@ public class NumericDatamodel : MonoBehaviour {
 
     private void recalculateFilteredRows()
     {
+        if (debugMode)
+        {
+            Debug.Log("Recalculating filtered rows of numerical datamodel.");
+        }
         amountOfUnfilteredDatapoints = amountOfRows;
         for(int i = 0; i < amountOfRows; i++)
         {
@@ -390,6 +487,10 @@ public class NumericDatamodel : MonoBehaviour {
 
     private void checkForDirtyFilter()
     {
+        if (debugMode)
+        {
+            Debug.Log("Check if filter needs an update in numerical datamodel.");
+        }
         if (filteredRowsIsDirty)
         {
             recalculateFilteredRows();
@@ -398,6 +499,10 @@ public class NumericDatamodel : MonoBehaviour {
 
     private void checkForDirtyMinMax()
     {
+        if (debugMode)
+        {
+            Debug.Log("Check if MinMax needs an update in numerical datamodel.");
+        }
         if (minMaxIsDirty)
         {
             recalculateMinMaxValues();
@@ -406,6 +511,10 @@ public class NumericDatamodel : MonoBehaviour {
 
     private void checkForDirtyFilteredNormalization()
     {
+        if (debugMode)
+        {
+            Debug.Log("Check if filtered normalization needs an update in numerical datamodel.");
+        }
         if (filteredNormalizationIsDirty)
         {
             recalculateFilteredNormalizedData();
@@ -414,6 +523,10 @@ public class NumericDatamodel : MonoBehaviour {
 
     private void checkForDirtyFilteredGlobalNormalization()
     {
+        if (debugMode)
+        {
+            Debug.Log("Check if filtered global normalization needs an update in numerical datamodel.");
+        }
         if (filteredNormalizationIsDirty)
         {
             recalculateFilteredGlobalyNormalizedData();
@@ -430,24 +543,40 @@ public class NumericDatamodel : MonoBehaviour {
      * */
     public void forceFilterRecalculation()
     {
+        if (debugMode)
+        {
+            Debug.Log("Forcing a filter recalculation in numerical datamodel.");
+        }
         filteredRowsIsDirty = true;
         checkForDirtyFilter();
     }
 
     public void forceMinMaxRecalculation()
     {
+        if (debugMode)
+        {
+            Debug.Log("Forcing a MinMax recalculation in numerical datamodel.");
+        }
         minMaxIsDirty = true;
         checkForDirtyMinMax();
     }
 
     public void forceFilteredNormalizationRecalculation()
     {
+        if (debugMode)
+        {
+            Debug.Log("Forcing a filtered normalization recalculation in numerical datamodel.");
+        }
         filteredNormalizationIsDirty = true;
         checkForDirtyFilteredNormalization();
     }
 
     public void forceFilteredGlobalNormalizationRecalculation()
     {
+        if (debugMode)
+        {
+            Debug.Log("Forcing a filtered global normalization recalculation in numerical datamodel.");
+        }
         filteredGlobalNormalizationIsDirty = true;
         checkForDirtyFilteredGlobalNormalization();
     }
@@ -458,6 +587,10 @@ public class NumericDatamodel : MonoBehaviour {
      * */
     public bool[] getCurrentlyFiltered()
     {
+        if (debugMode)
+        {
+            Debug.Log("Get current filters of a numerical datamodel.");
+        }
         checkForDirtyFilter();
         return currentlyFiltered;
     }
@@ -468,6 +601,10 @@ public class NumericDatamodel : MonoBehaviour {
      * */
     public Vector2[] getCurrentFilterValues()
     {
+        if (debugMode)
+        {
+            Debug.Log("Get currently filtered values of a numerical datamodel.");
+        }
         return myFilterValues;
     }
 }
