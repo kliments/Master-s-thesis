@@ -45,7 +45,11 @@ public class NumericDatamodel : MonoBehaviour {
             myData = DatasetImporter.readNumericCSV(nameOfDatafile, hasheader, delimiter);
             amountOfRows = myData.Length;
             amountOfCols = myData[0].Length;
-            myHeaders = DatasetImporter.getHeader(nameOfDatafile, delimiter);
+            myHeaders = new string[]{ };
+            if (hasheader)
+            {
+                myHeaders = DatasetImporter.getHeader(nameOfDatafile, delimiter);
+            }
             initFilter();
             recalculateUnfilteredNormalizedData();
             recalculateUnfilteredGlobalyNormalizedData();
@@ -527,7 +531,7 @@ public class NumericDatamodel : MonoBehaviour {
         {
             Debug.Log("Check if filtered global normalization needs an update in numerical datamodel.");
         }
-        if (filteredNormalizationIsDirty)
+        if (filteredGlobalNormalizationIsDirty)
         {
             recalculateFilteredGlobalyNormalizedData();
         }
@@ -607,4 +611,10 @@ public class NumericDatamodel : MonoBehaviour {
         }
         return myFilterValues;
     }
+
+    public string[] getheader()
+    {
+        return myHeaders;
+    }
+    
 }
