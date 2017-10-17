@@ -4,13 +4,11 @@ using System.IO;
 using UnityEngine;
 
 public class NumericDatamodel : MonoBehaviour {
-
     
-
-    public string nameOfDatafile;
-    public bool hasheader;
-    public string delimiter;
-    public bool debugMode;
+    public string nameOfDatafile;   // Put the name of the data file here. Data file has to be in the streamingAssets/Datasets folder.
+    public bool hasheader;          // Set to true if the first row in the datafile is a header.
+    public string delimiter;        // Delimiter used in the data file.
+    public bool debugMode;          // Will add some console prints. Helps to get the order of method calls right.
 
     private float[][] myData;
     private float[][] unfilteredNormalizedData;
@@ -18,23 +16,21 @@ public class NumericDatamodel : MonoBehaviour {
     private float[][] unfilteredGlobalyNormalizedData;
     private float[][] filteredGlobalyNormalizedData;
     private string[] myHeaders;
-    private Vector2[] myFilterValues;               // Do not directly read this. Use getCurrentFilterValues() instead. May be inconsistent otherwise.
-    private bool[] currentlyFiltered;               // Do not directly read this. Use getCurrentlyFiltered() instead. May be inconsistent otherwise.
+    private Vector2[] myFilterValues;               // Contains the min/max values allowed by filters in each column. Do not directly read this. Use getCurrentFilterValues() instead. May be inconsistent otherwise.
+    private bool[] currentlyFiltered;               // Contains information on wheater a row is currently filtered away or not. True means that the datapoint is filtered away. Do not directly read this. Use getCurrentlyFiltered() instead. May be inconsistent otherwise.
     private Vector2[] filteredMinMaxValues;         // Do not directly read this. Use getMinMaxValues(bool ignoreFilter) instead. May be inconsistent otherwise.
-    private bool minMaxIsDirty = true;
-    private bool filteredRowsIsDirty = true;
-    private bool filteredNormalizationIsDirty = true;
-    private bool filteredGlobalNormalizationIsDirty = true;
+    private bool minMaxIsDirty = true;              // Set to true whenever an action will require to recalculate the current minimal and maximal value in the data. (For example: changing filters, adding data,...)
+    private bool filteredRowsIsDirty = true;        // Set to true whenever an action will require to recalculate which rows are currently filtered away.
+    private bool filteredNormalizationIsDirty = true;           // Set to true whenever an action will require to recalculate the normalization done on a row.
+    private bool filteredGlobalNormalizationIsDirty = true;     // Set to true whenever an action will require to recalculate the normalization done globaly.
     private Vector2[] unfilteredMinMaxValues;       // Do not directly read this. Use getMinMaxValues(bool ignoreFilter) instead. May be inconsistent otherwise.
     private int amountOfRows;
     private int amountOfCols;
-    private int amountOfUnfilteredDatapoints;
+    private int amountOfUnfilteredDatapoints;       // Do not directly read this. Use getAmountOfUnfilteredDatapoints() instead. May be inconsistent otherwise.
     private List<IDatamodelListener> myListeners = new List<IDatamodelListener>();
 
     // TODO create seperate method for getting global normalized data. 
-    // TODO add a debug bool that will create console prints of which method is called.
 
-    // Use this for initialization
     void Awake () {
         if (debugMode)
         {
@@ -64,7 +60,6 @@ public class NumericDatamodel : MonoBehaviour {
         throw new FileLoadException("Unsupported data format of file '" + nameOfDatafile + "'. Can not load data into datamodel.");
     }
 	
-	// Update is called once per frame
 	void Update () {
 		
 	}
@@ -77,6 +72,167 @@ public class NumericDatamodel : MonoBehaviour {
         Debug.Log("Global Min Max: " + getGlobalMinMaxValues(false));
         Debug.Log("Global Min Max ignoring filters: " + getGlobalMinMaxValues(true));
         Debug.Log(getCurrentData(false).Length);
+    }
+
+    /**
+    * Returns the data represented by this datamodel.
+    * If ignoreFilters is true, all data will be returned.
+    * If ignoreFilters is false, filters get applied to the data and only the remaining data is returned. In this case, the index of datapoints may change if the number of returned data points changes.
+     If you want to keep track of the position of specific datapoints, use ignoreFilters=true and get the
+    * information on which data points are filtered with getCurrentlyFiltered().
+    * */
+    public float[][] getCurrentData(bool ignoreFilters)
+    {
+        if (debugMode)
+        {
+            Debug.Log("Getting current data of numreical datamodel.");
+        }
+        // TODO implement normalization
+        float[][] returnvalue = myData;
+        if (!ignoreFilters)
+        {
+            returnvalue = doFiltering(returnvalue);
+        };
+        return returnvalue;
+    }
+
+    /**
+     * Returns the data normalized. If globalyNormalized the global min and max values are used for normalization.
+     * If globalyNormalized = false, the min and max values of each column is used.
+     * If ignoreFiltersForNormalization = true, the normalization will be done without filtering the data.
+     * If ignoreFiltersForNormalization = false, the normalization will be done by using the max and min values among the non-filtered rows.
+     * For documentation on ignoreFilters see the getCurrentData(bool ignoreFilters) method.
+     * Calling this function several times without the normalized values changing (for example by changing the filter)
+     * will not recalculate the normalization again, so it should be performant.
+     * */
+    public float[][] getNormalizedData(bool ignoreFilters, bool ignoreFiltersForNormalization, bool globalyNormalized)
+    {
+        if (debugMode)
+        {
+            Debug.Log("Getting normalized MinMax values of numreical datamodel.");
+        }
+        float[][] returnvalue = myData;
+        if (ignoreFiltersForNormalization && globalyNormalized)
+        {
+            returnvalue = unfilteredGlobalyNormalizedData;
+        }
+        if (!ignoreFiltersForNormalization && globalyNormalized)
+        {
+            checkForDirtyFilteredGlobalNormalization();
+            returnvalue = filteredGlobalyNormalizedData;
+        }
+        if (ignoreFiltersForNormalization && !globalyNormalized)
+        {
+            returnvalue = unfilteredNormalizedData;
+        }
+        if (!ignoreFiltersForNormalization && !globalyNormalized)
+        {
+            checkForDirtyFilteredNormalization();
+            returnvalue = filteredNormalizedData;
+        }
+        if (!ignoreFilters)
+        {
+            returnvalue = doFiltering(returnvalue);
+        };
+        return returnvalue;
+    }
+
+    /**
+ * Returns an boolean array containing the information on which data points are currently filtered.
+ * If the boolean at index i is true, the data points at index i when using getData(false) is currently disabled by filters.
+ * If you want an array containing only unfiltered datapoints, use the getData methods instead.
+ * */
+    public bool[] getCurrentlyFilteredIndexes()
+    {
+        if (debugMode)
+        {
+            Debug.Log("Get current filters of a numerical datamodel.");
+        }
+        checkForDirtyFilter();
+        return currentlyFiltered;
+    }
+
+    /**
+* Returns a vector2 array containing the current min and max values allowed by the filters in each dimension.
+* The ordering of the dimensions is the same as in getData(bool).
+* */
+    public Vector2[] getCurrentFilterValues()
+    {
+        if (debugMode)
+        {
+            Debug.Log("Get currently filtered values of a numerical datamodel.");
+        }
+        return myFilterValues;
+    }
+
+    /**
+ * Returns the number of datapoints that are not disabled by filters.
+ * */
+    public int getNumberOfUnfilteredDatapoints()
+    {
+        if (debugMode)
+        {
+            Debug.Log("Checking number of unfiltered points in numerical datamodel.");
+        }
+        checkForDirtyFilter();
+        return amountOfUnfilteredDatapoints;
+    }
+
+    /**
+ * Returns the minimal and maximal values for each column in the dataset.
+ * If you want the global min and max values, use getGlobalMinMaxValues(bool ignoreFilter) instead.
+ * If ignoreFilter is false, only non filtered rows are used for this calculation.
+ * */
+    private Vector2[] getMinMaxValues(bool ignoreFilter)
+    {
+        if (debugMode)
+        {
+            Debug.Log("Getting MinMax values per column of numreical datamodel.");
+        }
+        checkForDirtyMinMax();
+        if (ignoreFilter)
+        {
+            return unfilteredMinMaxValues;
+        }
+        else
+        {
+            return filteredMinMaxValues;
+        }
+
+    }
+
+    /**
+ * Returns the minimal and maximal values in the dataset.
+ * If you want the min and max values for each column, use getMinMaxValues(bool ignoreFilter) instead.
+ * If ignoreFilter is false, only non filtered rows are used for this calculation.
+ * */
+    private Vector2 getGlobalMinMaxValues(bool ignoreFilter)
+    {
+        if (debugMode)
+        {
+            Debug.Log("Getting global MinMax values of numreical datamodel.");
+        }
+        Vector2[] minMax = getMinMaxValues(ignoreFilter);
+        float min = float.MaxValue;
+        float max = float.MinValue;
+        for (int i = 0; i < minMax.Length; i++)
+        {
+            if (minMax[i].x < min)
+            {
+                min = minMax[i].x;
+            }
+
+            if (minMax[i].y > max)
+            {
+                max = minMax[i].y;
+            }
+        }
+        return new Vector2(min, max);
+    }
+
+    public string[] getheader()
+    {
+        return myHeaders;
     }
 
     private void recalculateFilteredNormalizedData()
@@ -115,9 +271,6 @@ public class NumericDatamodel : MonoBehaviour {
         }
     }
 
-    
-
-
     private void recalculateUnfilteredNormalizedData()
     {
         if (debugMode)
@@ -155,127 +308,6 @@ public class NumericDatamodel : MonoBehaviour {
     }
 
     /**
-     * Adds an Object that implements IDatamodelListener as a listener to this datamodel.
-     * It will receive an update containing this model whenever there is a biger change in the model.
-     * This likely means that the view should be redrawn.
-     * */
-    public void addListener(IDatamodelListener listener)
-    {
-        if (debugMode)
-        {
-            Debug.Log("Adding a listener to numerical Datamodel.");
-        }
-        myListeners.Add(listener);
-
-        if (debugMode)
-        {
-            Debug.Log("Now containing " + myListeners.Count + " listeners.");
-        }
-        
-    }
-
-    /**
-     * Removes an object from the list of listeners. Opposite of addListener(IDatamodelListener listener).
-     * */
-    public void removeListener(IDatamodelListener listener)
-    {
-        if (debugMode)
-        {
-            Debug.Log("Removing a Listener to numerical Datamodel.");
-        }
-        myListeners.Remove(listener);
-
-        if (debugMode)
-        {
-            Debug.Log("Now containing " + myListeners.Count + " listeners.");
-        }
-    }
-
-    /**
-     * Sends a signal to each listener that the filters changed.
-     * */
-    private void notifyListenersOnFilterChange()
-    {
-        if (debugMode)
-        {
-            Debug.Log("Notifying Listeners of numerical Datamodel about filter change. " + myListeners.Count + " listeners are found.");
-        }
-        foreach (IDatamodelListener listener in myListeners)
-        {
-            listener.datamodelFilterChange(this);
-        }
-    }
-
-    /**
-     * Sends a signal to each listener that the min/max values changed.
-     * */
-    private void notifyListenersOnMinMaxChange()
-    {
-        if (debugMode)
-        {
-            Debug.Log("Notifying Listeners of numerical Datamodel about minmax change. " + myListeners.Count + " listeners are found.");
-        }
-        foreach (IDatamodelListener listener in myListeners)
-        {
-            listener.datamodelFilterChange(this);
-        }
-    }
-
-    /**
-     * Initializes the filter system.
-     * */
-    private void initFilter()
-    {
-        if (debugMode)
-        {
-            Debug.Log("Initializing filters of numreical datamodel.");
-        }
-        currentlyFiltered = new bool[amountOfRows];
-        for (int i = 0; i < amountOfRows; i++)
-        {
-            currentlyFiltered[i] = false;
-        }
-
-        
-        myFilterValues = new Vector2[amountOfCols];
-        
-        for (int i = 0; i < amountOfCols; i++)
-        {
-            myFilterValues[i] = new Vector2(float.MinValue, float.MaxValue);
-        }
-        
-    }
-
-    /**
-     * Returns the minimal and maximal values in the dataset.
-     * If you want the min and max values for each column, use getMinMaxValues(bool ignoreFilter) instead.
-     * If ignoreFilter is false, only non filtered rows are used for this calculation.
-     * */
-    private Vector2 getGlobalMinMaxValues(bool ignoreFilter)
-    {
-        if (debugMode)
-        {
-            Debug.Log("Getting global MinMax values of numreical datamodel.");
-        }
-        Vector2[] minMax = getMinMaxValues(ignoreFilter);
-        float min = float.MaxValue;
-        float max = float.MinValue;
-        for(int i = 0; i < minMax.Length; i++)
-        {
-            if(minMax[i].x < min)
-            {
-                min = minMax[i].x;
-            }
-
-            if (minMax[i].y > max)
-            {
-                max = minMax[i].y;
-            }
-        }
-        return new Vector2(min, max);
-    }
-
-    /**
      * Recalculates the min and max values and saves them in a variable.
      * */
     private void recalculateMinMaxValues()
@@ -286,7 +318,7 @@ public class NumericDatamodel : MonoBehaviour {
         }
         unfilteredMinMaxValues = new Vector2[amountOfCols];
         filteredMinMaxValues = new Vector2[amountOfCols];
-        bool[] filteredValues = getCurrentlyFiltered();
+        bool[] filteredValues = getCurrentlyFilteredIndexes();
         for (int j = 0; j < amountOfCols; j++)
         {
             float unfilteredMin = float.MaxValue;
@@ -323,123 +355,28 @@ public class NumericDatamodel : MonoBehaviour {
     }
 
     /**
-     * Returns the minimal and maximal values for each column in the dataset.
-     * If you want the global min and max values, use getGlobalMinMaxValues(bool ignoreFilter) instead.
-     * If ignoreFilter is false, only non filtered rows are used for this calculation.
-     * */
-    private Vector2[] getMinMaxValues(bool ignoreFilter)
+ * Initializes the filter system.
+ * */
+    private void initFilter()
     {
         if (debugMode)
         {
-            Debug.Log("Getting MinMax values per column of numreical datamodel.");
+            Debug.Log("Initializing filters of numreical datamodel.");
         }
-        checkForDirtyMinMax();
-        if (ignoreFilter)
+        currentlyFiltered = new bool[amountOfRows];
+        for (int i = 0; i < amountOfRows; i++)
         {
-            return unfilteredMinMaxValues;
+            currentlyFiltered[i] = false;
         }
-        else
-        {
-            return filteredMinMaxValues;
-        }
-        
-    }
 
-    /**
-     * Returns the data represented by this datamodel.
-     * If ignoreFilters is true, all data will be returned.
-     * If ignoreFilters is false, filters get applied to the data and only the remaining data is returned. In this case, the index of datapoints may change if the number of returned data points changes.
-     * If you want to keep track of the position of specific datapoints, use ignoreFilters=true and get the
-     * information on which data points are filtered with getCurrentlyFiltered().
-     * */
-    public float[][] getCurrentData(bool ignoreFilters)
-    {
-        if (debugMode)
-        {
-            Debug.Log("Getting current data of numreical datamodel.");
-        }
-        // TODO implement normalization
-        float[][] returnvalue = myData;
-        if (!ignoreFilters) {
-            returnvalue = doFiltering(returnvalue);
-        };
-        return returnvalue;
-    }
 
-    /**
-     * Returns the data normalized. If globalyNormalized the global min and max values are used for normalization.
-     * If globalyNormalized = false, the min and max values of each column is used.
-     * If ignoreFiltersForNormalization = true, the normalization will be done without filtering the data.
-     * If ignoreFiltersForNormalization = false, the normalization will be done by using the max and min values among the non-filtered rows.
-     * For documentation on ignoreFilters see the getCurrentData(bool ignoreFilters) method.
-     * Calling this function several times without the normalized values changing (for example by changing the filter)
-     * will not recalculate the normalization again, so it should be performant.
-     * */
-    public float[][] getNormalizedData(bool ignoreFilters, bool ignoreFiltersForNormalization, bool globalyNormalized)
-    {
-        if (debugMode)
-        {
-            Debug.Log("Getting normalized MinMax values of numreical datamodel.");
-        }
-        float[][] returnvalue = myData;
-        if(ignoreFiltersForNormalization && globalyNormalized)
-        {
-            returnvalue = unfilteredGlobalyNormalizedData;
-        }
-        if (!ignoreFiltersForNormalization && globalyNormalized)
-        {
-            checkForDirtyFilteredGlobalNormalization();
-            returnvalue = filteredGlobalyNormalizedData;
-        }
-        if (ignoreFiltersForNormalization && !globalyNormalized)
-        {
-            returnvalue = unfilteredNormalizedData;
-        }
-        if (!ignoreFiltersForNormalization && !globalyNormalized)
-        {
-            checkForDirtyFilteredNormalization();
-            returnvalue = filteredNormalizedData;
-        }
-        if (!ignoreFilters)
-        {
-            returnvalue = doFiltering(returnvalue);
-        };
-        return returnvalue;
-    }
+        myFilterValues = new Vector2[amountOfCols];
 
-    private float[][] doFiltering(float[][] unfilteredData)
-    {
-        if (debugMode)
+        for (int i = 0; i < amountOfCols; i++)
         {
-            Debug.Log("Find out which data is filtered in numerical Datamodel.");
+            myFilterValues[i] = new Vector2(float.MinValue, float.MaxValue);
         }
-        float[][] returnvalue = unfilteredData;
-        int amountOfUnfilteredDP = getNumberOfUnfilteredDatapoints();
-        bool[] filterArray = getCurrentlyFiltered();
-        returnvalue = new float[amountOfUnfilteredDP][];
-        int currentIndex = 0;
-        for (int i = 0; i < amountOfUnfilteredDP; i++)
-        {
-            if (!filterArray[i])
-            {
-                returnvalue[currentIndex] = unfilteredData[i];
-                currentIndex++;
-            }
-        }
-        return returnvalue;
-    }
 
-    /**
-     * Returns the number of datapoints that are not disabled by filters.
-     * */ 
-    public int getNumberOfUnfilteredDatapoints()
-    {
-        if (debugMode)
-        {
-            Debug.Log("Checking number of unfiltered points in numerical datamodel.");
-        }
-        checkForDirtyFilter();
-        return amountOfUnfilteredDatapoints;
     }
 
     /**
@@ -487,7 +424,27 @@ public class NumericDatamodel : MonoBehaviour {
         notifyListenersOnFilterChange();
     }
 
-    
+    private float[][] doFiltering(float[][] unfilteredData)
+    {
+        if (debugMode)
+        {
+            Debug.Log("Find out which data is filtered in numerical Datamodel.");
+        }
+        float[][] returnvalue = unfilteredData;
+        int amountOfUnfilteredDP = getNumberOfUnfilteredDatapoints();
+        bool[] filterArray = getCurrentlyFilteredIndexes();
+        returnvalue = new float[amountOfUnfilteredDP][];
+        int currentIndex = 0;
+        for (int i = 0; i < amountOfUnfilteredDP; i++)
+        {
+            if (!filterArray[i])
+            {
+                returnvalue[currentIndex] = unfilteredData[i];
+                currentIndex++;
+            }
+        }
+        return returnvalue;
+    }
 
     private void checkForDirtyFilter()
     {
@@ -537,9 +494,6 @@ public class NumericDatamodel : MonoBehaviour {
         }
     }
 
-
-    
-
     /**
      * Forces a recalculation of the filtered rows.
      * This is automatically done if they are needed for another calculation. 
@@ -586,35 +540,71 @@ public class NumericDatamodel : MonoBehaviour {
     }
 
     /**
-     * Returns an boolean array containing the information on which data points are currently filtered.
-     * If the boolean at index i is true, the data points at index i when using getData(false) is currently disabled by filters.
-     * */
-    public bool[] getCurrentlyFiltered()
+ * Adds an Object that implements IDatamodelListener as a listener to this datamodel.
+ * It will receive an update containing this model whenever there is a biger change in the model.
+ * This likely means that the view should be redrawn.
+ * */
+    public void addListener(IDatamodelListener listener)
     {
         if (debugMode)
         {
-            Debug.Log("Get current filters of a numerical datamodel.");
+            Debug.Log("Adding a listener to numerical Datamodel.");
         }
-        checkForDirtyFilter();
-        return currentlyFiltered;
+        myListeners.Add(listener);
+
+        if (debugMode)
+        {
+            Debug.Log("Now containing " + myListeners.Count + " listeners.");
+        }
+
     }
 
     /**
-     * Returns a vector2 array containing the current min and max values allowed by the filters in each dimension.
-     * The ordering of the dimensions is the same as in getData(bool).
+     * Removes an object from the list of listeners. Opposite of addListener(IDatamodelListener listener).
      * */
-    public Vector2[] getCurrentFilterValues()
+    public void removeListener(IDatamodelListener listener)
     {
         if (debugMode)
         {
-            Debug.Log("Get currently filtered values of a numerical datamodel.");
+            Debug.Log("Removing a Listener to numerical Datamodel.");
         }
-        return myFilterValues;
+        myListeners.Remove(listener);
+
+        if (debugMode)
+        {
+            Debug.Log("Now containing " + myListeners.Count + " listeners.");
+        }
     }
 
-    public string[] getheader()
+    /**
+     * Sends a signal to each listener that the filters changed.
+     * */
+    private void notifyListenersOnFilterChange()
     {
-        return myHeaders;
+        if (debugMode)
+        {
+            Debug.Log("Notifying Listeners of numerical Datamodel about filter change. " + myListeners.Count + " listeners are found.");
+        }
+        foreach (IDatamodelListener listener in myListeners)
+        {
+            listener.datamodelFilterChange(this);
+        }
     }
-    
+
+    /**
+ * Sends a signal to each listener that the min/max values changed.
+ * */
+    private void notifyListenersOnMinMaxChange()
+    {
+        if (debugMode)
+        {
+            Debug.Log("Notifying Listeners of numerical Datamodel about minmax change. " + myListeners.Count + " listeners are found.");
+        }
+        foreach (IDatamodelListener listener in myListeners)
+        {
+            listener.datamodelFilterChange(this);
+        }
+    }
+
+
 }
