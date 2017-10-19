@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using NUnit.Framework.Constraints;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Assets.Scripts.Model
 {
@@ -42,7 +45,7 @@ namespace Assets.Scripts.Model
                 List<GenericOperator> l = new List<GenericOperator>();
                 l.Add(operators[0]);
 
-                newOperator(1);
+                newOperator(1,l);
                 spawn = false;
             }
         }
@@ -51,20 +54,21 @@ namespace Assets.Scripts.Model
         {
             if (id < 0 || id >= operatorPrefabs.Count) return;
 
-            GameObject gameObject = GameObject.Instantiate(operatorPrefabs[id]);
-            gameObject.transform.parent = transform;
-            GenericOperator genericOperator = gameObject.GetComponent<GenericOperator>();
+            GameObject go = GameObject.Instantiate(operatorPrefabs[id]);
+            go.transform.parent = transform;
+            GenericOperator genericOperator = go.GetComponent<GenericOperator>();
             operators.Add(genericOperator);
 
             genericOperator.init(requestID(), parents);
-        }
+           }
 
         public void notifyObserverInitComplete(GenericOperator genericOperator)
         {
+            if (!genericOperator.checkConsistency()) throw new InvalidProgramException("base.Start() etc. methods needs to be called in respective inherited methods");
+
             installIcon(genericOperator);
             installVis(genericOperator);
-
-            Debug.Log(genericOperator.id);
+            
             genericOperator.process();
         }
 

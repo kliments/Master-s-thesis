@@ -28,6 +28,11 @@ public class DataloaderOperator : GenericOperator
         path = Application.streamingAssetsPath + path;
     }
 
+    public override void Start()
+    {
+        base.Start();
+    }
+
     private GenericDatamodel readCSV()
     {
         GenericDatamodel dataModel = new SimpleDatamodel();

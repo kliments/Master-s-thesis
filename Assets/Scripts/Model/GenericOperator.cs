@@ -4,6 +4,7 @@ using NUnit.Framework.Constraints;
 using UnityEngine;
 using System.Collections.Generic;
 
+
 namespace Assets.Scripts.Model
 {
     public abstract class GenericOperator : MonoBehaviour
@@ -21,27 +22,18 @@ namespace Assets.Scripts.Model
         private GenericDatamodel rawInputData;
         private GenericDatamodel outputData;
 
-        void Awake()
-        {
-            Debug.Log("huhu"+id);
-        }
+        public bool properInitializedStart;
 
-        void Start()
+        public virtual void Start()
         {
-            Debug.Log("huhu2" + id);
             visualization = GetComponentInChildren<GenericVisualization>();
             icon = GetComponentInChildren<GenericIcon>();
 
             observer = GameObject.FindObjectOfType<Observer>();
+            
+            properInitializedStart = true;
 
             observer.notifyObserverInitComplete(this);
-        }
-
-        public bool trigger = false;
-        void Update()
-        {
-            if(trigger) observer.notifyObserverInitComplete(this);
-            trigger = false;
         }
 
         /**
@@ -201,5 +193,12 @@ namespace Assets.Scripts.Model
             if (gameObject != null)
                 Destroy(gameObject);
         }
+
+        public bool checkConsistency()
+        {
+            return properInitializedStart;
+        }
     }
+
+    
 }
