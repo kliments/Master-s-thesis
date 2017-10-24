@@ -198,6 +198,11 @@ namespace Assets.Scripts.Model
         {
             return properInitializedStart;
         }
+
+        public int getId()
+        {
+            return id;
+        }
     }
 
     

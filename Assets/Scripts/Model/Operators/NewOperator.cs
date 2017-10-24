@@ -8,11 +8,13 @@ public class NewOperator :  GenericOperator
 
     public override bool process()
     {
-        throw new System.NotImplementedException();
+        return true;
     }
 
     // Update is called once per frame
 	void Update () {
-		
-	}
+	   
+    }
+
+    
 }

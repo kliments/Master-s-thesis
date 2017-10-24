@@ -1,16 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Model;
 using UnityEngine;
 
-public class GenericVisualization : MonoBehaviour {
+public class GenericVisualization : MonoBehaviour
+{
+    private GenericOperator op;
 
-	// Use this for initialization
-	void Start () {
+    void Awake()
+    {
+        op = transform.parent.GetComponent<GenericOperator>();
+    }
+    
+    void Update () {
 		
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    public void setOperator(GenericOperator operatorObj)
+    {
+        op = operatorObj;
+    }
+
+    public GenericOperator getOperator()
+    {
+        return op;
+    }
+
+
 }

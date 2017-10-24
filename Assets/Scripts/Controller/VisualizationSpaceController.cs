@@ -17,7 +17,16 @@ public class VisualizationSpaceController : MonoBehaviour {
 
     public void installNewVisualization(GenericOperator op)
     {
+        if (gameObject.transform.childCount > 0)
+        {
+            foreach (GenericVisualization vis in transform.GetComponentsInChildren<GenericVisualization>())
+            {
+                Debug.Log(vis.getOperator() == null);
+                vis.gameObject.transform.parent = vis.getOperator().gameObject.transform;
+            }
+        }
+
         op.getVisualization().gameObject.transform.parent = gameObject.transform;
-        op.getVisualization().gameObject.transform.localPosition = new Vector3(0, 0, -0.01f);
+        op.getVisualization().gameObject.transform.localPosition = new Vector3();
     }
 }

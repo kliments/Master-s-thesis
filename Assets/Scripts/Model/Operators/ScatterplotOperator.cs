@@ -13,17 +13,18 @@ public class ScatterplotOperator : GenericOperator
     
     public override void Start()
     {
-        pointPrimitive = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        pointPrimitive.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
-        pointRenderer = pointPrimitive.GetComponent<Renderer>();
-        pointRenderer.material = new Material(Shader.Find("Specular"));
-        pointRenderer.material.color = pointColor;
         base.Start();
     }
 
     public override bool process()
     {
-        if(getRawInputData() == null)
+        pointPrimitive = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        pointPrimitive.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+        pointRenderer = pointPrimitive.GetComponent<Renderer>();
+        pointRenderer.material = new Material(Shader.Find("Specular"));
+        pointRenderer.material.color = pointColor;
+
+        if (getRawInputData() == null)
             return false;
 
         List<Vector3> dataPoints = ((SimpleDatamodel) getRawInputData()).getCoords();
@@ -36,6 +37,7 @@ public class ScatterplotOperator : GenericOperator
             dat.transform.localPosition = dataPoints[i];
         }
 
+        GameObject.Destroy(pointPrimitive);
         return true;
     }
     

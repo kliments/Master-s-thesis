@@ -11,6 +11,7 @@ namespace Assets.Scripts.Model
         private List<GameObject> operatorPrefabs = new List<GameObject>();
         private List<GenericOperator> operators = new List<GenericOperator>();
         private int currentID = 1;
+        private int operatorNewId = -1;
 
         private GraphSpaceController graphSpaceController;
         private VisualizationSpaceController visualizationSpaceController;
@@ -23,15 +24,21 @@ namespace Assets.Scripts.Model
             foreach (GameObject prefab in prefabs)
             {
                 GameObject lo = (GameObject)prefab;
-                if(prefab.GetComponent<GenericOperator>())
+                if (prefab.GetComponent<GenericOperator>())
+                {
                     operatorPrefabs.Add(lo);
+                    if (lo.tag == "Operator_New") operatorNewId = operatorPrefabs.Count - 1;
+                }
             }
 
             graphSpaceController = GameObject.Find("GraphSpace").GetComponent<GraphSpaceController>();
             visualizationSpaceController = GameObject.Find("VisualizationSpace").GetComponent<VisualizationSpaceController>();
 
             //test
+            createOperator(operatorNewId);
+
             createOperator(0);
+            
         }
 	
         // Update is called once per frame
@@ -41,7 +48,7 @@ namespace Assets.Scripts.Model
             if (spawn)
             {
                 List<GenericOperator> l = new List<GenericOperator>();
-                l.Add(operators[0]);
+                l.Add(operators[1]);
 
                 createOperator(2,l);
                 spawn = false;
@@ -82,6 +89,8 @@ namespace Assets.Scripts.Model
                 visualizationSpaceController.installNewVisualization(op);
             }
         }
+
+
         
         private int requestID()
         {
