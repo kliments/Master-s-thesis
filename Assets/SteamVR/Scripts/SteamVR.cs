@@ -107,7 +107,7 @@ public class SteamVR : System.IDisposable
 				Debug.Log("SteamVR Initialization Failed!  Make sure device is on, Oculus runtime is installed, and OVRService_*.exe is running.");
 				break;
 			case EVRInitError.Init_VRClientDLLNotFound:
-				Debug.Log("SteamVR drivers not found!  They can be installed via Steam under Library > Tools.  Visit http://steampowered.com to install Steam.");
+				Debug.Log("SteamVR drivers not found!  They can be installed via Steam under Library > Tools.  Visit http://steampowered.com to installNewIcon Steam.");
 				break;
 			case EVRInitError.Driver_RuntimeOutOfDate:
 				Debug.Log("SteamVR Initialization Failed!  Make sure device's runtime is up to date.");

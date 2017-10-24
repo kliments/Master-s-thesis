@@ -12,8 +12,8 @@ namespace Assets.Scripts.Model
         private List<GenericOperator> operators = new List<GenericOperator>();
         private int currentID = 1;
 
-        public GameObject graphSpace;
-        public GameObject visualizationSpace;
+        private GraphSpaceController graphSpaceController;
+        private VisualizationSpaceController visualizationSpaceController;
     
         
         // Use this for initialization
@@ -27,13 +27,11 @@ namespace Assets.Scripts.Model
                     operatorPrefabs.Add(lo);
             }
 
-            graphSpace = GameObject.Find("GraphSpace");
-            visualizationSpace = GameObject.Find("VisualizationSpace");
+            graphSpaceController = GameObject.Find("GraphSpace").GetComponent<GraphSpaceController>();
+            visualizationSpaceController = GameObject.Find("VisualizationSpace").GetComponent<VisualizationSpaceController>();
 
             //test
-            newOperator(0);
-
-            
+            createOperator(0);
         }
 	
         // Update is called once per frame
@@ -45,12 +43,12 @@ namespace Assets.Scripts.Model
                 List<GenericOperator> l = new List<GenericOperator>();
                 l.Add(operators[0]);
 
-                newOperator(1,l);
+                createOperator(2,l);
                 spawn = false;
             }
         }
 
-        public void newOperator(int id, List<GenericOperator> parents = null)
+        public void createOperator(int id, List<GenericOperator> parents = null)
         {
             if (id < 0 || id >= operatorPrefabs.Count) return;
 
@@ -66,26 +64,25 @@ namespace Assets.Scripts.Model
         {
             if (!genericOperator.checkConsistency()) throw new InvalidProgramException("base.Start() etc. methods needs to be called in respective inherited methods");
 
-            installIcon(genericOperator);
-            installVis(genericOperator);
+            installComponents(genericOperator);
             
             genericOperator.process();
         }
 
-        private void installIcon(GenericOperator op)
+        
+        private void installComponents(GenericOperator op)
         {
-            if (op.getIcon() == null) return;
+            if (op.getIcon() != null)
+            {
+                graphSpaceController.installNewIcon(op);
+            }
 
-            op.getIcon().gameObject.transform.parent = graphSpace.transform;
+            if (op.getVisualization() != null)
+            {
+                visualizationSpaceController.installNewVisualization(op);
+            }
         }
-
-        private void installVis(GenericOperator op)
-        {
-            if (op.getVisualization() == null) return;
-
-            op.getVisualization().gameObject.transform.parent = visualizationSpace.transform;
-        }
-
+        
         private int requestID()
         {
             return currentID++;

@@ -321,6 +321,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 464518470}
+  - component: {fileID: 464518471}
   m_Layer: 0
   m_Name: VisualizationSpace
   m_TagString: Untagged
@@ -335,13 +336,24 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 464518469}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 734874412}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &464518471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 464518469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d350d955739f940aa099d682b364b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!21 &563659730
 Material:
   serializedVersion: 6
@@ -415,8 +427,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2426f346a64fe29459f5f098a80eb34a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  graphSpace: {fileID: 0}
-  visualizationSpace: {fileID: 0}
   spawn: 0
 --- !u!4 &601993987 stripped
 Transform:
@@ -677,22 +687,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ee67b547244ee34b91b1c2fb69c09f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nameOfDatafile: test.csv
-  hasheader: 1
-  delimiter: ','
-  debugMode: 0
-  myHeaders: []
-  myFilterValues: []
-  currentlyFiltered: []
-  filteredMinMaxValues: []
-  minMaxIsDirty: 1
-  filteredRowsIsDirty: 1
-  filteredNormalizationIsDirty: 1
-  filteredGlobalNormalizationIsDirty: 1
-  unfilteredMinMaxValues: []
-  amountOfRows: 0
-  amountOfCols: 0
-  amountOfUnfilteredDatapoints: 0
 --- !u!4 &1086691337
 Transform:
   m_ObjectHideFlags: 0
@@ -1315,6 +1309,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 2092954265}
+  - component: {fileID: 2092954266}
   m_Layer: 0
   m_Name: GraphSpace
   m_TagString: Untagged
@@ -1336,3 +1331,14 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2092954266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2092954264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71969f6c48d3c6944878a0eb887e968c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
