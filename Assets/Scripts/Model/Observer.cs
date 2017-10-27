@@ -63,9 +63,9 @@ namespace Assets.Scripts.Model
             go.transform.parent = transform;
             GenericOperator genericOperator = go.GetComponent<GenericOperator>();
             operators.Add(genericOperator);
-
+            
             genericOperator.init(requestID(), parents);
-           }
+        }
 
         public void notifyObserverInitComplete(GenericOperator genericOperator)
         {
@@ -96,5 +96,15 @@ namespace Assets.Scripts.Model
         {
             return currentID++;
         }
+
+        public VisualizationSpaceController getVisualizationSpaceController()
+        {
+            return visualizationSpaceController;
+        }
+
+        public GraphSpaceController getGraphSpaceController()
+        {
+            return graphSpaceController;
+    }
     }
 }

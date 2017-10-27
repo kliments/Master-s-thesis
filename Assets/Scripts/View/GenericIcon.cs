@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Assets.Scripts.Model;
 using UnityEngine;
 
-public abstract class GenericIcon : MonoBehaviour {
+public abstract class GenericIcon : ITargetable {
     public GenericOperator op;
 
     void Awake()
@@ -21,4 +21,8 @@ public abstract class GenericIcon : MonoBehaviour {
         return op;
     }
 
+    public override void onClicked()
+    {
+        op.observer.getVisualizationSpaceController().installNewVisualization(op);
+    } 
 }

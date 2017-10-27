@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ScatterplotController : MonoBehaviour {
+public abstract class GenericIconInteractionController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-       // createDatapoints();
-
-    }
+		
+	}
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
-
 }

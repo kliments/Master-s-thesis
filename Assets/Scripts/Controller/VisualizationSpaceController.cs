@@ -21,12 +21,12 @@ public class VisualizationSpaceController : MonoBehaviour {
         {
             foreach (GenericVisualization vis in transform.GetComponentsInChildren<GenericVisualization>())
             {
-                Debug.Log(vis.getOperator() == null);
                 vis.gameObject.transform.parent = vis.getOperator().gameObject.transform;
+                vis.gameObject.SetActive(false);
             }
         }
-
+        op.getVisualization().gameObject.SetActive(true);
         op.getVisualization().gameObject.transform.parent = gameObject.transform;
-        op.getVisualization().gameObject.transform.localPosition = new Vector3();
+        //op.getVisualization().gameObject.transform.localPosition = new Vector3();
     }
 }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Assets.Scripts.Model;
 using UnityEngine;
 
-public class GenericVisualization : MonoBehaviour
+public abstract class GenericVisualization : MonoBehaviour
 {
-    private GenericOperator op;
+    GenericOperator op;
 
     void Awake()
     {
@@ -25,6 +25,8 @@ public class GenericVisualization : MonoBehaviour
     {
         return op;
     }
+
+    public abstract void createVisualization();
 
 
 }
