@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class GenericIconInteractionController : MonoBehaviour {
+public abstract class GenericIconInteractionController : ITargetable {
 
 	// Use this for initialization
 	void Start () {

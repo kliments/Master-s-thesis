@@ -12,15 +12,18 @@ public class InputScreenController : InputController
         {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
+            Debug.Log(ray);
             if (Physics.Raycast(ray, out hit, 100))
             {
                 ITargetable target = hit.transform.gameObject.GetComponent<ITargetable>();
-                if (target == null && hit.transform.parent != null)
-                {
-                    target = hit.transform.parent.gameObject.GetComponent<ITargetable>();
-                }
+                // if (target == null && hit.transform.parent != null)
+                // {
+                //     target = hit.transform.parent.gameObject.GetComponent<ITargetable>();
+                // }
+                Debug.Log(target);
                 if (target != null)
                 {
+                    Debug.Log("asdfsdafasdfadsfa");
                     EmitOnClickedEvent(target);
                 }
             }

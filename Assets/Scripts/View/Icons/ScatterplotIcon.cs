@@ -14,4 +14,9 @@ public class ScatterplotIcon : GenericIcon
 	void Update () {
 		
 	}
+
+    public override void onClicked()
+    {
+        
+    }
 }

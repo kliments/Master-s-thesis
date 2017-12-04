@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewIcon : GenericIcon
-{
+public class SubTarget : ITargetable {
 
 	// Use this for initialization
 	void Start () {
@@ -17,7 +16,7 @@ public class NewIcon : GenericIcon
 
     public override void onClicked()
     {
-        Debug.Log("fassfdasa");
-        op.observer.getVisualizationSpaceController().installNewVisualization(op);
+        if(transform.parent.GetComponent<ITargetable>() != null)
+            transform.parent.GetComponent<ITargetable>().onClicked();
     }
 }

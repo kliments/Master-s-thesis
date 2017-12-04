@@ -13,4 +13,9 @@ public class DataloaderIcon : GenericIcon {
 	void Update () {
 		
 	}
+
+    public override void onClicked()
+    {
+        Debug.Log("Dataloader");
+    }
 }

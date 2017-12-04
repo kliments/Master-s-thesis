@@ -21,8 +21,5 @@ public abstract class GenericIcon : ITargetable {
         return op;
     }
 
-    public override void onClicked()
-    {
-        op.observer.getVisualizationSpaceController().installNewVisualization(op);
-    } 
+    
 }

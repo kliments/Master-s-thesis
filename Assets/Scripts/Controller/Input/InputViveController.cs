@@ -33,10 +33,12 @@ public class InputViveController : InputController
     
     void FixedUpdate()
     {
+       
         Vector3 forward = trackedObj.transform.TransformDirection(Vector3.forward);
         
         if (device.index == right_controller_index)
         {
+            
             Vector3 fwd = trackedObj.transform.TransformDirection(Vector3.forward);
 
             if (Physics.Raycast(trackedObj.transform.position, fwd, out hit, 60))
@@ -47,7 +49,7 @@ public class InputViveController : InputController
                     lastTarget = target;
                     if (device.GetPress(SteamVR_Controller.ButtonMask.Trigger))
                     {
-                        EmitOnClickedEvent(target);
+                       EmitOnClickedEvent(target);
                     }
                 }
                 else
