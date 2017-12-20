@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class ITargetable : MonoBehaviour
+public abstract class Targetable : MonoBehaviour
 {
    /* void startTargetedAction(InputViveController rightViveController);         // Called on trigger down.
     void endTargetedAction(InputViveController rightViveController);                                           // Called after startTargetedAction when there is another trigger down and this object is not targeted.
@@ -22,7 +22,7 @@ public abstract class ITargetable : MonoBehaviour
         InputController.OnClicked -= targetClicked;
     }
 
-    void targetClicked(ITargetable t)
+    void targetClicked(Targetable t)
     {
         if (t == this)
         {

@@ -8,7 +8,7 @@ public class InputViveController : InputController
     private SteamVR_Controller.Device device;
     private int left_controller_index;
     private int right_controller_index;
-    private ITargetable lastTarget = null;
+    private Targetable lastTarget = null;
     
     private RaycastHit hit;
 
@@ -43,7 +43,7 @@ public class InputViveController : InputController
 
             if (Physics.Raycast(trackedObj.transform.position, fwd, out hit, 60))
             {
-                ITargetable target = hit.transform.gameObject.GetComponent<ITargetable>();
+                Targetable target = hit.transform.gameObject.GetComponent<Targetable>();
                 if (target != null)
                 {
                     lastTarget = target;

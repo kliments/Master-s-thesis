@@ -15,10 +15,10 @@ public class InputScreenController : InputController
             Debug.Log(ray);
             if (Physics.Raycast(ray, out hit, 100))
             {
-                ITargetable target = hit.transform.gameObject.GetComponent<ITargetable>();
+                Targetable target = hit.transform.gameObject.GetComponent<Targetable>();
                 // if (target == null && hit.transform.parent != null)
                 // {
-                //     target = hit.transform.parent.gameObject.GetComponent<ITargetable>();
+                //     target = hit.transform.parent.gameObject.GetComponent<Targetable>();
                 // }
                 Debug.Log(target);
                 if (target != null)

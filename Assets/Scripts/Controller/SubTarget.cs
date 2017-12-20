@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SubTarget : ITargetable {
+public class SubTarget : Targetable {
 
 	// Use this for initialization
 	void Start () {
@@ -16,7 +16,7 @@ public class SubTarget : ITargetable {
 
     public override void onClicked()
     {
-        if(transform.parent.GetComponent<ITargetable>() != null)
-            transform.parent.GetComponent<ITargetable>().onClicked();
+        if(transform.parent.GetComponent<Targetable>() != null)
+            transform.parent.GetComponent<Targetable>().onClicked();
     }
 }

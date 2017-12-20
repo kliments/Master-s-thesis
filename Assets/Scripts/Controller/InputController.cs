@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InputController : MonoBehaviour {
-    public delegate void ClickAction(ITargetable obj);
+    public delegate void ClickAction(Targetable obj);
     public static event ClickAction OnClicked;
 
-    public void EmitOnClickedEvent(ITargetable obj)
+    public void EmitOnClickedEvent(Targetable obj)
     {
         if (OnClicked != null)
         {

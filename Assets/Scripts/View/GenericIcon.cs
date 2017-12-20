@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Assets.Scripts.Model;
 using UnityEngine;
 
-public abstract class GenericIcon : ITargetable {
+public abstract class GenericIcon : Targetable {
     public GenericOperator op;
 
     void Awake()
