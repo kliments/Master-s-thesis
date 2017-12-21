@@ -15,9 +15,10 @@ public class NewIcon : GenericIcon
 		
 	}
 
-    public override void onClicked()
-    {
-        Debug.Log("fassfdasa");
-        op.observer.getVisualizationSpaceController().installNewVisualization(op);
-    }
+     
+   // public void OnLeftClickEvent()
+   // {
+   //     Debug.Log("Icon LeftClickEvent");
+        //op.observer.getVisualizationSpaceController().installNewVisualization(op);
+   // }
 }

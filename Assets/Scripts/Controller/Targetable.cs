@@ -1,35 +1,21 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Model;
 
 public abstract class Targetable : MonoBehaviour
 {
-   /* void startTargetedAction(InputViveController rightViveController);         // Called on trigger down.
-    void endTargetedAction(InputViveController rightViveController);                                           // Called after startTargetedAction when there is another trigger down and this object is not targeted.
-    void endTargetedActionOnTarget(InputViveController rightViveController);
-    void targetEnteredAction(InputViveController rightViveController);                                         // Called like a mouseover event. Only fired once before a targetExitedAction is started.
-    void targetExitedAction(InputViveController rightViveController);                                          // Called like a mouseout event.
-    void startTargetedActionTouchpad(InputViveController rightViveController); // Called on touchpad touch
-    */
-
-    void OnEnable()
+    public void OnLeftClickEvent()
     {
-        InputController.OnClicked += targetClicked;
+        OnLeftClickEventAction();
     }
+    public virtual void OnLeftClickEventAction() { }
 
 
-    void OnDisable()
+    public void OnLeftClickOnTargetEvent(Targetable target)
     {
-        InputController.OnClicked -= targetClicked;
+        if (target == this) OnLeftClickOnTargetEventAction();
     }
-
-    void targetClicked(Targetable t)
-    {
-        if (t == this)
-        {
-            onClicked();
-        }
-    }
-
-    public abstract void onClicked();
+    public virtual void OnLeftClickOnTargetEventAction() { }
 
 }

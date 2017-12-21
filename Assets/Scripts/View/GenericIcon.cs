@@ -3,13 +3,22 @@ using System.Collections.Generic;
 using Assets.Scripts.Model;
 using UnityEngine;
 
-public abstract class GenericIcon : Targetable {
+public abstract class GenericIcon : MonoBehaviour {
     public GenericOperator op;
+
+   
 
     void Awake()
     {
         op = transform.parent.GetComponent<GenericOperator>();
     }
+
+
+
+
+
+
+
 
     public void setOperator(GenericOperator operatorObj)
     {
@@ -20,6 +29,4 @@ public abstract class GenericIcon : Targetable {
     {
         return op;
     }
-
-    
 }

@@ -15,8 +15,8 @@ public class ScatterplotIcon : GenericIcon
 		
 	}
 
-    public override void onClicked()
-    {
+   // public override void OnLeftClickEvent()
+    //{
         
-    }
+    //}
 }

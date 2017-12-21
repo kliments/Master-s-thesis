@@ -4,17 +4,17 @@ using System.Collections;
 [RequireComponent(typeof(SteamVR_TrackedObject))]
 public class InputViveController : InputController
 {
-    private SteamVR_TrackedObject trackedObj;
-    private SteamVR_Controller.Device device;
-    private int left_controller_index;
-    private int right_controller_index;
-    private Targetable lastTarget = null;
+    private SteamVR_TrackedObject _trackedObj;
+    private SteamVR_Controller.Device _device;
+    private int _leftControllerIndex;
+    private int _rightControllerIndex;
+    private Targetable _lastTarget = null;
     
-    private RaycastHit hit;
+    private RaycastHit _hit;
 
     void Awake()
     {
-        trackedObj = GetComponent<SteamVR_TrackedObject>();
+        _trackedObj = GetComponent<SteamVR_TrackedObject>();
     }
 
     void Start()
@@ -22,41 +22,41 @@ public class InputViveController : InputController
 
         if (GetComponent<SteamVR_LaserPointer>() != null)
         {
-            right_controller_index = (int)trackedObj.index;
+            _rightControllerIndex = (int)_trackedObj.index;
         }
         else
         {
-            left_controller_index = (int)trackedObj.index;
+            _leftControllerIndex = (int)_trackedObj.index;
         }
-        device = SteamVR_Controller.Input((int)trackedObj.index);
+        _device = SteamVR_Controller.Input((int)_trackedObj.index);
     }
     
     void FixedUpdate()
     {
        
-        Vector3 forward = trackedObj.transform.TransformDirection(Vector3.forward);
+        Vector3 forward = _trackedObj.transform.TransformDirection(Vector3.forward);
         
-        if (device.index == right_controller_index)
+        if (_device.index == _rightControllerIndex)
         {
             
-            Vector3 fwd = trackedObj.transform.TransformDirection(Vector3.forward);
+            Vector3 fwd = _trackedObj.transform.TransformDirection(Vector3.forward);
 
-            if (Physics.Raycast(trackedObj.transform.position, fwd, out hit, 60))
+            if (Physics.Raycast(_trackedObj.transform.position, fwd, out _hit, 60))
             {
-                Targetable target = hit.transform.gameObject.GetComponent<Targetable>();
+                Targetable target = _hit.transform.gameObject.GetComponent<Targetable>();
                 if (target != null)
                 {
-                    lastTarget = target;
-                    if (device.GetPress(SteamVR_Controller.ButtonMask.Trigger))
+                    _lastTarget = target;
+                    if (_device.GetPress(SteamVR_Controller.ButtonMask.Trigger))
                     {
-                       EmitOnClickedEvent(target);
+                        EmitEvent(InputEventsEnum.LeftClickOnTargetEvent, target);
                     }
                 }
                 else
                 {
-                    if (lastTarget != null)
+                    if (_lastTarget != null)
                     {
-                        lastTarget = null;
+                        _lastTarget = null;
                     }
                 }
 

@@ -15,15 +15,15 @@ namespace Assets.Scripts.Model
 
         private GraphSpaceController graphSpaceController;
         private VisualizationSpaceController visualizationSpaceController;
-    
-        
+
+
         // Use this for initialization
-        void Start ()
+        void Start()
         {
             Object[] prefabs = Resources.LoadAll<GameObject>("Operators");
             foreach (GameObject prefab in prefabs)
             {
-                GameObject lo = (GameObject)prefab;
+                GameObject lo = (GameObject) prefab;
                 if (prefab.GetComponent<GenericOperator>())
                 {
                     operatorPrefabs.Add(lo);
@@ -32,25 +32,28 @@ namespace Assets.Scripts.Model
             }
 
             graphSpaceController = GameObject.Find("GraphSpace").GetComponent<GraphSpaceController>();
-            visualizationSpaceController = GameObject.Find("VisualizationSpace").GetComponent<VisualizationSpaceController>();
+            visualizationSpaceController =
+                GameObject.Find("VisualizationSpace").GetComponent<VisualizationSpaceController>();
 
             //test
             createOperator(operatorNewId);
 
             createOperator(0);
-            
+
         }
-	
+
         // Update is called once per frame
 
         public bool spawn = false;
-        void Update () {
+
+        void Update()
+        {
             if (spawn)
             {
                 List<GenericOperator> l = new List<GenericOperator>();
                 l.Add(operators[1]);
 
-                createOperator(2,l);
+                createOperator(2, l);
                 spawn = false;
             }
         }
@@ -63,20 +66,22 @@ namespace Assets.Scripts.Model
             go.transform.parent = transform;
             GenericOperator genericOperator = go.GetComponent<GenericOperator>();
             operators.Add(genericOperator);
-            
+
             genericOperator.init(requestID(), parents);
         }
 
         public void notifyObserverInitComplete(GenericOperator genericOperator)
         {
-            if (!genericOperator.checkConsistency()) throw new InvalidProgramException("base.Start() etc. methods needs to be called in respective inherited methods");
+            if (!genericOperator.checkConsistency())
+                throw new InvalidProgramException(
+                    "base.Start() etc. methods needs to be called in respective inherited methods");
 
             installComponents(genericOperator);
-            
+
             genericOperator.process();
         }
 
-        
+
         private void installComponents(GenericOperator op)
         {
             if (op.getIcon() != null)
@@ -91,7 +96,7 @@ namespace Assets.Scripts.Model
         }
 
 
-        
+
         private int requestID()
         {
             return currentID++;
@@ -105,6 +110,6 @@ namespace Assets.Scripts.Model
         public GraphSpaceController getGraphSpaceController()
         {
             return graphSpaceController;
-    }
+        }
     }
 }

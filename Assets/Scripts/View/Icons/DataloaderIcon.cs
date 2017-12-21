@@ -14,8 +14,8 @@ public class DataloaderIcon : GenericIcon {
 		
 	}
 
-    public override void onClicked()
-    {
-        Debug.Log("Dataloader");
-    }
+    //public override void OnLeftClickEvent()
+    //{
+    //    Debug.Log("Dataloader");
+    //}
 }

@@ -1,34 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class InputScreenController : InputController
+namespace Controller.Input
 {
-    private RaycastHit hit;
-
-    void FixedUpdate()
+    public class InputScreenController : InputController
     {
-        if(Input.GetMouseButtonDown(0))
-        {
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        private RaycastHit _hit;
 
-            Debug.Log(ray);
-            if (Physics.Raycast(ray, out hit, 100))
+        void FixedUpdate()
+        {
+            if(UnityEngine.Input.GetMouseButtonDown(0))
             {
-                Targetable target = hit.transform.gameObject.GetComponent<Targetable>();
-                // if (target == null && hit.transform.parent != null)
-                // {
-                //     target = hit.transform.parent.gameObject.GetComponent<Targetable>();
-                // }
-                Debug.Log(target);
-                if (target != null)
+                EmitEvent(InputEventsEnum.LeftClickEvent);
+
+                var ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
+                if (Physics.Raycast(ray, out _hit, 100))
                 {
-                    Debug.Log("asdfsdafasdfadsfa");
-                    EmitOnClickedEvent(target);
+                    Targetable target = _hit.transform.gameObject.GetComponent<Targetable>();
+                    if (target != null) EmitEvent(InputEventsEnum.LeftClickOnTargetEvent, target);
                 }
             }
-        }
         
-    }
+        }
     
+    }
 }
