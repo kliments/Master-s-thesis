@@ -10,8 +10,8 @@ namespace Assets.Scripts.Model
     {
         private List<GameObject> operatorPrefabs = new List<GameObject>();
         private List<GenericOperator> operators = new List<GenericOperator>();
-        private int currentID = 1;
-        private int operatorNewId = -1;
+        private int _currentId = 1;
+        private int _operatorNewId = -1;
 
         private GraphSpaceController graphSpaceController;
         private VisualizationSpaceController visualizationSpaceController;
@@ -27,38 +27,21 @@ namespace Assets.Scripts.Model
                 if (prefab.GetComponent<GenericOperator>())
                 {
                     operatorPrefabs.Add(lo);
-                    if (lo.tag == "Operator_New") operatorNewId = operatorPrefabs.Count - 1;
+
+                    // store the id of "new operator" to spawn first element
+                    if (lo.CompareTag("Operator_New")) _operatorNewId = operatorPrefabs.Count - 1;
                 }
             }
 
             graphSpaceController = GameObject.Find("GraphSpace").GetComponent<GraphSpaceController>();
             visualizationSpaceController =
                 GameObject.Find("VisualizationSpace").GetComponent<VisualizationSpaceController>();
-
-            //test
-            createOperator(operatorNewId);
-
-            createOperator(0);
-
+            
+            // Spawn initial "New Operator"
+            CreateOperator(_operatorNewId);
         }
 
-        // Update is called once per frame
-
-        public bool spawn = false;
-
-        void Update()
-        {
-            if (spawn)
-            {
-                List<GenericOperator> l = new List<GenericOperator>();
-                l.Add(operators[1]);
-
-                createOperator(2, l);
-                spawn = false;
-            }
-        }
-
-        public void createOperator(int id, List<GenericOperator> parents = null)
+        public void CreateOperator(int id, List<GenericOperator> parents = null)
         {
             if (id < 0 || id >= operatorPrefabs.Count) return;
 
@@ -67,22 +50,22 @@ namespace Assets.Scripts.Model
             GenericOperator genericOperator = go.GetComponent<GenericOperator>();
             operators.Add(genericOperator);
 
-            genericOperator.init(requestID(), parents);
+            genericOperator.init(RequestId(), parents);
         }
 
-        public void notifyObserverInitComplete(GenericOperator genericOperator)
+        public void NotifyObserverInitComplete(GenericOperator genericOperator)
         {
             if (!genericOperator.checkConsistency())
                 throw new InvalidProgramException(
                     "base.Start() etc. methods needs to be called in respective inherited methods");
 
-            installComponents(genericOperator);
+            InstallComponents(genericOperator);
 
             genericOperator.process();
         }
 
 
-        private void installComponents(GenericOperator op)
+        private void InstallComponents(GenericOperator op)
         {
             if (op.getIcon() != null)
             {
@@ -97,19 +80,26 @@ namespace Assets.Scripts.Model
 
 
 
-        private int requestID()
+        private int RequestId()
         {
-            return currentID++;
+            return _currentId++;
         }
 
-        public VisualizationSpaceController getVisualizationSpaceController()
+        public VisualizationSpaceController GetVisualizationSpaceController()
         {
             return visualizationSpaceController;
         }
 
-        public GraphSpaceController getGraphSpaceController()
+        public GraphSpaceController GetGraphSpaceController()
         {
             return graphSpaceController;
         }
+
+        public List<GameObject> GetOperatorPrefabs()
+        {
+            return operatorPrefabs;
+        }
+
+
     }
 }

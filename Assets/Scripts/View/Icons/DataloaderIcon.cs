@@ -4,18 +4,5 @@ using UnityEngine;
 
 public class DataloaderIcon : GenericIcon {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
-    //public override void OnLeftClickEvent()
-    //{
-    //    Debug.Log("Dataloader");
-    //}
 }

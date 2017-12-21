@@ -11,6 +11,12 @@ public class NewOperator :  GenericOperator
         return true;
     }
 
+    public override bool validateIfOperatorPossibleForParents(GenericOperator parent)
+    {
+        // new operator can allways be spawned
+        return true; 
+    }
+
     // Update is called once per frame
 	void Update () {
 	   

@@ -1,24 +1,29 @@
 ﻿using Assets.Scripts.Model;
-using System.Collections;
-using System.Collections.Generic;
-using NUnit.Framework.Constraints;
-using UnityEngine;
 
-public class ScatterplotOperator : GenericOperator
+namespace Model.Operators
 {
-    
-    
-    public override void Start()
+    public class ScatterplotOperator : GenericOperator
     {
-        base.Start();
-    }
+    
+    
+        public override void Start()
+        {
+            base.Start();
+        }
 
-    public override bool process()
-    {
-        // Create Visualization
-        visualization.GetComponent<GenericVisualization>().createVisualization();
-        // Enable Interaction Script
-        return true;
-    }
+        public override bool validateIfOperatorPossibleForParents(GenericOperator parent)
+        {
+            // can only be spawned if parent has output data
+            return parent.getOutputData() != null;
+        }
+
+        public override bool process()
+        {
+            // Create Visualization
+            visualization.GetComponent<GenericVisualization>().createVisualization();
+            // Enable Interaction Script
+            return true;
+        }
     
+    }
 }

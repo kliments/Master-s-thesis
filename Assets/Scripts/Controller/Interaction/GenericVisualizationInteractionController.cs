@@ -4,18 +4,7 @@ using UnityEngine;
 
 namespace Controller.Interaction
 {
-    public abstract class GenericIconInteractionController : Targetable {
-
-        void OnEnable()
-        {
-            InputController.LeftClickOnTargetEvent += OnLeftClickOnTargetEvent;
-        }
-
-        void OnDisable()
-        {
-            InputController.LeftClickOnTargetEvent -= OnLeftClickOnTargetEvent;
-        }
-
+    public abstract class GenericVisualizationInteractionController : Targetable {
         public GenericOperator GetOperator()
         {
             Transform t = this.transform;
@@ -23,9 +12,9 @@ namespace Controller.Interaction
             {
                 if (t == null) throw new Exception("No operator parent found in hierarchy!");
 
-                if (t.parent.GetComponent<GenericIcon>() != null)
+                if (t.parent.GetComponent<GenericVisualization>() != null)
                 {
-                    return t.parent.GetComponent<GenericIcon>().getOperator();
+                    return t.parent.GetComponent<GenericVisualization>().getOperator();
                 }
                 else
                 {

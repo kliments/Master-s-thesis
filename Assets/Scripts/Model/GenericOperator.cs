@@ -33,7 +33,7 @@ namespace Assets.Scripts.Model
             
             properInitializedStart = true;
 
-            observer.notifyObserverInitComplete(this);
+            observer.NotifyObserverInitComplete(this);
         }
 
         /**
@@ -203,6 +203,11 @@ namespace Assets.Scripts.Model
         {
             return id;
         }
+
+        public abstract bool validateIfOperatorPossibleForParents(GenericOperator parent);
+
+
+
     }
 
     
