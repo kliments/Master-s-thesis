@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewIconInputController : GenericIconInputController {
+public class DataLoaderInteractionController : GenericIconInteractionController {
 
     public override void OnLeftClickOnTargetEventAction()
     {
-        Debug.Log("New Icon OnLeftClickEvent");
+        Debug.Log("Dataloader Icon OnLeftClickEvent");
     }
 }

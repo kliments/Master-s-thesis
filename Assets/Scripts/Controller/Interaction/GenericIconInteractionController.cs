@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class GenericIconInputController : Targetable {
+public abstract class GenericIconInteractionController : Targetable {
 
     void OnEnable()
     {
