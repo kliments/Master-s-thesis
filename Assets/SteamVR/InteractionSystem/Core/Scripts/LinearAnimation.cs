@@ -21,7 +21,7 @@ namespace Valve.VR.InteractionSystem
 
 	
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			if ( animation == null )
 			{
@@ -48,9 +48,9 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
-			float value = linearMapping.value;
+			var value = linearMapping.value;
 
 			//No need to set the anim if our value hasn't changed.
 			if ( value != lastValue )

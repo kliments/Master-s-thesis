@@ -20,7 +20,7 @@ namespace Valve.VR.InteractionSystem
 
 	
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			if ( animator == null )
 			{
@@ -37,7 +37,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
 			if ( currentLinearMapping != linearMapping.value )
 			{

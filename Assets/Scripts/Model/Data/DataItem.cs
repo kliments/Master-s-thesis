@@ -3,28 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DataItem {
-    private List<DataAttribute> dataAttributeValuePairs = new List<DataAttribute>();
+    private List<DataAttribute> _dataAttributeValuePairs = new List<DataAttribute>();
    // private id
-    public void add(DataAttribute dataAttribute)
+    public void Add(DataAttribute dataAttribute)
     {
-        dataAttributeValuePairs.Add(dataAttribute);
+        _dataAttributeValuePairs.Add(dataAttribute);
     }
 
-    public List<DataAttribute> getDataAttributeValuePairs()
+    public List<DataAttribute> GetDataAttributeValuePairs()
     {
-        return dataAttributeValuePairs;
+        return _dataAttributeValuePairs;
     }
 
-    public Vector3 getfirstThreeNumericColsAsVector()
+    public Vector3 GetfirstThreeNumericColsAsVector()
     {
-        Vector3 v = new Vector3();
-        int c = 0;
-        foreach (var attr in dataAttributeValuePairs)
+        var v = new Vector3();
+        var c = 0;
+        foreach (var attr in _dataAttributeValuePairs)
         {
             if (c > 2) return v;
-            if (attr.getValueDataType() == DataAttribute.valuetype.val_float)
+            if (attr.GetValueDataType() == DataAttribute.Valuetype.ValFloat)
             {
-                v[c] = (float)attr.getValue();
+                v[c] = (float)attr.GetValue();
                 c++;
             }
         }

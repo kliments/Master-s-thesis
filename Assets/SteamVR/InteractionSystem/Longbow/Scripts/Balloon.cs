@@ -1,10 +1,10 @@
-//======= Copyright (c) Valve Corporation, All rights reserved. ===============
+﻿//======= Copyright (c) Valve Corporation, All rights reserved. ===============
 //
 // Purpose: BALLOONS!!
 //
 //=============================================================================
 
-﻿using UnityEngine;
+ using UnityEngine;
 using System.Collections;
 
 namespace Valve.VR.InteractionSystem
@@ -41,7 +41,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			destructTime = Time.time + lifetime + Random.value;
 			hand = GetComponentInParent<Hand>();
@@ -50,7 +50,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
 			if ( ( destructTime != 0 ) && ( Time.time > destructTime ) )
 			{
@@ -77,14 +77,14 @@ namespace Valve.VR.InteractionSystem
 
 			if ( particlePrefab != null )
 			{
-				GameObject particleObject = Instantiate( particlePrefab, transform.position, transform.rotation ) as GameObject;
+				var particleObject = Instantiate( particlePrefab, transform.position, transform.rotation ) as GameObject;
 				particleObject.GetComponent<ParticleSystem>().Play();
 				Destroy( particleObject, 2f );
 			}
 
 			if ( sound != null )
 			{
-				float lastSoundDiff = Time.time - s_flLastDeathSound;
+				var lastSoundDiff = Time.time - s_flLastDeathSound;
 				if ( lastSoundDiff < 0.1f )
 				{
 					sound.volMax *= 0.25f;
@@ -97,7 +97,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void FixedUpdate()
+		private void FixedUpdate()
 		{
 			// Slow-clamp velocity
 			if ( balloonRigidbody.velocity.sqrMagnitude > maxVelocity )
@@ -116,7 +116,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void OnCollisionEnter( Collision collision )
+		private void OnCollisionEnter( Collision collision )
 		{
 			if ( bParticlesSpawned )
 			{
@@ -125,7 +125,7 @@ namespace Valve.VR.InteractionSystem
 
 			Hand collisionParentHand = null;
 
-			BalloonHapticBump balloonColliderScript = collision.gameObject.GetComponent<BalloonHapticBump>();
+			var balloonColliderScript = collision.gameObject.GetComponent<BalloonHapticBump>();
 
 			if ( balloonColliderScript != null && balloonColliderScript.physParent != null )
 			{
@@ -162,7 +162,7 @@ namespace Valve.VR.InteractionSystem
 
 			if ( hand != null )
 			{
-				ushort collisionStrength = (ushort)Mathf.Clamp( Util.RemapNumber( collision.relativeVelocity.magnitude, 0f, 3f, 500f, 800f ), 500f, 800f );
+				var collisionStrength = (ushort)Mathf.Clamp( Util.RemapNumber( collision.relativeVelocity.magnitude, 0f, 3f, 500f, 800f ), 500f, 800f );
 
 				hand.controller.TriggerHapticPulse( collisionStrength );
 			}
@@ -179,7 +179,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private Color BalloonColorToRGB( BalloonColor balloonColorVar )
 		{
-			Color defaultColor = new Color( 255, 0, 0 );
+			var defaultColor = new Color( 255, 0, 0 );
 
 			switch ( balloonColorVar )
 			{
@@ -212,7 +212,7 @@ namespace Valve.VR.InteractionSystem
 				case BalloonColor.DarkGray:
 					return new Color( 128, 128, 128, 255 ) / 255;
 				case BalloonColor.Random:
-					int randomColor = Random.Range( 0, 12 );
+					var randomColor = Random.Range( 0, 12 );
 					return BalloonColorToRGB( (BalloonColor)randomColor );
 			}
 

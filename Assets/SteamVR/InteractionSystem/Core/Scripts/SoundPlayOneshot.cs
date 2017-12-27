@@ -25,7 +25,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			thisAudioSource = GetComponent<AudioSource>();
 

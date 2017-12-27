@@ -70,14 +70,14 @@ public class SteamVR_TrackedObject : MonoBehaviour
 		}
 	}
 
-	SteamVR_Events.Action newPosesAction;
+	private SteamVR_Events.Action newPosesAction;
 
-	SteamVR_TrackedObject()
+	private SteamVR_TrackedObject()
 	{
 		newPosesAction = SteamVR_Events.NewPosesAction(OnNewPoses);
 	}
 
-	void OnEnable()
+	private void OnEnable()
 	{
 		var render = SteamVR_Render.instance;
 		if (render == null)
@@ -89,7 +89,7 @@ public class SteamVR_TrackedObject : MonoBehaviour
 		newPosesAction.enabled = true;
 	}
 
-	void OnDisable()
+	private void OnDisable()
 	{
 		newPosesAction.enabled = false;
 		isValid = false;

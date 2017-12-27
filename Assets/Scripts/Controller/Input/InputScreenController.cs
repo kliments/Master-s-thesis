@@ -6,7 +6,7 @@ namespace Controller.Input
     {
         private RaycastHit _hit;
 
-        void FixedUpdate()
+        private void FixedUpdate()
         {
             if(UnityEngine.Input.GetMouseButtonDown(0))
             {
@@ -15,7 +15,7 @@ namespace Controller.Input
                 var ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
                 if (Physics.Raycast(ray, out _hit, 100))
                 {
-                    Targetable target = _hit.transform.gameObject.GetComponent<Targetable>();
+                    var target = _hit.transform.gameObject.GetComponent<Targetable>();
                     if (target != null) EmitEvent(InputEventsEnum.LeftClickOnTargetEvent, target);
                 }
             }

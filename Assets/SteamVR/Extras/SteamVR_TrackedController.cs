@@ -133,7 +133,7 @@ public class SteamVR_TrackedController : MonoBehaviour
 		var system = OpenVR.System;
 		if (system != null && system.GetControllerState(controllerIndex, ref controllerState, (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(VRControllerState_t))))
 		{
-			ulong trigger = controllerState.ulButtonPressed & (1UL << ((int)EVRButtonId.k_EButton_SteamVR_Trigger));
+			var trigger = controllerState.ulButtonPressed & (1UL << ((int)EVRButtonId.k_EButton_SteamVR_Trigger));
 			if (trigger > 0L && !triggerPressed)
 			{
 				triggerPressed = true;
@@ -156,7 +156,7 @@ public class SteamVR_TrackedController : MonoBehaviour
 				OnTriggerUnclicked(e);
 			}
 
-			ulong grip = controllerState.ulButtonPressed & (1UL << ((int)EVRButtonId.k_EButton_Grip));
+			var grip = controllerState.ulButtonPressed & (1UL << ((int)EVRButtonId.k_EButton_Grip));
 			if (grip > 0L && !gripped)
 			{
 				gripped = true;
@@ -179,7 +179,7 @@ public class SteamVR_TrackedController : MonoBehaviour
 				OnUngripped(e);
 			}
 
-			ulong pad = controllerState.ulButtonPressed & (1UL << ((int)EVRButtonId.k_EButton_SteamVR_Touchpad));
+			var pad = controllerState.ulButtonPressed & (1UL << ((int)EVRButtonId.k_EButton_SteamVR_Touchpad));
 			if (pad > 0L && !padPressed)
 			{
 				padPressed = true;
@@ -201,7 +201,7 @@ public class SteamVR_TrackedController : MonoBehaviour
 				OnPadUnclicked(e);
 			}
 
-			ulong menu = controllerState.ulButtonPressed & (1UL << ((int)EVRButtonId.k_EButton_ApplicationMenu));
+			var menu = controllerState.ulButtonPressed & (1UL << ((int)EVRButtonId.k_EButton_ApplicationMenu));
 			if (menu > 0L && !menuPressed)
 			{
 				menuPressed = true;

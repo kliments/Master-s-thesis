@@ -20,9 +20,9 @@ namespace Valve.VR.InteractionSystem
 		private Hand currentHand;
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
-			Button button = GetComponent<Button>();
+			var button = GetComponent<Button>();
 			if ( button )
 			{
 				button.onClick.AddListener( OnButtonClick );
@@ -78,7 +78,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			DrawDefaultInspector();
 
-			UIElement uiElement = (UIElement)target;
+			var uiElement = (UIElement)target;
 			if ( GUILayout.Button( "Click" ) )
 			{
 				InputModule.instance.Submit( uiElement.gameObject );

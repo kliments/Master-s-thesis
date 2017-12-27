@@ -77,18 +77,18 @@ public class SteamVR_LoadLevel : MonoBehaviour
 	public float loadingScreenFadeInTime = 1.0f;
 	public float loadingScreenFadeOutTime = 0.25f;
 
-	float fadeRate = 1.0f;
-	float alpha = 0.0f;
+	private float fadeRate = 1.0f;
+	private float alpha = 0.0f;
 
-	AsyncOperation async; // used to track level load progress
-	RenderTexture renderTexture; // used to render progress bar
+	private AsyncOperation async; // used to track level load progress
+	private RenderTexture renderTexture; // used to render progress bar
 
-	ulong loadingScreenOverlayHandle = OpenVR.k_ulOverlayHandleInvalid;
-	ulong progressBarOverlayHandle = OpenVR.k_ulOverlayHandleInvalid;
+	private ulong loadingScreenOverlayHandle = OpenVR.k_ulOverlayHandleInvalid;
+	private ulong progressBarOverlayHandle = OpenVR.k_ulOverlayHandleInvalid;
 
 	public bool autoTriggerOnEnable = false;
 
-	void OnEnable()
+	private void OnEnable()
 	{
 		if (autoTriggerOnEnable)
 			Trigger();
@@ -114,7 +114,7 @@ public class SteamVR_LoadLevel : MonoBehaviour
 	}
 
 	// Updates progress bar.
-	void OnGUI()
+	private void OnGUI()
 	{
 		if (_active != this)
 			return;
@@ -210,7 +210,7 @@ public class SteamVR_LoadLevel : MonoBehaviour
 	}
 
 	// Fade our overlays in/out over time.
-	void Update()
+	private void Update()
 	{
 		if (_active != this)
 			return;
@@ -229,7 +229,7 @@ public class SteamVR_LoadLevel : MonoBehaviour
 	}
 
 	// Corourtine to handle all the steps across loading boundaries.
-	IEnumerator LoadLevel()
+	private IEnumerator LoadLevel()
 	{
 		// Optionally rotate loading screen transform around the camera into view.
 		// We assume here that the loading screen is already facing toward the origin,
@@ -280,7 +280,7 @@ public class SteamVR_LoadLevel : MonoBehaviour
 			}
 		}
 
-		bool fadedForeground = false;
+		var fadedForeground = false;
 
 		// Fade out to compositor
 		SteamVR_Events.LoadingFadeOut.Send(fadeOutTime);
@@ -445,9 +445,9 @@ public class SteamVR_LoadLevel : MonoBehaviour
 	}
 
 	// Helper to create (or reuse if possible) each of our different overlay types.
-	ulong GetOverlayHandle(string overlayName, Transform transform, float widthInMeters = 1.0f)
+	private ulong GetOverlayHandle(string overlayName, Transform transform, float widthInMeters = 1.0f)
 	{
-		ulong handle = OpenVR.k_ulOverlayHandleInvalid;
+		var handle = OpenVR.k_ulOverlayHandleInvalid;
 
 		var overlay = OpenVR.Overlay;
 		if (overlay == null)

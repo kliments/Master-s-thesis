@@ -48,7 +48,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			velocityEstimator = GetComponent<VelocityEstimator>();
 
@@ -57,7 +57,7 @@ namespace Valve.VR.InteractionSystem
 				attachmentFlags &= ~Hand.AttachmentFlags.SnapOnAttach;
 			}
 
-			Rigidbody rb = GetComponent<Rigidbody>();
+			var rb = GetComponent<Rigidbody>();
 			rb.maxAngularVelocity = 50.0f;
 		}
 
@@ -65,7 +65,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private void OnHandHoverBegin( Hand hand )
 		{
-			bool showHint = false;
+			var showHint = false;
 
 			// "Catch" the throwable by holding down the interaction button instead of pressing it.
 			// Only do this if the throwable is moving faster than the prescribed threshold speed,
@@ -74,7 +74,7 @@ namespace Valve.VR.InteractionSystem
 			{
 				if ( hand.GetStandardInteractionButton() )
 				{
-					Rigidbody rb = GetComponent<Rigidbody>();
+					var rb = GetComponent<Rigidbody>();
 					if ( rb.velocity.magnitude >= catchSpeedThreshold )
 					{
 						hand.AttachObject( gameObject, attachmentFlags, attachmentPoint );
@@ -117,7 +117,7 @@ namespace Valve.VR.InteractionSystem
 
 			hand.HoverLock( null );
 
-			Rigidbody rb = GetComponent<Rigidbody>();
+			var rb = GetComponent<Rigidbody>();
 			rb.isKinematic = true;
 			rb.interpolation = RigidbodyInterpolation.None;
 
@@ -135,11 +135,11 @@ namespace Valve.VR.InteractionSystem
 				attachEaseInTransform = hand.transform;
 				if ( !Util.IsNullOrEmpty( attachEaseInAttachmentNames ) )
 				{
-					float smallestAngle = float.MaxValue;
-					for ( int i = 0; i < attachEaseInAttachmentNames.Length; i++ )
+					var smallestAngle = float.MaxValue;
+					for ( var i = 0; i < attachEaseInAttachmentNames.Length; i++ )
 					{
-						Transform t = hand.GetAttachmentTransform( attachEaseInAttachmentNames[i] );
-						float angle = Quaternion.Angle( t.rotation, attachRotation );
+						var t = hand.GetAttachmentTransform( attachEaseInAttachmentNames[i] );
+						var angle = Quaternion.Angle( t.rotation, attachRotation );
 						if ( angle < smallestAngle )
 						{
 							attachEaseInTransform = t;
@@ -162,13 +162,13 @@ namespace Valve.VR.InteractionSystem
 
 			hand.HoverUnlock( null );
 
-			Rigidbody rb = GetComponent<Rigidbody>();
+			var rb = GetComponent<Rigidbody>();
 			rb.isKinematic = false;
 			rb.interpolation = RigidbodyInterpolation.Interpolate;
 
-			Vector3 position = Vector3.zero;
-			Vector3 velocity = Vector3.zero;
-			Vector3 angularVelocity = Vector3.zero;
+			var position = Vector3.zero;
+			var velocity = Vector3.zero;
+			var angularVelocity = Vector3.zero;
 			if ( hand.controller == null )
 			{
 				velocityEstimator.FinishEstimatingVelocity();
@@ -183,17 +183,17 @@ namespace Valve.VR.InteractionSystem
 				position = hand.transform.position;
 			}
 
-			Vector3 r = transform.TransformPoint( rb.centerOfMass ) - position;
+			var r = transform.TransformPoint( rb.centerOfMass ) - position;
 			rb.velocity = velocity + Vector3.Cross( angularVelocity, r );
 			rb.angularVelocity = angularVelocity;
 
 			// Make the object travel at the release velocity for the amount
 			// of time it will take until the next fixed update, at which
 			// point Unity physics will take over
-			float timeUntilFixedUpdate = ( Time.fixedDeltaTime + Time.fixedTime ) - Time.time;
+			var timeUntilFixedUpdate = ( Time.fixedDeltaTime + Time.fixedTime ) - Time.time;
 			transform.position += timeUntilFixedUpdate * velocity;
-			float angle = Mathf.Rad2Deg * angularVelocity.magnitude;
-			Vector3 axis = angularVelocity.normalized;
+			var angle = Mathf.Rad2Deg * angularVelocity.magnitude;
+			var axis = angularVelocity.normalized;
 			transform.rotation *= Quaternion.AngleAxis( angle * timeUntilFixedUpdate, axis );
 		}
 
@@ -215,7 +215,7 @@ namespace Valve.VR.InteractionSystem
 
 			if ( attachEaseIn )
 			{
-				float t = Util.RemapNumberClamped( Time.time, attachTime, attachTime + snapAttachEaseInTime, 0.0f, 1.0f );
+				var t = Util.RemapNumberClamped( Time.time, attachTime, attachTime + snapAttachEaseInTime, 0.0f, 1.0f );
 				if ( t < 1.0f )
 				{
 					t = snapAttachEaseInCurve.Evaluate( t );

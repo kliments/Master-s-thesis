@@ -17,7 +17,7 @@ namespace Valve.VR.InteractionSystem
 		private bool useTag;
 
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			if ( !string.IsNullOrEmpty( tagFilter ) )
 			{
@@ -27,7 +27,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void OnTriggerEnter( Collider collider )
+		private void OnTriggerEnter( Collider collider )
 		{
 			if ( !useTag || ( useTag && collider.gameObject.tag == tagFilter ) )
 			{

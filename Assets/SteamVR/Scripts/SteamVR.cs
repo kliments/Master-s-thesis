@@ -61,7 +61,7 @@ public class SteamVR : System.IDisposable
 		get { return UnityEngine.XR.XRDevice.GetNativePtr() != System.IntPtr.Zero; }
 	}
 
-	static SteamVR CreateInstance()
+	private static SteamVR CreateInstance()
 	{
 		try
 		{
@@ -97,7 +97,7 @@ public class SteamVR : System.IDisposable
 		return new SteamVR();
 	}
 
-	static void ReportError(EVRInitError error)
+	private static void ReportError(EVRInitError error)
 	{
 		switch (error)
 		{
@@ -208,7 +208,7 @@ public class SteamVR : System.IDisposable
 		eyes[0] = new SteamVR_Utils.RigidTransform(hmd.GetEyeToHeadTransform(EVREye.Eye_Left));
 		eyes[1] = new SteamVR_Utils.RigidTransform(hmd.GetEyeToHeadTransform(EVREye.Eye_Right));
 
-		for (int i = 0; i < poses.Length; i++)
+		for (var i = 0; i < poses.Length; i++)
 		{
 			var connected = poses[i].bDeviceIsConnected;
 			if (connected != SteamVR.connected[i])

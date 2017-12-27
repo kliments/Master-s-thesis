@@ -19,20 +19,20 @@ namespace Valve.VR.InteractionSystem
 		public AnimationCurve pulseIntervalCurve = AnimationCurve.Linear( 0.0f, 0.01f, 1.0f, 0.0f );
 
 		//-------------------------------------------------
-		IEnumerator Start()
+		private IEnumerator Start()
 		{
 			while ( true )
 			{
-				float distance = Vector3.Distance( firstTransform.position, secondTransform.position );
+				var distance = Vector3.Distance( firstTransform.position, secondTransform.position );
 
-				SteamVR_TrackedObject trackedObject = GetComponentInParent<SteamVR_TrackedObject>();
+				var trackedObject = GetComponentInParent<SteamVR_TrackedObject>();
 				if ( trackedObject )
 				{
-					float pulse = distanceIntensityCurve.Evaluate( distance );
+					var pulse = distanceIntensityCurve.Evaluate( distance );
 					SteamVR_Controller.Input( (int)trackedObject.index ).TriggerHapticPulse( (ushort)pulse );
 				}
 
-				float nextPulse = pulseIntervalCurve.Evaluate( distance );
+				var nextPulse = pulseIntervalCurve.Evaluate( distance );
 
 				yield return new WaitForSeconds( nextPulse );
 			}

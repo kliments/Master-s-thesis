@@ -37,7 +37,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			if ( balloonPrefab == null )
 			{
@@ -53,7 +53,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
 			if ( balloonPrefab == null )
 			{
@@ -75,7 +75,7 @@ namespace Valve.VR.InteractionSystem
 			{
 				return null;
 			}
-			GameObject balloon = Instantiate( balloonPrefab, transform.position, transform.rotation ) as GameObject;
+			var balloon = Instantiate( balloonPrefab, transform.position, transform.rotation ) as GameObject;
 			balloon.transform.localScale = new Vector3( scale, scale, scale );
 			if ( attachBalloon )
 			{

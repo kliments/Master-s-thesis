@@ -31,7 +31,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			player = Player.instance;
 		}

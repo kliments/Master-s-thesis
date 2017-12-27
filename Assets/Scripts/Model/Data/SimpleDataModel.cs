@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class SimpleDatamodel : GenericDatamodel {
-    public List<Vector3> getCoords()
+    public List<Vector3> GetCoords()
     {
-        List<Vector3> list = new List<Vector3>();
-        foreach (var dataItem in dataItems)
+        var list = new List<Vector3>();
+        foreach (var dataItem in DataItems)
         {
-            list.Add(dataItem.getfirstThreeNumericColsAsVector());
+            list.Add(dataItem.GetfirstThreeNumericColsAsVector());
         }
         return list;
     }

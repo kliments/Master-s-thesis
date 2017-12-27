@@ -12,8 +12,8 @@ public class SteamVR_Ears : MonoBehaviour
 {
 	public SteamVR_Camera vrcam;
 
-	bool usingSpeakers;
-	Quaternion offset;
+	private bool usingSpeakers;
+	private Quaternion offset;
 
 	private void OnNewPosesApplied()
 	{
@@ -22,7 +22,7 @@ public class SteamVR_Ears : MonoBehaviour
 		transform.rotation = baseRotation * offset;
 	}
 
-	void OnEnable()
+	private void OnEnable()
 	{
 		usingSpeakers = false;
 
@@ -43,7 +43,7 @@ public class SteamVR_Ears : MonoBehaviour
 			SteamVR_Events.NewPosesApplied.Listen(OnNewPosesApplied);
 	}
 
-	void OnDisable()
+	private void OnDisable()
 	{
 		if (usingSpeakers)
 			SteamVR_Events.NewPosesApplied.Remove(OnNewPosesApplied);

@@ -17,7 +17,7 @@ public class SteamVR_IK : MonoBehaviour
 	[HideInInspector]
 	public Transform startXform, jointXform, endXform;
 
-	void LateUpdate()
+	private void LateUpdate()
 	{
 		const float epsilon = 0.001f;
 		if (blendPct < epsilon)

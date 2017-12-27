@@ -11,16 +11,16 @@ namespace Model.Operators
             base.Start();
         }
 
-        public override bool validateIfOperatorPossibleForParents(GenericOperator parent)
+        public override bool ValidateIfOperatorPossibleForParents(GenericOperator parent)
         {
             // can only be spawned if parent has output data
-            return parent.getOutputData() != null;
+            return parent.GetOutputData() != null;
         }
 
-        public override bool process()
+        public override bool Process()
         {
             // Create Visualization
-            visualization.GetComponent<GenericVisualization>().createVisualization();
+            Visualization.GetComponent<GenericVisualization>().CreateVisualization();
             // Enable Interaction Script
             return true;
         }

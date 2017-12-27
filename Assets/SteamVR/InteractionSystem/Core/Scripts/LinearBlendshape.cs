@@ -19,7 +19,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			if ( skinnedMesh == null )
 			{
@@ -34,14 +34,14 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
-			float value = linearMapping.value;
+			var value = linearMapping.value;
 
 			//No need to set the blend if our value hasn't changed.
 			if ( value != lastValue )
 			{
-				float blendValue = Util.RemapNumberClamped( value, 0f, 1f, 1f, 100f );
+				var blendValue = Util.RemapNumberClamped( value, 0f, 1f, 1f, 100f );
 				skinnedMesh.SetBlendShapeWeight( 0, blendValue );
 			}
 

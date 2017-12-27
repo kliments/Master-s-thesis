@@ -14,7 +14,7 @@ public class SteamVR_Stats : MonoBehaviour
 	public Color fadeColor = Color.black;
 	public float fadeDuration = 1.0f;
 
-	void Awake()
+	private void Awake()
 	{
 		if (text == null)
 		{
@@ -29,9 +29,9 @@ public class SteamVR_Stats : MonoBehaviour
 		}
 	}
 
-	double lastUpdate = 0.0f;
+	private double lastUpdate = 0.0f;
 
-	void Update()
+	private void Update()
 	{
 		if (text != null)
 		{

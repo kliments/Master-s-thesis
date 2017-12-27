@@ -13,9 +13,9 @@ namespace Valve.VR.InteractionSystem
 	public class SleepOnAwake : MonoBehaviour
 	{
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
-			Rigidbody rigidbody = GetComponent<Rigidbody>();
+			var rigidbody = GetComponent<Rigidbody>();
 			if ( rigidbody )
 			{
 				rigidbody.Sleep();

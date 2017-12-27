@@ -19,7 +19,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public void SpawnAndAttach( Hand passedInhand )
 		{
-			Hand handToUse = passedInhand;
+			var handToUse = passedInhand;
 			if ( passedInhand == null )
 			{
 				handToUse = hand;
@@ -30,7 +30,7 @@ namespace Valve.VR.InteractionSystem
 				return;
 			}
 
-			GameObject prefabObject = Instantiate( prefab ) as GameObject;
+			var prefabObject = Instantiate( prefab ) as GameObject;
 			handToUse.AttachObject( prefabObject );
 		}
 	}

@@ -12,10 +12,10 @@ namespace Valve.VR.InteractionSystem
 	//-------------------------------------------------------------------------
 	public class Unparent : MonoBehaviour
 	{
-		Transform oldParent;
+		private Transform oldParent;
 
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			oldParent = transform.parent;
 			transform.parent = null;
@@ -24,7 +24,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
 			if ( oldParent == null )
 				Object.Destroy( gameObject );

@@ -8,7 +8,7 @@ public class SteamVR_TestTrackedCamera : MonoBehaviour
 	public bool undistorted = true;
 	public bool cropped = true;
 
-	void OnEnable()
+	private void OnEnable()
 	{
 		// The video stream must be symmetrically acquired and released in
 		// order to properly disable the stream once there are no consumers.
@@ -20,7 +20,7 @@ public class SteamVR_TestTrackedCamera : MonoBehaviour
 			enabled = false;
 	}
 
-	void OnDisable()
+	private void OnDisable()
 	{
 		// Clear the texture when no longer active.
 		material.mainTexture = null;
@@ -31,7 +31,7 @@ public class SteamVR_TestTrackedCamera : MonoBehaviour
 		source.Release();
 	}
 
-	void Update()
+	private void Update()
 	{
 		var source = SteamVR_TrackedCamera.Source(undistorted);
 		var texture = source.texture;

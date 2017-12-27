@@ -9,7 +9,7 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class SteamVR_SphericalProjection : MonoBehaviour
 {
-	static Material material;
+	private static Material material;
 
 	public void Set(Vector3 N,
 		float phi0, float phi1, float theta0, float theta1, // in degrees
@@ -32,7 +32,7 @@ public class SteamVR_SphericalProjection : MonoBehaviour
 		material.SetFloat("_VScale", vScale);
 	}
 
-	void OnRenderImage(RenderTexture src, RenderTexture dest)
+	private void OnRenderImage(RenderTexture src, RenderTexture dest)
 	{
 		Graphics.Blit(src, dest, material);
 	}

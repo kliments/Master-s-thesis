@@ -8,33 +8,33 @@ namespace Assets.Scripts.Model
 {
     public class Observer : MonoBehaviour
     {
-        private List<GameObject> operatorPrefabs = new List<GameObject>();
-        private List<GenericOperator> operators = new List<GenericOperator>();
+        private List<GameObject> _operatorPrefabs = new List<GameObject>();
+        private List<GenericOperator> _operators = new List<GenericOperator>();
         private int _currentId = 1;
         private int _operatorNewId = -1;
 
-        private GraphSpaceController graphSpaceController;
-        private VisualizationSpaceController visualizationSpaceController;
+        private GraphSpaceController _graphSpaceController;
+        private VisualizationSpaceController _visualizationSpaceController;
 
 
         // Use this for initialization
-        void Start()
+        private void Start()
         {
-            Object[] prefabs = Resources.LoadAll<GameObject>("Operators");
+            GameObject[] prefabs = Resources.LoadAll<GameObject>("Operators");
             foreach (GameObject prefab in prefabs)
             {
-                GameObject lo = (GameObject) prefab;
+                var lo = (GameObject) prefab;
                 if (prefab.GetComponent<GenericOperator>())
                 {
-                    operatorPrefabs.Add(lo);
+                    _operatorPrefabs.Add(lo);
 
                     // store the id of "new operator" to spawn first element
-                    if (lo.CompareTag("Operator_New")) _operatorNewId = operatorPrefabs.Count - 1;
+                    if (lo.CompareTag("Operator_New")) _operatorNewId = _operatorPrefabs.Count - 1;
                 }
             }
 
-            graphSpaceController = GameObject.Find("GraphSpace").GetComponent<GraphSpaceController>();
-            visualizationSpaceController =
+            _graphSpaceController = GameObject.Find("GraphSpace").GetComponent<GraphSpaceController>();
+            _visualizationSpaceController =
                 GameObject.Find("VisualizationSpace").GetComponent<VisualizationSpaceController>();
             
             // Spawn initial "New Operator"
@@ -43,38 +43,38 @@ namespace Assets.Scripts.Model
 
         public void CreateOperator(int id, List<GenericOperator> parents = null)
         {
-            if (id < 0 || id >= operatorPrefabs.Count) return;
+            if (id < 0 || id >= _operatorPrefabs.Count) return;
 
-            GameObject go = GameObject.Instantiate(operatorPrefabs[id]);
+            var go = GameObject.Instantiate(_operatorPrefabs[id]);
             go.transform.parent = transform;
-            GenericOperator genericOperator = go.GetComponent<GenericOperator>();
-            operators.Add(genericOperator);
+            var genericOperator = go.GetComponent<GenericOperator>();
+            _operators.Add(genericOperator);
 
-            genericOperator.init(RequestId(), parents);
+            genericOperator.Init(RequestId(), parents);
         }
 
         public void NotifyObserverInitComplete(GenericOperator genericOperator)
         {
-            if (!genericOperator.checkConsistency())
+            if (!genericOperator.CheckConsistency())
                 throw new InvalidProgramException(
                     "base.Start() etc. methods needs to be called in respective inherited methods");
 
             InstallComponents(genericOperator);
 
-            genericOperator.process();
+            genericOperator.Process();
         }
 
 
         private void InstallComponents(GenericOperator op)
         {
-            if (op.getIcon() != null)
+            if (op.GetIcon() != null)
             {
-                graphSpaceController.installNewIcon(op);
+                _graphSpaceController.InstallNewIcon(op);
             }
 
-            if (op.getVisualization() != null)
+            if (op.GetVisualization() != null)
             {
-                visualizationSpaceController.installNewVisualization(op);
+                _visualizationSpaceController.InstallNewVisualization(op);
             }
         }
 
@@ -87,17 +87,17 @@ namespace Assets.Scripts.Model
 
         public VisualizationSpaceController GetVisualizationSpaceController()
         {
-            return visualizationSpaceController;
+            return _visualizationSpaceController;
         }
 
         public GraphSpaceController GetGraphSpaceController()
         {
-            return graphSpaceController;
+            return _graphSpaceController;
         }
 
         public List<GameObject> GetOperatorPrefabs()
         {
-            return operatorPrefabs;
+            return _operatorPrefabs;
         }
 
 

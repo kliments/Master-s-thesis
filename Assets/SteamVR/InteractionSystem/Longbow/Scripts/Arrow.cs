@@ -39,14 +39,14 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			Physics.IgnoreCollision( shaftRB.GetComponent<Collider>(), Player.instance.headCollider );
 		}
 
 
 		//-------------------------------------------------
-		void FixedUpdate()
+		private void FixedUpdate()
 		{
 			if ( released && inFlight )
 			{
@@ -78,8 +78,8 @@ namespace Valve.VR.InteractionSystem
 			}
 
 			// Check if arrow is shot inside or too close to an object
-			RaycastHit[] hits = Physics.SphereCastAll( transform.position, 0.01f, transform.forward, 0.80f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore );
-			foreach ( RaycastHit hit in hits )
+			var hits = Physics.SphereCastAll( transform.position, 0.01f, transform.forward, 0.80f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore );
+			foreach ( var hit in hits )
 			{
 				if ( hit.collider.gameObject != gameObject && hit.collider.gameObject != arrowHeadRB.gameObject && hit.collider != Player.instance.headCollider )
 				{
@@ -99,14 +99,14 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void OnCollisionEnter( Collision collision )
+		private void OnCollisionEnter( Collision collision )
 		{
 			if ( inFlight )
 			{
-				Rigidbody rb = GetComponent<Rigidbody>();
-				float rbSpeed = rb.velocity.sqrMagnitude;
-				bool canStick = ( targetPhysMaterial != null && collision.collider.sharedMaterial == targetPhysMaterial && rbSpeed > 0.2f );
-				bool hitBalloon = collision.collider.gameObject.GetComponent<Balloon>() != null;
+				var rb = GetComponent<Rigidbody>();
+				var rbSpeed = rb.velocity.sqrMagnitude;
+				var canStick = ( targetPhysMaterial != null && collision.collider.sharedMaterial == targetPhysMaterial && rbSpeed > 0.2f );
+				var hitBalloon = collision.collider.gameObject.GetComponent<Balloon>() != null;
 
 				if ( travelledFrames < 2 && !canStick )
 				{
@@ -114,7 +114,7 @@ namespace Valve.VR.InteractionSystem
 					transform.position = prevPosition - prevVelocity * Time.deltaTime;
 					transform.rotation = prevRotation;
 
-					Vector3 reflfectDir = Vector3.Reflect( arrowHeadRB.velocity, collision.contacts[0].normal );
+					var reflfectDir = Vector3.Reflect( arrowHeadRB.velocity, collision.contacts[0].normal );
 					arrowHeadRB.velocity = reflfectDir * 0.25f;
 					shaftRB.velocity = reflfectDir * 0.25f;
 
@@ -133,8 +133,8 @@ namespace Valve.VR.InteractionSystem
 					hitGroundSound.Play();
 				}
 
-				FireSource arrowFire = gameObject.GetComponentInChildren<FireSource>();
-				FireSource fireSourceOnTarget = collision.collider.GetComponentInParent<FireSource>();
+				var arrowFire = gameObject.GetComponentInChildren<FireSource>();
+				var fireSourceOnTarget = collision.collider.GetComponentInParent<FireSource>();
 
 				if ( arrowFire != null && arrowFire.isBurning && ( fireSourceOnTarget != null ) )
 				{
@@ -182,17 +182,17 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private void StickInTarget( Collision collision, bool bSkipRayCast )
 		{
-			Vector3 prevForward = prevRotation * Vector3.forward;
+			var prevForward = prevRotation * Vector3.forward;
 
 			// Only stick in target if the collider is front of the arrow head
 			if ( !bSkipRayCast )
 			{
 				RaycastHit[] hitInfo;
 				hitInfo = Physics.RaycastAll( prevHeadPosition - prevVelocity * Time.deltaTime, prevForward, prevVelocity.magnitude * Time.deltaTime * 2.0f );
-				bool properHit = false;
-				for ( int i = 0; i < hitInfo.Length; ++i )
+				var properHit = false;
+				for ( var i = 0; i < hitInfo.Length; ++i )
 				{
-					RaycastHit hit = hitInfo[i];
+					var hit = hitInfo[i];
 
 					if ( hit.collider == collision.collider )
 					{
@@ -229,10 +229,10 @@ namespace Valve.VR.InteractionSystem
 			// If the hit item has a parent, dock an empty object to that
 			// this fixes an issue with scaling hierarchy. I suspect this is not sustainable for a large object / scaling hierarchy.
 			scaleParentObject = new GameObject( "Arrow Scale Parent" );
-			Transform parentTransform = collision.collider.transform;
+			var parentTransform = collision.collider.transform;
 
 			// Don't do this for weebles because of how it has a fixed joint
-			ExplosionWobble wobble = collision.collider.gameObject.GetComponent<ExplosionWobble>();
+			var wobble = collision.collider.gameObject.GetComponent<ExplosionWobble>();
 			if ( !wobble )
 			{
 				if ( parentTransform.parent )
@@ -252,7 +252,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void OnDestroy()
+		private void OnDestroy()
 		{
 			if ( scaleParentObject != null )
 			{

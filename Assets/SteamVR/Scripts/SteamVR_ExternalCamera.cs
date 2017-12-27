@@ -110,19 +110,19 @@ public class SteamVR_ExternalCamera : MonoBehaviour
 		}
 	}
 
-	void OnChanged(object source, System.IO.FileSystemEventArgs e)
+	private void OnChanged(object source, System.IO.FileSystemEventArgs e)
 	{
 		ReadConfig();
 	}
 
-	System.IO.FileSystemWatcher watcher;
+	private System.IO.FileSystemWatcher watcher;
 #else
 	}
 #endif
-	Camera cam;
-	Transform target;
-	GameObject clipQuad;
-	Material clipMaterial;
+	private Camera cam;
+	private Transform target;
+	private GameObject clipQuad;
+	private Material clipMaterial;
 
 	public void AttachToCamera(SteamVR_Camera vrcam)
 	{
@@ -200,7 +200,7 @@ public class SteamVR_ExternalCamera : MonoBehaviour
 		return Mathf.Clamp(distance, config.near + 0.01f, config.far - 0.01f);
 	}
 
-	Material colorMat, alphaMat;
+	private Material colorMat, alphaMat;
 
 	public void RenderNear()
 	{
@@ -225,7 +225,7 @@ public class SteamVR_ExternalCamera : MonoBehaviour
 
 		clipMaterial.color = new Color(config.r, config.g, config.b, config.a);
 
-		float dist = Mathf.Clamp(GetTargetDistance() + config.nearOffset, config.near, config.far);
+		var dist = Mathf.Clamp(GetTargetDistance() + config.nearOffset, config.near, config.far);
 		var clipParent = clipQuad.transform.parent;
 		clipQuad.transform.position = clipParent.position + clipParent.forward * dist;
 
@@ -235,7 +235,7 @@ public class SteamVR_ExternalCamera : MonoBehaviour
 		{
 			behaviours = cam.gameObject.GetComponents<MonoBehaviour>();
 			wasEnabled = new bool[behaviours.Length];
-			for (int i = 0; i < behaviours.Length; i++)
+			for (var i = 0; i < behaviours.Length; i++)
 			{
 				var behaviour = behaviours[i];
 				if (behaviour.enabled && behaviour.GetType().ToString().StartsWith("UnityStandardAssets."))
@@ -268,7 +268,7 @@ public class SteamVR_ExternalCamera : MonoBehaviour
 
 		if (behaviours != null)
 		{
-			for (int i = 0; i < behaviours.Length; i++)
+			for (var i = 0; i < behaviours.Length; i++)
 			{
 				if (wasEnabled[i])
 				{
@@ -292,16 +292,16 @@ public class SteamVR_ExternalCamera : MonoBehaviour
 		Graphics.DrawTexture(new Rect(0, h, w, h), cam.targetTexture, colorMat);
 	}
 
-	void OnGUI()
+	private void OnGUI()
 	{
 		// Necessary for Graphics.DrawTexture to work even though we don't do anything here.
 	}
 
-	Camera[] cameras;
-	Rect[] cameraRects;
-	float sceneResolutionScale;
+	private Camera[] cameras;
+	private Rect[] cameraRects;
+	private float sceneResolutionScale;
 
-	void OnEnable()
+	private void OnEnable()
 	{
 		// Move game view cameras to lower-right quadrant.
 		cameras = FindObjectsOfType<Camera>() as Camera[];
@@ -309,7 +309,7 @@ public class SteamVR_ExternalCamera : MonoBehaviour
 		{
 			var numCameras = cameras.Length;
 			cameraRects = new Rect[numCameras];
-			for (int i = 0; i < numCameras; i++)
+			for (var i = 0; i < numCameras; i++)
 			{
 				var cam = cameras[i];
 				cameraRects[i] = cam.rect;
@@ -334,13 +334,13 @@ public class SteamVR_ExternalCamera : MonoBehaviour
 		}
 	}
 
-	void OnDisable()
+	private void OnDisable()
 	{
 		// Restore game view cameras.
 		if (cameras != null)
 		{
 			var numCameras = cameras.Length;
-			for (int i = 0; i < numCameras; i++)
+			for (var i = 0; i < numCameras; i++)
 			{
 				var cam = cameras[i];
 				if (cam != null)

@@ -64,7 +64,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			GetRelevantComponents();
 
@@ -81,14 +81,14 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			player = Player.instance;
 		}
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
 			if ( Application.isPlaying )
 			{
@@ -318,11 +318,11 @@ namespace Valve.VR.InteractionSystem
 	public class TeleportPointEditor : Editor
 	{
 		//-------------------------------------------------
-		void OnEnable()
+		private void OnEnable()
 		{
 			if ( Selection.activeTransform )
 			{
-				TeleportPoint teleportPoint = Selection.activeTransform.GetComponent<TeleportPoint>();
+				var teleportPoint = Selection.activeTransform.GetComponent<TeleportPoint>();
 				teleportPoint.UpdateVisualsInEditor();
 			}
 		}
@@ -335,7 +335,7 @@ namespace Valve.VR.InteractionSystem
 
 			if ( Selection.activeTransform )
 			{
-				TeleportPoint teleportPoint = Selection.activeTransform.GetComponent<TeleportPoint>();
+				var teleportPoint = Selection.activeTransform.GetComponent<TeleportPoint>();
 				if ( GUI.changed )
 				{
 					teleportPoint.UpdateVisualsInEditor();

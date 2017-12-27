@@ -22,7 +22,7 @@ namespace Valve.VR.InteractionSystem
 		private Hand.AttachmentFlags attachmentFlags = Hand.defaultAttachmentFlags & ( ~Hand.AttachmentFlags.SnapOnAttach ) & ( ~Hand.AttachmentFlags.DetachOthers );
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			textMesh = GetComponentInChildren<TextMesh>();
 			textMesh.text = "No Hand Hovering";

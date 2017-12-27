@@ -23,11 +23,11 @@ namespace Valve.VR.InteractionSystem
 		public UnityEvent onTouchpadRelease;
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
-			for ( int i = 0; i < Player.instance.handCount; i++ )
+			for ( var i = 0; i < Player.instance.handCount; i++ )
 			{
-				Hand hand = Player.instance.GetHand( i );
+				var hand = Player.instance.GetHand( i );
 
 				if ( hand.controller != null )
 				{

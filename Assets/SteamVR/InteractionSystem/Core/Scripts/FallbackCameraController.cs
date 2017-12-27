@@ -22,16 +22,16 @@ namespace Valve.VR.InteractionSystem
 		private float realTime;
 
 		//-------------------------------------------------
-		void OnEnable()
+		private void OnEnable()
 		{
 			realTime = Time.realtimeSinceStartup;
 		}
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
-			float forward = 0.0f;
+			var forward = 0.0f;
 			if ( Input.GetKey( KeyCode.W ) || Input.GetKey( KeyCode.UpArrow ) )
 			{
 				forward += 1.0f;
@@ -41,7 +41,7 @@ namespace Valve.VR.InteractionSystem
 				forward -= 1.0f;
 			}
 
-			float right = 0.0f;
+			var right = 0.0f;
 			if ( Input.GetKey( KeyCode.D ) || Input.GetKey( KeyCode.RightArrow ) )
 			{
 				right += 1.0f;
@@ -51,21 +51,21 @@ namespace Valve.VR.InteractionSystem
 				right -= 1.0f;
 			}
 
-			float currentSpeed = speed;
+			var currentSpeed = speed;
 			if ( Input.GetKey( KeyCode.LeftShift ) || Input.GetKey( KeyCode.RightShift ) )
 			{
 				currentSpeed = shiftSpeed;
 			}
 
-			float realTimeNow = Time.realtimeSinceStartup;
-			float deltaRealTime = realTimeNow - realTime;
+			var realTimeNow = Time.realtimeSinceStartup;
+			var deltaRealTime = realTimeNow - realTime;
 			realTime = realTimeNow;
 
-			Vector3 delta = new Vector3( right, 0.0f, forward ) * currentSpeed * deltaRealTime;
+			var delta = new Vector3( right, 0.0f, forward ) * currentSpeed * deltaRealTime;
 
 			transform.position += transform.TransformDirection( delta );
 
-			Vector3 mousePosition = Input.mousePosition;
+			var mousePosition = Input.mousePosition;
 
 			if ( Input.GetMouseButtonDown( 1 ) /* right mouse */)
 			{
@@ -75,14 +75,14 @@ namespace Valve.VR.InteractionSystem
 
 			if ( Input.GetMouseButton( 1 ) /* right mouse */)
 			{
-				Vector3 offset = mousePosition - startMousePosition;
+				var offset = mousePosition - startMousePosition;
 				transform.localEulerAngles = startEulerAngles + new Vector3( -offset.y * 360.0f / Screen.height, offset.x * 360.0f / Screen.width, 0.0f );
 			}
 		}
 
 
 		//-------------------------------------------------
-		void OnGUI()
+		private void OnGUI()
 		{
 			if ( showInstructions )
 			{

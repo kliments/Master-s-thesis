@@ -78,7 +78,7 @@ public class SteamVR_Skybox : MonoBehaviour
 		{
 			var handles = new Texture[] { front, back, left, right, top, bottom };
 			var textures = new Texture_t[6];
-			for (int i = 0; i < 6; i++)
+			for (var i = 0; i < 6; i++)
 			{
 				textures[i].handle = (handles[i] != null) ? handles[i].GetNativeTexturePtr() : System.IntPtr.Zero;
 				textures[i].eType = SteamVR.instance.textureType;
@@ -103,12 +103,12 @@ public class SteamVR_Skybox : MonoBehaviour
 			compositor.ClearSkyboxOverride();
 	}
 
-	void OnEnable()
+	private void OnEnable()
 	{
 		SetOverride(front, back, left, right, top, bottom);
 	}
 
-	void OnDisable()
+	private void OnDisable()
 	{
 		ClearOverride();
 	}

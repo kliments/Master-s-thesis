@@ -13,7 +13,7 @@ namespace Valve.VR.InteractionSystem
 	public class DontDestroyOnLoad : MonoBehaviour
 	{
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			DontDestroyOnLoad( this );
 		}

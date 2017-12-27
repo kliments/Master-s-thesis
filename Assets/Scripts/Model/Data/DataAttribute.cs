@@ -2,48 +2,48 @@
 
 public class DataAttribute
 {
-    private int column;
-    private string name;
-    public enum valuetype {val_na, val_obj, val_string, val_float}
-    private valuetype value_datatype;
+    private int _column;
+    private string _name;
+    public enum Valuetype {ValNa, ValObj, ValString, ValFloat}
+    private Valuetype _valueDatatype;
 
-    private Object value;
+    private object _value;
 
-    public void init(int column, string name, string value, valuetype value_datatype = valuetype.val_na)
+    public void Init(int column, string name, string value, Valuetype valueDatatype = Valuetype.ValNa)
     {
-        this.column = column;
-        this.name = name;
+        this._column = column;
+        this._name = name;
 
-        if (value_datatype == valuetype.val_na)
+        if (valueDatatype == Valuetype.ValNa)
         {
-            this.value_datatype = getDataType(value);
+            this._valueDatatype = GetDataType(value);
         }
         else
         {
-            this.value_datatype = value_datatype;
+            this._valueDatatype = valueDatatype;
         }
 
-        this.value_datatype = getDataType(value);
-        this.value = getDataObject(value);
+        this._valueDatatype = GetDataType(value);
+        this._value = GetDataObject(value);
     }
 
-    public static valuetype getDataType(string attVal)
+    public static Valuetype GetDataType(string attVal)
     {
-        float val_float; 
-        if (float.TryParse(attVal, out val_float))
-            return valuetype.val_float;
+        float valFloat; 
+        if (float.TryParse(attVal, out valFloat))
+            return Valuetype.ValFloat;
 
-        return valuetype.val_string;
+        return Valuetype.ValString;
     }
 
-    private Object getDataObject(string attVal)
+    private object GetDataObject(string attVal)
     {
-        if (value_datatype == valuetype.val_float)
+        if (_valueDatatype == Valuetype.ValFloat)
         {
-            float val_float;
-            if (float.TryParse(attVal, out val_float))
+            float valFloat;
+            if (float.TryParse(attVal, out valFloat))
             {
-                return val_float;
+                return valFloat;
             }
             throw new Exception("type conversion error!");
         }
@@ -51,13 +51,13 @@ public class DataAttribute
         return attVal;
     }
 
-    public valuetype getValueDataType()
+    public Valuetype GetValueDataType()
     {
-        return value_datatype;
+        return _valueDatatype;
     }
 
-    public Object getValue()
+    public object GetValue()
     {
-        return value;
+        return _value;
     }
 }

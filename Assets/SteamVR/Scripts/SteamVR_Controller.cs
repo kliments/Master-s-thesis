@@ -52,9 +52,9 @@ public class SteamVR_Controller
 		public VRControllerState_t GetPrevState() { Update(); return prevState; }
 		public TrackedDevicePose_t GetPose() { Update(); return pose; }
 
-		VRControllerState_t state, prevState;
-		TrackedDevicePose_t pose;
-		int prevFrameCount = -1;
+		private VRControllerState_t state, prevState;
+		private TrackedDevicePose_t pose;
+		private int prevFrameCount = -1;
 		public void Update()
 		{
 			if (Time.frameCount != prevFrameCount)
@@ -113,9 +113,10 @@ public class SteamVR_Controller
 		}
 
 		public float hairTriggerDelta = 0.1f; // amount trigger must be pulled or released to change state
-		float hairTriggerLimit;
-		bool hairTriggerState, hairTriggerPrevState;
-		void UpdateHairTrigger()
+		private float hairTriggerLimit;
+		private bool hairTriggerState, hairTriggerPrevState;
+
+		private void UpdateHairTrigger()
 		{
 			hairTriggerPrevState = hairTriggerState;
 			var value = state.rAxis1.x; // trigger
@@ -153,7 +154,7 @@ public class SteamVR_Controller
 
 	public static void Update()
 	{
-		for (int i = 0; i < OpenVR.k_unMaxTrackedDeviceCount; i++)
+		for (var i = 0; i < OpenVR.k_unMaxTrackedDeviceCount; i++)
 			Input(i).Update();
 	}
 
@@ -184,7 +185,7 @@ public class SteamVR_Controller
 			return result;
 
 		var best = -float.MaxValue;
-		for (int i = 0; i < OpenVR.k_unMaxTrackedDeviceCount; i++)
+		for (var i = 0; i < OpenVR.k_unMaxTrackedDeviceCount; i++)
 		{
 			if (i == relativeTo || system.GetTrackedDeviceClass((uint)i) != deviceClass)
 				continue;

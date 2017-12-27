@@ -46,8 +46,8 @@ public static class SteamVR_Events
 				_event.Remove(action);
 		}
 
-		Event _event;
-		UnityAction action;
+		private Event _event;
+		private UnityAction action;
 	}
 
 	[System.Serializable]
@@ -67,8 +67,8 @@ public static class SteamVR_Events
 				_event.Remove(action);
 		}
 
-		Event<T> _event;
-		UnityAction<T> action;
+		private Event<T> _event;
+		private UnityAction<T> action;
 	}
 
 	[System.Serializable]
@@ -88,8 +88,8 @@ public static class SteamVR_Events
 				_event.Remove(action);
 		}
 
-		Event<T0, T1> _event;
-		UnityAction<T0, T1> action;
+		private Event<T0, T1> _event;
+		private UnityAction<T0, T1> action;
 	}
 
 	[System.Serializable]
@@ -109,8 +109,8 @@ public static class SteamVR_Events
 				_event.Remove(action);
 		}
 
-		Event<T0, T1, T2> _event;
-		UnityAction<T0, T1, T2> action;
+		private Event<T0, T1, T2> _event;
+		private UnityAction<T0, T1, T2> action;
 	}
 
 	public class Event : UnityEvent
@@ -183,7 +183,7 @@ public static class SteamVR_Events
 	public static Event<SteamVR_RenderModel, bool> RenderModelLoaded = new Event<SteamVR_RenderModel, bool>();
 	public static Action RenderModelLoadedAction(UnityAction<SteamVR_RenderModel, bool> action) { return new Action<SteamVR_RenderModel, bool>(RenderModelLoaded, action); }
 
-	static System.Collections.Generic.Dictionary<EVREventType, Event<VREvent_t>> systemEvents = new System.Collections.Generic.Dictionary<EVREventType, Event<VREvent_t>>();
+	private static System.Collections.Generic.Dictionary<EVREventType, Event<VREvent_t>> systemEvents = new System.Collections.Generic.Dictionary<EVREventType, Event<VREvent_t>>();
 	public static Event<VREvent_t> System(EVREventType eventType)
 	{
 		Event<VREvent_t> e;

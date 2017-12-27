@@ -18,7 +18,7 @@ namespace Valve.VR.InteractionSystem
 		private Vector3 initialPosition;
 
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			initialPosition = transform.localPosition;
 
@@ -30,7 +30,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
 			if ( linearMapping )
 			{

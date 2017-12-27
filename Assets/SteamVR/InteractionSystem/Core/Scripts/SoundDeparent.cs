@@ -18,7 +18,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			thisAudioSource = GetComponent<AudioSource>();
 
@@ -26,7 +26,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			// move the sound object out from under the parent 
 			gameObject.transform.parent = null;

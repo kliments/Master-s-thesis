@@ -18,10 +18,10 @@ public class SteamVR_GazeTracker : MonoBehaviour
     public float gazeOutCutoff = 0.4f;
 
     // Contains a HMD tracked object that we can use to find the user's gaze
-    Transform hmdTrackedObject = null;
+    private Transform hmdTrackedObject = null;
 
 	// Use this for initialization
-	void Start ()
+    private void Start ()
     {
 	
 	}
@@ -39,13 +39,13 @@ public class SteamVR_GazeTracker : MonoBehaviour
     }
 
     // Update is called once per frame
-	void Update ()
+    private void Update ()
     {
         // If we haven't set up hmdTrackedObject find what the user is looking at
         if (hmdTrackedObject == null)
         {
-            SteamVR_TrackedObject[] trackedObjects = FindObjectsOfType<SteamVR_TrackedObject>();
-            foreach (SteamVR_TrackedObject tracked in trackedObjects)
+            var trackedObjects = FindObjectsOfType<SteamVR_TrackedObject>();
+            foreach (var tracked in trackedObjects)
             {
                 if (tracked.index == SteamVR_TrackedObject.EIndex.Hmd)
                 {
@@ -57,14 +57,14 @@ public class SteamVR_GazeTracker : MonoBehaviour
 
         if (hmdTrackedObject)
         {
-            Ray r = new Ray(hmdTrackedObject.position, hmdTrackedObject.forward);
-            Plane p = new Plane(hmdTrackedObject.forward, transform.position);
+            var r = new Ray(hmdTrackedObject.position, hmdTrackedObject.forward);
+            var p = new Plane(hmdTrackedObject.forward, transform.position);
 
-            float enter = 0.0f;
+            var enter = 0.0f;
             if (p.Raycast(r, out enter))
             {
-                Vector3 intersect = hmdTrackedObject.position + hmdTrackedObject.forward * enter;
-                float dist = Vector3.Distance(intersect, transform.position);
+                var intersect = hmdTrackedObject.position + hmdTrackedObject.forward * enter;
+                var dist = Vector3.Distance(intersect, transform.position);
                 //Debug.Log("Gaze dist = " + dist);
                 if (dist < gazeInCutoff && !isInGaze)
                 {

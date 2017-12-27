@@ -66,10 +66,10 @@ public class SteamVR_Fade : MonoBehaviour
 		}
 	}
 
-	static Material fadeMaterial = null;
-	static int fadeMaterialColorID = -1;
+	private static Material fadeMaterial = null;
+	private static int fadeMaterialColorID = -1;
 
-	void OnEnable()
+	private void OnEnable()
 	{
 		if (fadeMaterial == null)
 		{
@@ -81,12 +81,12 @@ public class SteamVR_Fade : MonoBehaviour
 		SteamVR_Events.FadeReady.Send();
 	}
 
-	void OnDisable()
+	private void OnDisable()
 	{
 		SteamVR_Events.Fade.Remove(OnStartFade);
 	}
 
-	void OnPostRender()
+	private void OnPostRender()
 	{
 		if (currentColor != targetColor)
 		{

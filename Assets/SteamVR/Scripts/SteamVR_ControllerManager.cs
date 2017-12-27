@@ -17,17 +17,18 @@ public class SteamVR_ControllerManager : MonoBehaviour
 	[Tooltip("Set to true if you want objects arbitrarily assigned to controllers before their role (left vs right) is identified")]
 	public bool assignAllBeforeIdentified;
 
-	uint[] indices; // assigned
-	bool[] connected = new bool[OpenVR.k_unMaxTrackedDeviceCount]; // controllers only
+	private uint[] indices; // assigned
+	private bool[] connected = new bool[OpenVR.k_unMaxTrackedDeviceCount]; // controllers only
 
 	// cached roles - may or may not be connected
-	uint leftIndex = OpenVR.k_unTrackedDeviceIndexInvalid;
-	uint rightIndex = OpenVR.k_unTrackedDeviceIndexInvalid;
+	private uint leftIndex = OpenVR.k_unTrackedDeviceIndexInvalid;
+
+	private uint rightIndex = OpenVR.k_unTrackedDeviceIndexInvalid;
 
 	// Helper function to avoid adding duplicates to object array.
-	void SetUniqueObject(GameObject o, int index)
+	private void SetUniqueObject(GameObject o, int index)
 	{
-		for (int i = 0; i < index; i++)
+		for (var i = 0; i < index; i++)
 			if (objects[i] == o)
 				return;
 
@@ -43,32 +44,32 @@ public class SteamVR_ControllerManager : MonoBehaviour
 		this.objects = new GameObject[2 + additional];
 		SetUniqueObject(right, 0);
 		SetUniqueObject(left, 1);
-		for (int i = 0; i < additional; i++)
+		for (var i = 0; i < additional; i++)
 			SetUniqueObject(objects[i], 2 + i);
 
 		// Reset assignments.
 		indices = new uint[2 + additional];
-		for (int i = 0; i < indices.Length; i++)
+		for (var i = 0; i < indices.Length; i++)
 			indices[i] = OpenVR.k_unTrackedDeviceIndexInvalid;
 	}
 
-	SteamVR_Events.Action inputFocusAction, deviceConnectedAction, trackedDeviceRoleChangedAction;
+	private SteamVR_Events.Action inputFocusAction, deviceConnectedAction, trackedDeviceRoleChangedAction;
 
-	void Awake()
+	private void Awake()
 	{
 		UpdateTargets();
 	}
 
-	SteamVR_ControllerManager()
+	private SteamVR_ControllerManager()
 	{
 		inputFocusAction = SteamVR_Events.InputFocusAction(OnInputFocus);
 		deviceConnectedAction = SteamVR_Events.DeviceConnectedAction(OnDeviceConnected);
 		trackedDeviceRoleChangedAction = SteamVR_Events.SystemAction(EVREventType.VREvent_TrackedDeviceRoleChanged, OnTrackedDeviceRoleChanged);
 	}
 
-	void OnEnable()
+	private void OnEnable()
 	{
-		for (int i = 0; i < objects.Length; i++)
+		for (var i = 0; i < objects.Length; i++)
 		{
 			var obj = objects[i];
 			if (obj != null)
@@ -79,7 +80,7 @@ public class SteamVR_ControllerManager : MonoBehaviour
 
 		Refresh();
 
-		for (int i = 0; i < SteamVR.connected.Length; i++)
+		for (var i = 0; i < SteamVR.connected.Length; i++)
 			if (SteamVR.connected[i])
 				OnDeviceConnected(i, true);
 
@@ -88,22 +89,22 @@ public class SteamVR_ControllerManager : MonoBehaviour
 		trackedDeviceRoleChangedAction.enabled = true;
 	}
 
-	void OnDisable()
+	private void OnDisable()
 	{
 		inputFocusAction.enabled = false;
 		deviceConnectedAction.enabled = false;
 		trackedDeviceRoleChangedAction.enabled = false;
 	}
 
-	static string hiddenPrefix = "hidden (", hiddenPostfix = ")";
-	static string[] labels = { "left", "right" };
+	private static string hiddenPrefix = "hidden (", hiddenPostfix = ")";
+	private static string[] labels = { "left", "right" };
 
 	// Hide controllers when the dashboard is up.
 	private void OnInputFocus(bool hasFocus)
 	{
 		if (hasFocus)
 		{
-			for (int i = 0; i < objects.Length; i++)
+			for (var i = 0; i < objects.Length; i++)
 			{
 				var obj = objects[i];
 				if (obj != null)
@@ -115,7 +116,7 @@ public class SteamVR_ControllerManager : MonoBehaviour
 		}
 		else
 		{
-			for (int i = 0; i < objects.Length; i++)
+			for (var i = 0; i < objects.Length; i++)
 			{
 				var obj = objects[i];
 				if (obj != null)
@@ -155,7 +156,7 @@ public class SteamVR_ControllerManager : MonoBehaviour
 		// First make sure no one else is already using this index.
 		if (trackedDeviceIndex != OpenVR.k_unTrackedDeviceIndexInvalid)
 		{
-			for (int i = 0; i < objects.Length; i++)
+			for (var i = 0; i < objects.Length; i++)
 			{
 				if (i != objectIndex && indices[i] == trackedDeviceIndex)
 				{
@@ -196,7 +197,7 @@ public class SteamVR_ControllerManager : MonoBehaviour
 	// Keep track of connected controller indices.
 	private void OnDeviceConnected(int index, bool connected)
 	{
-		bool changed = this.connected[index];
+		var changed = this.connected[index];
 		this.connected[index] = false;
 
 		if (connected)
@@ -220,7 +221,7 @@ public class SteamVR_ControllerManager : MonoBehaviour
 
 	public void Refresh()
 	{
-		int objectIndex = 0;
+		var objectIndex = 0;
 
 		var system = OpenVR.System;
 		if (system != null)

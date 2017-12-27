@@ -22,7 +22,7 @@ namespace Valve.VR.InteractionSystem
 		public Transform fallenDownTransform;
 		public float fallTime = 0.5f;
 
-		const float targetRadius = 0.25f;
+		private const float targetRadius = 0.25f;
 
 		private bool targetEnabled = true;
 
@@ -62,10 +62,10 @@ namespace Valve.VR.InteractionSystem
 		{
 			if ( baseTransform )
 			{
-				Quaternion startingRot = baseTransform.rotation;
+				var startingRot = baseTransform.rotation;
 
-				float startTime = Time.time;
-				float rotLerp = 0f;
+				var startTime = Time.time;
+				var rotLerp = 0f;
 
 				while ( rotLerp < 1 )
 				{

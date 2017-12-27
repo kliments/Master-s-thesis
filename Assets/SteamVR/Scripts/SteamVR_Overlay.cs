@@ -36,7 +36,7 @@ public class SteamVR_Overlay : MonoBehaviour
 
 	private ulong handle = OpenVR.k_ulOverlayHandleInvalid;
 
-	void OnEnable()
+	private void OnEnable()
 	{
 		var overlay = OpenVR.Overlay;
 		if (overlay != null)
@@ -53,7 +53,7 @@ public class SteamVR_Overlay : MonoBehaviour
 		SteamVR_Overlay.instance = this;
 	}
 
-	void OnDisable()
+	private void OnDisable()
 	{
 		if (handle != OpenVR.k_ulOverlayHandleInvalid)
 		{

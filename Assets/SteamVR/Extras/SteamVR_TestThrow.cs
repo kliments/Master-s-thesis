@@ -8,15 +8,15 @@ public class SteamVR_TestThrow : MonoBehaviour
 	public GameObject prefab;
 	public Rigidbody attachPoint;
 
-	SteamVR_TrackedObject trackedObj;
-	FixedJoint joint;
+	private SteamVR_TrackedObject trackedObj;
+	private FixedJoint joint;
 
-	void Awake()
+	private void Awake()
 	{
 		trackedObj = GetComponent<SteamVR_TrackedObject>();
 	}
 
-	void FixedUpdate()
+	private void FixedUpdate()
 	{
 		var device = SteamVR_Controller.Input((int)trackedObj.index);
 		if (joint == null && device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))

@@ -18,16 +18,16 @@ namespace Valve.VR.InteractionSystem
 		private CapsuleCollider capsuleCollider;
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			capsuleCollider = GetComponent<CapsuleCollider>();
 		}
 
 
 		//-------------------------------------------------
-		void FixedUpdate()
+		private void FixedUpdate()
 		{
-			float distanceFromFloor = Vector3.Dot( head.localPosition, Vector3.up );
+			var distanceFromFloor = Vector3.Dot( head.localPosition, Vector3.up );
 			capsuleCollider.height = Mathf.Max( capsuleCollider.radius, distanceFromFloor );
 			transform.localPosition = head.localPosition - 0.5f * distanceFromFloor * Vector3.up;
 		}

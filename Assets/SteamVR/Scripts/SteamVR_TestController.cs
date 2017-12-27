@@ -10,7 +10,7 @@ using Valve.VR;
 
 public class SteamVR_TestController : MonoBehaviour
 {
-	List<int> controllerIndices = new List<int>();
+	private List<int> controllerIndices = new List<int>();
 
 	private void OnDeviceConnected(int index, bool connected)
 	{
@@ -32,17 +32,17 @@ public class SteamVR_TestController : MonoBehaviour
 		}
 	}
 
-	void OnEnable()
+	private void OnEnable()
 	{
 		SteamVR_Events.DeviceConnected.Listen(OnDeviceConnected);
 	}
 
-	void OnDisable()
+	private void OnDisable()
 	{
 		SteamVR_Events.DeviceConnected.Remove(OnDeviceConnected);
 	}
 
-	void PrintControllerStatus(int index)
+	private void PrintControllerStatus(int index)
 	{
 		var device = SteamVR_Controller.Input(index);
 		Debug.Log("index: " + device.index);
@@ -61,21 +61,21 @@ public class SteamVR_TestController : MonoBehaviour
 		Debug.Log((l == r) ? "first" : (l == index) ? "left" : "right");
 	}
 
-	EVRButtonId[] buttonIds = new EVRButtonId[] {
+	private EVRButtonId[] buttonIds = new EVRButtonId[] {
 		EVRButtonId.k_EButton_ApplicationMenu,
 		EVRButtonId.k_EButton_Grip,
 		EVRButtonId.k_EButton_SteamVR_Touchpad,
 		EVRButtonId.k_EButton_SteamVR_Trigger
 	};
 
-	EVRButtonId[] axisIds = new EVRButtonId[] {
+	private EVRButtonId[] axisIds = new EVRButtonId[] {
 		EVRButtonId.k_EButton_SteamVR_Touchpad,
 		EVRButtonId.k_EButton_SteamVR_Trigger
 	};
 
 	public Transform point, pointer;
 
-	void Update()
+	private void Update()
 	{
 		foreach (var index in controllerIndices)
 		{

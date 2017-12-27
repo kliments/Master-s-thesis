@@ -43,7 +43,7 @@ public class SteamVR_PlayArea : MonoBehaviour
 			}
 
 			var chaperone = OpenVR.Chaperone;
-			bool success = (chaperone != null) && chaperone.GetPlayAreaRect(ref pRect);
+			var success = (chaperone != null) && chaperone.GetPlayAreaRect(ref pRect);
 			if (!success)
 				Debug.LogWarning("Failed to get Calibrated Play Area bounds!  Make sure you have tracking first, and that your space is calibrated.");
 
@@ -96,7 +96,7 @@ public class SteamVR_PlayArea : MonoBehaviour
 		var corners = new HmdVector3_t[] { rect.vCorners0, rect.vCorners1, rect.vCorners2, rect.vCorners3 };
 
 		vertices = new Vector3[corners.Length * 2];
-		for (int i = 0; i < corners.Length; i++)
+		for (var i = 0; i < corners.Length; i++)
 		{
 			var c = corners[i];
 			vertices[i] = new Vector3(c.v0, 0.01f, c.v2);
@@ -108,10 +108,10 @@ public class SteamVR_PlayArea : MonoBehaviour
 			return;
 		}
 
-		for (int i = 0; i < corners.Length; i++)
+		for (var i = 0; i < corners.Length; i++)
 		{
-			int next = (i + 1) % corners.Length;
-			int prev = (i + corners.Length - 1) % corners.Length;
+			var next = (i + 1) % corners.Length;
+			var prev = (i + corners.Length - 1) % corners.Length;
 
 			var nextSegment = (vertices[next] - vertices[i]).normalized;
 			var prevSegment = (vertices[prev] - vertices[i]).normalized;
@@ -175,14 +175,14 @@ public class SteamVR_PlayArea : MonoBehaviour
 	}
 
 #if UNITY_EDITOR
-	Hashtable values;
-	void Update()
+	private Hashtable values;
+	private void Update()
 	{
 		if (!Application.isPlaying)
 		{
 			var fields = GetType().GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 
-			bool rebuild = false;
+			var rebuild = false;
 
 			if (values == null || (borderThickness != 0.0f && GetComponent<MeshFilter>().sharedMesh == null))
 			{
@@ -212,13 +212,13 @@ public class SteamVR_PlayArea : MonoBehaviour
 	}
 #endif
 
-	void OnDrawGizmos()
+	private void OnDrawGizmos()
 	{
 		if (!drawWireframeWhenSelectedOnly)
 			DrawWireframe();
 	}
 
-	void OnDrawGizmosSelected()
+	private void OnDrawGizmosSelected()
 	{
 		if (drawWireframeWhenSelectedOnly)
 			DrawWireframe();
@@ -230,9 +230,9 @@ public class SteamVR_PlayArea : MonoBehaviour
 			return;
 
 		var offset = transform.TransformVector(Vector3.up * wireframeHeight);
-		for (int i = 0; i < 4; i++)
+		for (var i = 0; i < 4; i++)
 		{
-			int next = (i + 1) % 4;
+			var next = (i + 1) % 4;
 
 			var a = transform.TransformPoint(vertices[i]);
 			var b = a + offset;
@@ -262,7 +262,7 @@ public class SteamVR_PlayArea : MonoBehaviour
 		}
 	}
 
-	IEnumerator UpdateBounds()
+	private IEnumerator UpdateBounds()
 	{
 		GetComponent<MeshFilter>().mesh = null; // clear existing
 

@@ -40,7 +40,7 @@ public class SteamVR_TrackedCamera
 		public VRTextureBounds_t frameBounds { get; private set; }
 		public EVRTrackedCameraFrameType frameType { get { return undistorted ? EVRTrackedCameraFrameType.Undistorted : EVRTrackedCameraFrameType.Distorted; } }
 
-		Texture2D _texture;
+		private Texture2D _texture;
 		public Texture2D texture { get { Update(); return _texture; } }
 
 		public SteamVR_Utils.RigidTransform transform { get { Update(); return new SteamVR_Utils.RigidTransform(header.standingTrackedDevicePose.mDeviceToAbsoluteTracking); } }
@@ -66,8 +66,9 @@ public class SteamVR_TrackedCamera
 			return result;
 		}
 
-		int prevFrameCount = -1;
-		void Update()
+		private int prevFrameCount = -1;
+
+		private void Update()
 		{
 			if (Time.frameCount == prevFrameCount)
 				return;
@@ -125,9 +126,9 @@ public class SteamVR_TrackedCamera
 			}
 		}
 
-		uint glTextureId;
-		VideoStream videostream;
-		CameraVideoStreamFrameHeader_t header;
+		private uint glTextureId;
+		private VideoStream videostream;
+		private CameraVideoStreamFrameHeader_t header;
 	}
 
 	#region Top level accessors.
@@ -161,7 +162,7 @@ public class SteamVR_TrackedCamera
 
 	#region Internal class to manage lifetime of video streams (per device).
 
-	class VideoStream
+	private class VideoStream
 	{
 		public VideoStream(uint deviceIndex)
 		{
@@ -172,13 +173,13 @@ public class SteamVR_TrackedCamera
 		}
 		public uint deviceIndex { get; private set; }
 
-		ulong _handle;
+		private ulong _handle;
 		public ulong handle { get { return _handle; } }
 
-		bool _hasCamera;
+		private bool _hasCamera;
 		public bool hasCamera { get { return _hasCamera; } }
 
-		ulong refCount;
+		private ulong refCount;
 		public ulong Acquire()
 		{
 			if (_handle == 0 && hasCamera)
@@ -202,7 +203,7 @@ public class SteamVR_TrackedCamera
 		}
 	}
 
-	static VideoStream Stream(uint deviceIndex)
+	private static VideoStream Stream(uint deviceIndex)
 	{
 		if (videostreams == null)
 			videostreams = new VideoStream[OpenVR.k_unMaxTrackedDeviceCount];
@@ -211,7 +212,7 @@ public class SteamVR_TrackedCamera
 		return videostreams[deviceIndex];
 	}
 
-	static VideoStream[] videostreams;
+	private static VideoStream[] videostreams;
 
 	#endregion
 }

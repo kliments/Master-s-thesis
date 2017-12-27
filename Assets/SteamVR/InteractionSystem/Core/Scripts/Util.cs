@@ -46,7 +46,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static float Approach( float target, float value, float speed )
 		{
-			float delta = target - value;
+			var delta = target - value;
 
 			if ( delta > speed )
 				value += speed;
@@ -62,8 +62,8 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static Vector3 BezierInterpolate3( Vector3 p0, Vector3 c0, Vector3 p1, float t )
 		{
-			Vector3 p0c0 = Vector3.Lerp( p0, c0, t );
-			Vector3 c0p1 = Vector3.Lerp( c0, p1, t );
+			var p0c0 = Vector3.Lerp( p0, c0, t );
+			var c0p1 = Vector3.Lerp( c0, p1, t );
 
 			return Vector3.Lerp( p0c0, c0p1, t );
 		}
@@ -72,12 +72,12 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static Vector3 BezierInterpolate4( Vector3 p0, Vector3 c0, Vector3 c1, Vector3 p1, float t )
 		{
-			Vector3 p0c0 = Vector3.Lerp( p0, c0, t );
-			Vector3 c0c1 = Vector3.Lerp( c0, c1, t );
-			Vector3 c1p1 = Vector3.Lerp( c1, p1, t );
+			var p0c0 = Vector3.Lerp( p0, c0, t );
+			var c0c1 = Vector3.Lerp( c0, c1, t );
+			var c1p1 = Vector3.Lerp( c1, p1, t );
 
-			Vector3 x = Vector3.Lerp( p0c0, c0c1, t );
-			Vector3 y = Vector3.Lerp( c0c1, c1p1, t );
+			var x = Vector3.Lerp( p0c0, c0c1, t );
+			var y = Vector3.Lerp( c0c1, c1p1, t );
 
 			//Debug.DrawRay(p0, Vector3.forward);
 			//Debug.DrawRay(c0, Vector3.forward);
@@ -97,13 +97,13 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static Vector3 Vector3FromString( string szString )
 		{
-			string[] szParseString = szString.Substring( 1, szString.Length - 1 ).Split( ',' );
+			var szParseString = szString.Substring( 1, szString.Length - 1 ).Split( ',' );
 
-			float x = float.Parse( szParseString[0] );
-			float y = float.Parse( szParseString[1] );
-			float z = float.Parse( szParseString[2] );
+			var x = float.Parse( szParseString[0] );
+			var y = float.Parse( szParseString[1] );
+			var z = float.Parse( szParseString[2] );
 
-			Vector3 vReturn = new Vector3( x, y, z );
+			var vReturn = new Vector3( x, y, z );
 
 			return vReturn;
 		}
@@ -112,10 +112,10 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static Vector2 Vector2FromString( string szString )
 		{
-			string[] szParseString = szString.Substring( 1, szString.Length - 1 ).Split( ',' );
+			var szParseString = szString.Substring( 1, szString.Length - 1 ).Split( ',' );
 
-			float x = float.Parse( szParseString[0] );
-			float y = float.Parse( szParseString[1] );
+			var x = float.Parse( szParseString[0] );
+			var y = float.Parse( szParseString[1] );
 
 			Vector3 vReturn = new Vector2( x, y );
 
@@ -126,7 +126,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static float Normalize( float value, float min, float max )
 		{
-			float normalizedValue = ( value - min ) / ( max - min );
+			var normalizedValue = ( value - min ) / ( max - min );
 
 			return normalizedValue;
 		}
@@ -149,7 +149,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static float AngleOf( Vector2 v )
 		{
-			float fDist = v.magnitude;
+			var fDist = v.magnitude;
 
 			if ( v.y >= 0.0f )
 			{
@@ -165,7 +165,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static float YawOf( Vector3 v )
 		{
-			float fDist = v.magnitude;
+			var fDist = v.magnitude;
 
 			if ( v.z >= 0.0f )
 			{
@@ -181,7 +181,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static void Swap<T>( ref T lhs, ref T rhs )
 		{
-			T temp = lhs;
+			var temp = lhs;
 			lhs = rhs;
 			rhs = temp;
 		}
@@ -190,9 +190,9 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static void Shuffle<T>( T[] array )
 		{
-			for ( int i = array.Length - 1; i > 0; i-- )
+			for ( var i = array.Length - 1; i > 0; i-- )
 			{
-				int r = UnityEngine.Random.Range( 0, i );
+				var r = UnityEngine.Random.Range( 0, i );
 				Swap( ref array[i], ref array[r] );
 			}
 		}
@@ -201,10 +201,10 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static void Shuffle<T>( List<T> list )
 		{
-			for ( int i = list.Count - 1; i > 0; i-- )
+			for ( var i = list.Count - 1; i > 0; i-- )
 			{
-				int r = UnityEngine.Random.Range( 0, i );
-				T temp = list[i];
+				var r = UnityEngine.Random.Range( 0, i );
+				var temp = list[i];
 				list[i] = list[r];
 				list[r] = temp;
 			}
@@ -214,9 +214,9 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static int RandomWithLookback( int min, int max, List<int> history, int historyCount )
 		{
-			int index = UnityEngine.Random.Range( min, max - history.Count );
+			var index = UnityEngine.Random.Range( min, max - history.Count );
 
-			for ( int i = 0; i < history.Count; i++ )
+			for ( var i = 0; i < history.Count; i++ )
 			{
 				if ( index >= history[i] )
 				{
@@ -288,7 +288,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static int FindOrAdd<T>( List<T> list, T item )
 		{
-			int index = list.IndexOf( item );
+			var index = list.IndexOf( item );
 
 			if ( index == -1 )
 			{
@@ -303,7 +303,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static List<T> FindAndRemove<T>( List<T> list, System.Predicate<T> match )
 		{
-			List<T> retVal = list.FindAll( match );
+			var retVal = list.FindAll( match );
 			list.RemoveAll( match );
 			return retVal;
 		}
@@ -312,7 +312,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static T FindOrAddComponent<T>( GameObject gameObject ) where T : Component
 		{
-			T component = gameObject.GetComponent<T>();
+			var component = gameObject.GetComponent<T>();
 			if ( component )
 				return component;
 
@@ -344,8 +344,8 @@ namespace Valve.VR.InteractionSystem
 			if ( transform.gameObject.layer == fromLayer )
 				transform.gameObject.layer = toLayer;
 
-			int childCount = transform.childCount;
-			for ( int i = 0; i < childCount; i++ )
+			var childCount = transform.childCount;
+			for ( var i = 0; i < childCount; i++ )
 			{
 				SwitchLayerRecursively( transform.GetChild( i ), fromLayer, toLayer );
 			}
@@ -355,18 +355,18 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static void DrawCross( Vector3 origin, Color crossColor, float size )
 		{
-			Vector3 line1Start = origin + ( Vector3.right * size );
-			Vector3 line1End = origin - ( Vector3.right * size );
+			var line1Start = origin + ( Vector3.right * size );
+			var line1End = origin - ( Vector3.right * size );
 
 			Debug.DrawLine( line1Start, line1End, crossColor );
 
-			Vector3 line2Start = origin + ( Vector3.up * size );
-			Vector3 line2End = origin - ( Vector3.up * size );
+			var line2Start = origin + ( Vector3.up * size );
+			var line2End = origin - ( Vector3.up * size );
 
 			Debug.DrawLine( line2Start, line2End, crossColor );
 
-			Vector3 line3Start = origin + ( Vector3.forward * size );
-			Vector3 line3End = origin - ( Vector3.forward * size );
+			var line3Start = origin + ( Vector3.forward * size );
+			var line3End = origin - ( Vector3.forward * size );
 
 			Debug.DrawLine( line3Start, line3End, crossColor );
 		}
@@ -410,7 +410,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static void AfterTimer( GameObject go, float _time, System.Action callback, bool trigger_if_destroyed_early = false )
 		{
-			AfterTimer_Component afterTimer_component = go.AddComponent<AfterTimer_Component>();
+			var afterTimer_component = go.AddComponent<AfterTimer_Component>();
 			afterTimer_component.Init( _time, callback, trigger_if_destroyed_early );
 		}
 
@@ -418,7 +418,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static void SendPhysicsMessage( Collider collider, string message, SendMessageOptions sendMessageOptions )
 		{
-			Rigidbody rb = collider.attachedRigidbody;
+			var rb = collider.attachedRigidbody;
 			if ( rb && rb.gameObject != collider.gameObject )
 			{
 				rb.SendMessage( message, sendMessageOptions );
@@ -431,7 +431,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static void SendPhysicsMessage( Collider collider, string message, object arg, SendMessageOptions sendMessageOptions )
 		{
-			Rigidbody rb = collider.attachedRigidbody;
+			var rb = collider.attachedRigidbody;
 			if ( rb && rb.gameObject != collider.gameObject )
 			{
 				rb.SendMessage( message, arg, sendMessageOptions );
@@ -444,17 +444,17 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static void IgnoreCollisions( GameObject goA, GameObject goB )
 		{
-			Collider[] goA_colliders = goA.GetComponentsInChildren<Collider>();
-			Collider[] goB_colliders = goB.GetComponentsInChildren<Collider>();
+			var goA_colliders = goA.GetComponentsInChildren<Collider>();
+			var goB_colliders = goB.GetComponentsInChildren<Collider>();
 
 			if ( goA_colliders.Length == 0 || goB_colliders.Length == 0 )
 			{
 				return;
 			}
 
-			foreach ( Collider cA in goA_colliders )
+			foreach ( var cA in goA_colliders )
 			{
-				foreach ( Collider cB in goB_colliders )
+				foreach ( var cB in goB_colliders )
 				{
 					if ( cA.enabled && cB.enabled )
 					{
@@ -515,7 +515,7 @@ namespace Valve.VR.InteractionSystem
 				throw new ArgumentException( "Argument cannot be null.", "source" );
 			}
 
-			int count = source.Count();
+			var count = source.Count();
 			if ( count == 0 )
 			{
 				throw new InvalidOperationException( "Enumerable must contain at least one element." );
@@ -533,7 +533,7 @@ namespace Valve.VR.InteractionSystem
 				throw new ArgumentException( "Argument cannot be null.", "source" );
 			}
 
-			foreach ( T value in source )
+			foreach ( var value in source )
 			{
 				action( value );
 			}
@@ -546,11 +546,11 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static string FixupNewlines( string text )
 		{
-			bool newLinesRemaining = true;
+			var newLinesRemaining = true;
 
 			while ( newLinesRemaining )
 			{
-				int CIndex = text.IndexOf( "\\n" );
+				var CIndex = text.IndexOf( "\\n" );
 
 				if ( CIndex == -1 )
 				{
@@ -577,12 +577,12 @@ namespace Valve.VR.InteractionSystem
 			if ( path.corners.Length < 2 )
 				return 0;
 
-			Vector3 previousCorner = path.corners[0];
-			float lengthSoFar = 0.0f;
-			int i = 1;
+			var previousCorner = path.corners[0];
+			var lengthSoFar = 0.0f;
+			var i = 1;
 			while ( i < path.corners.Length )
 			{
-				Vector3 currentCorner = path.corners[i];
+				var currentCorner = path.corners[i];
 				lengthSoFar += Vector3.Distance( previousCorner, currentCorner );
 				previousCorner = currentCorner;
 				i++;
@@ -594,8 +594,8 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static bool HasCommandLineArgument( string argumentName )
 		{
-			string[] args = System.Environment.GetCommandLineArgs();
-			for ( int i = 0; i < args.Length; i++ )
+			var args = System.Environment.GetCommandLineArgs();
+			for ( var i = 0; i < args.Length; i++ )
 			{
 				if ( args[i].Equals( argumentName ) )
 				{
@@ -610,8 +610,8 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static int GetCommandLineArgValue( string argumentName, int nDefaultValue )
 		{
-			string[] args = System.Environment.GetCommandLineArgs();
-			for ( int i = 0; i < args.Length; i++ )
+			var args = System.Environment.GetCommandLineArgs();
+			for ( var i = 0; i < args.Length; i++ )
 			{
 				if ( args[i].Equals( argumentName ) )
 				{
@@ -631,8 +631,8 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public static float GetCommandLineArgValue( string argumentName, float flDefaultValue )
 		{
-			string[] args = System.Environment.GetCommandLineArgs();
-			for ( int i = 0; i < args.Length; i++ )
+			var args = System.Environment.GetCommandLineArgs();
+			for ( var i = 0; i < args.Length; i++ )
 			{
 				if ( args[i].Equals( argumentName ) )
 				{
@@ -672,8 +672,8 @@ namespace Valve.VR.InteractionSystem
 			}
 			else
 			{
-				string combinedPath = paths[0];
-				for ( int i = 1; i < paths.Length; i++ )
+				var combinedPath = paths[0];
+				for ( var i = 1; i < paths.Length; i++ )
 				{
 					combinedPath = Path.Combine( combinedPath, paths[i] );
 				}
@@ -717,7 +717,7 @@ namespace Valve.VR.InteractionSystem
 
 		
 		//-------------------------------------------------
-		void OnDestroy()
+		private void OnDestroy()
 		{
 			if ( timerActive )
 			{

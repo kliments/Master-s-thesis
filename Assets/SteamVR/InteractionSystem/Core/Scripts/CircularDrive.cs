@@ -101,7 +101,7 @@ namespace Valve.VR.InteractionSystem
 		private Vector3 frozenHandWorldPos = new Vector3( 0.0f, 0.0f, 0.0f );
 		private Vector2 frozenSqDistanceMinMaxThreshold = new Vector2( 0.0f, 0.0f );
 
-		Hand handHoverLocked = null;
+		private Hand handHoverLocked = null;
 
 		//-------------------------------------------------
 		private void Freeze( Hand hand )
@@ -123,7 +123,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			if ( childCollider == null )
 			{
@@ -177,7 +177,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void OnDisable()
+		private void OnDisable()
 		{
 			if ( handHoverLocked )
 			{
@@ -193,12 +193,12 @@ namespace Valve.VR.InteractionSystem
 		{
 			if ( controller != null )
 			{
-				int nRangeMax = (int)Util.RemapNumberClamped( flMagnitude, 0.0f, 1.0f, 100.0f, 900.0f );
+				var nRangeMax = (int)Util.RemapNumberClamped( flMagnitude, 0.0f, 1.0f, 100.0f, 900.0f );
 				nCount = Mathf.Clamp( nCount, 1, 10 );
 
 				for ( ushort i = 0; i < nCount; ++i )
 				{
-					ushort duration = (ushort)Random.Range( 100, nRangeMax );
+					var duration = (ushort)Random.Range( 100, nRangeMax );
 					controller.TriggerHapticPulse( duration );
 					yield return new WaitForSeconds( .01f );
 				}
@@ -269,8 +269,8 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private Vector3 ComputeToTransformProjected( Transform xForm )
 		{
-			Vector3 toTransform = ( xForm.position - transform.position ).normalized;
-			Vector3 toTransformProjected = new Vector3( 0.0f, 0.0f, 0.0f );
+			var toTransform = ( xForm.position - transform.position ).normalized;
+			var toTransformProjected = new Vector3( 0.0f, 0.0f, 0.0f );
 
 			// Need a non-zero distance from the hand to the center of the CircularDrive
 			if ( toTransform.sqrMagnitude > 0.0f )
@@ -379,7 +379,7 @@ namespace Valve.VR.InteractionSystem
 			else
 			{
 				// Normalize to [0, 1] based on 360 degree windings
-				float flTmp = outAngle / 360.0f;
+				var flTmp = outAngle / 360.0f;
 				linearMapping.value = flTmp - Mathf.Floor( flTmp );
 			}
 
@@ -427,22 +427,22 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private void ComputeAngle( Hand hand )
 		{
-			Vector3 toHandProjected = ComputeToTransformProjected( hand.hoverSphereTransform );
+			var toHandProjected = ComputeToTransformProjected( hand.hoverSphereTransform );
 
 			if ( !toHandProjected.Equals( lastHandProjected ) )
 			{
-				float absAngleDelta = Vector3.Angle( lastHandProjected, toHandProjected );
+				var absAngleDelta = Vector3.Angle( lastHandProjected, toHandProjected );
 
 				if ( absAngleDelta > 0.0f )
 				{
 					if ( frozen )
 					{
-						float frozenSqDist = ( hand.hoverSphereTransform.position - frozenHandWorldPos ).sqrMagnitude;
+						var frozenSqDist = ( hand.hoverSphereTransform.position - frozenHandWorldPos ).sqrMagnitude;
 						if ( frozenSqDist > frozenSqDistanceMinMaxThreshold.x )
 						{
 							outAngle = frozenAngle + Random.Range( -1.0f, 1.0f );
 
-							float magnitude = Util.RemapNumberClamped( frozenSqDist, frozenSqDistanceMinMaxThreshold.x, frozenSqDistanceMinMaxThreshold.y, 0.0f, 1.0f );
+							var magnitude = Util.RemapNumberClamped( frozenSqDist, frozenSqDistanceMinMaxThreshold.x, frozenSqDistanceMinMaxThreshold.y, 0.0f, 1.0f );
 							if ( magnitude > 0 )
 							{
 								StartCoroutine( HapticPulses( hand.controller, magnitude, 10 ) );
@@ -460,10 +460,10 @@ namespace Valve.VR.InteractionSystem
 					}
 					else
 					{
-						Vector3 cross = Vector3.Cross( lastHandProjected, toHandProjected ).normalized;
-						float dot = Vector3.Dot( worldPlaneNormal, cross );
+						var cross = Vector3.Cross( lastHandProjected, toHandProjected ).normalized;
+						var dot = Vector3.Dot( worldPlaneNormal, cross );
 
-						float signedAngleDelta = absAngleDelta;
+						var signedAngleDelta = absAngleDelta;
 
 						if ( dot < 0.0f )
 						{
@@ -472,7 +472,7 @@ namespace Valve.VR.InteractionSystem
 
 						if ( limited )
 						{
-							float angleTmp = Mathf.Clamp( outAngle + signedAngleDelta, minAngle, maxAngle );
+							var angleTmp = Mathf.Clamp( outAngle + signedAngleDelta, minAngle, maxAngle );
 
 							if ( outAngle == minAngle )
 							{

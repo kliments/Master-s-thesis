@@ -43,7 +43,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		IEnumerator Start()
+		private IEnumerator Start()
 		{
 			// Uncomment for roomscale testing
 			//_instance.initialized = true;

@@ -64,8 +64,8 @@ namespace Valve.VR.InteractionSystem
 		{
 			get
 			{
-				int count = 0;
-				for ( int i = 0; i < hands.Length; i++ )
+				var count = 0;
+				for ( var i = 0; i < hands.Length; i++ )
 				{
 					if ( hands[i].gameObject.activeInHierarchy )
 					{
@@ -84,7 +84,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public Hand GetHand( int i )
 		{
-			for ( int j = 0; j < hands.Length; j++ )
+			for ( var j = 0; j < hands.Length; j++ )
 			{
 				if ( !hands[j].gameObject.activeInHierarchy )
 				{
@@ -109,7 +109,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			get
 			{
-				for ( int j = 0; j < hands.Length; j++ )
+				for ( var j = 0; j < hands.Length; j++ )
 				{
 					if ( !hands[j].gameObject.activeInHierarchy )
 					{
@@ -134,7 +134,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			get
 			{
-				for ( int j = 0; j < hands.Length; j++ )
+				for ( var j = 0; j < hands.Length; j++ )
 				{
 					if ( !hands[j].gameObject.activeInHierarchy )
 					{
@@ -159,7 +159,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			get
 			{
-				Hand h = leftHand;
+				var h = leftHand;
 				if ( h )
 				{
 					return h.controller;
@@ -174,7 +174,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			get
 			{
-				Hand h = rightHand;
+				var h = rightHand;
 				if ( h )
 				{
 					return h.controller;
@@ -191,7 +191,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			get
 			{
-				for ( int i = 0; i < hmdTransforms.Length; i++ )
+				for ( var i = 0; i < hmdTransforms.Length; i++ )
 				{
 					if ( hmdTransforms[i].gameObject.activeInHierarchy )
 						return hmdTransforms[i];
@@ -208,10 +208,10 @@ namespace Valve.VR.InteractionSystem
 		{
 			get
 			{
-				Transform hmd = hmdTransform;
+				var hmd = hmdTransform;
 				if ( hmd )
 				{
-					Vector3 eyeOffset = Vector3.Project( hmd.position - trackingOriginTransform.position, trackingOriginTransform.up );
+					var eyeOffset = Vector3.Project( hmd.position - trackingOriginTransform.position, trackingOriginTransform.up );
 					return eyeOffset.magnitude / trackingOriginTransform.lossyScale.x;
 				}
 				return 0.0f;
@@ -226,7 +226,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			get
 			{
-				Transform hmd = hmdTransform;
+				var hmd = hmdTransform;
 				if ( hmd )
 				{
 					return trackingOriginTransform.position + Vector3.ProjectOnPlane( hmd.position - trackingOriginTransform.position, trackingOriginTransform.up );
@@ -243,10 +243,10 @@ namespace Valve.VR.InteractionSystem
 		{
 			get
 			{
-				Transform hmd = hmdTransform;
+				var hmd = hmdTransform;
 				if ( hmd )
 				{
-					Vector3 direction = Vector3.ProjectOnPlane( hmd.forward, trackingOriginTransform.up );
+					var direction = Vector3.ProjectOnPlane( hmd.forward, trackingOriginTransform.up );
 					if ( Vector3.Dot( hmd.up, trackingOriginTransform.up ) < 0.0f )
 					{
 						// The HMD is upside-down. Either
@@ -262,7 +262,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			if ( trackingOriginTransform == null )
 			{
@@ -272,7 +272,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void OnEnable()
+		private void OnEnable()
 		{
 			_instance = this;
 
@@ -290,7 +290,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void OnDrawGizmos()
+		private void OnDrawGizmos()
 		{
 			if ( this != instance )
 			{
@@ -309,19 +309,19 @@ namespace Valve.VR.InteractionSystem
 
 			// Body direction arrow
 			Gizmos.color = Color.blue;
-			Vector3 bodyDirection = bodyDirectionGuess;
-			Vector3 bodyDirectionTangent = Vector3.Cross( trackingOriginTransform.up, bodyDirection );
-			Vector3 startForward = feetPositionGuess + trackingOriginTransform.up * eyeHeight * 0.75f;
-			Vector3 endForward = startForward + bodyDirection * 0.33f;
+			var bodyDirection = bodyDirectionGuess;
+			var bodyDirectionTangent = Vector3.Cross( trackingOriginTransform.up, bodyDirection );
+			var startForward = feetPositionGuess + trackingOriginTransform.up * eyeHeight * 0.75f;
+			var endForward = startForward + bodyDirection * 0.33f;
 			Gizmos.DrawLine( startForward, endForward );
 			Gizmos.DrawLine( endForward, endForward - 0.033f * ( bodyDirection + bodyDirectionTangent ) );
 			Gizmos.DrawLine( endForward, endForward - 0.033f * ( bodyDirection - bodyDirectionTangent ) );
 
 			Gizmos.color = Color.red;
-			int count = handCount;
-			for ( int i = 0; i < count; i++ )
+			var count = handCount;
+			for ( var i = 0; i < count; i++ )
 			{
-				Hand hand = GetHand( i );
+				var hand = GetHand( i );
 
 				if ( hand.startingHandType == Hand.HandType.Left )
 				{
@@ -333,7 +333,7 @@ namespace Valve.VR.InteractionSystem
 				}
 				else
 				{
-					Hand.HandType guessHandType = hand.GuessCurrentHandType();
+					var guessHandType = hand.GuessCurrentHandType();
 
 					if ( guessHandType == Hand.HandType.Left )
 					{
@@ -361,12 +361,12 @@ namespace Valve.VR.InteractionSystem
 			if ( !SteamVR.active )
 				return;
 
-			int width = 100;
-			int height = 25;
-			int left = Screen.width / 2 - width / 2;
-			int top = Screen.height - height - 10;
+			var width = 100;
+			var height = 25;
+			var left = Screen.width / 2 - width / 2;
+			var top = Screen.height - height - 10;
 
-			string text = ( rigSteamVR.activeSelf ) ? "2D Debug" : "VR";
+			var text = ( rigSteamVR.activeSelf ) ? "2D Debug" : "VR";
 
 			if ( GUI.Button( new Rect( left, top, width, height ), text ) )
 			{

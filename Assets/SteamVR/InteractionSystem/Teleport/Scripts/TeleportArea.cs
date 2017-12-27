@@ -81,7 +81,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public override void SetAlpha( float tintAlpha, float alphaPercent )
 		{
-			Color tintedColor = GetTintColor();
+			var tintedColor = GetTintColor();
 			tintedColor.a *= alphaPercent;
 			areaMesh.material.SetColor( tintColorId, tintedColor );
 		}
@@ -120,13 +120,13 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private bool CalculateBounds()
 		{
-			MeshFilter meshFilter = GetComponent<MeshFilter>();
+			var meshFilter = GetComponent<MeshFilter>();
 			if ( meshFilter == null )
 			{
 				return false;
 			}
 
-			Mesh mesh = meshFilter.sharedMesh;
+			var mesh = meshFilter.sharedMesh;
 			if ( mesh == null )
 			{
 				return false;
@@ -165,11 +165,11 @@ namespace Valve.VR.InteractionSystem
 	public class TeleportAreaEditor : Editor
 	{
 		//-------------------------------------------------
-		void OnEnable()
+		private void OnEnable()
 		{
 			if ( Selection.activeTransform != null )
 			{
-				TeleportArea teleportArea = Selection.activeTransform.GetComponent<TeleportArea>();
+				var teleportArea = Selection.activeTransform.GetComponent<TeleportArea>();
 				if ( teleportArea != null )
 				{
 					teleportArea.UpdateVisualsInEditor();
@@ -185,7 +185,7 @@ namespace Valve.VR.InteractionSystem
 
 			if ( Selection.activeTransform != null )
 			{
-				TeleportArea teleportArea = Selection.activeTransform.GetComponent<TeleportArea>();
+				var teleportArea = Selection.activeTransform.GetComponent<TeleportArea>();
 				if ( GUI.changed && teleportArea != null )
 				{
 					teleportArea.UpdateVisualsInEditor();

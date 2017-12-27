@@ -74,7 +74,7 @@ namespace Valve.VR.InteractionSystem
 		private AudioClip clip;
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			audioSource = GetComponent<AudioSource>();
 			clip = audioSource.clip;

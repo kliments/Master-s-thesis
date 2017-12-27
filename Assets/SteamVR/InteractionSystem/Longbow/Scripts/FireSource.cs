@@ -31,7 +31,7 @@ namespace Valve.VR.InteractionSystem
 		public bool canSpreadFromThisSource = true;
 
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			if ( startActive )
 			{
@@ -41,7 +41,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
 			if ( ( burnTime != 0 ) && ( Time.time > ( ignitionTime + burnTime ) ) && isBurning )
 			{
@@ -59,7 +59,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void OnTriggerEnter( Collider other )
+		private void OnTriggerEnter( Collider other )
 		{
 			if ( isBurning && canSpreadFromThisSource )
 			{

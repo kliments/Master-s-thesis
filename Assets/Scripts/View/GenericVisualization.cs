@@ -5,28 +5,28 @@ using UnityEngine;
 
 public abstract class GenericVisualization : MonoBehaviour
 {
-    GenericOperator op;
+    private GenericOperator _op;
 
-    void Awake()
+    private void Awake()
     {
-        op = transform.parent.GetComponent<GenericOperator>();
+        _op = transform.parent.GetComponent<GenericOperator>();
     }
-    
-    void Update () {
+
+    private void Update () {
 		
 	}
 
-    public void setOperator(GenericOperator operatorObj)
+    public void SetOperator(GenericOperator operatorObj)
     {
-        op = operatorObj;
+        _op = operatorObj;
     }
 
-    public GenericOperator getOperator()
+    public GenericOperator GetOperator()
     {
-        return op;
+        return _op;
     }
 
-    public abstract void createVisualization();
+    public abstract void CreateVisualization();
 
 
 }

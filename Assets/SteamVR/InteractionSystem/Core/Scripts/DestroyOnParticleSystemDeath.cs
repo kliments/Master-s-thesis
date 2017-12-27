@@ -16,7 +16,7 @@ namespace Valve.VR.InteractionSystem
 		private ParticleSystem particles;
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			particles = GetComponent<ParticleSystem>();
 

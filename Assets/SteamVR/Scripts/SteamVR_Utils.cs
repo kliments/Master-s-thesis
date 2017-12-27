@@ -103,7 +103,7 @@ public static class SteamVR_Utils
 
 	public static Quaternion GetRotation(this Matrix4x4 matrix)
 	{
-		Quaternion q = new Quaternion();
+		var q = new Quaternion();
 		q.w = Mathf.Sqrt(Mathf.Max(0, 1 + matrix.m00 + matrix.m11 + matrix.m22)) / 2;
 		q.x = Mathf.Sqrt(Mathf.Max(0, 1 + matrix.m00 - matrix.m11 - matrix.m22)) / 2;
 		q.y = Mathf.Sqrt(Mathf.Max(0, 1 - matrix.m00 + matrix.m11 - matrix.m22)) / 2;
@@ -273,7 +273,7 @@ public static class SteamVR_Utils
 		{
 			if (o is RigidTransform)
 			{
-				RigidTransform t = (RigidTransform)o;
+				var t = (RigidTransform)o;
 				return pos == t.pos && rot == t.rot;
 			}
 			return false;
@@ -425,9 +425,9 @@ public static class SteamVR_Utils
 
 		var transform = camera.transform;
 
-		int vTotal = halfHeight / cellSize;
-		float dv = 90.0f / vTotal; // vertical degrees per segment
-		float dvHalf = dv / 2.0f;
+		var vTotal = halfHeight / cellSize;
+		var dv = 90.0f / vTotal; // vertical degrees per segment
+		var dvHalf = dv / 2.0f;
 
 		var targetTexture = new RenderTexture(cellSize, cellSize, 24);
 		targetTexture.wrapMode = TextureWrapMode.Clamp;
@@ -445,7 +445,7 @@ public static class SteamVR_Utils
 		// separation similar around the sphere.  Rendering alternates between
 		// top and bottom sections, sweeping horizontally around the sphere,
 		// alternating left and right eyes.
-		for (int v = 0; v < vTotal; v++)
+		for (var v = 0; v < vTotal; v++)
 		{
 			var pitch = 90.0f - (v * dv) - dvHalf;
 			var uTotal = width / targetTexture.width;
@@ -454,7 +454,7 @@ public static class SteamVR_Utils
 
 			var vTarget = v * halfHeight / vTotal;
 
-			for (int i = 0; i < 2; i++) // top, bottom
+			for (var i = 0; i < 2; i++) // top, bottom
 			{
 				if (i == 1)
 				{
@@ -462,7 +462,7 @@ public static class SteamVR_Utils
 					vTarget = height - vTarget - cellSize;
 				}
 
-				for (int u = 0; u < uTotal; u++)
+				for (var u = 0; u < uTotal; u++)
 				{
 					var yaw = -180.0f + (u * du) + duHalf;
 
@@ -471,7 +471,7 @@ public static class SteamVR_Utils
 					var vTargetOffset = 0;
 					var xOffset = -ipd / 2 * Mathf.Cos(pitch * Mathf.Deg2Rad);
 
-					for (int j = 0; j < 2; j++) // left, right
+					for (var j = 0; j < 2; j++) // left, right
 					{
 						if (j == 1)
 						{

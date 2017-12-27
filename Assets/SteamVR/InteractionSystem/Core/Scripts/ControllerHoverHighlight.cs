@@ -22,31 +22,31 @@ namespace Valve.VR.InteractionSystem
 		private SteamVR_RenderModel renderModel;
 		private bool renderModelLoaded = false;
 
-		SteamVR_Events.Action renderModelLoadedAction;
+		private SteamVR_Events.Action renderModelLoadedAction;
 
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			hand = GetComponentInParent<Hand>();
 		}
 
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			renderModelLoadedAction = SteamVR_Events.RenderModelLoadedAction( OnRenderModelLoaded );
 		}
 
 
 		//-------------------------------------------------
-		void OnEnable()
+		private void OnEnable()
 		{
 			renderModelLoadedAction.enabled = true;
 		}
 
 
 		//-------------------------------------------------
-		void OnDisable()
+		private void OnDisable()
 		{
 			renderModelLoadedAction.enabled = false;
 		}
@@ -69,7 +69,7 @@ namespace Valve.VR.InteractionSystem
 				return;
 			}
 
-			Transform bodyTransform = transform.Find( "body" );
+			var bodyTransform = transform.Find( "body" );
 			if ( bodyTransform != null )
 			{
 				bodyTransform.gameObject.layer = gameObject.layer;
@@ -79,7 +79,7 @@ namespace Valve.VR.InteractionSystem
 				bodyMeshRenderer.enabled = false;
 			}
 
-			Transform trackingHatTransform = transform.Find( "trackhat" );
+			var trackingHatTransform = transform.Find( "trackhat" );
 			if ( trackingHatTransform != null )
 			{
 				trackingHatTransform.gameObject.layer = gameObject.layer;

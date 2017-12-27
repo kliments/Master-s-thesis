@@ -23,7 +23,7 @@ namespace Valve.VR.InteractionSystem
 
 	
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			if ( audioSource == null )
 			{
@@ -38,7 +38,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
 			if ( applyContinuously )
 			{
@@ -50,7 +50,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private void Apply()
 		{
-			float y = pitchCurve.Evaluate( linearMapping.value );
+			var y = pitchCurve.Evaluate( linearMapping.value );
 
 			audioSource.pitch = Mathf.Lerp( minPitch, maxPitch, y );
 		}

@@ -19,14 +19,14 @@ namespace Valve.VR.InteractionSystem
 		private Rigidbody rb;
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			rb = GetComponent<Rigidbody>();
 
 			colliderLocalPositions = new Vector3[colliders.Length];
 			colliderLocalRotations = new Quaternion[colliders.Length];
 
-			for ( int i = 0; i < colliders.Length; ++i )
+			for ( var i = 0; i < colliders.Length; ++i )
 			{
 				colliderLocalPositions[i] = colliders[i].transform.localPosition;
 				colliderLocalRotations[i] = colliders[i].transform.localRotation;
@@ -37,9 +37,9 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void OnEnable()
+		private void OnEnable()
 		{
-			for ( int i = 0; i < colliders.Length; ++i )
+			for ( var i = 0; i < colliders.Length; ++i )
 			{
 				colliders[i].transform.SetParent( transform );
 
@@ -48,7 +48,7 @@ namespace Valve.VR.InteractionSystem
 
 				colliders[i].transform.SetParent( null );
 
-				FixedJoint fixedJoint = colliders[i].AddComponent<FixedJoint>();
+				var fixedJoint = colliders[i].AddComponent<FixedJoint>();
 				fixedJoint.connectedBody = rb;
 				fixedJoint.breakForce = Mathf.Infinity;
 				fixedJoint.breakTorque = Mathf.Infinity;
@@ -61,9 +61,9 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void OnDisable()
+		private void OnDisable()
 		{
-			for ( int i = 0; i < colliders.Length; ++i )
+			for ( var i = 0; i < colliders.Length; ++i )
 			{
 				if ( colliders[i] != null )
 				{
@@ -76,9 +76,9 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void OnDestroy()
+		private void OnDestroy()
 		{
-			for ( int i = 0; i < colliders.Length; ++i )
+			for ( var i = 0; i < colliders.Length; ++i )
 			{
 				Destroy( colliders[i] );
 			}

@@ -39,12 +39,12 @@ public class SteamVR_Camera : MonoBehaviour
 
 	#region Enable / Disable
 
-	void OnDisable()
+	private void OnDisable()
 	{
 		SteamVR_Render.Remove(this);
 	}
 
-	void OnEnable()
+	private void OnEnable()
 	{
 		// Bail if no hmd is connected
 		var vr = SteamVR.instance;
@@ -98,13 +98,13 @@ public class SteamVR_Camera : MonoBehaviour
 
 	#region Functionality to ensure SteamVR_Camera component is always the last component on an object
 
-	void Awake()
+	private void Awake()
 	{
 		camera = GetComponent<Camera>(); // cached to avoid runtime lookup
 		ForceLast();
     }
 
-	static Hashtable values;
+	private static Hashtable values;
 
 	public void ForceLast()
 	{
@@ -124,7 +124,7 @@ public class SteamVR_Camera : MonoBehaviour
 			var components = GetComponents<Component>();
 
 			// But first make sure there aren't any other SteamVR_Cameras on this object.
-			for (int i = 0; i < components.Length; i++)
+			for (var i = 0; i < components.Length; i++)
 			{
 				var c = components[i] as SteamVR_Camera;
 				if (c != null && c != this)
@@ -158,10 +158,10 @@ public class SteamVR_Camera : MonoBehaviour
 #if UNITY_EDITOR
 	public bool isExpanded { get { return head != null && transform.parent == head; } }
 #endif
-	const string eyeSuffix = " (eye)";
-	const string earsSuffix = " (ears)";
-	const string headSuffix = " (head)";
-	const string originSuffix = " (origin)";
+	private const string eyeSuffix = " (eye)";
+	private const string earsSuffix = " (ears)";
+	private const string headSuffix = " (head)";
+	private const string originSuffix = " (origin)";
 	public string baseName { get { return name.EndsWith(eyeSuffix) ? name.Substring(0, name.Length - eyeSuffix.Length) : name; } }
 
 	// Object hierarchy creation to make it easy to parent other objects appropriately,

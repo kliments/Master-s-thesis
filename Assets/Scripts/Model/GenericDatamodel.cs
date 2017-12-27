@@ -6,26 +6,26 @@ using UnityEngine.Assertions.Comparers;
 
 public abstract class GenericDatamodel
 {
-    protected List<DataItem> dataItems = new List<DataItem>(); // list of all dataitems (DataItem)
+    protected List<DataItem> DataItems = new List<DataItem>(); // list of all dataitems (DataItem)
 
-    public void add(DataItem dataItem)
+    public void Add(DataItem dataItem)
     {
-        dataItems.Add(dataItem);
+        DataItems.Add(dataItem);
     }
 
-    public List<DataItem> getDataItems()
+    public List<DataItem> GetDataItems()
     {
-        return dataItems;
+        return DataItems;
     }
 
-    public GenericDatamodel mergeDatamodels(GenericDatamodel datamodeltomerge)
+    public GenericDatamodel MergeDatamodels(GenericDatamodel datamodeltomerge)
     {
         if (datamodeltomerge.GetType() != GetType())
         {
             throw new Exception("Cannot merge two different DataTypeModels");
         }
 
-        dataItems.AddRange(datamodeltomerge.getDataItems());
+        DataItems.AddRange(datamodeltomerge.GetDataItems());
 
         return this;
     }

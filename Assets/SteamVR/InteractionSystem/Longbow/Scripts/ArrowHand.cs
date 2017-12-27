@@ -42,7 +42,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			allowTeleport = GetComponent<AllowTeleportWhileAttachedToHand>();
 			allowTeleport.teleportAllowed = true;
@@ -63,7 +63,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private GameObject InstantiateArrow()
 		{
-			GameObject arrow = Instantiate( arrowPrefab, arrowNockTransform.position, arrowNockTransform.rotation ) as GameObject;
+			var arrow = Instantiate( arrowPrefab, arrowNockTransform.position, arrowNockTransform.rotation ) as GameObject;
 			arrow.name = "Bow Arrow";
 			arrow.transform.parent = arrowNockTransform;
 			Util.ResetTransform( arrow.transform );
@@ -72,7 +72,7 @@ namespace Valve.VR.InteractionSystem
 
 			while ( arrowList.Count > maxArrowCount )
 			{
-				GameObject oldArrow = arrowList[0];
+				var oldArrow = arrowList[0];
 				arrowList.RemoveAt( 0 );
 				if ( oldArrow )
 				{
@@ -103,7 +103,7 @@ namespace Valve.VR.InteractionSystem
 				arrowSpawnSound.Play();
 			}
 
-			float distanceToNockPosition = Vector3.Distance( transform.parent.position, bow.nockTransform.position );
+			var distanceToNockPosition = Vector3.Distance( transform.parent.position, bow.nockTransform.position );
 
 			// If there's an arrow spawned in the hand and it's not nocked yet
 			if ( !nocked )
@@ -111,7 +111,7 @@ namespace Valve.VR.InteractionSystem
 				// If we're close enough to nock position that we want to start arrow rotation lerp, do so
 				if ( distanceToNockPosition < rotationLerpThreshold )
 				{
-					float lerp = Util.RemapNumber( distanceToNockPosition, rotationLerpThreshold, lerpCompleteDistance, 0, 1 );
+					var lerp = Util.RemapNumber( distanceToNockPosition, rotationLerpThreshold, lerpCompleteDistance, 0, 1 );
 
 					arrowNockTransform.rotation = Quaternion.Lerp( arrowNockTransform.parent.rotation, bow.nockRestTransform.rotation, lerp );
 				}
@@ -123,7 +123,7 @@ namespace Valve.VR.InteractionSystem
 				// If we're close enough to the nock position that we want to start arrow position lerp, do so
 				if ( distanceToNockPosition < positionLerpThreshold )
 				{
-					float posLerp = Util.RemapNumber( distanceToNockPosition, positionLerpThreshold, lerpCompleteDistance, 0, 1 );
+					var posLerp = Util.RemapNumber( distanceToNockPosition, positionLerpThreshold, lerpCompleteDistance, 0, 1 );
 
 					posLerp = Mathf.Clamp( posLerp, 0f, 1f );
 
@@ -223,7 +223,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			currentArrow.transform.parent = null;
 
-			Arrow arrow = currentArrow.GetComponent<Arrow>();
+			var arrow = currentArrow.GetComponent<Arrow>();
 			arrow.shaftRB.isKinematic = false;
 			arrow.shaftRB.useGravity = true;
 			arrow.shaftRB.transform.GetComponent<BoxCollider>().enabled = true;

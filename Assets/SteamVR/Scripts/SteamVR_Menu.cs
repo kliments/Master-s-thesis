@@ -15,20 +15,20 @@ public class SteamVR_Menu : MonoBehaviour
 	public Vector2 scaleLimits = new Vector2(0.1f, 5.0f);
 	public float scaleRate = 0.5f;
 
-	SteamVR_Overlay overlay;
-	Camera overlayCam;
-	Vector4 uvOffset;
-	float distance;
+	private SteamVR_Overlay overlay;
+	private Camera overlayCam;
+	private Vector4 uvOffset;
+	private float distance;
 
 	public RenderTexture texture { get { return overlay ? overlay.texture as RenderTexture : null; } }
 	public float scale { get; private set; }
 
-	string scaleLimitX, scaleLimitY, scaleRateText;
+	private string scaleLimitX, scaleLimitY, scaleRateText;
 
-	CursorLockMode savedCursorLockState;
-	bool savedCursorVisible;
+	private CursorLockMode savedCursorLockState;
+	private bool savedCursorVisible;
 
-	void Awake()
+	private void Awake()
 	{
 		scaleLimitX = string.Format("{0:N1}", scaleLimits.x);
 		scaleLimitY = string.Format("{0:N1}", scaleLimits.y);
@@ -42,7 +42,7 @@ public class SteamVR_Menu : MonoBehaviour
 		}
 	}
 
-	void OnGUI()
+	private void OnGUI()
 	{
 		if (overlay == null)
 			return;
@@ -91,7 +91,7 @@ public class SteamVR_Menu : MonoBehaviour
 
 		GUILayout.Space(menuOffset);
 
-		bool bHideMenu = GUILayout.Button("[Esc] - Close menu");
+		var bHideMenu = GUILayout.Button("[Esc] - Close menu");
 
 		GUILayout.BeginHorizontal();
 		GUILayout.Label(string.Format("Scale: {0:N4}", scale));
@@ -143,9 +143,9 @@ public class SteamVR_Menu : MonoBehaviour
 			GUILayout.BeginHorizontal();
 			{
 				var t = SteamVR_Camera.sceneResolutionScale;
-				int w = (int)(vr.sceneWidth * t);
-				int h = (int)(vr.sceneHeight * t);
-				int pct = (int)(100.0f * t);
+				var w = (int)(vr.sceneWidth * t);
+				var h = (int)(vr.sceneHeight * t);
+				var pct = (int)(100.0f * t);
 				GUILayout.Label(string.Format("Scene quality: {0}x{1} ({2}%)", w, h, pct));
 				var result = Mathf.RoundToInt(GUILayout.HorizontalSlider(pct, 50, 200));
 				if (result != pct)
@@ -281,7 +281,7 @@ public class SteamVR_Menu : MonoBehaviour
 		}
 	}
 
-	void Update()
+	private void Update()
 	{
 		if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Joystick1Button7))
 		{
@@ -308,7 +308,7 @@ public class SteamVR_Menu : MonoBehaviour
 		}
 	}
 
-	void SetScale(float scale)
+	private void SetScale(float scale)
 	{
 		this.scale = scale;
 
@@ -317,13 +317,13 @@ public class SteamVR_Menu : MonoBehaviour
 			tracker.origin.localScale = new Vector3(scale, scale, scale);
 	}
 
-	void SaveCursorState()
+	private void SaveCursorState()
 	{
 		savedCursorVisible = Cursor.visible;
 		savedCursorLockState = Cursor.lockState;
 	}
 
-	void RestoreCursorState()
+	private void RestoreCursorState()
 	{
 		Cursor.visible = savedCursorVisible;
 		Cursor.lockState = savedCursorLockState;

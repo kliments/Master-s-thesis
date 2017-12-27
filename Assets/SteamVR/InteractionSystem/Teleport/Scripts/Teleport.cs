@@ -108,7 +108,7 @@ namespace Valve.VR.InteractionSystem
 		private Vector3 startingFeetOffset = Vector3.zero;
 		private bool movedFeetFarEnough = false;
 
-		SteamVR_Events.Action chaperoneInfoInitializedAction;
+		private SteamVR_Events.Action chaperoneInfoInitializedAction;
 
 		// Events
 
@@ -138,7 +138,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			_instance = this;
 
@@ -147,7 +147,7 @@ namespace Valve.VR.InteractionSystem
 			pointerLineRenderer = GetComponentInChildren<LineRenderer>();
 			teleportPointerObject = pointerLineRenderer.gameObject;
 
-			int tintColorID = Shader.PropertyToID( "_TintColor" );
+			var tintColorID = Shader.PropertyToID( "_TintColor" );
 			fullTintAlpha = pointVisibleMaterial.GetColor( tintColorID ).a;
 
 			teleportArc = GetComponent<TeleportArc>();
@@ -158,14 +158,14 @@ namespace Valve.VR.InteractionSystem
 			playAreaPreviewCorner.SetActive( false );
 			playAreaPreviewSide.SetActive( false );
 
-			float invalidReticleStartingScale = invalidReticleTransform.localScale.x;
+			var invalidReticleStartingScale = invalidReticleTransform.localScale.x;
 			invalidReticleMinScale *= invalidReticleStartingScale;
 			invalidReticleMaxScale *= invalidReticleStartingScale;
 		}
 
 
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			teleportMarkers = GameObject.FindObjectsOfType<TeleportMarkerBase>();
 
@@ -187,7 +187,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void OnEnable()
+		private void OnEnable()
 		{
 			chaperoneInfoInitializedAction.enabled = true;
 			OnChaperoneInfoInitialized(); // In case it's already initialized
@@ -195,7 +195,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void OnDisable()
+		private void OnDisable()
 		{
 			chaperoneInfoInitializedAction.enabled = false;
 			HidePointer();
@@ -205,9 +205,9 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private void CheckForSpawnPoint()
 		{
-			foreach ( TeleportMarkerBase teleportMarker in teleportMarkers )
+			foreach ( var teleportMarker in teleportMarkers )
 			{
-				TeleportPoint teleportPoint = teleportMarker as TeleportPoint;
+				var teleportPoint = teleportMarker as TeleportPoint;
 				if ( teleportPoint && teleportPoint.playerSpawnPoint )
 				{
 					teleportingToMarker = teleportMarker;
@@ -229,12 +229,12 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
-			Hand oldPointerHand = pointerHand;
+			var oldPointerHand = pointerHand;
 			Hand newPointerHand = null;
 
-			foreach ( Hand hand in player.hands )
+			foreach ( var hand in player.hands )
 			{
 				if ( visible )
 				{
@@ -307,21 +307,21 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private void UpdatePointer()
 		{
-			Vector3 pointerStart = pointerStartTransform.position;
+			var pointerStart = pointerStartTransform.position;
 			Vector3 pointerEnd;
-			Vector3 pointerDir = pointerStartTransform.forward;
-			bool hitSomething = false;
-			bool showPlayAreaPreview = false;
-			Vector3 playerFeetOffset = player.trackingOriginTransform.position - player.feetPositionGuess;
+			var pointerDir = pointerStartTransform.forward;
+			var hitSomething = false;
+			var showPlayAreaPreview = false;
+			var playerFeetOffset = player.trackingOriginTransform.position - player.feetPositionGuess;
 
-			Vector3 arcVelocity = pointerDir * arcDistance;
+			var arcVelocity = pointerDir * arcDistance;
 
 			TeleportMarkerBase hitTeleportMarker = null;
 
 			//Check pointer angle
-			float dotUp = Vector3.Dot( pointerDir, Vector3.up );
-			float dotForward = Vector3.Dot( pointerDir, player.hmdTransform.forward );
-			bool pointerAtBadAngle = false;
+			var dotUp = Vector3.Dot( pointerDir, Vector3.up );
+			var dotForward = Vector3.Dot( pointerDir, player.hmdTransform.forward );
+			var pointerAtBadAngle = false;
 			if ( ( dotForward > 0 && dotUp > 0.75f ) || ( dotForward < 0.0f && dotUp > 0.5f ) )
 			{
 				pointerAtBadAngle = true;
@@ -378,15 +378,15 @@ namespace Valve.VR.InteractionSystem
 				if ( showPlayAreaMarker )
 				{
 					//Show the play area marker if this is a teleport area
-					TeleportArea teleportArea = pointedAtTeleportMarker as TeleportArea;
+					var teleportArea = pointedAtTeleportMarker as TeleportArea;
 					if ( teleportArea != null && !teleportArea.locked && playAreaPreviewTransform != null )
 					{
-						Vector3 offsetToUse = playerFeetOffset;
+						var offsetToUse = playerFeetOffset;
 
 						//Adjust the actual offset to prevent the play area marker from moving too much
 						if ( !movedFeetFarEnough )
 						{
-							float distanceFromStartingOffset = Vector3.Distance( playerFeetOffset, startingFeetOffset );
+							var distanceFromStartingOffset = Vector3.Distance( playerFeetOffset, startingFeetOffset );
 							if ( distanceFromStartingOffset < 0.1f )
 							{
 								offsetToUse = startingFeetOffset;
@@ -424,8 +424,8 @@ namespace Valve.VR.InteractionSystem
 				invalidReticleTransform.gameObject.SetActive( !pointerAtBadAngle );
 
 				//Orient the invalid reticle to the normal of the trace hit point
-				Vector3 normalToUse = hitInfo.normal;
-				float angle = Vector3.Angle( hitInfo.normal, Vector3.up );
+				var normalToUse = hitInfo.normal;
+				var angle = Vector3.Angle( hitInfo.normal, Vector3.up );
 				if ( angle < 15.0f )
 				{
 					normalToUse = Vector3.up;
@@ -434,8 +434,8 @@ namespace Valve.VR.InteractionSystem
 				invalidReticleTransform.rotation = Quaternion.Slerp( invalidReticleTransform.rotation, invalidReticleTargetRotation, 0.1f );
 
 				//Scale the invalid reticle based on the distance from the player
-				float distanceFromPlayer = Vector3.Distance( hitInfo.point, player.hmdTransform.position );
-				float invalidReticleCurrentScale = Util.RemapNumberClamped( distanceFromPlayer, invalidReticleMinScaleDistance, invalidReticleMaxScaleDistance, invalidReticleMinScale, invalidReticleMaxScale );
+				var distanceFromPlayer = Vector3.Distance( hitInfo.point, player.hmdTransform.position );
+				var invalidReticleCurrentScale = Util.RemapNumberClamped( distanceFromPlayer, invalidReticleMinScaleDistance, invalidReticleMaxScaleDistance, invalidReticleMinScale, invalidReticleMaxScale );
 				invalidReticleScale.x = invalidReticleCurrentScale;
 				invalidReticleScale.y = invalidReticleCurrentScale;
 				invalidReticleScale.z = invalidReticleCurrentScale;
@@ -484,7 +484,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void FixedUpdate()
+		private void FixedUpdate()
 		{
 			if ( !visible )
 			{
@@ -494,7 +494,7 @@ namespace Valve.VR.InteractionSystem
 			if ( debugFloor )
 			{
 				//Debug floor
-				TeleportArea teleportArea = pointedAtTeleportMarker as TeleportArea;
+				var teleportArea = pointedAtTeleportMarker as TeleportArea;
 				if ( teleportArea != null )
 				{
 					if ( floorFixupMaximumTraceDistance > 0.0f )
@@ -503,7 +503,7 @@ namespace Valve.VR.InteractionSystem
 						floorDebugLine.gameObject.SetActive( true );
 
 						RaycastHit raycastHit;
-						Vector3 traceDir = Vector3.down;
+						var traceDir = Vector3.down;
 						traceDir.x = 0.01f;
 						if ( Physics.Raycast( pointedAtPosition + 0.05f * traceDir, traceDir, out raycastHit, floorFixupMaximumTraceDistance, floorFixupTraceLayerMask ) )
 						{
@@ -520,7 +520,7 @@ namespace Valve.VR.InteractionSystem
 						}
 						else
 						{
-							Vector3 rayEnd = pointedAtPosition + ( traceDir * floorFixupMaximumTraceDistance );
+							var rayEnd = pointedAtPosition + ( traceDir * floorFixupMaximumTraceDistance );
 							floorDebugSphere.transform.position = rayEnd;
 							floorDebugSphere.material.color = Color.red;
 #if (UNITY_5_4)
@@ -541,7 +541,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private void OnChaperoneInfoInitialized()
 		{
-			ChaperoneInfo chaperone = ChaperoneInfo.instance;
+			var chaperone = ChaperoneInfo.instance;
 
 			if ( chaperone.initialized && chaperone.roomscale )
 			{
@@ -578,8 +578,8 @@ namespace Valve.VR.InteractionSystem
 					playAreaPreviewSides[3].transform.parent = playAreaPreviewTransform;
 				}
 
-				float x = chaperone.playAreaSizeX;
-				float z = chaperone.playAreaSizeZ;
+				var x = chaperone.playAreaSizeX;
+				var z = chaperone.playAreaSizeZ;
 
 				playAreaPreviewSides[0].localPosition = new Vector3( 0.0f, 0.0f, 0.5f * z - 0.25f );
 				playAreaPreviewSides[1].localPosition = new Vector3( 0.0f, 0.0f, -0.5f * z + 0.25f );
@@ -643,7 +643,7 @@ namespace Valve.VR.InteractionSystem
 
 			teleportArc.Hide();
 
-			foreach ( TeleportMarkerBase teleportMarker in teleportMarkers )
+			foreach ( var teleportMarker in teleportMarkers )
 			{
 				if ( teleportMarker != null && teleportMarker.markerActive && teleportMarker.gameObject != null )
 				{
@@ -683,7 +683,7 @@ namespace Valve.VR.InteractionSystem
 				teleportPointerObject.SetActive( false );
 				teleportArc.Show();
 
-				foreach ( TeleportMarkerBase teleportMarker in teleportMarkers )
+				foreach ( var teleportMarker in teleportMarkers )
 				{
 					if ( teleportMarker.markerActive && teleportMarker.ShouldActivate( player.feetPositionGuess ) )
 					{
@@ -761,7 +761,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private void UpdateTeleportColors()
 		{
-			float deltaTime = Time.time - pointerShowStartTime;
+			var deltaTime = Time.time - pointerShowStartTime;
 			if ( deltaTime > meshFadeTime )
 			{
 				meshAlphaPercent = 1.0f;
@@ -773,7 +773,7 @@ namespace Valve.VR.InteractionSystem
 			}
 
 			//Tint color for the teleport points
-			foreach ( TeleportMarkerBase teleportMarker in teleportMarkers )
+			foreach ( var teleportMarker in teleportMarkers )
 			{
 				teleportMarker.SetAlpha( fullTintAlpha * meshAlphaPercent, meshAlphaPercent );
 			}
@@ -829,7 +829,7 @@ namespace Valve.VR.InteractionSystem
 
 			currentFadeTime = teleportFadeTime;
 
-			TeleportPoint teleportPoint = teleportingToMarker as TeleportPoint;
+			var teleportPoint = teleportingToMarker as TeleportPoint;
 			if ( teleportPoint != null && teleportPoint.teleportType == TeleportPoint.TeleportPointType.SwitchToNewScene )
 			{
 				currentFadeTime *= 3.0f;
@@ -856,8 +856,8 @@ namespace Valve.VR.InteractionSystem
 
 			SteamVR_Fade.Start( Color.clear, currentFadeTime );
 
-			TeleportPoint teleportPoint = teleportingToMarker as TeleportPoint;
-			Vector3 teleportPosition = pointedAtPosition;
+			var teleportPoint = teleportingToMarker as TeleportPoint;
+			var teleportPosition = pointedAtPosition;
 
 			if ( teleportPoint != null )
 			{
@@ -872,7 +872,7 @@ namespace Valve.VR.InteractionSystem
 			}
 
 			// Find the actual floor position below the navigation mesh
-			TeleportArea teleportArea = teleportingToMarker as TeleportArea;
+			var teleportArea = teleportingToMarker as TeleportArea;
 			if ( teleportArea != null )
 			{
 				if ( floorFixupMaximumTraceDistance > 0.0f )
@@ -887,7 +887,7 @@ namespace Valve.VR.InteractionSystem
 
 			if ( teleportingToMarker.ShouldMovePlayer() )
 			{
-				Vector3 playerFeetOffset = player.trackingOriginTransform.position - player.feetPositionGuess;
+				var playerFeetOffset = player.trackingOriginTransform.position - player.feetPositionGuess;
 				player.trackingOriginTransform.position = teleportPosition + playerFeetOffset;
 			}
 			else
@@ -952,7 +952,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			if ( hintCoroutine != null )
 			{
-				foreach ( Hand hand in player.hands )
+				foreach ( var hand in player.hands )
 				{
 					ControllerButtonHints.HideTextHint( hand, EVRButtonId.k_EButton_SteamVR_Touchpad );
 				}
@@ -968,18 +968,18 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private IEnumerator TeleportHintCoroutine()
 		{
-			float prevBreakTime = Time.time;
-			float prevHapticPulseTime = Time.time;
+			var prevBreakTime = Time.time;
+			var prevHapticPulseTime = Time.time;
 
 			while ( true )
 			{
-				bool pulsed = false;
+				var pulsed = false;
 
 				//Show the hint on each eligible hand
-				foreach ( Hand hand in player.hands )
+				foreach ( var hand in player.hands )
 				{
-					bool showHint = IsEligibleForTeleport( hand );
-					bool isShowingHint = !string.IsNullOrEmpty( ControllerButtonHints.GetActiveHintText( hand, EVRButtonId.k_EButton_SteamVR_Touchpad ) );
+					var showHint = IsEligibleForTeleport( hand );
+					var isShowingHint = !string.IsNullOrEmpty( ControllerButtonHints.GetActiveHintText( hand, EVRButtonId.k_EButton_SteamVR_Touchpad ) );
 					if ( showHint )
 					{
 						if ( !isShowingHint )
@@ -1049,7 +1049,7 @@ namespace Valve.VR.InteractionSystem
 				//Something is attached to the hand
 				if ( hand.currentAttachedObject != null )
 				{
-					AllowTeleportWhileAttachedToHand allowTeleportWhileAttachedToHand = hand.currentAttachedObject.GetComponent<AllowTeleportWhileAttachedToHand>();
+					var allowTeleportWhileAttachedToHand = hand.currentAttachedObject.GetComponent<AllowTeleportWhileAttachedToHand>();
 
 					if ( allowTeleportWhileAttachedToHand != null && allowTeleportWhileAttachedToHand.teleportAllowed == true )
 					{

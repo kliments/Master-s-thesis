@@ -20,16 +20,16 @@ public class SteamVR_LaserPointer : MonoBehaviour
     public float thickness = 0.002f;
     public GameObject holder;
     public GameObject pointer;
-    bool isActive = false;
+    private bool isActive = false;
     public bool addRigidBody = false;
     public Transform reference;
     public event PointerEventHandler PointerIn;
     public event PointerEventHandler PointerOut;
 
-    Transform previousContact = null;
+    private Transform previousContact = null;
 
 	// Use this for initialization
-	void Start ()
+    private void Start ()
     {
         holder = new GameObject();
         holder.transform.parent = this.transform;
@@ -41,14 +41,14 @@ public class SteamVR_LaserPointer : MonoBehaviour
         pointer.transform.localScale = new Vector3(thickness, thickness, 100f);
         pointer.transform.localPosition = new Vector3(0f, 0f, 50f);
 		pointer.transform.localRotation = Quaternion.identity;
-		BoxCollider collider = pointer.GetComponent<BoxCollider>();
+		var collider = pointer.GetComponent<BoxCollider>();
         if (addRigidBody)
         {
             if (collider)
             {
                 collider.isTrigger = true;
             }
-            Rigidbody rigidBody = pointer.AddComponent<Rigidbody>();
+            var rigidBody = pointer.AddComponent<Rigidbody>();
             rigidBody.isKinematic = true;
         }
         else
@@ -58,7 +58,7 @@ public class SteamVR_LaserPointer : MonoBehaviour
                 Object.Destroy(collider);
             }
         }
-        Material newMaterial = new Material(Shader.Find("Unlit/Color"));
+        var newMaterial = new Material(Shader.Find("Unlit/Color"));
         newMaterial.SetColor("_Color", color);
         pointer.GetComponent<MeshRenderer>().material = newMaterial;
 	}
@@ -77,7 +77,7 @@ public class SteamVR_LaserPointer : MonoBehaviour
 
 
     // Update is called once per frame
-	void Update ()
+    private void Update ()
     {
         if (!isActive)
         {
@@ -85,17 +85,17 @@ public class SteamVR_LaserPointer : MonoBehaviour
             this.transform.GetChild(0).gameObject.SetActive(true);
         }
 
-        float dist = 100f;
+        var dist = 100f;
 
-        SteamVR_TrackedController controller = GetComponent<SteamVR_TrackedController>();
+        var controller = GetComponent<SteamVR_TrackedController>();
 
-        Ray raycast = new Ray(transform.position, transform.forward);
+        var raycast = new Ray(transform.position, transform.forward);
         RaycastHit hit;
-        bool bHit = Physics.Raycast(raycast, out hit);
+        var bHit = Physics.Raycast(raycast, out hit);
 
         if(previousContact && previousContact != hit.transform)
         {
-            PointerEventArgs args = new PointerEventArgs();
+            var args = new PointerEventArgs();
             if (controller != null)
             {
                 args.controllerIndex = controller.controllerIndex;
@@ -108,7 +108,7 @@ public class SteamVR_LaserPointer : MonoBehaviour
         }
         if(bHit && previousContact != hit.transform)
         {
-            PointerEventArgs argsIn = new PointerEventArgs();
+            var argsIn = new PointerEventArgs();
             if (controller != null)
             {
                 argsIn.controllerIndex = controller.controllerIndex;

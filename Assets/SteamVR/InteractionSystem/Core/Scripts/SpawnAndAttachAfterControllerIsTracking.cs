@@ -18,14 +18,14 @@ namespace Valve.VR.InteractionSystem
 
 	
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			hand = GetComponentInParent<Hand>();
 		}
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
 			if ( itemPrefab != null )
 			{
@@ -33,7 +33,7 @@ namespace Valve.VR.InteractionSystem
 				{
 					if ( hand.controller.hasTracking )
 					{
-						GameObject objectToAttach = GameObject.Instantiate( itemPrefab );
+						var objectToAttach = GameObject.Instantiate( itemPrefab );
 						objectToAttach.SetActive( true );
 						hand.AttachObject( objectToAttach );
 						hand.controller.TriggerHapticPulse( 800 );

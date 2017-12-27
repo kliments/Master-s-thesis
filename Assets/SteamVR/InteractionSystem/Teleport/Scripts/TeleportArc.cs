@@ -42,14 +42,14 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			arcTimeOffset = Time.time;
 		}
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
 			if ( thickness != prevThickness || segmentCount != prevSegmentCount )
 			{
@@ -69,15 +69,15 @@ namespace Valve.VR.InteractionSystem
 				Destroy( arcObjectsTransfrom.gameObject );
 			}
 
-			GameObject arcObjectsParent = new GameObject( "ArcObjects" );
+			var arcObjectsParent = new GameObject( "ArcObjects" );
 			arcObjectsTransfrom = arcObjectsParent.transform;
 			arcObjectsTransfrom.SetParent( this.transform );
 
 			//Create new line renderer objects
 			lineRenderers = new LineRenderer[segmentCount];
-			for ( int i = 0; i < segmentCount; ++i )
+			for ( var i = 0; i < segmentCount; ++i )
 			{
-				GameObject newObject = new GameObject( "LineRenderer_" + i );
+				var newObject = new GameObject( "LineRenderer_" + i );
 				newObject.transform.SetParent( arcObjectsTransfrom );
 
 				lineRenderers[i] = newObject.AddComponent<LineRenderer>();
@@ -141,9 +141,9 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public bool DrawArc( out RaycastHit hitInfo )
 		{
-			float timeStep = arcDuration / segmentCount;
+			var timeStep = arcDuration / segmentCount;
 
-			float currentTimeOffset = ( Time.time - arcTimeOffset ) * arcSpeed;
+			var currentTimeOffset = ( Time.time - arcTimeOffset ) * arcSpeed;
 
 			//Reset the arc time offset when it has gone beyond a segment length
 			if ( currentTimeOffset > ( timeStep + segmentBreak ) )
@@ -152,9 +152,9 @@ namespace Valve.VR.InteractionSystem
 				currentTimeOffset = 0.0f;
 			}
 
-			float segmentStartTime = currentTimeOffset;
+			var segmentStartTime = currentTimeOffset;
 
-			float arcHitTime = FindProjectileCollision( out hitInfo );
+			var arcHitTime = FindProjectileCollision( out hitInfo );
 
 			if ( arcInvalid )
 			{
@@ -168,10 +168,10 @@ namespace Valve.VR.InteractionSystem
 			else
 			{
 				//Draw the first segment outside the loop if needed
-				int loopStartSegment = 0;
+				var loopStartSegment = 0;
 				if ( segmentStartTime > segmentBreak )
 				{
-					float firstSegmentEndTime = currentTimeOffset - segmentBreak;
+					var firstSegmentEndTime = currentTimeOffset - segmentBreak;
 					if ( arcHitTime < firstSegmentEndTime )
 					{
 						firstSegmentEndTime = arcHitTime;
@@ -181,14 +181,14 @@ namespace Valve.VR.InteractionSystem
 					loopStartSegment = 1;
 				}
 
-				bool stopArc = false;
-				int currentSegment = 0;
+				var stopArc = false;
+				var currentSegment = 0;
 				if ( segmentStartTime < arcHitTime )
 				{
 					for ( currentSegment = loopStartSegment; currentSegment < segmentCount; ++currentSegment )
 					{
 						//Clamp the segment end time to the arc duration
-						float segmentEndTime = segmentStartTime + timeStep;
+						var segmentEndTime = segmentStartTime + timeStep;
 						if ( segmentEndTime >= arcDuration )
 						{
 							segmentEndTime = arcDuration;
@@ -237,7 +237,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public void SetColor( Color color )
 		{
-			for ( int i = 0; i < segmentCount; ++i )
+			for ( var i = 0; i < segmentCount; ++i )
 			{
 #if (UNITY_5_4)
 				lineRenderers[i].SetColors( color, color );
@@ -252,24 +252,24 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private float FindProjectileCollision( out RaycastHit hitInfo )
 		{
-			float timeStep = arcDuration / segmentCount;
-			float segmentStartTime = 0.0f;
+			var timeStep = arcDuration / segmentCount;
+			var segmentStartTime = 0.0f;
 
 			hitInfo = new RaycastHit();
 
-			Vector3 segmentStartPos = GetArcPositionAtTime( segmentStartTime );
-			for ( int i = 0; i < segmentCount; ++i )
+			var segmentStartPos = GetArcPositionAtTime( segmentStartTime );
+			for ( var i = 0; i < segmentCount; ++i )
 			{
-				float segmentEndTime = segmentStartTime + timeStep;
-				Vector3 segmentEndPos = GetArcPositionAtTime( segmentEndTime );
+				var segmentEndTime = segmentStartTime + timeStep;
+				var segmentEndPos = GetArcPositionAtTime( segmentEndTime );
 
 				if ( Physics.Linecast( segmentStartPos, segmentEndPos, out hitInfo, traceLayerMask ) )
 				{
 					if ( hitInfo.collider.GetComponent<IgnoreTeleportTrace>() == null )
 					{
 						Util.DrawCross( hitInfo.point, Color.red, 0.5f );
-						float segmentDistance = Vector3.Distance( segmentStartPos, segmentEndPos );
-						float hitTime = segmentStartTime + ( timeStep * ( hitInfo.distance / segmentDistance ) );
+						var segmentDistance = Vector3.Distance( segmentStartPos, segmentEndPos );
+						var hitTime = segmentStartTime + ( timeStep * ( hitInfo.distance / segmentDistance ) );
 						return hitTime;
 					}
 				}
@@ -285,9 +285,9 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public Vector3 GetArcPositionAtTime( float time )
 		{
-			Vector3 gravity = useGravity ? Physics.gravity : Vector3.zero;
+			var gravity = useGravity ? Physics.gravity : Vector3.zero;
 
-			Vector3 arcPos = startPos + ( ( projectileVelocity * time ) + ( 0.5f * time * time ) * gravity );
+			var arcPos = startPos + ( ( projectileVelocity * time ) + ( 0.5f * time * time ) * gravity );
 			return arcPos;
 		}
 
@@ -297,7 +297,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			if ( lineRenderers != null )
 			{
-				for ( int i = startSegment; i < endSegment; ++i )
+				for ( var i = startSegment; i < endSegment; ++i )
 				{
 					lineRenderers[i].enabled = false;
 				}

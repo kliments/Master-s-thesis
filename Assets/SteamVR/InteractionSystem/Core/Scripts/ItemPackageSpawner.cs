@@ -98,7 +98,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			VerifyItemPackage();
 		}
@@ -145,7 +145,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
 			if ( ( itemIsSpawned == true ) && ( spawnedItem == null ) )
 			{
@@ -160,7 +160,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private void OnHandHoverBegin( Hand hand )
 		{
-			ItemPackage currentAttachedItemPackage = GetAttachedItemPackage( hand );
+			var currentAttachedItemPackage = GetAttachedItemPackage( hand );
 
 			if ( currentAttachedItemPackage == itemPackage ) // the item at the top of the hand's stack has an associated ItemPackage
 			{
@@ -197,20 +197,20 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private ItemPackage GetAttachedItemPackage( Hand hand )
 		{
-			GameObject currentAttachedObject = hand.currentAttachedObject;
+			var currentAttachedObject = hand.currentAttachedObject;
 
 			if ( currentAttachedObject == null ) // verify the hand is holding something
 			{
 				return null;
 			}
 
-			ItemPackageReference packageReference = hand.currentAttachedObject.GetComponent<ItemPackageReference>();
+			var packageReference = hand.currentAttachedObject.GetComponent<ItemPackageReference>();
 			if ( packageReference == null ) // verify the item in the hand is matchable
 			{
 				return null;
 			}
 
-			ItemPackage attachedItemPackage = packageReference.itemPackage; // return the ItemPackage reference we find.
+			var attachedItemPackage = packageReference.itemPackage; // return the ItemPackage reference we find.
 
 			return attachedItemPackage;
 		}
@@ -244,15 +244,15 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private void RemoveMatchingItemsFromHandStack( ItemPackage package, Hand hand )
 		{
-			for ( int i = 0; i < hand.AttachedObjects.Count; i++ )
+			for ( var i = 0; i < hand.AttachedObjects.Count; i++ )
 			{
-				ItemPackageReference packageReference = hand.AttachedObjects[i].attachedObject.GetComponent<ItemPackageReference>();
+				var packageReference = hand.AttachedObjects[i].attachedObject.GetComponent<ItemPackageReference>();
 				if ( packageReference != null )
 				{
-					ItemPackage attachedObjectItemPackage = packageReference.itemPackage;
+					var attachedObjectItemPackage = packageReference.itemPackage;
 					if ( ( attachedObjectItemPackage != null ) && ( attachedObjectItemPackage == package ) )
 					{
-						GameObject detachedItem = hand.AttachedObjects[i].attachedObject;
+						var detachedItem = hand.AttachedObjects[i].attachedObject;
 						hand.DetachObject( detachedItem );
 					}
 				}
@@ -263,14 +263,14 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private void RemoveMatchingItemTypesFromHand( ItemPackage.ItemPackageType packageType, Hand hand )
 		{
-			for ( int i = 0; i < hand.AttachedObjects.Count; i++ )
+			for ( var i = 0; i < hand.AttachedObjects.Count; i++ )
 			{
-				ItemPackageReference packageReference = hand.AttachedObjects[i].attachedObject.GetComponent<ItemPackageReference>();
+				var packageReference = hand.AttachedObjects[i].attachedObject.GetComponent<ItemPackageReference>();
 				if ( packageReference != null )
 				{
 					if ( packageReference.itemPackage.packageType == packageType )
 					{
-						GameObject detachedItem = hand.AttachedObjects[i].attachedObject;
+						var detachedItem = hand.AttachedObjects[i].attachedObject;
 						hand.DetachObject( detachedItem );
 					}
 				}
@@ -284,7 +284,7 @@ namespace Valve.VR.InteractionSystem
 			if ( hand.otherHand != null )
 			{
 				//If the other hand has this item package, take it back from the other hand
-				ItemPackage otherHandItemPackage = GetAttachedItemPackage( hand.otherHand );
+				var otherHandItemPackage = GetAttachedItemPackage( hand.otherHand );
 				if ( otherHandItemPackage == itemPackage )
 				{
 					TakeBackItem( hand.otherHand );
@@ -328,7 +328,7 @@ namespace Valve.VR.InteractionSystem
 
 			if ( ( itemPackage.otherHandItemPrefab != null ) && ( hand.otherHand.controller != null ) )
 			{
-				GameObject otherHandObjectToAttach = GameObject.Instantiate( itemPackage.otherHandItemPrefab );
+				var otherHandObjectToAttach = GameObject.Instantiate( itemPackage.otherHandItemPrefab );
 				otherHandObjectToAttach.SetActive( true );
 				hand.otherHand.AttachObject( otherHandObjectToAttach, attachmentFlags );
 			}

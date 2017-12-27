@@ -6,19 +6,19 @@ using UnityEngine;
 public class NewOperator :  GenericOperator
 {
 
-    public override bool process()
+    public override bool Process()
     {
         return true;
     }
 
-    public override bool validateIfOperatorPossibleForParents(GenericOperator parent)
+    public override bool ValidateIfOperatorPossibleForParents(GenericOperator parent)
     {
         // new operator can allways be spawned
         return true; 
     }
 
     // Update is called once per frame
-	void Update () {
+    private void Update () {
 	   
     }
 

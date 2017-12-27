@@ -42,7 +42,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public void HoverBegin( GameObject gameObject )
 		{
-			PointerEventData pointerEventData = new PointerEventData( eventSystem );
+			var pointerEventData = new PointerEventData( eventSystem );
 			ExecuteEvents.Execute( gameObject, pointerEventData, ExecuteEvents.pointerEnterHandler );
 		}
 
@@ -50,7 +50,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		public void HoverEnd( GameObject gameObject )
 		{
-			PointerEventData pointerEventData = new PointerEventData( eventSystem );
+			var pointerEventData = new PointerEventData( eventSystem );
 			pointerEventData.selectedObject = null;
 			ExecuteEvents.Execute( gameObject, pointerEventData, ExecuteEvents.pointerExitHandler );
 		}
@@ -68,7 +68,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			if ( submitObject )
 			{
-				BaseEventData data = GetBaseEventData();
+				var data = GetBaseEventData();
 				data.selectedObject = submitObject;
 				ExecuteEvents.Execute( submitObject, data, ExecuteEvents.submitHandler );
 

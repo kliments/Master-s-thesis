@@ -59,10 +59,10 @@ public class SteamVR_Frustum : MonoBehaviour
 			2, 7, 3, 2, 6, 7, // bottom
 		};
 
-		int j = 0;
+		var j = 0;
 		var vertices = new Vector3[triangles.Length];
 		var normals = new Vector3[triangles.Length];
-		for (int i = 0; i < triangles.Length / 3; i++)
+		for (var i = 0; i < triangles.Length / 3; i++)
 		{
 			var a = corners[triangles[i * 3 + 0]];
 			var b = corners[triangles[i * 3 + 1]];
@@ -129,20 +129,20 @@ public class SteamVR_Frustum : MonoBehaviour
 		}
 	}
 
-	void OnEnable()
+	private void OnEnable()
 	{
 		GetComponent<MeshFilter>().mesh = null;
 		SteamVR_Events.DeviceConnected.Listen(OnDeviceConnected);
 	}
 
-	void OnDisable()
+	private void OnDisable()
 	{
 		SteamVR_Events.DeviceConnected.Remove(OnDeviceConnected);
 		GetComponent<MeshFilter>().mesh = null;
 	}
 
 #if UNITY_EDITOR
-	void Update()
+	private void Update()
 	{
 		if (!Application.isPlaying)
 			UpdateModel();

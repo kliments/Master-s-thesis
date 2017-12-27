@@ -9,41 +9,41 @@ namespace Assets.Scripts.Model
 {
     public abstract class GenericOperator : MonoBehaviour
     {
-        public Observer observer;
+        public Observer Observer;
 
-        public int id = -1;
+        public int Id = -1;
 
-        public List<GenericOperator> parents; // stores all parents (GenericOperator)
-        public List<GenericOperator> children; // stores all children (GenericOperator)
+        public List<GenericOperator> Parents; // stores all parents (GenericOperator)
+        public List<GenericOperator> Children; // stores all children (GenericOperator)
 
-        public GenericVisualization visualization; // stores reference to visualization-object if one exists
-        public GenericIcon icon; // stores reference to icon object
+        public GenericVisualization Visualization; // stores reference to visualization-object if one exists
+        public GenericIcon Icon; // stores reference to icon object
 
-        private GenericDatamodel rawInputData;
-        private GenericDatamodel outputData;
+        private GenericDatamodel _rawInputData;
+        private GenericDatamodel _outputData;
 
-        public bool properInitializedStart;
+        public bool ProperInitializedStart;
 
         public virtual void Start()
         {
-            visualization = GetComponentInChildren<GenericVisualization>();
-            icon = GetComponentInChildren<GenericIcon>();
+            Visualization = GetComponentInChildren<GenericVisualization>();
+            Icon = GetComponentInChildren<GenericIcon>();
 
-            observer = GameObject.FindObjectOfType<Observer>();
+            Observer = GameObject.FindObjectOfType<Observer>();
             
-            properInitializedStart = true;
+            ProperInitializedStart = true;
 
-            observer.NotifyObserverInitComplete(this);
+            Observer.NotifyObserverInitComplete(this);
         }
 
         /**
         * Initializes Operator with parents and input data.
         * */
-        public void init(int id, List<GenericOperator> parentsList)
+        public void Init(int id, List<GenericOperator> parentsList)
         {
-            this.id = id;
-            this.parents = parentsList;
-            fetchdata();
+            this.Id = id;
+            this.Parents = parentsList;
+            Fetchdata();
         }
 
         /**
@@ -51,160 +51,160 @@ namespace Assets.Scripts.Model
         * icon. If necessary, children are recursively refresehed as well. 
         * Returns true if finished successfully.
         * */
-        public abstract bool process();
+        public abstract bool Process();
 
         /**
         * Refreshes data by collecting and combining data models from all parents.
         * */
-        public void fetchdata()
+        public void Fetchdata()
         {
-            if (parents == null || parents.Count == 0) return;
+            if (Parents == null || Parents.Count == 0) return;
 
-            GenericDatamodel unitedDataModel = parents[0].getOutputData();
-            for(int i=1; i<parents.Count; i++)
+            var unitedDataModel = Parents[0].GetOutputData();
+            for(var i=1; i<Parents.Count; i++)
             {
-                unitedDataModel = unitedDataModel.mergeDatamodels(parents[i].getOutputData());
+                unitedDataModel = unitedDataModel.MergeDatamodels(Parents[i].GetOutputData());
             }
-            setRawInputData(unitedDataModel);
+            SetRawInputData(unitedDataModel);
         }
 
         /**
         * Deletes recursively all children that do not have any other parent and refreshes all children that 
         * do have other parents. Deletes itself including icon and visualization. 
         * */
-        public void delete(GenericOperator op)
+        public void Delete(GenericOperator op)
         {
-            if (op.Equals(this) || parents.Count == 1)
+            if (op.Equals(this) || Parents.Count == 1)
             {
-                foreach (GenericOperator parent in parents)
+                foreach (var parent in Parents)
                 {
-                    parent.removeChild(op);
+                    parent.RemoveChild(op);
                 }
-                foreach (GenericOperator child in children)
+                foreach (var child in Children)
                 {
-                    child.delete(this);
+                    child.Delete(this);
                 }
-                destroyGenericOperator();
+                DestroyGenericOperator();
             }
             else
             {
-                removeParent(op);
-                fetchdata();
-                process();
+                RemoveParent(op);
+                Fetchdata();
+                Process();
             }
         }
 
         /**
         * Adds Generic Operator to children
         * */
-        protected void addChild(GenericOperator child)
+        protected void AddChild(GenericOperator child)
         {
-            children.Add(child);
+            Children.Add(child);
         }
 
         /**
        * Removes Generic Operator from children
        * */
-        protected void removeChild(GenericOperator child)
+        protected void RemoveChild(GenericOperator child)
         {
-            if(children.Contains(child))
-                children.Remove(child);
+            if(Children.Contains(child))
+                Children.Remove(child);
         }
 
         /**
         * Adds Generic Operator to parents
         * */
-        protected void addParent(GenericOperator parent)
+        protected void AddParent(GenericOperator parent)
         {
-            parents.Add(parent);
+            Parents.Add(parent);
 
         }
 
         /**
         * Removes Generic Operator from parents
         * */
-        protected void removeParent(GenericOperator parent)
+        protected void RemoveParent(GenericOperator parent)
         {
-            if(parents.Contains(parent))
-                parents.Remove(parent);
+            if(Parents.Contains(parent))
+                Parents.Remove(parent);
         }
 
 
         /**
        * Returns the inputData
        * */
-        public GenericDatamodel getRawInputData()
+        public GenericDatamodel GetRawInputData()
         {
-            return rawInputData;
+            return _rawInputData;
         }
 
         /**
         * Sets the inputData
         * */
-        protected void setRawInputData(GenericDatamodel newRawInputData)
+        protected void SetRawInputData(GenericDatamodel newRawInputData)
         {
-            rawInputData = newRawInputData;
+            _rawInputData = newRawInputData;
         }
 
         /**
         * Returns the outputData
         * */
-        public GenericDatamodel getOutputData()
+        public GenericDatamodel GetOutputData()
         {
-            return outputData;
+            return _outputData;
         }
 
         /**
         * Sets the outputData
         * */
-        protected void setOutputData(GenericDatamodel newOuputData)
+        protected void SetOutputData(GenericDatamodel newOuputData)
         {
-            outputData = newOuputData;
+            _outputData = newOuputData;
         }
 
         /**
         * Returns the icon
         * */
-        public GenericIcon getIcon()
+        public GenericIcon GetIcon()
         {
-            return icon;
+            return Icon;
         }
 
         /**
         * Returns the visualization
         * */
-        public GenericVisualization getVisualization()
+        public GenericVisualization GetVisualization()
         {
-            return visualization;
+            return Visualization;
         }
 
 
         /**
         * Removes the generic operator from the scene, including visualization and icon
         * */
-        private void destroyGenericOperator()
+        private void DestroyGenericOperator()
         {
             //TODO notifyObserver about delete of id
 
-            if(visualization.gameObject != null)
-                Destroy(visualization.gameObject);
-            if (icon.gameObject != null)
-                Destroy(icon.gameObject);
+            if(Visualization.gameObject != null)
+                Destroy(Visualization.gameObject);
+            if (Icon.gameObject != null)
+                Destroy(Icon.gameObject);
             if (gameObject != null)
                 Destroy(gameObject);
         }
 
-        public bool checkConsistency()
+        public bool CheckConsistency()
         {
-            return properInitializedStart;
+            return ProperInitializedStart;
         }
 
-        public int getId()
+        public int GetId()
         {
-            return id;
+            return Id;
         }
 
-        public abstract bool validateIfOperatorPossibleForParents(GenericOperator parent);
+        public abstract bool ValidateIfOperatorPossibleForParents(GenericOperator parent);
 
 
 

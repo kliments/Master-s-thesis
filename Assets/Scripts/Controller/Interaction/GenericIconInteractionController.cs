@@ -5,32 +5,28 @@ using UnityEngine;
 namespace Controller.Interaction
 {
     public abstract class GenericIconInteractionController : Targetable {
-
-        void OnEnable()
+        private void OnEnable()
         {
             InputController.LeftClickOnTargetEvent += OnLeftClickOnTargetEvent;
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             InputController.LeftClickOnTargetEvent -= OnLeftClickOnTargetEvent;
         }
 
         public GenericOperator GetOperator()
         {
-            Transform t = this.transform;
+            var t = transform;
             while (true)
             {
                 if (t == null) throw new Exception("No operator parent found in hierarchy!");
 
                 if (t.parent.GetComponent<GenericIcon>() != null)
                 {
-                    return t.parent.GetComponent<GenericIcon>().getOperator();
+                    return t.parent.GetComponent<GenericIcon>().GetOperator();
                 }
-                else
-                {
-                    t = t.parent;
-                }
+                t = t.parent;
             }
         }
     }

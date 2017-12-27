@@ -4,13 +4,12 @@ using Assets.Scripts.Model;
 using UnityEngine;
 
 public abstract class GenericIcon : MonoBehaviour {
-    public GenericOperator op;
+    public GenericOperator Op;
 
-   
 
-    void Awake()
+    private void Awake()
     {
-        op = transform.parent.GetComponent<GenericOperator>();
+        Op = transform.parent.GetComponent<GenericOperator>();
     }
 
 
@@ -20,13 +19,13 @@ public abstract class GenericIcon : MonoBehaviour {
 
 
 
-    public void setOperator(GenericOperator operatorObj)
+    public void SetOperator(GenericOperator operatorObj)
     {
-        op = operatorObj;
+        Op = operatorObj;
     }
 
-    public GenericOperator getOperator()
+    public GenericOperator GetOperator()
     {
-        return op;
+        return Op;
     }
 }

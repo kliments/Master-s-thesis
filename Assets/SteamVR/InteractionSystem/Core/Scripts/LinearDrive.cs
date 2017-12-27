@@ -29,14 +29,14 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			mappingChangeSamples = new float[numMappingChangeSamples];
 		}
 
 
 		//-------------------------------------------------
-		void Start()
+		private void Start()
 		{
 			if ( linearMapping == null )
 			{
@@ -88,10 +88,10 @@ namespace Valve.VR.InteractionSystem
 		{
 			//Compute the mapping change rate
 			mappingChangeRate = 0.0f;
-			int mappingSamplesCount = Mathf.Min( sampleCount, mappingChangeSamples.Length );
+			var mappingSamplesCount = Mathf.Min( sampleCount, mappingChangeSamples.Length );
 			if ( mappingSamplesCount != 0 )
 			{
-				for ( int i = 0; i < mappingSamplesCount; ++i )
+				for ( var i = 0; i < mappingSamplesCount; ++i )
 				{
 					mappingChangeRate += mappingChangeSamples[i];
 				}
@@ -119,18 +119,18 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private float CalculateLinearMapping( Transform tr )
 		{
-			Vector3 direction = endPosition.position - startPosition.position;
-			float length = direction.magnitude;
+			var direction = endPosition.position - startPosition.position;
+			var length = direction.magnitude;
 			direction.Normalize();
 
-			Vector3 displacement = tr.position - startPosition.position;
+			var displacement = tr.position - startPosition.position;
 
 			return Vector3.Dot( displacement, direction ) / length;
 		}
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
 			if ( maintainMomemntum && mappingChangeRate != 0.0f )
 			{

@@ -53,7 +53,7 @@ namespace Valve.VR.InteractionSystem
 				textHintCoroutine = null;
 			}
 
-			foreach ( Hand hand in Player.instance.hands )
+			foreach ( var hand in Player.instance.hands )
 			{
 				ControllerButtonHints.HideAllButtonHints( hand );
 				ControllerButtonHints.HideAllTextHints( hand );

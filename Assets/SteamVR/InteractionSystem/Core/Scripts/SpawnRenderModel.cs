@@ -23,11 +23,11 @@ namespace Valve.VR.InteractionSystem
 		private static int lastFrameUpdated;
 		private static int spawnRenderModelUpdateIndex;
 
-		SteamVR_Events.Action renderModelLoadedAction;
+		private SteamVR_Events.Action renderModelLoadedAction;
 
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			renderModels = new SteamVR_RenderModel[materials.Length];
 			renderModelLoadedAction = SteamVR_Events.RenderModelLoadedAction( OnRenderModelLoaded );
@@ -35,7 +35,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void OnEnable()
+		private void OnEnable()
 		{
 			ShowController();
 
@@ -46,7 +46,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void OnDisable()
+		private void OnDisable()
 		{
 			HideController();
 
@@ -73,7 +73,7 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
 			// Only update one per frame
 			if ( lastFrameUpdated == Time.renderedFrameCount )
@@ -93,7 +93,7 @@ namespace Valve.VR.InteractionSystem
 			// Perform update
 			if ( spawnRenderModelUpdateIndex < spawnRenderModels.Count )
 			{
-				SteamVR_RenderModel renderModel = spawnRenderModels[spawnRenderModelUpdateIndex].renderModels[0];
+				var renderModel = spawnRenderModels[spawnRenderModelUpdateIndex].renderModels[0];
 				if ( renderModel != null )
 				{
 					renderModel.UpdateComponents( OpenVR.RenderModels );
@@ -112,7 +112,7 @@ namespace Valve.VR.InteractionSystem
 				return;
 			}
 
-			for ( int i = 0; i < renderModels.Length; i++ )
+			for ( var i = 0; i < renderModels.Length; i++ )
 			{
 				if ( renderModels[i] == null )
 				{
@@ -131,7 +131,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private void HideController()
 		{
-			for ( int i = 0; i < renderModels.Length; i++ )
+			for ( var i = 0; i < renderModels.Length; i++ )
 			{
 				if ( renderModels[i] != null )
 				{
@@ -144,7 +144,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private void OnRenderModelLoaded( SteamVR_RenderModel renderModel, bool success )
 		{
-			for ( int i = 0; i < renderModels.Length; i++ )
+			for ( var i = 0; i < renderModels.Length; i++ )
 			{
 				if ( renderModel == renderModels[i] )
 				{
@@ -152,9 +152,9 @@ namespace Valve.VR.InteractionSystem
 					{
 						renderers.Clear();
 						renderModels[i].GetComponentsInChildren<MeshRenderer>( renderers );
-						for ( int j = 0; j < renderers.Count; j++ )
+						for ( var j = 0; j < renderers.Count; j++ )
 						{
-							Texture mainTexture = renderers[j].material.mainTexture;
+							var mainTexture = renderers[j].material.mainTexture;
 							renderers[j].sharedMaterial = materials[i];
 							renderers[j].material.mainTexture = mainTexture;
 							renderers[j].gameObject.layer = gameObject.layer;

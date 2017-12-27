@@ -13,7 +13,7 @@ public class SteamVR_Teleporter : MonoBehaviour
 	public bool teleportOnClick = false;
 	public TeleportType teleportType = TeleportType.TeleportTypeUseZeroY;
 
-	Transform reference
+	private Transform reference
 	{
 		get
 		{
@@ -22,7 +22,7 @@ public class SteamVR_Teleporter : MonoBehaviour
 		}
 	}
 
-	void Start()
+	private void Start()
 	{
 		var trackedController = GetComponent<SteamVR_TrackedController>();
 		if (trackedController == null)
@@ -41,7 +41,7 @@ public class SteamVR_Teleporter : MonoBehaviour
 		}
 	}
 
-	void DoClick(object sender, ClickedEventArgs e)
+	private void DoClick(object sender, ClickedEventArgs e)
 	{
 		if (teleportOnClick)
 		{
@@ -51,20 +51,20 @@ public class SteamVR_Teleporter : MonoBehaviour
 				return;
 
 			// Get the current Y position of the reference space
-			float refY = t.position.y;
+			var refY = t.position.y;
 
 			// Create a plane at the Y position of the Play Area
 			// Then create a Ray from the origin of the controller in the direction that the controller is pointing
-			Plane plane = new Plane(Vector3.up, -refY);
-			Ray ray = new Ray(this.transform.position, transform.forward);
+			var plane = new Plane(Vector3.up, -refY);
+			var ray = new Ray(this.transform.position, transform.forward);
 
 			// Set defaults
-			bool hasGroundTarget = false;
-			float dist = 0f;
+			var hasGroundTarget = false;
+			var dist = 0f;
 			if (teleportType == TeleportType.TeleportTypeUseTerrain) // If we picked to use the terrain
 			{
 				RaycastHit hitInfo;
-				TerrainCollider tc = Terrain.activeTerrain.GetComponent<TerrainCollider>();
+				var tc = Terrain.activeTerrain.GetComponent<TerrainCollider>();
 				hasGroundTarget = tc.Raycast(ray, out hitInfo, 1000f);
 				dist = hitInfo.distance;
 			}
@@ -84,7 +84,7 @@ public class SteamVR_Teleporter : MonoBehaviour
 			if (hasGroundTarget)
 			{
 				// Get the current Camera (head) position on the ground relative to the world
-				Vector3 headPosOnGround = new Vector3(SteamVR_Render.Top().head.position.x, refY, SteamVR_Render.Top().head.position.z);
+				var headPosOnGround = new Vector3(SteamVR_Render.Top().head.position.x, refY, SteamVR_Render.Top().head.position.z);
 
 				// We need to translate the reference space along the same vector
 				// that is between the head's position on the ground and the intersection point on the ground

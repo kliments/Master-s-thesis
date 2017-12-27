@@ -33,7 +33,7 @@ namespace Valve.VR.InteractionSystem
 		private int previousToothIndex = -1;
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			if ( linearMapping == null )
 			{
@@ -57,9 +57,9 @@ namespace Valve.VR.InteractionSystem
 
 
 		//-------------------------------------------------
-		void Update()
+		private void Update()
 		{
-			int currentToothIndex = Mathf.RoundToInt( linearMapping.value * teethCount - 0.5f );
+			var currentToothIndex = Mathf.RoundToInt( linearMapping.value * teethCount - 0.5f );
 			if ( currentToothIndex != previousToothIndex )
 			{
 				Pulse();
@@ -73,7 +73,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			if ( hand && ( hand.controller != null ) && ( hand.GetStandardInteractionButton() ) )
 			{
-				ushort duration = (ushort)Random.Range( minimumPulseDuration, maximumPulseDuration + 1 );
+				var duration = (ushort)Random.Range( minimumPulseDuration, maximumPulseDuration + 1 );
 				hand.controller.TriggerHapticPulse( duration );
 
 				onPulse.Invoke();

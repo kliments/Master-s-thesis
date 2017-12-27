@@ -17,10 +17,10 @@ namespace Valve.VR.InteractionSystem
 		public float minPitch;
 		public float maxPitch;
 
-		AudioSource thisAudioSource;
+		private AudioSource thisAudioSource;
 
 		//-------------------------------------------------
-		void Awake()
+		private void Awake()
 		{
 			thisAudioSource = GetComponent<AudioSource>();
 		}
@@ -30,7 +30,7 @@ namespace Valve.VR.InteractionSystem
 		public void PlayBowTensionClicks( float normalizedTension )
 		{
 			// Tension is a float between 0 and 1. 1 being max tension and 0 being no tension
-			float y = pitchTensionCurve.Evaluate( normalizedTension );
+			var y = pitchTensionCurve.Evaluate( normalizedTension );
 
 			thisAudioSource.pitch = ( ( maxPitch - minPitch ) * y ) + minPitch;
 			thisAudioSource.PlayOneShot( bowClick );
