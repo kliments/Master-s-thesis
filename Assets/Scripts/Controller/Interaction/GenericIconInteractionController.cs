@@ -15,7 +15,7 @@ namespace Controller.Interaction
             InputController.LeftClickOnTargetEvent -= OnLeftClickOnTargetEvent;
         }
 
-        public GenericOperator GetOperator()
+        protected GenericOperator GetOperator()
         {
             var t = transform;
             while (true)

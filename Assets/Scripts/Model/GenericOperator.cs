@@ -29,7 +29,7 @@ namespace Assets.Scripts.Model
             Visualization = GetComponentInChildren<GenericVisualization>();
             Icon = GetComponentInChildren<GenericIcon>();
 
-            Observer = GameObject.FindObjectOfType<Observer>();
+            Observer = FindObjectOfType<Observer>();
             
             ProperInitializedStart = true;
 
@@ -41,8 +41,8 @@ namespace Assets.Scripts.Model
         * */
         public void Init(int id, List<GenericOperator> parentsList)
         {
-            this.Id = id;
-            this.Parents = parentsList;
+            Id = id;
+            Parents = parentsList;
             Fetchdata();
         }
 

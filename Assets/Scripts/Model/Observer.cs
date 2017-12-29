@@ -8,7 +8,7 @@ namespace Assets.Scripts.Model
 {
     public class Observer : MonoBehaviour
     {
-        private List<GameObject> _operatorPrefabs = new List<GameObject>();
+        private readonly List<GameObject> _operatorPrefabs = new List<GameObject>();
         private List<GenericOperator> _operators = new List<GenericOperator>();
         private int _currentId = 1;
         private int _operatorNewId = -1;
