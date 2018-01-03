@@ -6,7 +6,7 @@ namespace Controller.Interaction.Icon
 {
     public class NewIconInteractionController : GenericIconInteractionController
     {
-
+        
         protected override void OnLeftClickOnTargetEventAction()
         {
             var op = GetOperator();
@@ -14,11 +14,14 @@ namespace Controller.Interaction.Icon
             Debug.Log("New Icon OnLeftClickEvent - on operator with ID: "+ op.Id);
 
             //test -- first click, just display all options; second click on one of those options, create respective operator!
-            op.Observer.CreateOperator(1);
+//            op.Observer.CreateOperator(1);
            
 
 
             // TODO suggest options to user after click on new operator. 
+            
+            UiController.ButtonSwitch();
+            
             var prefabs = op.Observer.GetOperatorPrefabs();
             foreach (var prefab in prefabs)
             {

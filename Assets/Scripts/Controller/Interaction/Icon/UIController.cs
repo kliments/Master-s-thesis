@@ -8,9 +8,11 @@ public class UiController : MonoBehaviour
 {
 
 	public GameObject ButtonManager;
+	
 //	private List<object> Buttons;
-	private bool _buttonsAreDisabled;
-	private Button[] _radialButtons;
+	
+	private static bool _buttonsAreDisabled;
+	private static Button[] _radialButtons;
 
 	private void Awake()
 	{
@@ -52,6 +54,7 @@ public class UiController : MonoBehaviour
 	// Use this for initialization
 	private void Start ()
 	{
+		//let the buttons be added to the list but then immediately disable them because they should be in the beginning
 		ButtonSwitch();
 	}
 	
@@ -61,7 +64,7 @@ public class UiController : MonoBehaviour
 	}
 	
 	//Switch enabled/disabled state of the UI buttons, need to disable all components separately apparently or I'm too dumb (likely)
-	private void ButtonSwitch()
+	public static void ButtonSwitch()
 	{
 		if (!_buttonsAreDisabled)
 		{
