@@ -23,7 +23,7 @@ namespace Assets.Scripts.Model
             GameObject[] prefabs = Resources.LoadAll<GameObject>("Operators");
             foreach (GameObject prefab in prefabs)
             {
-                var lo = (GameObject) prefab;
+                var lo = prefab;
                 if (prefab.GetComponent<GenericOperator>())
                 {
                     _operatorPrefabs.Add(lo);
@@ -45,7 +45,7 @@ namespace Assets.Scripts.Model
         {
             if (id < 0 || id >= _operatorPrefabs.Count) return;
 
-            var go = GameObject.Instantiate(_operatorPrefabs[id]);
+            var go = Instantiate(_operatorPrefabs[id]);
             go.transform.parent = transform;
             var genericOperator = go.GetComponent<GenericOperator>();
             _operators.Add(genericOperator);
