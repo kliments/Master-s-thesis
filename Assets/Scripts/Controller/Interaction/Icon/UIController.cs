@@ -17,15 +17,7 @@ public class UiController : MonoBehaviour
 	private void Awake()
 	{
 		//put all UI buttons into a list for later reference
-		_radialButtons = FindObjectsOfType<Button>();
-		
-		
-		
-		
-		
-		
-		
-		
+		_radialButtons = FindObjectsOfType<Button>();		
 		
 //		foreach (var child in ButtonManager.transform)
 //		{
@@ -55,12 +47,8 @@ public class UiController : MonoBehaviour
 	private void Start ()
 	{
 		//let the buttons be added to the list but then immediately disable them because they should be in the beginning
+		//they have to be active at the start because otherwise you can't grab them for the list
 		ButtonSwitch();
-	}
-	
-	// Update is called once per frame
-	void Update () {		
-		
 	}
 	
 	//Switch enabled/disabled state of the UI buttons, need to disable all components separately apparently or I'm too dumb (likely)
@@ -70,7 +58,6 @@ public class UiController : MonoBehaviour
 		{
 			foreach (var button in _radialButtons)
 			{			
-//				Debug.Log(button);
 				button.enabled = false;
 				button.GetComponent<Image>().enabled = false;
 				button.GetComponentInChildren<Text>().enabled = false;

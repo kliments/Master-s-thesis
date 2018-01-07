@@ -10,19 +10,22 @@ namespace Controller.Interaction.Icon
     {
         private string _clickedButtonName;
         private bool _once;
-//        public string ClickedButtonName { get; set; }
         
         private void Update()
         {
+            //get the current active collider or UI element
             if (EventSystem.current.currentSelectedGameObject != null)
             {
+                //get its name
                 _clickedButtonName = EventSystem.current.currentSelectedGameObject.name;
-//                _once = true;
 
+                //if already clicked then no more need to display initial choices
+                //will need to use something different than some bools though probably, depending on how many options there will be
                 if (_once) return;
 
                 switch (_clickedButtonName)
                 {
+                        //there will be more cases...one case per UI option
                         case "Option1":
                             GetOperator().Observer.CreateOperator(0);
                             _once = true;
