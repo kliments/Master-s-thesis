@@ -20,8 +20,8 @@ namespace Assets.Scripts.Model
         // Use this for initialization
         private void Start()
         {
-            GameObject[] prefabs = Resources.LoadAll<GameObject>("Operators");
-            foreach (GameObject prefab in prefabs)
+            var prefabs = Resources.LoadAll<GameObject>("Operators");
+            foreach (var prefab in prefabs)
             {
                 var lo = prefab;
                 if (prefab.GetComponent<GenericOperator>())

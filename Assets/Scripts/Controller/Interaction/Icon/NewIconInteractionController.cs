@@ -28,7 +28,8 @@ namespace Controller.Interaction.Icon
                         //there will be more cases...one case per UI option
                         case "Option1":
                             GetOperator().Observer.CreateOperator(0);
-                            _once = true;
+                            GetOperator().Observer.CreateOperator(0);    //should be another newOperator! Buuuut problems :(                        
+                            _once = true;                           
                             break;
                 }
                 
