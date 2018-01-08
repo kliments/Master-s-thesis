@@ -19,6 +19,8 @@ public class UiController : MonoBehaviour
 		//put all UI buttons into a list for later reference
 		_radialButtons = FindObjectsOfType<Button>();
         //Debug.Log("das hier wird ausgeführt");
+		
+		
 //		foreach (var child in ButtonManager.transform)
 //		{
 ////			Debug.Log(child + " gefunden");
