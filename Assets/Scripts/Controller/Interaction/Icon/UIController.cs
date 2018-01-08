@@ -17,8 +17,8 @@ public class UiController : MonoBehaviour
 	private void Awake()
 	{
 		//put all UI buttons into a list for later reference
-		_radialButtons = FindObjectsOfType<Button>();		
-		
+		_radialButtons = FindObjectsOfType<Button>();
+        //Debug.Log("das hier wird ausgeführt");
 //		foreach (var child in ButtonManager.transform)
 //		{
 ////			Debug.Log(child + " gefunden");
@@ -45,10 +45,10 @@ public class UiController : MonoBehaviour
 
 	// Use this for initialization
 	private void Start ()
-	{
-		//let the buttons be added to the list but then immediately disable them because they should be in the beginning
-		//they have to be active at the start because otherwise you can't grab them for the list
-		ButtonSwitch();
+	{   
+        //let the buttons be added to the list but then immediately disable them because they should be in the beginning
+        //they have to be active at the start because otherwise you can't grab them for the list
+        ButtonSwitch();
 	}
 	
 	//Switch enabled/disabled state of the UI buttons, need to disable all components separately apparently or I'm too dumb (likely)
