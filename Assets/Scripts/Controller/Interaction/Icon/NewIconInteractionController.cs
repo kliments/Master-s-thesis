@@ -25,17 +25,20 @@ namespace Controller.Interaction.Icon
 
                 switch (_clickedButtonName)
                 {
+                                
                         //there will be more cases...one case per UI option
-                        case "Option1":
-                            GetOperator().Observer.CreateOperator(0);
-                            GetOperator().Observer.CreateOperator(0);    //should be another newOperator! Buuuut problems :(                        
-                            _once = true;                           
+                        case "Option1":                           
+                            _once = true;         
+                            GetOperator().Observer.CreateOperator(2);
+//                            GetOperator().Observer.CreateOperator(1);
+                            GetOperator().Observer.CreateOperator(0);                                                    
                             break;
-                }
-                
-//                Debug.Log(_clickedButtonName);
-            }
-            
+                            
+                        case "Option2":
+                            //TODO                            
+                            break;
+                }              
+            } 
         }   
                
         protected override void OnLeftClickOnTargetEventAction()
