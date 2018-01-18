@@ -31,6 +31,10 @@ namespace Controller.Interaction.Icon
                             GetOperator().Observer.CreateOperator(1);
                             break;
                             
+                        case "Option3":
+                            //TODO add another operator here
+                            break;
+                            
                         case "Delete":
                             //TODO delete operator and all following ones in the same connected row
                             break;

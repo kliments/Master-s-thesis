@@ -460,7 +460,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Other Operator
+  m_Text: ScatterPlot
 --- !u!222 &126621399
 CanvasRenderer:
   m_ObjectHideFlags: 0
