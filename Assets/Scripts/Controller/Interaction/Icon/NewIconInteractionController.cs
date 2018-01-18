@@ -9,7 +9,6 @@ namespace Controller.Interaction.Icon
     public class NewIconInteractionController : GenericIconInteractionController
     {
         private string _clickedButtonName;
-        private bool _once;
         
         private void Update()
         {
@@ -19,25 +18,25 @@ namespace Controller.Interaction.Icon
                 //get its name
                 _clickedButtonName = EventSystem.current.currentSelectedGameObject.name;
 
-                //if already clicked then no more need to display initial choices
-                //will need to use something different than some bools though probably, depending on how many options there will be
-                if (_once) return;
-
                 switch (_clickedButtonName)
                 {
-                                
-                        //there will be more cases...one case per UI option
-                        case "Option1":                           
-                            _once = true;         
-                            GetOperator().Observer.CreateOperator(2);
-//                            GetOperator().Observer.CreateOperator(1);
-                            GetOperator().Observer.CreateOperator(0);                                                    
+                        //spawn the selected operator and always a NewOperator in the same row as well
+                        case "Option1":                                       
+                            GetOperator().Observer.CreateOperator(0);
+                            GetOperator().Observer.CreateOperator(1);                                              
                             break;
                             
                         case "Option2":
-                            //TODO                            
+                            GetOperator().Observer.CreateOperator(2);
+                            GetOperator().Observer.CreateOperator(1);
                             break;
-                }              
+                            
+                        case "Delete":
+                            //TODO delete operator and all following ones in the same connected row
+                            break;
+                }  
+                //set the event system back so the button isn't active anymore
+                EventSystem.current.SetSelectedGameObject(null);
             } 
         }   
                
