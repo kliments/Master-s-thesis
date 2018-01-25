@@ -178,7 +178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21f6609058b481043a2bc534ce30916d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  op: {fileID: 0}
+  Op: {fileID: 0}
 --- !u!114 &114951658445003868
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -190,10 +190,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d23b5e0a5e8ee7842ad4597cac66473b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  observer: {fileID: 0}
-  id: -1
-  parents: []
-  children: []
-  visualization: {fileID: 0}
-  icon: {fileID: 0}
-  properInitializedStart: 0
+  Observer: {fileID: 0}
+  Id: -1
+  Parents: []
+  Children: []
+  Visualization: {fileID: 0}
+  Icon: {fileID: 0}
+  ProperInitializedStart: 0

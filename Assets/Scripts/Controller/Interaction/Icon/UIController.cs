@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
+using VRTK;
 
-public class UiController : MonoBehaviour
+public class UiController : VRTK_InteractableObject
 {
 
 	public GameObject ButtonManager;
@@ -52,6 +53,18 @@ public class UiController : MonoBehaviour
         //they have to be active at the start because otherwise you can't grab them for the list
         ButtonSwitch();
 	}
+	
+//	public override void StartUsing(VRTK_InteractUse usingObject)
+//	{
+//		base.StartUsing(usingObject);
+//		ButtonSwitch();
+//	}
+//	
+//	public override void StopUsing(VRTK_InteractUse usingObject)
+//	{
+//		base.StopUsing(usingObject);
+//		ButtonSwitch();
+//	}
 	
 	//Switch enabled/disabled state of the UI buttons, need to disable all components separately apparently or I'm too dumb (likely)
 	public static void ButtonSwitch()

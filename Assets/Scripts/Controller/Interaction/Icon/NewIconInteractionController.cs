@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Assets.Scripts.Model;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -9,7 +11,13 @@ namespace Controller.Interaction.Icon
     public class NewIconInteractionController : GenericIconInteractionController
     {
         private string _clickedButtonName;
-        
+        private Dictionary<int, List<int>> _operatorDictionary = new Dictionary<int, List<int>>();
+
+        private void Start()
+        {
+           
+        }
+
         private void Update()
         {
             //get the current active collider or UI element
@@ -47,6 +55,14 @@ namespace Controller.Interaction.Icon
         protected override void OnLeftClickOnTargetEventAction()
         {
             var op = GetOperator();
+
+            //new dictionary entry if the key doesn't already exist
+            if (!_operatorDictionary.ContainsKey(op.Id))
+            {
+                _operatorDictionary.Add(op.Id, new List<int>());
+            }
+            
+           
 
             Debug.Log("New Icon OnLeftClickEvent - on operator with ID: "+ op.Id);
 
