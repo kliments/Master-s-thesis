@@ -12,6 +12,7 @@ namespace Assets.Scripts.Model
         public Observer Observer;
 
         public int Id = -1;
+        public int PlacementCounter = 0;
 
         public List<GenericOperator> Parents; // stores all parents (GenericOperator)
         public List<GenericOperator> Children; // stores all children (GenericOperator)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Assets.Scripts.Model;
 using UnityEditor;
 using UnityEngine;
@@ -11,7 +12,8 @@ namespace Controller.Interaction.Icon
     public class NewIconInteractionController : GenericIconInteractionController
     {
         private string _clickedButtonName;
-        private Dictionary<int, List<int>> _operatorDictionary = new Dictionary<int, List<int>>();
+       // private Dictionary<int, List<int>> _operatorDictionary = new Dictionary<int, List<int>>();
+        public static GenericOperator op;
 
         private void Start()
         {
@@ -31,7 +33,7 @@ namespace Controller.Interaction.Icon
                         //spawn the selected operator and always a NewOperator in the same row as well
                         case "Option1":                                       
                             GetOperator().Observer.CreateOperator(0);
-                            GetOperator().Observer.CreateOperator(1);                                              
+                            GetOperator().Observer.CreateOperator(1, new List<GenericOperator>());  //???                                            
                             break;
                             
                         case "Option2":
@@ -54,13 +56,15 @@ namespace Controller.Interaction.Icon
                
         protected override void OnLeftClickOnTargetEventAction()
         {
-            var op = GetOperator();
+            op = GetOperator();
+            GetOperator().PlacementCounter++;
+//            Debug.Log(GetOperator().PlacementCounter);
 
-            //new dictionary entry if the key doesn't already exist
-            if (!_operatorDictionary.ContainsKey(op.Id))
-            {
-                _operatorDictionary.Add(op.Id, new List<int>());
-            }
+//            //new dictionary entry if the key doesn't already exist
+//            if (!_operatorDictionary.ContainsKey(op.Id))
+//            {
+//                _operatorDictionary.Add(op.Id, new List<int>());
+//            }
             
            
 
