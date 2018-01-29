@@ -33,7 +33,7 @@ namespace Controller.Interaction.Icon
                         //spawn the selected operator and always a NewOperator in the same row as well
                         case "Option1":                                       
                             GetOperator().Observer.CreateOperator(0);
-                            GetOperator().Observer.CreateOperator(1, new List<GenericOperator>().Add(GetOperator());  //???                                            
+                           // GetOperator().Observer.CreateOperator(1, new List<GenericOperator>().Add(GetOperator());  //???                                            
                             break;
                             
                         case "Option2":
@@ -79,7 +79,7 @@ namespace Controller.Interaction.Icon
 
             // TODO suggest options to user after click on new operator. 
             //buttons for further interaction are spawned by clicking on the first newOperator icon
-            UiController.ButtonSwitch();
+            UiManager.ButtonSwitch();
             
 //            Debug.Log(_clickedButtonName);
             

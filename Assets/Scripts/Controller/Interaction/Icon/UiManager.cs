@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using VRTK;
 
-public class UiController : VRTK_InteractableObject
+public class UiManager : VRTK_InteractableObject
 {
 
     public GameObject ButtonManager;
