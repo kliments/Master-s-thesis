@@ -44,6 +44,10 @@ namespace Assets.Scripts.Model
         {
             Id = id;
             Parents = parentsList;
+            foreach(GenericOperator op in parentsList)
+            {
+                op.AddChild(this);
+            }
             Fetchdata();
         }
 

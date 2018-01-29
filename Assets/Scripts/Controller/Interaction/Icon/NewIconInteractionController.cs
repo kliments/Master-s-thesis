@@ -33,7 +33,7 @@ namespace Controller.Interaction.Icon
                         //spawn the selected operator and always a NewOperator in the same row as well
                         case "Option1":                                       
                             GetOperator().Observer.CreateOperator(0);
-                            GetOperator().Observer.CreateOperator(1, new List<GenericOperator>());  //???                                            
+                            GetOperator().Observer.CreateOperator(1, new List<GenericOperator>().Add(GetOperator());  //???                                            
                             break;
                             
                         case "Option2":
@@ -58,15 +58,17 @@ namespace Controller.Interaction.Icon
         {
             op = GetOperator();
             GetOperator().PlacementCounter++;
+            
+
 //            Debug.Log(GetOperator().PlacementCounter);
 
-//            //new dictionary entry if the key doesn't already exist
-//            if (!_operatorDictionary.ContainsKey(op.Id))
-//            {
-//                _operatorDictionary.Add(op.Id, new List<int>());
-//            }
-            
-           
+            //            //new dictionary entry if the key doesn't already exist
+            //            if (!_operatorDictionary.ContainsKey(op.Id))
+            //            {
+            //                _operatorDictionary.Add(op.Id, new List<int>());
+            //            }
+
+
 
             Debug.Log("New Icon OnLeftClickEvent - on operator with ID: "+ op.Id);
 
