@@ -15,11 +15,6 @@ namespace Controller.Interaction.Icon
        // private Dictionary<int, List<int>> _operatorDictionary = new Dictionary<int, List<int>>();
         public static GenericOperator op;
 
-        private void Start()
-        {
-           
-        }
-
         private void Update()
         {
             //get the current active collider or UI element
