@@ -7,7 +7,9 @@ public class Spawning : NewIconInteractionController {
 
 	public void SpawnDataLoader()
 	{
-		op.Observer.CreateOperator(0);
+        //GetOperator.GetObjectByRaycast() ???? wraum geht nicht ???
+
+        op.Observer.CreateOperator(0);
 		GetOperator().Observer.CreateOperator(1);
 		
 	}

@@ -52,7 +52,7 @@ namespace Controller.Interaction.Icon
         protected override void OnLeftClickOnTargetEventAction()
         {
             op = GetOperator();
-            GetOperator().PlacementCounter++;
+           // GetOperator().PlacementCounter++; wäre dafür gedacht gewesen einfach zu schauen wo man den nächsten OP spawnt
             
 
 //            Debug.Log(GetOperator().PlacementCounter);

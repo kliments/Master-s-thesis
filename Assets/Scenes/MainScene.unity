@@ -1756,6 +1756,7 @@ GameObject:
   - component: {fileID: 848768582}
   - component: {fileID: 848768583}
   - component: {fileID: 848768584}
+  - component: {fileID: 848768585}
   m_Layer: 0
   m_Name: RightController
   m_TagString: Untagged
@@ -1937,6 +1938,17 @@ MonoBehaviour:
   canClickOnHover: 0
   autoActivatingCanvas: {fileID: 0}
   collisionClick: 0
+--- !u!114 &848768585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 848768577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21d6e967163ec5845961e7461c8418e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &849720036
 GameObject:
   m_ObjectHideFlags: 0
@@ -3351,25 +3363,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21d6e967163ec5845961e7461c8418e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  disableWhenIdle: 1
-  touchHighlightColor: {r: 0, g: 0, b: 0, a: 0}
-  allowedTouchControllers: 0
-  ignoredColliders: []
-  isGrabbable: 0
-  holdButtonToGrab: 1
-  stayGrabbedOnTeleport: 1
-  validDrop: 1
-  grabOverrideButton: 0
-  allowedGrabControllers: 0
-  grabAttachMechanicScript: {fileID: 0}
-  secondaryGrabActionScript: {fileID: 0}
-  isUsable: 0
-  holdButtonToUse: 1
-  useOnlyIfGrabbed: 0
-  pointerActivatesUseAction: 0
-  useOverrideButton: 0
-  allowedUseControllers: 0
-  usingState: 0
 --- !u!1 &1569267881 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 1883185261795400, guid: be540b97364be0a4890e39e62ac89ed1,
