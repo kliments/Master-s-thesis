@@ -1,90 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using Assets.Scripts.Model;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 
 namespace Controller.Interaction.Icon
 {
-    public class NewIconInteractionController : GenericIconInteractionController
+    public class NewIconInteractionController : GenericIconInteractionController, IPointerClickHandler
     {
         private string _clickedButtonName;
-       // private Dictionary<int, List<int>> _operatorDictionary = new Dictionary<int, List<int>>();
-        public static GenericOperator op;
-
-        private void Update()
+        
+        public static GenericOperator ClickedOp;
+        
+        
+        public void OnPointerClick(PointerEventData eventData)
         {
-            //get the current active collider or UI element
-            if (EventSystem.current.currentSelectedGameObject != null)
-            {
-                //get its name
-                _clickedButtonName = EventSystem.current.currentSelectedGameObject.name;
-
-                switch (_clickedButtonName)
-                {
-                        //spawn the selected operator and always a NewOperator in the same row as well
-                        case "Option1":                                       
-                            GetOperator().Observer.CreateOperator(0);
-                           // GetOperator().Observer.CreateOperator(1, new List<GenericOperator>().Add(GetOperator());  //???                                            
-                            break;
-                            
-                        case "Option2":
-                            GetOperator().Observer.CreateOperator(2);
-                            GetOperator().Observer.CreateOperator(1);
-                            break;
-                            
-                        case "Option3":
-                            //TODO add another operator here
-                            break;
-                            
-                        case "Delete":
-                            //TODO delete operator and all following ones in the same connected row
-                            break;
-                }  
-                //set the event system back so the button isn't active anymore
-                EventSystem.current.SetSelectedGameObject(null);
-            } 
-        }   
-               
-        protected override void OnLeftClickOnTargetEventAction()
-        {
-            op = GetOperator();
-           // GetOperator().PlacementCounter++; wäre dafür gedacht gewesen einfach zu schauen wo man den nächsten OP spawnt
+            //Put the clicked Operator into the static variable
+            ClickedOp = GetOperator();
             
-
-//            Debug.Log(GetOperator().PlacementCounter);
-
-            //            //new dictionary entry if the key doesn't already exist
-            //            if (!_operatorDictionary.ContainsKey(op.Id))
-            //            {
-            //                _operatorDictionary.Add(op.Id, new List<int>());
-            //            }
-
-
-
-            Debug.Log("New Icon OnLeftClickEvent - on operator with ID: "+ op.Id);
-
-            //test -- first click, just display all options; second click on one of those options, create respective operator!
-//            op.Observer.CreateOperator(0);
-           
-
-
-            // TODO suggest options to user after click on new operator. 
-            //buttons for further interaction are spawned by clicking on the first newOperator icon
-            UiManager.ButtonSwitch();
-            
-//            Debug.Log(_clickedButtonName);
-            
-            
-            var prefabs = op.Observer.GetOperatorPrefabs();
+            //Buttons for further interaction are spawned by clicking on the NewOperator icon
+            UiController.ButtonSwitch();  
+                 
+            var prefabs = ClickedOp.Observer.GetOperatorPrefabs();
 //            Debug.Log(prefabs[0]);
             foreach (var prefab in prefabs)
             {
                 //first validate if the respective prefab can be used with the current parent
-                if (prefab.GetComponent<GenericOperator>().ValidateIfOperatorPossibleForParents(op))
+                if (prefab.GetComponent<GenericOperator>().ValidateIfOperatorPossibleForParents(ClickedOp))
                 {
                     // valid operator -> suggest spawn in list! -> i.e., popup / circular layout with icons
                     // get icon like this: 
@@ -96,7 +38,89 @@ namespace Controller.Interaction.Icon
                 }
             }
         }
+        
+        
+        
+        
+        
+        
+        
+        /*
+         * EVERYTHING BELOW IS DEPRECATED FOR THE MOMENT
+         */
+        
+        
+//        private void Update()
+//        {
+//            //get the current active collider or UI element
+//            if (EventSystem.current.currentSelectedGameObject != null)
+//            {
+//                //get its name
+//                _clickedButtonName = EventSystem.current.currentSelectedGameObject.name;
+//
+//                switch (_clickedButtonName)
+//                {
+//                        //spawn the selected operator and always a NewOperator in the same row as well
+//                        case "Option1":                                       
+//                            GetOperator().Observer.CreateOperator(0);
+//                            GetOperator().Observer.CreateOperator(1);                                              
+//                            break;
+//                            
+//                        case "Option2":
+//                            GetOperator().Observer.CreateOperator(2);
+//                            GetOperator().Observer.CreateOperator(1);
+//                            break;
+//                            
+//                        case "Option3":
+//                            //TODO add another operator here
+//                            break;
+//                            
+//                        case "Delete":
+//                            //TODO delete operator and all following ones in the same connected row
+//                            break;
+//                }  
+//                //set the event system back so the button isn't active anymore
+//                EventSystem.current.SetSelectedGameObject(null);
+//            } 
+//        }   
+               
+//        protected override void OnLeftClickOnTargetEventAction()
+//        {
+//            var op = GetOperator();
+//
+//            Debug.Log("New Icon OnLeftClickEvent - on operator with ID: "+ op.Id);
+//
+//            //test -- first click, just display all options; second click on one of those options, create respective operator!
+////            op.Observer.CreateOperator(0);
+//           
+//
+//
+//            // TODO suggest options to user after click on new operator. 
+//            //buttons for further interaction are spawned by clicking on the first newOperator icon
+//            UiController.ButtonSwitch();
+//            
+////            Debug.Log(_clickedButtonName);
+//            
+//            
+//            var prefabs = op.Observer.GetOperatorPrefabs();
+////            Debug.Log(prefabs[0]);
+//            foreach (var prefab in prefabs)
+//            {
+//                //first validate if the respective prefab can be used with the current parent
+//                if (prefab.GetComponent<GenericOperator>().ValidateIfOperatorPossibleForParents(op))
+//                {
+//                    // valid operator -> suggest spawn in list! -> i.e., popup / circular layout with icons
+//                    // get icon like this: 
+//                    // GameObject Icon = GameObject.Instantiate(prefab.GetComponentInChildren<GenericIcon>().gameObject);
+//                    // Note: this not only includes the texture, but also interaction controllers etc - you need to get rid of those! only copy texture -> implement new function in generic icon -> getTexture etc..
+//                    // Overwrite with spawn new prefab action required on click on one of those suggested prefabs
+//
+//                    // replace new operator with the newly spawned one. 
+//                }
+//            }
+//        }
 
-            
+
+       
     }
 }

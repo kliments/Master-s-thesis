@@ -39,7 +39,6 @@ GameObject:
   - component: {fileID: 65695677425934716}
   - component: {fileID: 23300339444081736}
   - component: {fileID: 114383121609385968}
-  - component: {fileID: 114200931677904660}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -97,7 +96,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1439869763863066}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.46, z: 2.19}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4676130194802404}
@@ -157,37 +156,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114200931677904660
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1282572254094694}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15d206118bf03e44ba2ac2e12a037ae1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  disableWhenIdle: 1
-  touchHighlightColor: {r: 0, g: 0, b: 0, a: 0}
-  allowedTouchControllers: 0
-  ignoredColliders: []
-  isGrabbable: 0
-  holdButtonToGrab: 1
-  stayGrabbedOnTeleport: 1
-  validDrop: 1
-  grabOverrideButton: 0
-  allowedGrabControllers: 0
-  grabAttachMechanicScript: {fileID: 0}
-  secondaryGrabActionScript: {fileID: 0}
-  isUsable: 1
-  holdButtonToUse: 0
-  useOnlyIfGrabbed: 0
-  pointerActivatesUseAction: 1
-  useOverrideButton: 0
-  allowedUseControllers: 0
-  usingState: 0
-  ButtonManager: {fileID: 0}
 --- !u!114 &114383121609385968
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -210,7 +178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21f6609058b481043a2bc534ce30916d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Op: {fileID: 0}
+  op: {fileID: 0}
 --- !u!114 &114951658445003868
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -222,11 +190,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d23b5e0a5e8ee7842ad4597cac66473b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Observer: {fileID: 0}
-  Id: -1
-  PlacementCounter: 0
-  Parents: []
-  Children: []
-  Visualization: {fileID: 0}
-  Icon: {fileID: 0}
-  ProperInitializedStart: 0
+  observer: {fileID: 0}
+  id: -1
+  parents: []
+  children: []
+  visualization: {fileID: 0}
+  icon: {fileID: 0}
+  properInitializedStart: 0

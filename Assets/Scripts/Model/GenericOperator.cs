@@ -12,7 +12,6 @@ namespace Assets.Scripts.Model
         public Observer Observer;
 
         public int Id = -1;
-        public int PlacementCounter = 0;
 
         public List<GenericOperator> Parents; // stores all parents (GenericOperator)
         public List<GenericOperator> Children; // stores all children (GenericOperator)
@@ -44,10 +43,6 @@ namespace Assets.Scripts.Model
         {
             Id = id;
             Parents = parentsList;
-            foreach(GenericOperator op in parentsList)
-            {
-                op.AddChild(this);
-            }
             Fetchdata();
         }
 
