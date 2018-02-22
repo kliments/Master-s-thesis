@@ -11,7 +11,7 @@ public class GraphSpaceController : MonoBehaviour {
     public void InstallNewIcon(GenericOperator op)
     {
         op.GetIcon().gameObject.transform.parent = GameObject.Find("ControlWall").transform;
-        op.GetIcon().gameObject.transform.localPosition = new Vector3(_xOffset, 0, -0.51f);
+        op.GetIcon().gameObject.transform.localPosition = new Vector3(_xOffset, 0, -0.6f);
         op.GetIcon().gameObject.transform.localScale = _scale;
         _xOffset += 0.1f;
     }
