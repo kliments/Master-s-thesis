@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 namespace Controller.Interaction.Icon
 {
-    public class NewIconInteractionController : GenericIconInteractionController, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+    public class NewIconInteractionController : GenericIconInteractionController, IPointerClickHandler
     {
         private string _clickedButtonName;
         
@@ -39,15 +39,7 @@ namespace Controller.Interaction.Icon
             }
         }
         
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            throw new System.NotImplementedException();
-        }
+    
         
         
         
