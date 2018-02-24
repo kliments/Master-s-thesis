@@ -13,7 +13,7 @@ public class NewOperator :  GenericOperator
 
     public override bool ValidateIfOperatorPossibleForParents(GenericOperator parent)
     {
-        // new operator can allways be spawned
+        // new operator can always be spawned
         return true; 
     }
 

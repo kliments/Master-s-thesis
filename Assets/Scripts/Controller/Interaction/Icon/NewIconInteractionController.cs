@@ -19,7 +19,14 @@ namespace Controller.Interaction.Icon
             ClickedOp = GetOperator();
             
             //Buttons for further interaction are spawned by clicking on the NewOperator icon
-            UiController.ButtonSwitch();  
+            UiController.ButtonSwitch();
+
+
+            var tempParent = ClickedOp.Parents[0];
+           
+            
+            
+            
                  
             var prefabs = ClickedOp.Observer.GetOperatorPrefabs();
 //            Debug.Log(prefabs[0]);
@@ -40,7 +47,7 @@ namespace Controller.Interaction.Icon
         }
         
     
-        
+   
         
         
         
