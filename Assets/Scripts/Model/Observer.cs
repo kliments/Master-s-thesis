@@ -9,7 +9,7 @@ namespace Assets.Scripts.Model
     public class Observer : MonoBehaviour
     {
         private readonly List<GameObject> _operatorPrefabs = new List<GameObject>();
-        private List<GenericOperator> _operators = new List<GenericOperator>();
+        public static List<GenericOperator> _operators = new List<GenericOperator>(); //was just private, changed because of "HighlightOperator"
         private int _currentId = 1;
         private int _operatorNewId = -1;
 

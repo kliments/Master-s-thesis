@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using Assets.Scripts.Model;
 using Controller.Interaction.Icon;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class SpawnHandler : NewIconInteractionController {
+public class SpawnHandler : NewIconInteractionController, IPointerEnterHandler {
 
 	public static List<GenericOperator> Operators = new List<GenericOperator>();
-	public static Dictionary<GenericOperator, GenericOperator> OperatorDictionary = new Dictionary<GenericOperator, GenericOperator>();
+	public static GenericOperator CurrentHover;
 	
 	public void SpawnDataLoader()
 	{
@@ -17,11 +18,11 @@ public class SpawnHandler : NewIconInteractionController {
 		Parents0.Add(ClickedOp.transform.GetComponent<GenericOperator>());
 		Parents1.Add(ClickedOp.transform.GetComponent<GenericOperator>());
 		
-		Operators.Add(ClickedOp.transform.GetComponent<GenericOperator>());
-		Operators.Add(ClickedOp.transform.GetComponent<GenericOperator>());
-		
 		ClickedOp.Observer.CreateOperator(0, Parents0);
 		ClickedOp.Observer.CreateOperator(1, Parents1);
+		
+//		Operators.Add(ClickedOp.transform.GetComponent<GenericOperator>());
+		
 	}
 
 	public void SpawnScatterPlot()
@@ -32,10 +33,12 @@ public class SpawnHandler : NewIconInteractionController {
 		Parents0.Add(ClickedOp.transform.GetComponent<GenericOperator>());
 		Parents1.Add(ClickedOp.transform.GetComponent<GenericOperator>());
 		
-		Operators.Add(ClickedOp.transform.GetComponent<GenericOperator>());
-		Operators.Add(ClickedOp.transform.GetComponent<GenericOperator>());
-		
 		ClickedOp.Observer.CreateOperator(2, Parents0);
 		ClickedOp.Observer.CreateOperator(1, Parents1);
+	}
+
+	public void OnPointerEnter(PointerEventData eventData)
+	{
+		CurrentHover = gameObject.GetComponent<GenericOperator>();
 	}
 }
