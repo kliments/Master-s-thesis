@@ -2,24 +2,32 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Assets.Scripts.Model;
+using Controller.Interaction;
 using Controller.Interaction.Icon;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class HighlightOperator : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class HighlightOperator : GenericIconInteractionController, IPointerEnterHandler, IPointerExitHandler
 {
 
 	public GameObject HighlightPlane;
-	
-	private GenericOperator CurrentHover;
+	public static GenericOperator CurrentHover;
+	public static HighlightOperator[] SpawnedIcons;
+	public static int PublicCounter;
+	private int _privateCounter;
 
-	
+	private void Awake()
+	{
+		PublicCounter++;
+		_privateCounter = PublicCounter;
+		Debug.Log(PublicCounter);
+	}
 
 	public void OnPointerEnter(PointerEventData eventData)
 	{
-		CurrentHover = gameObject.GetComponent<GenericOperator>();
-		
 		HighlightPlane.SetActive(true);
+		CurrentHover = GetOperator();
+		SpawnedIcons = FindObjectsOfType<HighlightOperator>();
 
 //		Debug.Log("ID " + SpawnHandler.Operators[0].Id);
 //		Debug.Log("ID " + SpawnHandler.Operators[1].Id);
@@ -27,13 +35,21 @@ public class HighlightOperator : MonoBehaviour, IPointerEnterHandler, IPointerEx
 		var operators = Observer._operators;
 		foreach (var genericOperator in operators)
 		{
-//			Debug.Log(genericOperator.Id);
-			Debug.Log(gameObject.GetComponent<GenericOperator>().Parents[0]);
-			
 			if (CurrentHover.Parents.Contains(genericOperator))
 			{
-				Debug.Log(genericOperator.Id);
+				var id = genericOperator.Id;
+				SpawnedIcons[id-1].HighlightPlane.SetActive(true);
+//				Debug.Log(genericOperator.Id);
 			}
+			
+			
+			
+			
+//			Debug.Log(genericOperator.Id);
+//			Debug.Log(gameObject.GetComponent<GenericOperator>().Parents);
+//			Debug.Log(CurrentHover);
+			
+			
 		}
 		
 		
@@ -55,5 +71,12 @@ public class HighlightOperator : MonoBehaviour, IPointerEnterHandler, IPointerEx
 	public void OnPointerExit(PointerEventData eventData)
 	{
 		HighlightPlane.SetActive(false);
+		
+		var operators = Observer._operators;
+		foreach (var genericOperator in operators)
+		{
+			var id = genericOperator.Id;
+			SpawnedIcons[id-1].HighlightPlane.SetActive(false);
+		}
 	}
 }

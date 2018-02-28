@@ -13,6 +13,7 @@ namespace Controller.Interaction.Icon
         public static GenericOperator ClickedOp;
         
         
+        
         public void OnPointerClick(PointerEventData eventData)
         {
             //Put the clicked Operator into the static variable
@@ -45,6 +46,8 @@ namespace Controller.Interaction.Icon
                 }
             }
         }
+        
+        
         
     
    
@@ -130,6 +133,6 @@ namespace Controller.Interaction.Icon
 //        }
 
 
-        
+       
     }
 }

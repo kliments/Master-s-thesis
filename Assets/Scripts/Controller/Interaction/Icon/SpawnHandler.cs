@@ -5,10 +5,9 @@ using Controller.Interaction.Icon;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SpawnHandler : NewIconInteractionController, IPointerEnterHandler {
+public class SpawnHandler : NewIconInteractionController {
 
 	public static List<GenericOperator> Operators = new List<GenericOperator>();
-	public static GenericOperator CurrentHover;
 	
 	public void SpawnDataLoader()
 	{
@@ -21,7 +20,7 @@ public class SpawnHandler : NewIconInteractionController, IPointerEnterHandler {
 		ClickedOp.Observer.CreateOperator(0, Parents0);
 		ClickedOp.Observer.CreateOperator(1, Parents1);
 		
-//		Operators.Add(ClickedOp.transform.GetComponent<GenericOperator>());
+		Operators.Add(ClickedOp);
 		
 	}
 
@@ -39,6 +38,8 @@ public class SpawnHandler : NewIconInteractionController, IPointerEnterHandler {
 
 	public void OnPointerEnter(PointerEventData eventData)
 	{
-		CurrentHover = gameObject.GetComponent<GenericOperator>();
+//		CurrentHover = gameObject.GetComponent<GenericOperator>();
+//		Debug.Log(CurrentHover);
+//		Debug.Log(GetOperator());
 	}
 }
