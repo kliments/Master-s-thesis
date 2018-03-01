@@ -38,8 +38,9 @@ public class HighlightOperator : GenericIconInteractionController, IPointerEnter
 			if (CurrentHover.Parents.Contains(genericOperator))
 			{
 				var id = genericOperator.Id;
-				SpawnedIcons[id-1].HighlightPlane.SetActive(true);
-//				Debug.Log(genericOperator.Id);
+				id = id - 1;
+				SpawnedIcons[id].HighlightPlane.SetActive(true);
+				Debug.Log("Parent: " + SpawnedIcons[id].name + " mit ID " + genericOperator.Id);
 			}
 			
 			
