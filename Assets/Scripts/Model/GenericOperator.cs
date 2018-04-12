@@ -33,7 +33,7 @@ namespace Assets.Scripts.Model
             
             ProperInitializedStart = true;
 
-            Observer.NotifyObserverInitComplete(this);
+            Observer.notifyObserverOperatorInitComplete(this);
         }
 
         /**
@@ -182,13 +182,13 @@ namespace Assets.Scripts.Model
         /**
         * Removes the generic operator from the scene, including visualization and icon
         * */
-        private void DestroyGenericOperator()
+        public void DestroyGenericOperator()
         {
             //TODO notifyObserver about delete of id
 
-            if(Visualization.gameObject != null)
+            if(Visualization != null && Visualization.gameObject != null)
                 Destroy(Visualization.gameObject);
-            if (Icon.gameObject != null)
+            if (Icon != null && Icon.gameObject != null)
                 Destroy(Icon.gameObject);
             if (gameObject != null)
                 Destroy(gameObject);

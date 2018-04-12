@@ -9,16 +9,10 @@ public abstract class GenericIcon : MonoBehaviour {
 
     private void Awake()
     {
+        if(transform != null && transform.parent != null)
         Op = transform.parent.GetComponent<GenericOperator>();
     }
-
-
-
-
-
-
-
-
+    
     public void SetOperator(GenericOperator operatorObj)
     {
         Op = operatorObj;
@@ -28,4 +22,5 @@ public abstract class GenericIcon : MonoBehaviour {
     {
         return Op;
     }
+
 }

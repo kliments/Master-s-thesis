@@ -13,8 +13,8 @@ public class NewOperator :  GenericOperator
 
     public override bool ValidateIfOperatorPossibleForParents(GenericOperator parent)
     {
-        // new operator can always be spawned
-        return true; 
+        // new operator can only be spawned in new space - and not be derived from previous objects
+        return parent == null; 
     }
 
     // Update is called once per frame

@@ -35,6 +35,7 @@ public class InputController : MonoBehaviour {
                 break;
             case InputEventsEnum.LeftClickOnTargetEvent:
                 if (LeftClickOnTargetEvent != null) LeftClickOnTargetEvent(target);
+                Debug.Log(target);
                 break;
         }
     }

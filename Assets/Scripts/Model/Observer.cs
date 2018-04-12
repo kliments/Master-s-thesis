@@ -16,6 +16,8 @@ namespace Assets.Scripts.Model
         private GraphSpaceController _graphSpaceController;
         private VisualizationSpaceController _visualizationSpaceController;
 
+        public delegate void NewOperatorInitializedAndRunnning(GenericOperator genericOperator);
+        public event NewOperatorInitializedAndRunnning NewOperatorInitializedAndRunnningEvent;
 
         // Use this for initialization
         private void Start()
@@ -41,19 +43,45 @@ namespace Assets.Scripts.Model
             CreateOperator(_operatorNewId);
         }
 
+        public GameObject CreateOperator(GameObject operatorPrefab, List<GenericOperator> parents = null)
+        {
+            var go = Instantiate(operatorPrefab);
+            go.transform.parent = transform;
+            var genericOperator = go.GetComponent<GenericOperator>();
+            if (genericOperator == null)
+            {
+                // no operator Prefab ! 
+                Destroy(go);
+                return null;
+            }
+            _operators.Add(genericOperator);
+
+            genericOperator.Init(RequestId(), parents);
+            return go;
+        }
+
         public void CreateOperator(int id, List<GenericOperator> parents = null)
         {
             if (id < 0 || id >= _operatorPrefabs.Count) return;
 
-            var go = Instantiate(_operatorPrefabs[id]);
-            go.transform.parent = transform;
-            var genericOperator = go.GetComponent<GenericOperator>();
-            _operators.Add(genericOperator);
-
-            genericOperator.Init(RequestId(), parents);
+            CreateOperator(_operatorPrefabs[id], parents);
         }
 
-        public void NotifyObserverInitComplete(GenericOperator genericOperator)
+        public void DestroyOperator(GenericOperator operatorInstance)
+        {
+            _operators.Remove(operatorInstance);
+            operatorInstance.DestroyGenericOperator();
+        }
+
+        public void DestroyOperator(int id)
+        {
+            if (id < 0 || id >= _operators.Count) return;
+
+            DestroyOperator(_operators[id]);
+        }
+
+
+        public void notifyObserverOperatorInitComplete(GenericOperator genericOperator)
         {
             if (!genericOperator.CheckConsistency())
                 throw new InvalidProgramException(
@@ -62,6 +90,8 @@ namespace Assets.Scripts.Model
             InstallComponents(genericOperator);
 
             genericOperator.Process();
+
+            if(NewOperatorInitializedAndRunnningEvent != null) NewOperatorInitializedAndRunnningEvent(genericOperator);
         }
 
 
@@ -77,8 +107,6 @@ namespace Assets.Scripts.Model
                 _visualizationSpaceController.InstallNewVisualization(op);
             }
         }
-
-
 
         private int RequestId()
         {
