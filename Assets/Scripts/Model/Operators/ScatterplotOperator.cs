@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Model;
+using UnityEngine;
 
 namespace Model.Operators
 {
@@ -14,7 +15,6 @@ namespace Model.Operators
         public override bool ValidateIfOperatorPossibleForParents(GenericOperator parent)
         {
             // can only be spawned if parent has output data
-           
             return parent != null && parent.GetOutputData() != null;
         }
 

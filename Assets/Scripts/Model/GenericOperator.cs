@@ -19,8 +19,8 @@ namespace Assets.Scripts.Model
         public GenericVisualization Visualization; // stores reference to visualization-object if one exists
         public GenericIcon Icon; // stores reference to icon object
 
-        private GenericDatamodel _rawInputData;
-        private GenericDatamodel _outputData;
+        public GenericDatamodel _rawInputData;
+        public GenericDatamodel _outputData;
 
         public bool ProperInitializedStart;
 

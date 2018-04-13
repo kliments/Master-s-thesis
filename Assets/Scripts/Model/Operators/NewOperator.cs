@@ -8,6 +8,7 @@ public class NewOperator :  GenericOperator
 
     public override bool Process()
     {
+        SetOutputData(GetRawInputData());
         return true;
     }
 

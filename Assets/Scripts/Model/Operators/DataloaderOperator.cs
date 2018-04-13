@@ -15,10 +15,17 @@ namespace Model.Operators
 
         public override bool Process()
         {
-            var dataModel = ReadCsv();
-            SetRawInputData(dataModel);
-            SetOutputData(dataModel);
+            Debug.Log("add dialog box here!");
+            // open a dialog box
+            // --- dialog box can be added to the prefab
+            // list all files (csv) in the folder StreamingAssets
+            // on select and submit of one of those files, the folowing three lines are executed
+            
+            // read csv and add the data to previous data if available
+            var dataModel = ReadCsv().MergeDatamodels(_rawInputData);
 
+            SetOutputData(dataModel);
+            
             return true;
         }
 

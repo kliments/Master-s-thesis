@@ -20,6 +20,8 @@ public abstract class GenericDatamodel
 
     public GenericDatamodel MergeDatamodels(GenericDatamodel datamodeltomerge)
     {
+        if (datamodeltomerge == null) return this;
+
         if (datamodeltomerge.GetType() != GetType())
         {
             throw new Exception("Cannot merge two different DataTypeModels");

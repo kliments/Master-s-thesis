@@ -57,6 +57,7 @@ namespace Assets.Scripts.Model
             _operators.Add(genericOperator);
 
             genericOperator.Init(RequestId(), parents);
+            
             return go;
         }
 
@@ -91,7 +92,24 @@ namespace Assets.Scripts.Model
 
             genericOperator.Process();
 
+            // Emit Event after the new Operator has been initialized and the Process() function has been started
             if(NewOperatorInitializedAndRunnningEvent != null) NewOperatorInitializedAndRunnningEvent(genericOperator);
+
+            // spawn a new NewOperator for newly initialized operator
+            if (genericOperator.GetComponent<NewOperator>() == null)
+            {
+                List<GenericOperator> parent = new List<GenericOperator>();
+                parent.Add(genericOperator);
+                CreateOperator(_operatorPrefabs[_operatorNewId], parent);
+            }
+            else
+            {
+                if (genericOperator.Parents != null)
+                {
+                    genericOperator.GetIcon().transform.position = genericOperator.Parents[0].GetIcon().transform.position + new Vector3(1, 0, 0);
+                }
+            }
+                
         }
 
 
