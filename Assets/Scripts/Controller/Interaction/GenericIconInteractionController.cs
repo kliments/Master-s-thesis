@@ -8,11 +8,13 @@ namespace Controller.Interaction
         private void OnEnable()
         {
             InputController.LeftClickOnTargetEvent += OnLeftClickOnTargetEvent;
+            InputController.LeftClickOnTargetEvent += switchVisualization;
         }
 
         private void OnDisable()
         {
             InputController.LeftClickOnTargetEvent -= OnLeftClickOnTargetEvent;
+            InputController.LeftClickOnTargetEvent -= switchVisualization;
         }
 
         protected GenericOperator GetOperator()
@@ -28,6 +30,12 @@ namespace Controller.Interaction
                 }
                 t = t.parent;
             }
+        }
+
+        private void switchVisualization(Targetable target)
+        {
+            if(target == this)
+                GetOperator().Observer.GetVisualizationSpaceController().InstallNewVisualization(GetOperator());
         }
     }
 }

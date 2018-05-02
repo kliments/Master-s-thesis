@@ -17,6 +17,7 @@ public class VisualizationSpaceController : MonoBehaviour {
 
     public void InstallNewVisualization(GenericOperator op)
     {
+        if (op == null) return;
         if (gameObject.transform.childCount > 0)
         {
             foreach (var vis in transform.GetComponentsInChildren<GenericVisualization>())
@@ -25,6 +26,9 @@ public class VisualizationSpaceController : MonoBehaviour {
                 vis.gameObject.SetActive(false);
             }
         }
+        Debug.Log("AAAAA");
+        if (op.GetVisualization() == null) return;
+        Debug.Log("BBBBB");
         op.GetVisualization().gameObject.SetActive(true);
         op.GetVisualization().gameObject.transform.parent = gameObject.transform;
         //op.getVisualization().gameObject.transform.localPosition = new Vector3();

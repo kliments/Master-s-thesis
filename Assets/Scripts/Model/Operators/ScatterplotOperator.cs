@@ -23,6 +23,8 @@ namespace Model.Operators
             // Create Visualization
             Visualization.GetComponent<GenericVisualization>().CreateVisualization();
             // Enable Interaction Script
+
+            SetOutputData(GetRawInputData()); // Visualization does not change data
             return true;
         }
     

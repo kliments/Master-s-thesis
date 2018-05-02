@@ -9,7 +9,7 @@ namespace Assets.Scripts.Model
     public class Observer : MonoBehaviour
     {
         private readonly List<GameObject> _operatorPrefabs = new List<GameObject>();
-        public static List<GenericOperator> _operators = new List<GenericOperator>(); //was just private, changed because of "HighlightOperator"
+        private List<GenericOperator> _operators = new List<GenericOperator>(); 
         private int _currentId = 1;
         private int _operatorNewId = -1;
 
@@ -57,6 +57,14 @@ namespace Assets.Scripts.Model
             _operators.Add(genericOperator);
 
             genericOperator.Init(RequestId(), parents);
+
+            if (parents != null)
+            {
+                foreach (GenericOperator parent in parents)
+                {
+                    parent.Children.Add(genericOperator);
+                }
+            }
             
             return go;
         }
@@ -70,6 +78,15 @@ namespace Assets.Scripts.Model
 
         public void DestroyOperator(GenericOperator operatorInstance)
         {
+            List<GenericOperator> parents = operatorInstance.Parents;
+            if (parents != null)
+            {
+                foreach (GenericOperator parent in parents)
+                {
+                    parent.Children.Remove(operatorInstance);
+                }
+            }
+          
             _operators.Remove(operatorInstance);
             operatorInstance.DestroyGenericOperator();
         }
