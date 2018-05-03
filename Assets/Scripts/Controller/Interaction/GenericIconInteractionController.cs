@@ -35,7 +35,7 @@ namespace Controller.Interaction
         private void switchVisualization(Targetable target)
         {
             if(target == this)
-                GetOperator().Observer.GetVisualizationSpaceController().InstallNewVisualization(GetOperator());
+                GetOperator().Observer.selectOperator(GetOperator());
         }
     }
 }

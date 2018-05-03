@@ -6,7 +6,6 @@ using UnityEngine;
 public abstract class GenericIcon : MonoBehaviour {
     public GenericOperator Op;
 
-
     private void Awake()
     {
         if(transform != null && transform.parent != null)

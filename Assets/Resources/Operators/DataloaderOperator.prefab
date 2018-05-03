@@ -39,7 +39,6 @@ GameObject:
   - component: {fileID: 65989957736988010}
   - component: {fileID: 23195897876899838}
   - component: {fileID: 114184626643347826}
-  - component: {fileID: 114698280575760564}
   m_Layer: 0
   m_Name: DataLoader
   m_TagString: Untagged
@@ -285,15 +284,4 @@ MonoBehaviour:
   Visualization: {fileID: 0}
   Icon: {fileID: 0}
   ProperInitializedStart: 0
---- !u!114 &114698280575760564
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1014760134292332}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ac6f204cae2f154d83ae6fa650ec816, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HighlightPlane: {fileID: 1319958813697634}
+  isSelected: 0

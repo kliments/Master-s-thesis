@@ -12,6 +12,7 @@ namespace Assets.Scripts.Model
         private List<GenericOperator> _operators = new List<GenericOperator>(); 
         private int _currentId = 1;
         private int _operatorNewId = -1;
+        public GenericOperator selectedOperator;
 
         private GraphSpaceController _graphSpaceController;
         private VisualizationSpaceController _visualizationSpaceController;
@@ -36,6 +37,7 @@ namespace Assets.Scripts.Model
             }
 
             _graphSpaceController = GameObject.Find("GraphSpace").GetComponent<GraphSpaceController>();
+            _graphSpaceController.setObserver(this);
             _visualizationSpaceController =
                 GameObject.Find("VisualizationSpace").GetComponent<VisualizationSpaceController>();
             
@@ -45,6 +47,8 @@ namespace Assets.Scripts.Model
 
         public GameObject CreateOperator(GameObject operatorPrefab, List<GenericOperator> parents = null)
         {
+            
+
             var go = Instantiate(operatorPrefab);
             go.transform.parent = transform;
             var genericOperator = go.GetComponent<GenericOperator>();
@@ -78,6 +82,7 @@ namespace Assets.Scripts.Model
 
         public void DestroyOperator(GenericOperator operatorInstance)
         {
+            if (operatorInstance == null) return;
             List<GenericOperator> parents = operatorInstance.Parents;
             if (parents != null)
             {
@@ -88,7 +93,9 @@ namespace Assets.Scripts.Model
             }
           
             _operators.Remove(operatorInstance);
+            
             operatorInstance.DestroyGenericOperator();
+           
         }
 
         public void DestroyOperator(int id)
@@ -112,21 +119,21 @@ namespace Assets.Scripts.Model
             // Emit Event after the new Operator has been initialized and the Process() function has been started
             if(NewOperatorInitializedAndRunnningEvent != null) NewOperatorInitializedAndRunnningEvent(genericOperator);
 
-            // spawn a new NewOperator for newly initialized operator
-            if (genericOperator.GetComponent<NewOperator>() == null)
-            {
-                List<GenericOperator> parent = new List<GenericOperator>();
-                parent.Add(genericOperator);
-                CreateOperator(_operatorPrefabs[_operatorNewId], parent);
-            }
-            else
-            {
-                if (genericOperator.Parents != null)
-                {
-                    genericOperator.GetIcon().transform.position = genericOperator.Parents[0].GetIcon().transform.position + new Vector3(1, 0, 0);
-                }
-            }
-                
+            
+            _graphSpaceController.moveToSpawnPosition(genericOperator);
+
+        }
+
+        public void selectOperator(GenericOperator go)
+        {
+            if (selectedOperator == go || go.GetType().Equals((typeof(NewOperator)))) return;
+
+            if(selectedOperator != null) selectedOperator.setSelected(false);
+            go.setSelected(true);
+
+            _visualizationSpaceController.InstallVisualization(go);
+
+            selectedOperator = go;
         }
 
 
@@ -137,10 +144,11 @@ namespace Assets.Scripts.Model
                 _graphSpaceController.InstallNewIcon(op);
             }
 
-            if (op.GetVisualization() != null)
+            if (!op.GetType().Equals((typeof(NewOperator))))
             {
-                _visualizationSpaceController.InstallNewVisualization(op);
+                selectOperator(op);
             }
+            
         }
 
         private int RequestId()
@@ -161,6 +169,31 @@ namespace Assets.Scripts.Model
         public List<GameObject> GetOperatorPrefabs()
         {
             return _operatorPrefabs;
+        }
+
+        public GenericOperator getOperatorByID(int id)
+        {
+            foreach (GenericOperator op in _operators)
+            {
+                if (op.Id == id) return op;
+            }
+            return null;
+        }
+
+        public GenericOperator spawnNewOperator(GenericOperator op)
+        {
+            List<GenericOperator> parent = new List<GenericOperator>();
+            parent.Add(op);
+            GameObject ob = CreateOperator(_operatorPrefabs[_operatorNewId], parent);
+            GenericOperator go = ob.GetComponent<GenericOperator>();
+       
+            
+            return go;
+        }
+
+        public List<GenericOperator> GetOperators()
+        {
+            return _operators;
         }
 
 

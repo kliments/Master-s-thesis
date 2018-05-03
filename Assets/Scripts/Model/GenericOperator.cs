@@ -3,6 +3,7 @@ using System.Collections;
 using NUnit.Framework.Constraints;
 using UnityEngine;
 using System.Collections.Generic;
+using Controller.Interaction.Icon;
 
 
 namespace Assets.Scripts.Model
@@ -23,6 +24,9 @@ namespace Assets.Scripts.Model
         public GenericDatamodel _outputData;
 
         public bool ProperInitializedStart;
+
+        public bool isSelected = false;
+        public GenericOperator newOperator;
 
         public virtual void Start()
         {
@@ -204,8 +208,31 @@ namespace Assets.Scripts.Model
             return Id;
         }
 
+        public void setSelected(bool selected)
+        {
+            isSelected = selected;
+
+            if (selected)
+            {
+                OnSelectAction();
+
+                // spawn a new NewOperator for newly initialized operator
+                if (!this.GetType().Equals((typeof(NewOperator)))){
+                   newOperator = Observer.spawnNewOperator(this);
+                }
+            }
+            else
+            {
+                OnUnselectAction();
+                if (newOperator != null) newOperator.Icon.GetComponentInChildren<NewIconInteractionController>().hideOptions();
+                Observer.DestroyOperator(newOperator);
+            }
+        }
+
         public abstract bool ValidateIfOperatorPossibleForParents(GenericOperator parent);
 
+        protected virtual void OnUnselectAction() { }
+        protected virtual void OnSelectAction() { }
 
 
     }

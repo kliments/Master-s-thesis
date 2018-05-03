@@ -1,6 +1,8 @@
-﻿using Assets.Scripts.Model;
+﻿using System;
+using Assets.Scripts.Model;
 using System.Collections;
 using System.Collections.Generic;
+using Controller.Interaction.Icon;
 using UnityEngine;
 
 public class NewOperator :  GenericOperator
@@ -23,5 +25,9 @@ public class NewOperator :  GenericOperator
 	   
     }
 
-    
+    protected override void OnUnselectAction()
+    {
+        NewIconInteractionController interactionController = Icon.GetComponentInChildren<NewIconInteractionController>();
+        if(interactionController!=null) interactionController.hideOptions();
+    }
 }

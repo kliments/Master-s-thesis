@@ -14,10 +14,11 @@ namespace Controller.Interaction.Icon
         private List<GenericIcon> optionIconPrefabs;
         private List<GameObject> operatorPrefabs;
         private bool optionsDisplayed = false;
+        private GameObject spawnedPrefab;
 
         protected override void OnLeftClickOnTargetEventAction()
         {
-            Debug.Log("New Operator Clicked");
+            //Debug.Log("New Operator Clicked");
 
             ClickedOp = GetOperator();
 
@@ -30,6 +31,7 @@ namespace Controller.Interaction.Icon
                 displayOptions();
             }
         }
+
 
         private List<GameObject> lines;
 
@@ -87,8 +89,12 @@ namespace Controller.Interaction.Icon
 
         }
 
+     
+
         public void hideOptions()
         {
+            if (optionIcons == null) return;
+
             foreach (GenericIcon instance in optionIcons)
             {
                 GameObject.Destroy(instance.gameObject);
@@ -134,7 +140,7 @@ namespace Controller.Interaction.Icon
 
         public void spawnPrefab(int id)
         {
-            GameObject spawnedPrefab = GetOperator().Observer.CreateOperator(operatorPrefabs[id], GetOperator().Parents);
+            spawnedPrefab = GetOperator().Observer.CreateOperator(operatorPrefabs[id], GetOperator().Parents);
       
             hideOptions();
             
@@ -143,10 +149,14 @@ namespace Controller.Interaction.Icon
 
         public void moveNewIconAndDestroyOperator(GenericOperator genericOperator)
         {
-            genericOperator.GetIcon().gameObject.transform.localPosition = GetOperator().GetIcon().transform.localPosition;
+            if (spawnedPrefab.GetComponent<GenericOperator>() == genericOperator) //genericOperator.GetType().Equals((typeof(NewOperator))) && 
+            {
+                genericOperator.GetIcon().gameObject.transform.localPosition =
+                    GetOperator().GetIcon().transform.localPosition;
+                GetOperator().Observer.NewOperatorInitializedAndRunnningEvent -= moveNewIconAndDestroyOperator;
+                GetOperator().Observer.DestroyOperator(GetOperator());
+            }
 
-            GetOperator().Observer.NewOperatorInitializedAndRunnningEvent -= moveNewIconAndDestroyOperator;
-            GetOperator().Observer.DestroyOperator(GetOperator());
         }
 
       

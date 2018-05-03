@@ -26,7 +26,7 @@ public class InputController : MonoBehaviour {
 
     public void EmitEvent(InputEventsEnum inputEvent, Targetable target = null)
     {
-        Debug.Log(inputEvent);
+        //Debug.Log(inputEvent);
 
         switch (inputEvent)
         {
@@ -35,7 +35,7 @@ public class InputController : MonoBehaviour {
                 break;
             case InputEventsEnum.LeftClickOnTargetEvent:
                 if (LeftClickOnTargetEvent != null) LeftClickOnTargetEvent(target);
-                Debug.Log(target+ " has been clicked.");
+                //Debug.Log(target+ " has been clicked.");
                 break;
         }
     }
