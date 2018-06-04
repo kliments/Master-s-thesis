@@ -114,7 +114,7 @@ namespace Assets.Scripts.Model
 
             InstallComponents(genericOperator);
 
-            genericOperator.Process();
+            genericOperator.processComplete = genericOperator.Process();
 
             // Emit Event after the new Operator has been initialized and the Process() function has been started
             if(NewOperatorInitializedAndRunnningEvent != null) NewOperatorInitializedAndRunnningEvent(genericOperator);

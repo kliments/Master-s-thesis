@@ -62,9 +62,12 @@ public class GraphSpaceController : MonoBehaviour {
         if (go.Children == null || go.Children.Count == 0) return; 
         foreach (GenericOperator child in go.Children)
         {
+            if (go.GetIcon() == null || child == null || child.GetIcon() == null) continue;
+
             GameObject line = new GameObject();
             LineRenderer lineRenderer = line.AddComponent<LineRenderer>();
             lineRenderer.SetWidth(0.01f, 0.01f);
+           
             lineRenderer.SetPositions(new Vector3[] {
                 go.GetIcon().transform.position+new Vector3(0,0,0.001f), child.GetIcon().transform.position+new Vector3(0,0,0.001f)
             });

@@ -23,7 +23,11 @@ namespace Assets.Scripts.Model
         public GenericDatamodel _rawInputData;
         public GenericDatamodel _outputData;
 
+        public bool hasInput = false;
+        public bool hasOutput = false;
+
         public bool ProperInitializedStart;
+        public bool processComplete;
 
         public bool isSelected = false;
         public GenericOperator newOperator;
@@ -147,6 +151,7 @@ namespace Assets.Scripts.Model
         * */
         protected void SetRawInputData(GenericDatamodel newRawInputData)
         {
+            hasInput = (newRawInputData != null);
             _rawInputData = newRawInputData;
         }
 
@@ -163,6 +168,7 @@ namespace Assets.Scripts.Model
         * */
         protected void SetOutputData(GenericDatamodel newOuputData)
         {
+            hasOutput = (newOuputData != null);
             _outputData = newOuputData;
         }
 
@@ -208,6 +214,8 @@ namespace Assets.Scripts.Model
             return Id;
         }
 
+        
+
         public void setSelected(bool selected)
         {
             isSelected = selected;
@@ -218,7 +226,7 @@ namespace Assets.Scripts.Model
 
                 // spawn a new NewOperator for newly initialized operator
                 if (!this.GetType().Equals((typeof(NewOperator)))){
-                   newOperator = Observer.spawnNewOperator(this);
+                    StartCoroutine(spawnNewOperatorAfterNewlyCreatedOperatorHasFinishedProcess());
                 }
             }
             else
@@ -227,6 +235,15 @@ namespace Assets.Scripts.Model
                 if (newOperator != null) newOperator.Icon.GetComponentInChildren<NewIconInteractionController>().hideOptions();
                 Observer.DestroyOperator(newOperator);
             }
+        }
+
+        private IEnumerator spawnNewOperatorAfterNewlyCreatedOperatorHasFinishedProcess()
+        {
+           while (processComplete == false)
+           {
+                yield return new WaitForFixedUpdate();
+            }
+            newOperator = Observer.spawnNewOperator(this);
         }
 
         public abstract bool ValidateIfOperatorPossibleForParents(GenericOperator parent);
