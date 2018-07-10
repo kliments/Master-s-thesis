@@ -34,22 +34,25 @@ public class KMeansClusteringOperator : GenericOperator
 	// Use this for initialization
 	void Start ()
 	{
-		for (var i = 0; i < 9; i++)
-		{
-			SampleInput[i] = new Vector3(Random.Range(0f, 10f),Random.Range(0f, 10f), Random.Range(0f,10f));
-		}
-		
+//		for (var i = 0; i < 9; i++)
+//		{
+//			SampleInput[i] = new Vector3(Random.Range(0f, 10f),Random.Range(0f, 10f), Random.Range(0f,10f));
+//		}
+		var dataModel = new SimpleDatamodel();
+		SampleInput = dataModel.GetCoords();
+
+		Init(2,SampleInput);
 	}
 
 	public override bool Process()
 	{
 		var dataModel = new SimpleDatamodel();
 		
-		var input = dataModel.GetCoords();
+		var input = ((SimpleDatamodel)GetOpera)
 		//initializes k-means-clustering with _k = number of clusters and input = List<Vector3>
 		Init(_k,input);
 		
-		dataModel.addFloatMatrixColwise(Hier meine Vektoren??);
+		//dataModel.addFloatMatrixColwise(Hier meine Vektoren??);
 		SetOutputData(dataModel);
 		
 		return true;
@@ -66,11 +69,11 @@ public class KMeansClusteringOperator : GenericOperator
 	// Update is called once per frame
 	void Update () {
 		
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-//			Debug.Log("start");
-			Init(2,SampleInput);
-		}
+//		if (Input.GetKeyDown(KeyCode.Space))
+//		{
+////			Debug.Log("start");
+//			Init(2,SampleInput);
+//		}
 		
 	}
 	
@@ -232,7 +235,7 @@ public class KMeansClusteringOperator : GenericOperator
 			
 		}
 		
-//		Debug.Log("runs: " + _testCounter + "  and centroids: " +_clusterMatrix[1,0] + " " + _clusterMatrix[2,0]);
+		Debug.Log("runs: " + _testCounter + "  and centroids: " +_clusterMatrix[1,0] + " " + _clusterMatrix[2,0]);
 
 		if (!centroidCheck)
 		{
@@ -240,13 +243,5 @@ public class KMeansClusteringOperator : GenericOperator
 			_testCounter++;
 			FillMatrix(_k);
 		}
-	}
-
-	private void MatrixToJaggedArray(Vector3[,] matrix)
-	{
-		
-		for (var i = 1)
-	}
-
-	
+	}	
 }

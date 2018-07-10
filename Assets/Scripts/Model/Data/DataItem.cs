@@ -30,4 +30,20 @@ public class DataItem {
         }
         return v;
     }
+    
+    public Vector3 GetfirstFourNumericColsAsVector()
+    {
+        var v = new Vector3();
+        var c = 0;
+        foreach (var attr in _dataAttributeValuePairs)
+        {
+            if (c > 3) return v;
+            if (attr.GetValueDataType() == DataAttribute.Valuetype.ValFloat)
+            {
+                v[c] = (float)attr.GetValue();
+                c++;
+            }
+        }
+        return v;
+    }
 }
