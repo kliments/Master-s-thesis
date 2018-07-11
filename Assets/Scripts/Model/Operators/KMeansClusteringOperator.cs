@@ -38,22 +38,23 @@ public class KMeansClusteringOperator : GenericOperator
 //		{
 //			SampleInput[i] = new Vector3(Random.Range(0f, 10f),Random.Range(0f, 10f), Random.Range(0f,10f));
 //		}
-		var dataModel = new SimpleDatamodel();
-		SampleInput = dataModel.GetCoords();
-
-		Init(2,SampleInput);
+//		var dataModel = new SimpleDatamodel();
+//		SampleInput = dataModel.GetCoords();
+//
+//		Init(2,SampleInput);
 	}
 
 	public override bool Process()
 	{
-		var dataModel = new SimpleDatamodel();
+//		var dataModel = new SimpleDatamodel();
+		Debug.Log(_rawInputData.GetDataItems()[1]);
 		
-		var input = ((SimpleDatamodel)GetOpera)
+//		var input = ((SimpleDatamodel)GetOpera)
 		//initializes k-means-clustering with _k = number of clusters and input = List<Vector3>
-		Init(_k,input);
+//		Init(_k,input);
 		
 		//dataModel.addFloatMatrixColwise(Hier meine Vektoren??);
-		SetOutputData(dataModel);
+//		SetOutputData(dataModel);
 		
 		return true;
 	}
