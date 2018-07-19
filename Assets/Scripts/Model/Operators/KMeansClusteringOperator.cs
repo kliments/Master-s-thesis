@@ -34,6 +34,8 @@ public class KMeansClusteringOperator : GenericOperator
 	// Use this for initialization
 	void Start ()
 	{
+		
+//		Debug.Log("Test Output: " + _rawInputData.GetDataItems()[1]);
 //		for (var i = 0; i < 9; i++)
 //		{
 //			SampleInput[i] = new Vector3(Random.Range(0f, 10f),Random.Range(0f, 10f), Random.Range(0f,10f));
@@ -47,7 +49,7 @@ public class KMeansClusteringOperator : GenericOperator
 	public override bool Process()
 	{
 //		var dataModel = new SimpleDatamodel();
-		Debug.Log(_rawInputData.GetDataItems()[1]);
+		Debug.Log("Test Output: " + _rawInputData.GetDataItems()[1]);
 		
 //		var input = ((SimpleDatamodel)GetOpera)
 		//initializes k-means-clustering with _k = number of clusters and input = List<Vector3>
