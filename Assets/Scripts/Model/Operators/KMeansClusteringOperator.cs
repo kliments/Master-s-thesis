@@ -31,9 +31,13 @@ public class KMeansClusteringOperator : GenericOperator
 	public static int _k; //input parameter k, number of centroids/cluster
 	
 	
-	// Use this for initialization
-	void Start ()
+
+	public override void Start()
 	{
+		base.Start();	
+		//rawinputdata nehmen, darauf die ersten 3 attribute der dataitems nehmen und die clustern, dann neues attribut ID hinzufügen
+		//das ist dann automatisch weitergereicht
+		//menü buttons erstellen, erstmal k (int) slider
 		
 //		Debug.Log("Test Output: " + _rawInputData.GetDataItems()[1]);
 //		for (var i = 0; i < 9; i++)
@@ -43,13 +47,25 @@ public class KMeansClusteringOperator : GenericOperator
 //		var dataModel = new SimpleDatamodel();
 //		SampleInput = dataModel.GetCoords();
 //
-//		Init(2,SampleInput);
+		
+//		SampleInput.Add(new Vector3(x,y,z));
+
+		var SimpleDataModel = new SimpleDatamodel();
+		var DataItems = _rawInputData.GetDataItems();
+		
+		foreach (var dataItem in DataItems)
+		{
+			SampleInput.Add(dataItem.GetfirstThreeNumericColsAsVector());
+		}
+
+		Init(_k,SampleInput);
+//		SetOutputData();
 	}
 
 	public override bool Process()
 	{
 //		var dataModel = new SimpleDatamodel();
-		Debug.Log("Test Output: " + _rawInputData.GetDataItems()[1]);
+//		Debug.Log("Test Output: " + _rawInputData.GetDataItems()[1]);
 		
 //		var input = ((SimpleDatamodel)GetOpera)
 		//initializes k-means-clustering with _k = number of clusters and input = List<Vector3>
@@ -238,7 +254,7 @@ public class KMeansClusteringOperator : GenericOperator
 			
 		}
 		
-		Debug.Log("runs: " + _testCounter + "  and centroids: " +_clusterMatrix[1,0] + " " + _clusterMatrix[2,0]);
+//		Debug.Log("runs: " + _testCounter + "  and centroids: " +_clusterMatrix[1,0] + " " + _clusterMatrix[2,0] + " " + _clusterMatrix[3,0] + " " + _clusterMatrix[4,0]);
 
 		if (!centroidCheck)
 		{
