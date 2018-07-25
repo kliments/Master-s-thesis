@@ -5,6 +5,7 @@ using UnityEngine;
 public class MenueScript : MonoBehaviour {
 
     public ToggleScript togglePrefab;
+    public DiscreteSliderScript DiscreteSliderPrefab;
     public GameObject elementList;
 
     private List<GenericMenueComponent> currentComponentList = new List<GenericMenueComponent>();
@@ -33,6 +34,24 @@ public class MenueScript : MonoBehaviour {
         newToggle.transform.localScale = new Vector3(1f,1f,1f);
         currentComponentList.Add(newToggle);
         currentTogglesList.Add(newToggle);
+        if (listener != null)
+        {
+            addListener(componentId, listener);
+        }
+        return componentId;
+    }
+
+    public int AddDiscreteSlider(string name, IMenueComponentListener listener)
+    {
+        DiscreteSliderScript newDiscreteSlider = Instantiate(DiscreteSliderPrefab);
+        int componentId = getUnusedId();
+        newDiscreteSlider.initMe(componentId, name);
+        newDiscreteSlider.transform.parent = elementList.transform;
+        //TODO: Create a scrollable List for elements.
+        newDiscreteSlider.transform.localPosition = new Vector3(0f, (0.5f - (currentComponentList.Count * 0.1f)), -0.005f);
+        newDiscreteSlider.transform.localScale = new Vector3(1f,1f,1f);
+        currentComponentList.Add(newDiscreteSlider);
+//        currentTogglesList.Add(newDiscreteSlider);
         if (listener != null)
         {
             addListener(componentId, listener);

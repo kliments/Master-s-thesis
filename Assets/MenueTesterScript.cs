@@ -21,6 +21,8 @@ public class MenueTesterScript : MonoBehaviour, IMenueComponentListener {
         // Create a toggle with no listener. Add this element as a listener afterwards. An arbitrary amount of listeners can be added.
         int id = menue.addToggle("showZAxis", null);
         menue.addListener(id, this);
+
+        menue.AddDiscreteSlider("K", this);
     }
 	
 	// Update is called once per frame
