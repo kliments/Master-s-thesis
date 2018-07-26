@@ -30,7 +30,6 @@ public class KMeansClusteringOperator : GenericOperator
 	private int _testCounter = 1;
 	public static int _k; //input parameter k, number of centroids/cluster
 	
-	
 
 	public override void Start()
 	{
@@ -49,6 +48,8 @@ public class KMeansClusteringOperator : GenericOperator
 //
 		
 //		SampleInput.Add(new Vector3(x,y,z));
+
+		
 
 		var SimpleDataModel = new SimpleDatamodel();
 		var DataItems = _rawInputData.GetDataItems();
@@ -101,7 +102,8 @@ public class KMeansClusteringOperator : GenericOperator
 	//Initialize by creating random seed centroids and starting the method cascade
 	private void Init(int k, List<Vector3> input)
 	{
-		_k = k;
+//		_k = k;
+		Debug.Log("Parameter K " + k);
 		_distanceMatrix = new float[k+1,input.Count+1];
 		_clusterMatrix = new Vector3[k+1,input.Count+1];
 		

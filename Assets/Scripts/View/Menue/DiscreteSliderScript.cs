@@ -8,7 +8,7 @@ public class DiscreteSliderScript : GenericMenueComponent {
 	public Animator myAnimator;
 	public Text NumberField;
 
-	private int counter = 2;
+	private int _counter = 2;
 
 	// Use this for initialization
 	void Start () {
@@ -20,37 +20,39 @@ public class DiscreteSliderScript : GenericMenueComponent {
 		
 	}
 
-	public int toggle()
+	public bool toggle()
 	{
-		bool activated = myAnimator.GetBool("isPressed");
-		myAnimator.SetBool("isPressed", !activated);
+		bool activated = myAnimator.GetBool("Clicked");
+		myAnimator.SetBool("Clicked", !activated);
 		List<IMenueComponentListener> listeners = getListeners();
-		
 		foreach(IMenueComponentListener listener in listeners)
 		{
 			listener.menueChanged(this);
 		}
-		
 		ToggleSliderNumber();
-		return counter;
+		return !activated;
 	}
 
 	public bool isActivated()
 	{
-		return myAnimator.GetBool("isPressed");
+		return myAnimator.GetBool("Clicked");
 	}
 
 	private void ToggleSliderNumber()
 	{
-		if (counter < 3)
+		if (_counter < 5)
 		{
-			counter++;
+			_counter++;
 		}
-		else if (counter == 3)
+		else if (_counter == 5)
 		{
-			counter = 2;
+			_counter = 2;
 		}
 		
-		NumberField.text = counter.ToString();
+		NumberField.text = _counter.ToString();
+		Debug.Log(_counter);
+		
+		KMeansClusteringOperator._k = _counter;
+		Debug.Log(KMeansClusteringOperator._k);
 	}
 }

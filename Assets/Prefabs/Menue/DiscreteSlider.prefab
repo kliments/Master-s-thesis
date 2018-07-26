@@ -174,7 +174,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 5abc966279b47ab49bb377461fdc9201, type: 2}
+  - {fileID: 2100000, guid: 935a37f225c24d244a26cb91b1e3924b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -263,7 +263,7 @@ Animator:
   m_GameObject: {fileID: 1300114946062916}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f3427d692974fa340a76d214673c6a46, type: 2}
+  m_Controller: {fileID: 9100000, guid: 5f3a080f15ee31b4aa200f94df9217e1, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -348,7 +348,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 1
+  m_Text: 2
 --- !u!114 &114543251201974052
 MonoBehaviour:
   m_ObjectHideFlags: 1
