@@ -20,22 +20,31 @@ public class DiscreteSliderScript : GenericMenueComponent {
 		
 	}
 
-	public bool toggle()
+	public void toggle()
 	{
-		bool activated = myAnimator.GetBool("Clicked");
-		myAnimator.SetBool("Clicked", !activated);
+		ToggleSliderNumber();
+		int transitionNumber = myAnimator.GetInteger("IsPressed");
+		if (transitionNumber < 5)
+		{
+			myAnimator.SetInteger("IsPressed", _counter);
+		}
+		else
+		{
+			transitionNumber = 2;
+			myAnimator.SetInteger("IsPressed", transitionNumber);
+		}
+	
 		List<IMenueComponentListener> listeners = getListeners();
 		foreach(IMenueComponentListener listener in listeners)
 		{
 			listener.menueChanged(this);
 		}
-		ToggleSliderNumber();
-		return !activated;
+		
 	}
 
-	public bool isActivated()
+	public int isActivated()
 	{
-		return myAnimator.GetBool("Clicked");
+		return myAnimator.GetInteger("IsPressed");
 	}
 
 	private void ToggleSliderNumber()
