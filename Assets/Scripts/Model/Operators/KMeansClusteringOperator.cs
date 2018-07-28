@@ -9,11 +9,13 @@
 
 
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Xml.Schema;
 using Assets.Scripts.Model;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using UnityEngine.UI;
 
 public class KMeansClusteringOperator : GenericOperator
 {
@@ -30,12 +32,13 @@ public class KMeansClusteringOperator : GenericOperator
 	public static int RunForXLoops = 1; //run for X loops instead of convergence
 
 	private int _hasRunFor; //has already looped X times
-	
-	
 
+	public InputField InputField;
+	
 	public override void Start()
 	{
 		base.Start();	
+		
 
 		var dataItems = _rawInputData.GetDataItems();
 		
@@ -44,8 +47,8 @@ public class KMeansClusteringOperator : GenericOperator
 			_input.Add(dataItem.GetfirstThreeNumericColsAsVector());
 		}
 
+
 		Init(_k,_input);
-		
 		SetOutputData(_simpleDataModel);
 	}
 
@@ -60,8 +63,10 @@ public class KMeansClusteringOperator : GenericOperator
 	}
 	
 	//Initialize by creating random seed centroids and starting the method cascade
-	private void Init(int k, List<Vector3> input)
+	public void Init(int k, List<Vector3> input)
 	{
+		NumberOfLoops();
+		
 		_distanceMatrix = new float[k+1,input.Count+1];
 		_clusterMatrix = new Vector3[k+1,input.Count+1];
 		
@@ -178,7 +183,7 @@ public class KMeansClusteringOperator : GenericOperator
 				_clusterMatrix[i, 0] = mean;
 			
 				//run until the counter is done instead of convergence
-				if (RunForXLoops >= _hasRunFor)
+				if (RunForXLoops > _hasRunFor)
 				{
 					centroidCheck = true;
 					EncodeResultToSimpleDataModel();
@@ -230,4 +235,25 @@ public class KMeansClusteringOperator : GenericOperator
 			}
 		}
 	}
+	
+	//UI stuff
+	private void NumberOfLoops()
+	{
+		var inputFieldText = GameObject.Find("NumberOfLoops").GetComponent<Text>();
+		
+		try
+		{
+			RunForXLoops = int.Parse(inputFieldText.text);
+		}
+		catch (Exception e)
+		{
+			Debug.Log("Please insert an integer into the input field.");
+		}
+	}
+
+	public void Restart()
+	{
+		Init(_k,_input);
+	}
+
 }

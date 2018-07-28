@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Operator_New
   - Controller_Right
+  - InputField
   layers:
   - Default
   - TransparentFX

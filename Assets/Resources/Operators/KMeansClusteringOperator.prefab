@@ -179,6 +179,8 @@ MonoBehaviour:
   processComplete: 0
   isSelected: 0
   newOperator: {fileID: 0}
+  InputField: {fileID: 0}
+  Button: {fileID: 0}
 --- !u!114 &114166629846387968
 MonoBehaviour:
   m_ObjectHideFlags: 1

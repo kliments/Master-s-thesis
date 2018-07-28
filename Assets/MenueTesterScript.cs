@@ -1,13 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class MenueTesterScript : MonoBehaviour, IMenueComponentListener {
 
     private MenueScript menue;
-
-    public InputField InputField;
 
     // Use this for initialization
     void Start () {
@@ -68,9 +65,7 @@ public class MenueTesterScript : MonoBehaviour, IMenueComponentListener {
             else
             {
                 KMeansClusteringOperator.Convergence = false;
-                KMeansClusteringOperator.RunForXLoops = int.Parse(InputField.text);
-            }
-            
+            }      
         }
     }
 }
