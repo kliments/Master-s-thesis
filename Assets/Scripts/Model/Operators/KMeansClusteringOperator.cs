@@ -26,7 +26,7 @@ public class KMeansClusteringOperator : GenericOperator
 	private Vector3[,] _clusterMatrix; //matrix that saves centroids and the assigned data points
 	private SimpleDatamodel _simpleDataModel = new SimpleDatamodel(); //data structure where the result gets saved in
 
-	public static bool Convergence = true; //run until convergence?
+	public static bool Convergence; //run until convergence?
 	public static int RunForXLoops = 1; //run for X loops instead of convergence
 
 	private int _hasRunFor; //has already looped X times
@@ -183,11 +183,7 @@ public class KMeansClusteringOperator : GenericOperator
 					centroidCheck = true;
 					EncodeResultToSimpleDataModel();
 				}
-			}
-			
-			
-			
-			
+			}	
 		}
 
 		if (!centroidCheck)

@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MenueTesterScript : MonoBehaviour, IMenueComponentListener {
 
     private MenueScript menue;
+
+    public InputField InputField;
 
     // Use this for initialization
     void Start () {
@@ -23,6 +26,7 @@ public class MenueTesterScript : MonoBehaviour, IMenueComponentListener {
         menue.addListener(id, this);
 
         menue.AddDiscreteSlider("K", this);
+        menue.addToggle("KMeanConvergence", this);
     }
 	
 	// Update is called once per frame
@@ -52,6 +56,21 @@ public class MenueTesterScript : MonoBehaviour, IMenueComponentListener {
         {
             Debug.Log("New value for showZAxis: " + menue.getToggleValue(changedComponent.getId()));
             // Do something with the value.
+        }
+
+        //change if the KMean should run until convergence or not
+        if (name.Equals("KMeanConvergence"))
+        {
+            if (!KMeansClusteringOperator.Convergence)
+            {
+                KMeansClusteringOperator.Convergence = true;
+            }
+            else
+            {
+                KMeansClusteringOperator.Convergence = false;
+                KMeansClusteringOperator.RunForXLoops = int.Parse(InputField.text);
+            }
+            
         }
     }
 }
