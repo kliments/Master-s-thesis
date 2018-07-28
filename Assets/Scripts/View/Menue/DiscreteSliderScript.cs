@@ -6,20 +6,10 @@ using UnityEngine.UI;
 public class DiscreteSliderScript : GenericMenueComponent {
 
 	public Animator myAnimator;
-	public Text NumberField;
+	public Text NumberField; //the text field on the toggle button that indicates the current value of KMean parameter K
+	private int _counter = 2; //the counter that gets written into the text field
 
-	private int _counter = 2;
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
+	//what happens when the button is triggered
 	public void toggle()
 	{
 		ToggleSliderNumber();
@@ -42,11 +32,13 @@ public class DiscreteSliderScript : GenericMenueComponent {
 		
 	}
 
+	//probably is useless?
 	public int isActivated()
 	{
 		return myAnimator.GetInteger("IsPressed");
 	}
 
+	//toggle text field number
 	private void ToggleSliderNumber()
 	{
 		if (_counter < 5)
@@ -59,9 +51,7 @@ public class DiscreteSliderScript : GenericMenueComponent {
 		}
 		
 		NumberField.text = _counter.ToString();
-		Debug.Log(_counter);
 		
 		KMeansClusteringOperator._k = _counter;
-		Debug.Log(KMeansClusteringOperator._k);
 	}
 }
