@@ -9,9 +9,7 @@
 
 
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.Xml.Schema;
 using Assets.Scripts.Model;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -32,8 +30,6 @@ public class KMeansClusteringOperator : GenericOperator
 	public static int RunForXLoops = 1; //run for X loops instead of convergence
 
 	private int _hasRunFor; //has already looped X times
-
-	public InputField InputField;
 	
 	public override void Start()
 	{
@@ -194,8 +190,8 @@ public class KMeansClusteringOperator : GenericOperator
 		if (!centroidCheck)
 		{
 			//Start again with filling the matrices and assigning data points to the nearest (new) centroids
-			CalculateDistances();
 			_hasRunFor++;
+			CalculateDistances();	
 		}
 	}
 
@@ -244,6 +240,7 @@ public class KMeansClusteringOperator : GenericOperator
 		try
 		{
 			RunForXLoops = int.Parse(inputFieldText.text);
+			Debug.Log("Ok Master, I will run " + RunForXLoops + " times!");
 		}
 		catch (Exception e)
 		{
