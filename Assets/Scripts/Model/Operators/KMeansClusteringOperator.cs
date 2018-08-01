@@ -140,7 +140,7 @@ public class KMeansClusteringOperator : GenericOperator
 		NewCentroids();
 	}
 
-	//Calculate the new centroids as the mean of currently nearest data points
+	//Calculate the new centroids as the mean of the currently nearest data points
 	private void NewCentroids()
 	{
 		var centroidCheck = false;
@@ -183,7 +183,7 @@ public class KMeansClusteringOperator : GenericOperator
 				_clusterMatrix[i, 0] = mean;
 			
 				//run until the counter is done instead of convergence
-				if (RunForXLoops > _hasRunFor)
+				if (_hasRunFor >= RunForXLoops)
 				{
 					centroidCheck = true;
 					EncodeResultToSimpleDataModel();
@@ -236,7 +236,7 @@ public class KMeansClusteringOperator : GenericOperator
 		}
 	}
 	
-	//UI stuff
+	//gets the UI string/int field
 	private void NumberOfLoops()
 	{
 		var inputFieldText = GameObject.Find("NumberOfLoops").GetComponent<Text>();
