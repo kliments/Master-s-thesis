@@ -140,6 +140,7 @@ public class KMeansClusteringOperator : GenericOperator
 	private void NewCentroids()
 	{
 		var centroidCheck = false;
+		var convergenceCounter = 0;
 		_centroids.Clear();
 		
 		for (var i = 1; i <= _k; i++)
@@ -167,11 +168,21 @@ public class KMeansClusteringOperator : GenericOperator
 
 			if (Convergence)
 			{
+				convergenceCounter++;
 				//run until convergence is reached
 				if (_clusterMatrix[i, 0] == mean)
 				{
-					centroidCheck = true;
-					EncodeResultToSimpleDataModel();
+					
+					Debug.Log(convergenceCounter);
+					if (convergenceCounter == _k)
+					{
+						centroidCheck = true;
+						EncodeResultToSimpleDataModel();
+					}
+				}
+				else
+				{
+					break;
 				}
 			}
 			else
@@ -236,15 +247,18 @@ public class KMeansClusteringOperator : GenericOperator
 	private void NumberOfLoops()
 	{
 		var inputFieldText = GameObject.Find("NumberOfLoops").GetComponent<Text>();
-		
-		try
+
+		if (!Convergence)
 		{
-			RunForXLoops = int.Parse(inputFieldText.text);
-			Debug.Log("Ok Master, I will run " + RunForXLoops + " times!");
-		}
-		catch (Exception e)
-		{
-			Debug.Log("Please insert an integer into the input field.");
+			try
+			{
+				RunForXLoops = int.Parse(inputFieldText.text);
+				Debug.Log("Ok Master, I will run " + RunForXLoops + " times!");
+			}
+			catch (Exception e)
+			{
+				Debug.Log("Please insert an integer into the input field.");
+			}
 		}
 	}
 
