@@ -85,8 +85,7 @@ public class ScatterplotVisualization : GenericVisualization {
 
             dict[id].Add(datitem);
         }
-
-        Debug.Log(dict.Keys.ToString());
+        
 
 
         var body = this.gameObject.GetComponent<Rigidbody>();
