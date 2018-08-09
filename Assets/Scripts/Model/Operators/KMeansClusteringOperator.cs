@@ -225,12 +225,12 @@ public class KMeansClusteringOperator : GenericOperator
 					var valueX = _clusterMatrix[i, j].x;
 					var valueY = _clusterMatrix[i, j].y;
 					var valueZ = _clusterMatrix[i, j].z;
-					var valueCentroid = _clusterMatrix[i, 0];
+					var valueCentroid = (float)i;
 				
 					x.Init(j, "x", valueX + "", DataAttribute.Valuetype.ValFloat);
 					y.Init(j, "y", valueY + "", DataAttribute.Valuetype.ValFloat);
 					z.Init(j, "z", valueZ + "", DataAttribute.Valuetype.ValFloat);
-					centroid.Init(0, "centroid", valueCentroid + "");
+					centroid.Init(0, "centroid", valueCentroid + "", DataAttribute.Valuetype.ValFloat);
 				
 					dataItem.Add(x);
 					dataItem.Add(y);

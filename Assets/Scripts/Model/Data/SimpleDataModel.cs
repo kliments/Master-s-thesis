@@ -14,6 +14,17 @@ public class SimpleDatamodel : GenericDatamodel {
         return list;
     }
 
+    public List<Vector4> GetCoordsAndCluster()
+    {
+        var list = new List<Vector4>();
+        foreach (var dataItem in DataItems)
+        {
+            list.Add(dataItem.GetfirstFourNumericColsAsVector());
+        }
+
+        return list;
+    }
+
     public void addFloatMatrixColwise(float[][] data) {
         for (int i = 0; i < data.Length; i++) {
             var dataItem = new DataItem();

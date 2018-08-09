@@ -33,7 +33,7 @@ public class DataItem {
     
     public Vector3 GetfirstFourNumericColsAsVector()
     {
-        var v = new Vector3();
+        var v = new Vector4();
         var c = 0;
         foreach (var attr in _dataAttributeValuePairs)
         {
