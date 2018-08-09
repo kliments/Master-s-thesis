@@ -168,9 +168,11 @@ public class KMeansClusteringOperator : GenericOperator
 
 			if (Convergence)
 			{
+                Debug.Log("WOOOT"+i+ "|"+ _clusterMatrix[1, 0]);
 				convergenceCounter++;
-				//run until convergence is reached
-				if (_clusterMatrix[i, 0] == mean)
+			    Debug.Log("DFUQ");
+                //run until convergence is reached
+                if (_clusterMatrix[i, 0] == mean)
 				{
 					
 					Debug.Log(convergenceCounter);

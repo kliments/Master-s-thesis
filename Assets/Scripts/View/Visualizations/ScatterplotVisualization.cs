@@ -73,7 +73,21 @@ public class ScatterplotVisualization : GenericVisualization {
             if (cluster == 3f) clusterList3.Add(dataPoint);
             if (cluster == 4f) clusterList4.Add(dataPoint);
             if (cluster == 5f) clusterList5.Add(dataPoint);
-        } 
+        }
+
+
+        Dictionary<float, List<DataItem>> dict = new Dictionary<float, List<DataItem>>();
+
+        foreach (DataItem datitem in ((SimpleDatamodel)GetOperator().GetRawInputData()).GetDataItems())
+        {
+            float id = (float) datitem.GetDataAttributeValuePairs()[3].GetValue();
+            if(!dict.ContainsKey(id)) dict.Add(id,new List<DataItem>());
+
+            dict[id].Add(datitem);
+        }
+
+        Debug.Log(dict.Keys.ToString());
+
 
         var body = this.gameObject.GetComponent<Rigidbody>();
         if (body != null) { body.angularVelocity = Vector3.zero; }
