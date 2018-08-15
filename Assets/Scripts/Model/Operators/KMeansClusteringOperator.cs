@@ -37,7 +37,8 @@ public class KMeansClusteringOperator : GenericOperator
 	{
 		base.Start();	
 		
-
+		NumberOfClusters();
+		
 		var dataItems = _rawInputData.GetDataItems();
 		
 		foreach (var dataItem in dataItems)
@@ -65,6 +66,7 @@ public class KMeansClusteringOperator : GenericOperator
 	{
 		_simpleDataModel = new SimpleDatamodel();
 		Clustering = true;
+		
 		NumberOfLoops();
 
 		if (_distanceMatrix != null)
@@ -246,8 +248,7 @@ public class KMeansClusteringOperator : GenericOperator
 					dataItem.Add(y);
 					dataItem.Add(z);
 					dataItem.Add(centroid);
-					
-					
+										
 					_simpleDataModel.Add(dataItem);
 				}
 			}
@@ -271,6 +272,23 @@ public class KMeansClusteringOperator : GenericOperator
 				Debug.Log("Please insert an integer into the input field.");
 			}
 		}
+	}
+	
+	//gets the UI string/int field
+	private void NumberOfClusters()
+	{
+		var inputFieldText = GameObject.Find("NumberOfClusters").GetComponent<Text>();
+		
+		try
+		{
+			K = int.Parse(inputFieldText.text);
+			Debug.Log("Yo cluster me about " + K + " blops!");
+		}
+		catch (Exception e)
+		{
+			Debug.Log("I will use the Slider value for the cluster amount.");
+		}
+		
 	}
 
 	public void Restart()
