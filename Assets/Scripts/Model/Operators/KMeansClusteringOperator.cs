@@ -19,18 +19,19 @@ public class KMeansClusteringOperator : GenericOperator
 {
 	private List<Vector3> _input = new List<Vector3>(); //data input
 	
-	public static int _k = 2; //input parameter k, number of centroids/cluster
+	public static int K = 2; //input parameter k, number of centroids/cluster
 	
 	private List<Vector3> _centroids = new List<Vector3>(); //list of centroids
 	private float[,] _distanceMatrix; //matrix that saves the distances between centroids and data points
 	private Vector3[,] _clusterMatrix; //matrix that saves centroids and the assigned data points
-	private SimpleDatamodel _simpleDataModel = new SimpleDatamodel(); //data structure where the result gets saved in
+	private SimpleDatamodel _simpleDataModel; //data structure where the result gets saved in
 
 	public static bool Convergence; //run until convergence?
 	public static int RunForXLoops = 1; //run for X loops instead of convergence
 	public static bool Clustering; //to be accessed in the scatterplot class and others in order to check if they're getting clustered data or not
 
 	private int _hasRunFor; //has already looped X times
+	private bool _centroidCheck;
 	
 	public override void Start()
 	{
@@ -45,7 +46,7 @@ public class KMeansClusteringOperator : GenericOperator
 		}
 
 
-		Init(_k,_input);
+		Init(K,_input);
 		SetOutputData(_simpleDataModel);
 	}
 
@@ -62,8 +63,15 @@ public class KMeansClusteringOperator : GenericOperator
 	//Initialize by creating random seed centroids and starting the method cascade
 	public void Init(int k, List<Vector3> input)
 	{
+		_simpleDataModel = new SimpleDatamodel();
 		Clustering = true;
 		NumberOfLoops();
+
+		if (_distanceMatrix != null)
+		{
+			Array.Clear(_distanceMatrix,0,_distanceMatrix.Length);
+			Array.Clear(_clusterMatrix,0,_clusterMatrix.Length);
+		}
 		
 		_distanceMatrix = new float[k+1,input.Count+1];
 		_clusterMatrix = new Vector3[k+1,input.Count+1];
@@ -86,7 +94,7 @@ public class KMeansClusteringOperator : GenericOperator
 		var zMax = maxVector.z;
 
 		//set the centroids randomly inside the range of the input (minmax)
-		for (var i = 0; i < _k; i++)
+		for (var i = 0; i < K; i++)
 		{
 			var randomX = Random.Range(xMin, xMax);
 			var randomY = Random.Range(yMin, yMax);
@@ -104,7 +112,7 @@ public class KMeansClusteringOperator : GenericOperator
 	{
 		for (var i = 0; i < _input.Count; i++)
 		{
-			for (var j = 0; j < _k; j++)
+			for (var j = 0; j < K; j++)
 			{
 				var currentDistance = Vector3.Distance(_input[i], _centroids[j]);
 				
@@ -124,7 +132,7 @@ public class KMeansClusteringOperator : GenericOperator
 			var smallestDistance = float.PositiveInfinity;
 			var index = -1;
 
-			for (var j = 1; j <= _k; j++)
+			for (var j = 1; j <= K; j++)
 			{
 				if (_distanceMatrix[j, i] < smallestDistance)
 				{
@@ -141,11 +149,10 @@ public class KMeansClusteringOperator : GenericOperator
 	//Calculate the new centroids as the mean of the currently nearest data points
 	private void NewCentroids()
 	{
-		var centroidCheck = false;
 		var convergenceCounter = 0;
 		_centroids.Clear();
 		
-		for (var i = 1; i <= _k; i++)
+		for (var i = 1; i <= K; i++)
 		{
 			var centroidSum = Vector3.zero;
 			var tempCounter = 0;
@@ -164,8 +171,7 @@ public class KMeansClusteringOperator : GenericOperator
 				{
 					mean = centroidSum / tempCounter;
 					_centroids.Add(mean);
-				}
-				
+				}	
 			}
 
 			if (Convergence)
@@ -178,9 +184,9 @@ public class KMeansClusteringOperator : GenericOperator
 				{
 					
 					Debug.Log(convergenceCounter);
-					if (convergenceCounter == _k)
+					if (convergenceCounter == K)
 					{
-						centroidCheck = true;
+						_centroidCheck = true;
 						EncodeResultToSimpleDataModel();
 					}
 				}
@@ -196,13 +202,13 @@ public class KMeansClusteringOperator : GenericOperator
 				//run until the counter is done instead of convergence
 				if (_hasRunFor >= RunForXLoops)
 				{
-					centroidCheck = true;
+					_centroidCheck = true;
 					EncodeResultToSimpleDataModel();
 				}
 			}	
 		}
 
-		if (!centroidCheck)
+		if (!_centroidCheck)
 		{
 			//Start again with filling the matrices and assigning data points to the nearest (new) centroids
 			_hasRunFor++;
@@ -213,7 +219,7 @@ public class KMeansClusteringOperator : GenericOperator
 	//saves the final result matrix as dataAttributes/dataItems -> SimpleDataModel
 	private void EncodeResultToSimpleDataModel()
 	{
-		for (var i = 1; i <= _k; i++)
+		for (var i = 1; i <= K; i++)
 		{
 			for (var j = 1; j <= _input.Count; j++)
 			{
@@ -240,6 +246,7 @@ public class KMeansClusteringOperator : GenericOperator
 					dataItem.Add(y);
 					dataItem.Add(z);
 					dataItem.Add(centroid);
+					
 					
 					_simpleDataModel.Add(dataItem);
 				}
@@ -268,7 +275,9 @@ public class KMeansClusteringOperator : GenericOperator
 
 	public void Restart()
 	{
-		Init(_k,_input);
+		_centroidCheck = false;
+		_hasRunFor = 0;
+		Init(K,_input);
 	}
 
 }

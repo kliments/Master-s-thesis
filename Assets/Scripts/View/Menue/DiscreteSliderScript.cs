@@ -52,6 +52,6 @@ public class DiscreteSliderScript : GenericMenueComponent {
 		
 		NumberField.text = _counter.ToString();
 		
-		KMeansClusteringOperator._k = _counter;
+		KMeansClusteringOperator.K = _counter;
 	}
 }
