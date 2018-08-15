@@ -135,7 +135,7 @@ public class ScatterplotVisualization : GenericVisualization {
             var dataPoints = new List<Vector3>();
             var combine = new List<CombineInstance>();
             var vertexCount = 0;
-            _pointColor1 = new Color(Random.Range(0,1), Random.Range(0,1), Random.Range(0,1));            
+            _pointColor1 = new Color(Random.Range(0f,1f), Random.Range(0f,1f), Random.Range(0f,1f));            
             _pointPrimitive1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             _pointRenderer1 = _pointPrimitive1.GetComponent<Renderer>();
 
