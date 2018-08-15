@@ -5,7 +5,8 @@ namespace Model.Operators
 {
     public class ScatterplotOperator : GenericOperator
     {
-    
+
+      
     
         public override void Start()
         {
