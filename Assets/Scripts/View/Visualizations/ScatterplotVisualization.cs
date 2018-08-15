@@ -16,6 +16,13 @@ public class ScatterplotVisualization : GenericVisualization {
     private Color _pointColorCluster;
     private Texture2D _colorRamp;
 
+    private void Start()
+    {
+        var viz = GameObject.Find("Visualization");
+        viz.AddComponent<ScatterplotInteractionController>();
+        viz.AddComponent<BoxCollider>();
+    }
+
     public override void CreateVisualization()
     {
         _pointPrimitive = GameObject.CreatePrimitive(PrimitiveType.Cube);
