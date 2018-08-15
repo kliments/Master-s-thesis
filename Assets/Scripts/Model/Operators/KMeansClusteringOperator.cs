@@ -28,6 +28,7 @@ public class KMeansClusteringOperator : GenericOperator
 
 	public static bool Convergence; //run until convergence?
 	public static int RunForXLoops = 1; //run for X loops instead of convergence
+	public static bool Clustering; //to be accessed in the scatterplot class and others in order to check if they're getting clustered data or not
 
 	private int _hasRunFor; //has already looped X times
 	
@@ -61,6 +62,7 @@ public class KMeansClusteringOperator : GenericOperator
 	//Initialize by creating random seed centroids and starting the method cascade
 	public void Init(int k, List<Vector3> input)
 	{
+		Clustering = true;
 		NumberOfLoops();
 		
 		_distanceMatrix = new float[k+1,input.Count+1];
