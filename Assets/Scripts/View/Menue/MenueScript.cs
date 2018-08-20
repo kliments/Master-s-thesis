@@ -1,12 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MenueScript : MonoBehaviour {
 
     public ToggleScript togglePrefab;
     public DiscreteSliderScript DiscreteSliderPrefab;
     public GameObject elementList;
+
+    public GameObject ClusterNumber;
+    public GameObject LoopNumber;
+    public GameObject KMeanUpdateButton;
+    public GameObject KMeanStartButton;
+    
 
     private List<GenericMenueComponent> currentComponentList = new List<GenericMenueComponent>();
     private List<ToggleScript> currentTogglesList = new List<ToggleScript>();

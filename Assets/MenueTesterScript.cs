@@ -22,8 +22,8 @@ public class MenueTesterScript : MonoBehaviour, IMenueComponentListener {
         int id = menue.addToggle("showZAxis", null);
         menue.addListener(id, this);
 
-        menue.AddDiscreteSlider("K", this);
-        menue.addToggle("KMeanConvergence", this);
+//        menue.AddDiscreteSlider("K", this);
+//        menue.addToggle("KMeanConvergence", this);
     }
 	
 	// Update is called once per frame
@@ -56,16 +56,16 @@ public class MenueTesterScript : MonoBehaviour, IMenueComponentListener {
         }
 
         //change if the KMean should run until convergence or not
-        if (name.Equals("KMeanConvergence"))
-        {
-            if (!KMeansClusteringOperator.Convergence)
-            {
-                KMeansClusteringOperator.Convergence = true;
-            }
-            else
-            {
-                KMeansClusteringOperator.Convergence = false;
-            }      
-        }
+//        if (name.Equals("KMeanConvergence"))
+//        {
+//            if (!KMeansClusteringOperator.Convergence)
+//            {
+//                KMeansClusteringOperator.Convergence = true;
+//            }
+//            else
+//            {
+//                KMeansClusteringOperator.Convergence = false;
+//            }      
+//        }
     }
 }

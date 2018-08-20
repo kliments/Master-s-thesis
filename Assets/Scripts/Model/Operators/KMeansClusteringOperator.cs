@@ -15,7 +15,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using UnityEngine.UI;
 
-public class KMeansClusteringOperator : GenericOperator
+public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 {
 	private List<Vector3> _input = new List<Vector3>(); //data input
 	
@@ -33,11 +33,26 @@ public class KMeansClusteringOperator : GenericOperator
 	private int _hasRunFor; //has already looped X times
 	private bool _centroidCheck;
 	
+	private MenueScript menue;
+	
 	public override void Start()
 	{
 		base.Start();	
 		
-		NumberOfClusters();
+		menue = FindObjectOfType<MenueScript>();
+		if(menue == null)
+		{
+			Debug.Log("Did not find a valid menue!");
+			return;
+		}
+		menue.AddDiscreteSlider("K", this);
+		menue.addToggle("KMeanConvergence", this);
+		menue.ClusterNumber.SetActive(true);
+		menue.LoopNumber.SetActive(true);
+		menue.KMeanStartButton.SetActive(true);
+		
+		
+//		NumberOfClusters();
 		
 		var dataItems = _rawInputData.GetDataItems();
 		
@@ -47,8 +62,11 @@ public class KMeansClusteringOperator : GenericOperator
 		}
 
 
-		Init(K,_input);
-		SetOutputData(_simpleDataModel);
+//		Init(K,_input);
+//		SetOutputData(_simpleDataModel);
+		
+		
+		
 	}
 
 	public override bool Process()
@@ -67,7 +85,10 @@ public class KMeansClusteringOperator : GenericOperator
 		_simpleDataModel = new SimpleDatamodel();
 		Clustering = true;
 		
+		NumberOfClusters();
 		NumberOfLoops();
+
+		k = K;
 
 		if (_distanceMatrix != null)
 		{
@@ -296,6 +317,31 @@ public class KMeansClusteringOperator : GenericOperator
 		_centroidCheck = false;
 		_hasRunFor = 0;
 		Init(K,_input);
+		SetOutputData(_simpleDataModel);
 	}
 
+	public void menueChanged(GenericMenueComponent changedComponent)
+	{
+		if (menue == null)
+		{
+			Debug.Log("Did not find a valid menue!");
+			return;
+		}
+
+		string name = changedComponent.getName();
+		
+
+		//change if the KMean should run until convergence or not
+		if (name.Equals("KMeanConvergence"))
+		{
+			if (!Convergence)
+			{
+				Convergence = true;
+			}
+			else
+			{
+				Convergence = false;
+			}      
+		}
+	}
 }
