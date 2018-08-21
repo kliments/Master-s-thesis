@@ -31,7 +31,7 @@ public class InputViveController : InputController
         _device = SteamVR_Controller.Input((int)_trackedObj.index);
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
        
         var forward = _trackedObj.transform.TransformDirection(Vector3.forward);
