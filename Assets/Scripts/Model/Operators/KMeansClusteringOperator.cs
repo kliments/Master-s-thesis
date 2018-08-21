@@ -60,13 +60,18 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 		{
 			_input.Add(dataItem.GetfirstThreeNumericColsAsVector());
 		}
-
+		Debug.Log("Bevor ich auf den Button drücke: " + _input.Count);
 
 //		Init(K,_input);
 //		SetOutputData(_simpleDataModel);
 		
 		
 		
+	}
+
+	private void Update()
+	{
+		Debug.Log(_input.Count);
 	}
 
 	public override bool Process()
@@ -314,10 +319,13 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 
 	public void Restart()
 	{
+		Debug.Log("Nachdem ich auf den Button drücke: " + _input.Count);
 		_centroidCheck = false;
 		_hasRunFor = 0;
 		Init(K,_input);
+//		Debug.Log(_simpleDataModel.GetDataItems().Count);
 		SetOutputData(_simpleDataModel);
+		
 	}
 
 	public void menueChanged(GenericMenueComponent changedComponent)
