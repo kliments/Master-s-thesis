@@ -26,7 +26,7 @@ public class InputController : MonoBehaviour {
 
     public void EmitEvent(InputEventsEnum inputEvent, Targetable target = null)
     {
-        //Debug.Log(inputEvent);
+        Debug.Log(inputEvent);
 
         switch (inputEvent)
         {
