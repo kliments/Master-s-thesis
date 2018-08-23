@@ -15,12 +15,12 @@ public class MenueTesterScript : MonoBehaviour, IMenueComponentListener {
             return;
         }
         // Create a toggle and instantly assign this script as listener.
-        menue.addToggle("showXAxis", this);
-        menue.addToggle("showYAxis", this);
+        menue.AddToggle("showXAxis", this);
+        menue.AddToggle("showYAxis", this);
 
         // Create a toggle with no listener. Add this element as a listener afterwards. An arbitrary amount of listeners can be added.
-        int id = menue.addToggle("showZAxis", null);
-        menue.addListener(id, this);
+        int id = menue.AddToggle("showZAxis", null);
+        menue.AddListener(id, this);
 
 //        menue.AddDiscreteSlider("K", this);
 //        menue.addToggle("KMeanConvergence", this);
@@ -41,17 +41,17 @@ public class MenueTesterScript : MonoBehaviour, IMenueComponentListener {
 
         string name = changedComponent.getName();
         if (name.Equals("showXAxis")){
-            Debug.Log("New value for showXAxis: " + menue.getToggleValue(changedComponent.getId()));
+            Debug.Log("New value for showXAxis: " + menue.GetToggleValue(changedComponent.getId()));
             // Do something with the value.
         }
         if (name.Equals("showYAxis"))
         {
-            Debug.Log("New value for showYAxis: " + menue.getToggleValue(changedComponent.getId()));
+            Debug.Log("New value for showYAxis: " + menue.GetToggleValue(changedComponent.getId()));
             // Do something with the value.
         }
         if (name.Equals("showZAxis"))
         {
-            Debug.Log("New value for showZAxis: " + menue.getToggleValue(changedComponent.getId()));
+            Debug.Log("New value for showZAxis: " + menue.GetToggleValue(changedComponent.getId()));
             // Do something with the value.
         }
 

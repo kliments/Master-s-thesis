@@ -46,7 +46,7 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 			return;
 		}
 		menue.AddDiscreteSlider("K", this);
-		menue.addToggle("KMeanConvergence", this);
+		menue.AddToggle("KMeanConvergence", this);
 		menue.ClusterNumber.SetActive(true);
 		menue.LoopNumber.SetActive(true);
 		menue.KMeanStartButton.SetActive(true);
@@ -62,16 +62,11 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 		}
 		Debug.Log("Bevor ich auf den Button drücke: " + _input.Count);
 
-//		Init(K,_input);
-//		SetOutputData(_simpleDataModel);
+		Init(K,_input);
+		SetOutputData(_simpleDataModel);
 		
 		
 		
-	}
-
-	private void Update()
-	{
-		Debug.Log(_input.Count);
 	}
 
 	public override bool Process()
