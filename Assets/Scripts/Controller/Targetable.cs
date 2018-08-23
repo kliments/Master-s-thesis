@@ -9,15 +9,20 @@ public abstract class Targetable : MonoBehaviour
     {
         OnLeftClickEventAction();
     }
-
     protected virtual void OnLeftClickEventAction() { }
+
+
+    protected void OnLeftClickReleaseEvent(Targetable target)
+    {
+        if (target == this) OnLeftClickReleaseEventAction();
+    }
+    protected virtual void OnLeftClickReleaseEventAction() { }
 
 
     protected void OnLeftClickOnTargetEvent(Targetable target)
     {
         if (target == this) OnLeftClickOnTargetEventAction();
     }
-
     protected virtual void OnLeftClickOnTargetEventAction() { }
-
+    
 }

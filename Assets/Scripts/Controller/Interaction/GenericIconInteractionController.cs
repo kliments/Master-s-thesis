@@ -4,17 +4,25 @@ using UnityEngine;
 
 namespace Controller.Interaction
 {
-    public abstract class GenericIconInteractionController : Targetable {
+    public abstract class GenericIconInteractionController : Targetable
+    {
+
+        public bool dragmode = false; 
+
         private void OnEnable()
         {
             InputController.LeftClickOnTargetEvent += OnLeftClickOnTargetEvent;
             InputController.LeftClickOnTargetEvent += switchVisualization;
+            InputController.LeftClickOnTargetEvent += switchDragmode;
+            InputController.LeftClickReleaseEvent += switchDragmode;
         }
 
         private void OnDisable()
         {
             InputController.LeftClickOnTargetEvent -= OnLeftClickOnTargetEvent;
             InputController.LeftClickOnTargetEvent -= switchVisualization;
+            InputController.LeftClickOnTargetEvent -= switchDragmode;
+            InputController.LeftClickReleaseEvent -= switchDragmode;
         }
 
         protected GenericOperator GetOperator()
@@ -34,8 +42,30 @@ namespace Controller.Interaction
 
         private void switchVisualization(Targetable target)
         {
-            if(target == this)
+            if (target == this)
+            {
                 GetOperator().Observer.selectOperator(GetOperator());
+            }
+            else
+            {
+                setDragmode(false);
+            }
         }
+
+        private void switchDragmode()
+        {
+            setDragmode(false);
+        }
+
+        private void switchDragmode(Targetable target)
+        {
+            setDragmode(true);
+        }
+
+        private void setDragmode(bool dragmode)
+        {
+            this.dragmode = dragmode;
+        }
+
     }
 }

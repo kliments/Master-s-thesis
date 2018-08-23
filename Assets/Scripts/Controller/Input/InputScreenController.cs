@@ -8,7 +8,10 @@ namespace Controller.Input
 
         private void Update()
         {
-            if(UnityEngine.Input.GetMouseButtonDown(0))
+
+            positionLeft = UnityEngine.Input.mousePosition;
+
+            if (UnityEngine.Input.GetMouseButtonDown(0))
             {
                 EmitEvent(InputEventsEnum.LeftClickEvent);
                 Debug.Log(gameObject.GetInstanceID());
@@ -20,7 +23,13 @@ namespace Controller.Input
                     if (target != null) EmitEvent(InputEventsEnum.LeftClickOnTargetEvent, target);
                 }
             }
-        
+
+            if (UnityEngine.Input.GetMouseButtonUp(0))
+            {
+                EmitEvent(InputEventsEnum.LeftClickReleaseEvent);
+            }
+
+
         }
     
     }

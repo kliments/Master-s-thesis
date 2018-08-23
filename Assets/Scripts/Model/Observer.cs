@@ -147,7 +147,6 @@ namespace Assets.Scripts.Model
             {
                 selectOperator(op);
             }
-            
         }
 
         private int RequestId()

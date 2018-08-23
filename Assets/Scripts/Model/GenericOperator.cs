@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using Controller.Interaction.Icon;
+using UnityEditor;
 
 
 namespace Assets.Scripts.Model
@@ -31,16 +32,33 @@ namespace Assets.Scripts.Model
         public bool isSelected = false;
         public GenericOperator newOperator;
 
+        public GameObject isSelectedHighlighting; 
+
         public virtual void Start()
         {
+
+
+
             Visualization = GetComponentInChildren<GenericVisualization>();
             Icon = GetComponentInChildren<GenericIcon>();
 
             Observer = FindObjectOfType<Observer>();
-            
+
+
+
+            GameObject iconHighlight = Resources.Load<GameObject>("Highlights/IconHighlight");
+            isSelectedHighlighting = Instantiate(iconHighlight);
+            isSelectedHighlighting.transform.parent = Icon.transform;
+            isSelectedHighlighting.transform.position = Icon.transform.position;
+            isSelectedHighlighting.SetActive(false);
+
+
+
             ProperInitializedStart = true;
 
             Observer.notifyObserverOperatorInitComplete(this);
+
+           
         }
 
         /**
@@ -223,6 +241,8 @@ namespace Assets.Scripts.Model
             {
                 OnSelectAction();
 
+                isSelectedHighlighting.SetActive(true);
+
                 // spawn a new NewOperator for newly initialized operator
                 if (!this.GetType().Equals((typeof(NewOperator)))){
                     StartCoroutine(spawnNewOperatorAfterNewlyCreatedOperatorHasFinishedProcess());
@@ -231,6 +251,9 @@ namespace Assets.Scripts.Model
             else
             {
                 OnUnselectAction();
+
+                isSelectedHighlighting.SetActive(false);
+
                 if (newOperator != null) newOperator.Icon.GetComponentInChildren<NewIconInteractionController>().hideOptions();
                 Observer.DestroyOperator(newOperator);
             }
