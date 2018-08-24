@@ -59,7 +59,15 @@ namespace Controller.Interaction
 
         private void switchDragmode(Targetable target)
         {
-            setDragmode(true);
+            
+            if (target == this)
+            {
+                setDragmode(true);
+            }
+            else
+            {
+                setDragmode(false);
+            }
         }
 
         private void setDragmode(bool dragmode)

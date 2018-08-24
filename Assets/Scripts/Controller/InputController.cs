@@ -14,21 +14,30 @@ using UnityEngine;
 */
 
 
-public class InputController : MonoBehaviour {
+public abstract class InputController : MonoBehaviour
+{
     public delegate void LeftClickAction();
+
     public static event LeftClickAction LeftClickEvent;
 
     public delegate void LeftClickReleaseAction();
+
     public static event LeftClickReleaseAction LeftClickReleaseEvent;
 
     public delegate void LeftClickOnTargetAction(Targetable obj);
+
     public static event LeftClickOnTargetAction LeftClickOnTargetEvent;
 
     public Vector3 positionLeft = new Vector3();
     public Vector3 positionRight = new Vector3();
 
 
-    public enum InputEventsEnum { LeftClickEvent, LeftClickReleaseEvent, LeftClickOnTargetEvent } 
+    public enum InputEventsEnum
+    {
+        LeftClickEvent,
+        LeftClickReleaseEvent,
+        LeftClickOnTargetEvent
+    }
 
     public void EmitEvent(InputEventsEnum inputEvent, Targetable target = null)
     {
@@ -49,4 +58,8 @@ public class InputController : MonoBehaviour {
         }
     }
 
+    public virtual Vector3 getRaycastHitOnObject(GameObject hitObject)
+    {
+        return Vector3.zero;
+    }
 }

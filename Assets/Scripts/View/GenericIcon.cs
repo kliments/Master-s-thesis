@@ -6,7 +6,6 @@ using UnityEngine;
 
 public abstract class GenericIcon : MonoBehaviour {
     public GenericOperator Op;
-    private Vector3 dragPosition;
 
     private void Awake()
     {
@@ -24,27 +23,16 @@ public abstract class GenericIcon : MonoBehaviour {
         return Op;
     }
 
-//    private void Update()
-//    {
-//        GenericIconInteractionController interactionController = transform.GetComponentInChildren<GenericIconInteractionController>();
-//        if (interactionController != null && interactionController.dragmode)
-//        {
-//            if (dragPosition == Vector3.zero)
-//            {
-//                dragPosition = GameObject.FindObjectOfType<InputController>().positionLeft;
-//            }
-//            else
-//            {
-//                gameObject.transform.position += Vector3.Normalize(GameObject.FindObjectOfType<InputController>().positionLeft - dragPosition) / 10;
-//            }
-//            
-//        }
-//        else
-//        {
-//            dragPosition = Vector3.zero;
-//        }
-//        
-//    }
+    private void Update()
+    {
+        GenericIconInteractionController interactionController = transform.GetComponentInChildren<GenericIconInteractionController>();
+        if (interactionController != null && interactionController.dragmode)
+        {
+            Vector3 vec = GetOperator().Observer.GetComponent<InputController>().getRaycastHitOnObject(GameObject.Find("wall2d"));
+            if (vec != Vector3.zero)
+                Op.GetIcon().transform.position = vec;
+        }
+    }
 
 
 

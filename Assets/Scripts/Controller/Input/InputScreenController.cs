@@ -31,6 +31,30 @@ namespace Controller.Input
 
 
         }
-    
+
+
+        public override Vector3 getRaycastHitOnObject(GameObject hitObject)
+        {
+            Debug.Log(hitObject.name);
+            var ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
+            RaycastHit[] hits = Physics.RaycastAll(ray, 100);
+            if (hits != null) 
+            {
+                foreach (var hit in hits)
+                {
+                    if (hit.transform.gameObject == hitObject)
+                    {
+                        Debug.Log("RAYCAST HIT");
+                        Debug.Log(hit.point.ToString());
+                        return hit.point;
+                    }
+                   
+                }
+                
+            }
+            return Vector3.zero;
+            
+        }
+
     }
 }
