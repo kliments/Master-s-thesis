@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33893784528826466}
   - component: {fileID: 136174125706126676}
   - component: {fileID: 23609658721440430}
-  - component: {fileID: 114342182307418360}
+  - component: {fileID: 114370315810614052}
   m_Layer: 0
   m_Name: Button
   m_TagString: Untagged
@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 33879108029524472}
   - component: {fileID: 65501544734297746}
   - component: {fileID: 23589916190804676}
-  - component: {fileID: 114330584167268388}
+  - component: {fileID: 114671416184772714}
   m_Layer: 0
   m_Name: ToggleBG
   m_TagString: Untagged
@@ -58,7 +58,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4255486215290912}
   - component: {fileID: 95428872150961172}
-  - component: {fileID: 114543348840786280}
+  - component: {fileID: 114224887631116890}
   m_Layer: 0
   m_Name: Button
   m_TagString: Untagged
@@ -157,7 +157,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 5abc966279b47ab49bb377461fdc9201, type: 2}
+  - {fileID: 2100000, guid: f4b440e976467944e9423e8abfac4d3e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -212,7 +212,7 @@ Animator:
   m_GameObject: {fileID: 1867858234077468}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f3427d692974fa340a76d214673c6a46, type: 2}
+  m_Controller: {fileID: 9100000, guid: 996d33ba8ba0e9a41b5224d7edffd0c2, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -221,29 +221,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &114330584167268388
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1369348054746444}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de60fd14a5e25bd4eaa8b5d235f9e139, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114342182307418360
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1089290352980182}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de60fd14a5e25bd4eaa8b5d235f9e139, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114543348840786280
+--- !u!114 &114224887631116890
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -251,10 +229,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 1867858234077468}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36e83925c81b6784abc7327a291435d1, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a99beb03544cfa419be0399a2d6bb9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   myAnimator: {fileID: 95428872150961172}
+--- !u!114 &114370315810614052
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1089290352980182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5065b9b74660734db34d470573180a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114671416184772714
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1369348054746444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5065b9b74660734db34d470573180a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!136 &136174125706126676
 CapsuleCollider:
   m_ObjectHideFlags: 1
