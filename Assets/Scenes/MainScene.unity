@@ -861,7 +861,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &370536915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1256,7 +1256,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &624928928
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2102,7 +2102,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1426370491
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3014,7 +3014,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1890920660
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3136,11 +3136,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1aff368d905af98499e1e9d6ea2c9b92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TogglePrefab: {fileID: 0}
+  TogglePrefab: {fileID: 114069107341593216, guid: ea0431830b220614bb3c46a5989fdefb,
+    type: 2}
   DiscreteSliderPrefab: {fileID: 114018543327724650, guid: 799b00d64a4286c4398fa11dae018707,
     type: 2}
-  ButtonPrefab: {fileID: 0}
-  ElementList: {fileID: 0}
+  ButtonPrefab: {fileID: 114224887631116890, guid: f7b9f727420ce1642a4d4d8adb28795e,
+    type: 2}
+  InputfieldPrefab: {fileID: 114978694852496768, guid: f1effca1b3b8ea34eade879a67b46b1f,
+    type: 2}
+  ElementList: {fileID: 1595814183}
   ClusterNumber: {fileID: 1426370490}
   LoopNumber: {fileID: 624928927}
   KMeanUpdateButton: {fileID: 559043406}

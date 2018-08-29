@@ -47,9 +47,12 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 		}
 		menue.AddDiscreteSlider("K", this);
 		menue.AddToggle("KMeanConvergence", this);
-		menue.ClusterNumber.SetActive(true);
-		menue.LoopNumber.SetActive(true);
-		menue.KMeanStartButton.SetActive(true);
+		menue.AddButton("KMeanStart", this);
+//		menue.ClusterNumber.SetActive(true);
+//		menue.LoopNumber.SetActive(true);
+//		menue.KMeanStartButton.SetActive(true);
+		menue.AddInputfield("NumberOfLoops", this);
+		menue.AddInputfield("NumberOfCluster", this);
 		
 		
 //		NumberOfClusters();
@@ -280,6 +283,7 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 	private void NumberOfLoops()
 	{
 		var inputFieldText = GameObject.Find("NumberOfLoops").GetComponent<Text>();
+		
 
 		if (!Convergence)
 		{

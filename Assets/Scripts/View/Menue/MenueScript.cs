@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.UIElements.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +10,7 @@ public class MenueScript : MonoBehaviour {
     public ToggleScript TogglePrefab;
     public DiscreteSliderScript DiscreteSliderPrefab;
     public ButtonScript ButtonPrefab;
+    public InputfieldScript InputfieldPrefab;
     public GameObject ElementList;
 
     public GameObject ClusterNumber;
@@ -20,6 +23,7 @@ public class MenueScript : MonoBehaviour {
     private List<ToggleScript> _currentTogglesList = new List<ToggleScript>();
     private List<DiscreteSliderScript> _currentSliderList = new List<DiscreteSliderScript>();
     private List<ButtonScript> _currentButtonList = new List<ButtonScript>();
+    private List<InputfieldScript> _currentInputfieldList = new List<InputfieldScript>();
 
 	// Use this for initialization
 	void Start () {
@@ -86,6 +90,24 @@ public class MenueScript : MonoBehaviour {
         }
         return componentId;
     }
+    
+    public int AddInputfield(string name, IMenueComponentListener listener)
+    {
+        InputfieldScript newInputfield = Instantiate(InputfieldPrefab);
+        int componentId = GetUnusedId();
+        newInputfield.initMe(componentId, name);
+        newInputfield.transform.parent = ElementList.transform;
+        //TODO: Create a scrollable List for elements.
+        newInputfield.transform.localPosition = new Vector3(0f, (0.5f - (_currentComponentList.Count * 0.1f)), -0.01f);
+        newInputfield.transform.localScale = new Vector3(0.0025f,0.0025f,0.0025f);
+        _currentComponentList.Add(newInputfield);
+        _currentInputfieldList.Add(newInputfield);
+        if (listener != null)
+        {
+            AddListener(componentId, listener);
+        }
+        return componentId;
+    }
 
     // TODO to remove a component, it has to be removed from the generic component list but also from the more specific list (for example currentTogglesList)
 
@@ -98,6 +120,32 @@ public class MenueScript : MonoBehaviour {
             return false;
         }
         return component.isActivated();
+    }
+    
+    public int GetInputfieldValue(int componentId)
+    {
+        InputfieldScript component = GetInputfieldById(componentId);
+
+        var value = 0;
+        
+        if(component == null)
+        {
+            Debug.Log("Can not find Component!");
+            return value;
+        }
+        
+        
+        try
+        {
+            value = int.Parse(component.GetComponentInChildren<Text>().text);
+//            Debug.Log("Yo cluster me about " + K + " blops!");
+        }
+        catch (Exception e)
+        {
+//            Debug.Log("There's no input in the inputfield.");
+        }
+
+        return value;
     }
 
     private int GetUnusedId()
@@ -137,6 +185,18 @@ public class MenueScript : MonoBehaviour {
         }
         return null;
     }
+    
+    private InputfieldScript GetInputfieldById(int id)
+    {
+        foreach (InputfieldScript inputfield in _currentInputfieldList)
+        {
+            if (inputfield.getId() == id)
+            {
+                return inputfield;
+            }
+        }
+        return null;
+    }
 
     public bool AddListener(int componentId, IMenueComponentListener newListener)
     {
@@ -148,5 +208,19 @@ public class MenueScript : MonoBehaviour {
         }
         bool succes = com.addListener(newListener);
         return succes;
+    }
+    
+    public void Delete()
+    {
+        while (ElementList.transform.GetChild(0) != null)
+        {
+            Destroy(ElementList.transform.GetChild(0));
+        }
+        
+        _currentComponentList.Clear();
+        _currentButtonList.Clear();
+        _currentInputfieldList.Clear();
+        _currentSliderList.Clear();
+        _currentTogglesList.Clear();
     }
 }
