@@ -88,8 +88,8 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 		_simpleDataModel = new SimpleDatamodel();
 		Clustering = true;
 		
-		NumberOfClusters();
-		NumberOfLoops();
+//		NumberOfClusters();
+//		NumberOfLoops();
 
 		k = K;
 

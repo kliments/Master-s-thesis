@@ -11,31 +11,13 @@ public class MenueScript : MonoBehaviour {
     public DiscreteSliderScript DiscreteSliderPrefab;
     public ButtonScript ButtonPrefab;
     public InputfieldScript InputfieldPrefab;
-    public GameObject ElementList;
-
-    public GameObject ClusterNumber;
-    public GameObject LoopNumber;
-    public GameObject KMeanUpdateButton;
-    public GameObject KMeanStartButton;
-    
+    public GameObject ElementList;  
 
     private List<GenericMenueComponent> _currentComponentList = new List<GenericMenueComponent>();
     private List<ToggleScript> _currentTogglesList = new List<ToggleScript>();
     private List<DiscreteSliderScript> _currentSliderList = new List<DiscreteSliderScript>();
     private List<ButtonScript> _currentButtonList = new List<ButtonScript>();
     private List<InputfieldScript> _currentInputfieldList = new List<InputfieldScript>();
-
-	// Use this for initialization
-	void Start () {
-        
-        
-
-    }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     public int AddToggle(string name, IMenueComponentListener listener)
     {
@@ -44,7 +26,7 @@ public class MenueScript : MonoBehaviour {
         newToggle.initMe(componentId, name);
         newToggle.transform.parent = ElementList.transform;
         //TODO: Create a scrollable List for elements.
-        newToggle.transform.localPosition = new Vector3(0f, (0.5f - (_currentComponentList.Count * 0.1f)), -0.005f);
+        newToggle.transform.localPosition = new Vector3(0f, (0.5f - (_currentComponentList.Count * 0.1f)), -0.01f);
         newToggle.transform.localScale = new Vector3(1f,1f,1f);
         _currentComponentList.Add(newToggle);
         _currentTogglesList.Add(newToggle);
@@ -62,7 +44,7 @@ public class MenueScript : MonoBehaviour {
         newDiscreteSlider.initMe(componentId, name);
         newDiscreteSlider.transform.parent = ElementList.transform;
         //TODO: Create a scrollable List for elements.
-        newDiscreteSlider.transform.localPosition = new Vector3(0f, (0.5f - (_currentComponentList.Count * 0.1f)), -0.005f);
+        newDiscreteSlider.transform.localPosition = new Vector3(0f, (0.5f - (_currentComponentList.Count * 0.1f)), -0.01f);
         newDiscreteSlider.transform.localScale = new Vector3(1f,1f,1f);
         _currentComponentList.Add(newDiscreteSlider);
         _currentSliderList.Add(newDiscreteSlider);
@@ -80,7 +62,7 @@ public class MenueScript : MonoBehaviour {
         newButton.initMe(componentId, name);
         newButton.transform.parent = ElementList.transform;
         //TODO: Create a scrollable List for elements.
-        newButton.transform.localPosition = new Vector3(0f, (0.5f - (_currentComponentList.Count * 0.1f)), -0.005f);
+        newButton.transform.localPosition = new Vector3(0f, (0.5f - (_currentComponentList.Count * 0.1f)), -0.01f);
         newButton.transform.localScale = new Vector3(1f,1f,1f);
         _currentComponentList.Add(newButton);
         _currentButtonList.Add(newButton);
@@ -92,6 +74,24 @@ public class MenueScript : MonoBehaviour {
     }
     
     public int AddInputfield(string name, IMenueComponentListener listener)
+    {
+        InputfieldScript newInputfield = Instantiate(InputfieldPrefab);
+        int componentId = GetUnusedId();
+        newInputfield.initMe(componentId, name);
+        newInputfield.transform.parent = ElementList.transform;
+        //TODO: Create a scrollable List for elements.
+        newInputfield.transform.localPosition = new Vector3(0f, (0.5f - (_currentComponentList.Count * 0.1f)), -0.01f);
+        newInputfield.transform.localScale = new Vector3(0.0025f,0.0025f,0.0025f);
+        _currentComponentList.Add(newInputfield);
+        _currentInputfieldList.Add(newInputfield);
+        if (listener != null)
+        {
+            AddListener(componentId, listener);
+        }
+        return componentId;
+    }
+    
+    public int AddLabel(string name, IMenueComponentListener listener)
     {
         InputfieldScript newInputfield = Instantiate(InputfieldPrefab);
         int componentId = GetUnusedId();
