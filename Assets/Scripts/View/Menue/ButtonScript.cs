@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class ButtonScript : GenericMenueComponent {
 
 	public Animator myAnimator;
-	public GameObject KMeansOperator;
+	private GameObject KMeansOperator;
 
 	//what happens when the button is triggered
 	public void Toggle()

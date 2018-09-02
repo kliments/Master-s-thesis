@@ -3116,7 +3116,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2030706467}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.308, z: 0.951}
+  m_LocalPosition: {x: -1.062, y: 0.706, z: 1.152}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2131635259}
@@ -3145,10 +3145,6 @@ MonoBehaviour:
   InputfieldPrefab: {fileID: 114978694852496768, guid: f1effca1b3b8ea34eade879a67b46b1f,
     type: 2}
   ElementList: {fileID: 1595814183}
-  ClusterNumber: {fileID: 1426370490}
-  LoopNumber: {fileID: 624928927}
-  KMeanUpdateButton: {fileID: 559043406}
-  KMeanStartButton: {fileID: 1846142819}
 --- !u!1 &2052836738
 GameObject:
   m_ObjectHideFlags: 0
