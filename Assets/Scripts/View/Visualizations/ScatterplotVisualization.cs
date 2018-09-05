@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using Assets.Scripts.Model;
 using Model.Operators;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -15,6 +16,7 @@ public class ScatterplotVisualization : GenericVisualization {
     private Color _pointColor = Color.red;
     private Color _pointColorCluster;
     private Texture2D _colorRamp;
+    private KMeansClusteringOperator _kmeansClusteringOperator;
 
     private void Start()
     {
@@ -45,22 +47,35 @@ public class ScatterplotVisualization : GenericVisualization {
         var counter = 0;
         var clustered = false;
 
-        if (KMeansClusteringOperator.Clustering)
+        // TRY to get the clustering operator and clustering.
+        try
         {
-            foreach (DataItem datitem in ((SimpleDatamodel)GetOperator().GetRawInputData()).GetDataItems())
+            _kmeansClusteringOperator = Observer.selectedOperator.GetComponent<KMeansClusteringOperator>();
+            Debug.Log("GGGAAAAAAAAAAHHHHH " + Observer.selectedOperator.name);
+            
+            if (_kmeansClusteringOperator.Clustering)
             {
-                counter++;        
-                id = (float) datitem.GetDataAttributeValuePairs()[3].GetValue();
-                if(!dict.ContainsKey(id)) dict.Add(id,new List<DataItem>());
-                dict[id].Add(datitem);
-
-                if (id > 0 && counter == GetOperator().GetRawInputData().GetDataItems().Count)
+                Debug.Log("dann hier");
+                foreach (DataItem datitem in ((SimpleDatamodel)GetOperator().GetRawInputData()).GetDataItems())
                 {
-                    clustered = true;
-                    CreateClusters(dict);
-                }            
+                    counter++;        
+                    id = (float) datitem.GetDataAttributeValuePairs()[3].GetValue();
+                    if(!dict.ContainsKey(id)) dict.Add(id,new List<DataItem>());
+                    dict[id].Add(datitem);
+
+                    if (id > 0 && counter == GetOperator().GetRawInputData().GetDataItems().Count)
+                    {
+                        clustered = true;
+                        CreateClusters(dict);
+                    }            
+                }
             }
         }
+        catch (Exception e)
+        {
+            Debug.Log("no clustering has been done.");
+        }
+        
 
         if (!clustered)
         {

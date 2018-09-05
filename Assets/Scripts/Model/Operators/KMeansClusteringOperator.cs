@@ -19,25 +19,31 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 {
 	private List<Vector3> _input = new List<Vector3>(); //data input
 	
-	public static int K = 2; //input parameter k, number of centroids/cluster
+//	[HideInInspector]
+	public int K = 2; //input parameter k, number of centroids/cluster
 	
 	private List<Vector3> _centroids = new List<Vector3>(); //list of centroids
 	private float[,] _distanceMatrix; //matrix that saves the distances between centroids and data points
 	private Vector3[,] _clusterMatrix; //matrix that saves centroids and the assigned data points
 	private SimpleDatamodel _simpleDataModel; //data structure where the result gets saved in
 
-	public static bool Convergence; //run until convergence?
-	public static int RunForXLoops = 1; //run for X loops instead of convergence
-	public static bool Clustering; //to be accessed in the scatterplot class and others in order to check if they're getting clustered data or not
+//	[HideInInspector]
+	public bool Convergence; //run until convergence?
+//	[HideInInspector]
+	public int RunForXLoops = 1; //run for X loops instead of convergence
+//	[HideInInspector]
+	public bool Clustering; //to be accessed in the scatterplot class and others in order to check if they're getting clustered data or not
 
 	private int _hasRunFor; //has already looped X times
 	private bool _centroidCheck;
 	
 	private MenueScript menue;
+	private int _operatorID;
 	
 	public override void Start()
 	{
-		base.Start();	
+		base.Start();
+		
 		
 		menue = FindObjectOfType<MenueScript>();
 		if(menue == null)
@@ -52,7 +58,7 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 //		menue.LoopNumber.SetActive(true);
 //		menue.KMeanStartButton.SetActive(true);
 		menue.AddInputfield("NumberOfLoops", this);
-		menue.AddInputfield("NumberOfCluster", this);
+		menue.AddInputfield("NumberOfClusters", this);
 		
 		
 //		NumberOfClusters();
@@ -283,7 +289,7 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 	private void NumberOfLoops()
 	{
 		var inputFieldText = GameObject.Find("NumberOfLoops").GetComponent<Text>();
-		
+		var test = Observer.selectedOperator.gameObject;
 
 		if (!Convergence)
 		{
@@ -303,7 +309,7 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 	private void NumberOfClusters()
 	{
 		var inputFieldText = GameObject.Find("NumberOfClusters").GetComponent<Text>();
-		
+	
 		try
 		{
 			K = int.Parse(inputFieldText.text);
@@ -321,8 +327,11 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 		Debug.Log("Nachdem ich auf den Button drücke: " + _input.Count);
 		_centroidCheck = false;
 		_hasRunFor = 0;
+		
+		Debug.Log("operator id: " + Id);
+		
 		Init(K,_input);
-//		Debug.Log(_simpleDataModel.GetDataItems().Count);
+		Debug.Log(_simpleDataModel.GetDataItems().Count);
 		SetOutputData(_simpleDataModel);
 		
 	}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Model;
 using UnityEngine;
 
 
@@ -27,6 +28,17 @@ public class InputController : MonoBehaviour {
     public void EmitEvent(InputEventsEnum inputEvent, Targetable target = null)
     {
         Debug.Log(inputEvent);
+        
+        //show the currently selected operator
+        try
+        {
+            Debug.Log(Observer.selectedOperator.name);
+        }
+        catch (Exception e)
+        {
+            
+        }
+        
 
         switch (inputEvent)
         {

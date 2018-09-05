@@ -11,7 +11,7 @@ namespace Assets.Scripts.Model
         private List<GenericOperator> _operators = new List<GenericOperator>(); 
         private int _currentId = 1;
         private int _operatorNewId = -1;
-        public GenericOperator selectedOperator;
+        public static GenericOperator selectedOperator;
 
         private GraphSpaceController _graphSpaceController;
         private VisualizationSpaceController _visualizationSpaceController;

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Model;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,7 @@ public class DiscreteSliderScript : GenericMenueComponent {
 	public Animator myAnimator;
 	public Text NumberField; //the text field on the toggle button that indicates the current value of KMean parameter K
 	private int _counter = 2; //the counter that gets written into the text field
+	private KMeansClusteringOperator _kmeansClusteringOperator;
 
 	//what happens when the button is triggered
 	public void toggle()
@@ -29,7 +31,6 @@ public class DiscreteSliderScript : GenericMenueComponent {
 		{
 			listener.menueChanged(this);
 		}
-		
 	}
 
 	//probably is useless?
@@ -52,6 +53,7 @@ public class DiscreteSliderScript : GenericMenueComponent {
 		
 		NumberField.text = _counter.ToString();
 		
-		KMeansClusteringOperator.K = _counter;
+		_kmeansClusteringOperator = Observer.selectedOperator.GetComponent<KMeansClusteringOperator>();
+		_kmeansClusteringOperator.K = _counter;
 	}
 }
