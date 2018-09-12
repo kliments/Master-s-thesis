@@ -148,7 +148,7 @@ namespace Assets.Scripts.Model
         /**
         * Sets the inputData
         * */
-        protected void SetRawInputData(GenericDatamodel newRawInputData)
+        public void SetRawInputData(GenericDatamodel newRawInputData)
         {
             hasInput = (newRawInputData != null);
             _rawInputData = newRawInputData;

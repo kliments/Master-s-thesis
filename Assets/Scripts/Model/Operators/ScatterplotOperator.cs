@@ -27,6 +27,14 @@ namespace Model.Operators
             SetOutputData(GetRawInputData()); // Visualization does not change data
             return true;
         }
+
+        public void SetSplitData(GameObject oP, GenericDatamodel data)
+        {
+            if(gameObject == oP)
+            {
+                SetRawInputData(data);
+            }
+        }
     
     }
 }
