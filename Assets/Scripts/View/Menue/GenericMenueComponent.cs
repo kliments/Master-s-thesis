@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GenericMenueComponent : MonoBehaviour {
 
-    private int id = 0;
+    public int id = 0;
     private string name = "";
     private List<IMenueComponentListener> myListener = new List<IMenueComponentListener>();
 

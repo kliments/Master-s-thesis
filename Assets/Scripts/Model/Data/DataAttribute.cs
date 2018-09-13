@@ -60,4 +60,9 @@ public class DataAttribute
     {
         return _value;
     }
+
+    public string GetName()
+    {
+        return _name;
+    }
 }

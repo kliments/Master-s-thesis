@@ -30,35 +30,22 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 //	[HideInInspector]
 	public bool Convergence; //run until convergence?
 //	[HideInInspector]
-	public int RunForXLoops = 1; //run for X loops instead of convergence
+	public int RunForXLoops = 10; //run for X loops instead of convergence
 //	[HideInInspector]
-	public bool Clustering; //to be accessed in the scatterplot class and others in order to check if they're getting clustered data or not
+//	public bool Clustering; //to be accessed in the scatterplot class and others in order to check if they're getting clustered data or not
 
 	private int _hasRunFor; //has already looped X times
 	private bool _centroidCheck;
+	private bool _menuExists;
 	
-	private MenueScript menue;
-	private int _operatorID;
+	private MenueScript _menu;
 	
 	public override void Start()
 	{
 		base.Start();
+				
+		CreateMenu();
 		
-		
-		menue = FindObjectOfType<MenueScript>();
-		if(menue == null)
-		{
-			Debug.Log("Did not find a valid menue!");
-			return;
-		}
-		menue.AddDiscreteSlider("K", this);
-		menue.AddToggle("KMeanConvergence", this);
-		menue.AddButton("KMeanStart", this);
-//		menue.ClusterNumber.SetActive(true);
-//		menue.LoopNumber.SetActive(true);
-//		menue.KMeanStartButton.SetActive(true);
-		menue.AddInputfield("NumberOfLoops", this);
-		menue.AddInputfield("NumberOfClusters", this);
 		
 		
 //		NumberOfClusters();
@@ -71,10 +58,10 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 		}
 		Debug.Log("Bevor ich auf den Button drücke: " + _input.Count);
 
-		Init(K,_input);
-		SetOutputData(_simpleDataModel);
+//		Init(K,_input);
+//		SetOutputData(_simpleDataModel);
 		
-		
+		Debug.Log("kmeanoperator with ID " + Id + " just spawned.");
 		
 	}
 
@@ -87,12 +74,25 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 	{
 		return true;
 	}
-	
+
+	private void Update()
+	{
+		if (Observer.selectedOperator != this && _menuExists)
+		{
+			DestroyMenu();
+			Debug.Log("test");
+		}
+		else if (Observer.selectedOperator.Equals(this) && !_menuExists)
+		{
+			CreateMenu();
+		}
+	}
+
 	//Initialize by creating random seed centroids and starting the method cascade
 	public void Init(int k, List<Vector3> input)
 	{
 		_simpleDataModel = new SimpleDatamodel();
-		Clustering = true;
+//		Clustering = true;
 		
 //		NumberOfClusters();
 //		NumberOfLoops();
@@ -328,7 +328,7 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 		_centroidCheck = false;
 		_hasRunFor = 0;
 		
-		Debug.Log("operator id: " + Id);
+		Debug.Log("operator id: " + GetId());
 		
 		Init(K,_input);
 		Debug.Log(_simpleDataModel.GetDataItems().Count);
@@ -336,9 +336,34 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 		
 	}
 
-	public void menueChanged(GenericMenueComponent changedComponent)
+	public void CreateMenu()
 	{
-		if (menue == null)
+		_menu = FindObjectOfType<MenueScript>();
+		
+		if(_menu == null)
+		{
+			Debug.Log("Did not find a valid menue!");
+			return;
+		}
+		
+		_menu.AddDiscreteSlider("K", this);
+		_menu.AddToggle("KMeanConvergence", this);	
+		_menu.AddInputfield("NumberOfLoops", this);
+		_menu.AddInputfield("NumberOfClusters", this);
+		_menu.AddButton("KMeanStart", this);
+
+		_menuExists = !_menuExists;
+	}
+
+	public void DestroyMenu()
+	{
+		_menu.Delete();
+		_menuExists = !_menuExists;
+	}
+
+	public void menuChanged(GenericMenueComponent changedComponent)
+	{
+		if (_menu == null)
 		{
 			Debug.Log("Did not find a valid menue!");
 			return;
@@ -350,14 +375,32 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 		//change if the KMean should run until convergence or not
 		if (name.Equals("KMeanConvergence"))
 		{
-			if (!Convergence)
-			{
-				Convergence = true;
-			}
-			else
-			{
-				Convergence = false;
-			}      
+			Convergence = _menu.GetToggleValue(changedComponent.getId()); 
+		}
+
+		if (name.Equals("K"))
+		{
+			K = changedComponent.GetComponent<DiscreteSliderScript>().GetToggleSliderNumber();
+//			Debug.Log("KKKKKKKK geändert: " + K);			
+		}
+
+		if (name.Equals("KMeanStart"))
+		{
+			Restart();
+		}
+
+		if (name.Equals("NumberOfLoops"))
+		{
+			var textObject = gameObject.transform.GetComponentInChildren<InputField>().text;
+			RunForXLoops = int.Parse(textObject);	
+			Debug.Log("LOOPY LOOPY LOOP");
+		}
+		
+		if (name.Equals("NumberOfClusters"))
+		{
+			var textObject = gameObject.transform.GetComponentInChildren<InputField>().text;
+			K = int.Parse(textObject);	
+			Debug.Log("CLUSTERY MC CLUSTERSON");
 		}
 	}
 }

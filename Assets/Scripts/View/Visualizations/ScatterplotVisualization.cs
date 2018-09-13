@@ -47,7 +47,69 @@ public class ScatterplotVisualization : GenericVisualization {
         var counter = 0;
         var clustered = false;
 
+        var attributeValuePairs = GetOperator().GetRawInputData().GetDataItems()[0].GetDataAttributeValuePairs();
+        var dataItems = GetOperator().GetRawInputData().GetDataItems();
+        
+        try
+        {
+            foreach (var attributeValuePair in attributeValuePairs)
+            {
+                if (!clustered && attributeValuePair.GetName().Equals("centroid"))
+                {
+                    clustered = true;
+                }              
+            }
+            
+            if (clustered)
+            {
+                foreach (DataItem dataItem in dataItems)
+                {
+                    counter++;        
+                    id = (float) dataItem.GetDataAttributeValuePairs()[3].GetValue();
+                    if(!dict.ContainsKey(id)) dict.Add(id,new List<DataItem>());
+                    dict[id].Add(dataItem);
+
+                    if (counter == GetOperator().GetRawInputData().GetDataItems().Count)
+                    {
+                        CreateClusters(dict);
+                    }            
+                }
+            }                   
+        }
+        catch (Exception e)
+        {
+            Debug.Log("something wrong with the clustering");
+        }
+      
+    
+        /*
+        foreach (DataItem dataItem in dataItems)
+        { 
+            counter++;
+            Debug.Log("bis hier hin");
+            try
+            {
+                id = (float) dataItem.GetDataAttributeValuePairs()[3].GetValue();
+                if (!dict.ContainsKey(id)) dict.Add(id, new List<DataItem>());
+                dict[id].Add(dataItem);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("jo");
+            }
+           
+            Debug.Log("aber nicht bis hier");
+            if (counter == GetOperator().GetRawInputData().GetDataItems().Count)
+            {
+                CreateClusters(dict);
+            }            
+        }
+        */
+
+        
+        
         // TRY to get the clustering operator and clustering.
+        /*
         try
         {
             _kmeansClusteringOperator = Observer.selectedOperator.GetComponent<KMeansClusteringOperator>();
@@ -75,7 +137,8 @@ public class ScatterplotVisualization : GenericVisualization {
         {
             Debug.Log("no clustering has been done.");
         }
-        
+        */
+
 
         if (!clustered)
         {

@@ -31,7 +31,7 @@ public class MenueTesterScript : MonoBehaviour, IMenueComponentListener {
 		
 	}
 
-    public void menueChanged(GenericMenueComponent changedComponent)
+    public void menuChanged(GenericMenueComponent changedComponent)
     {
         if (menue == null)
         {

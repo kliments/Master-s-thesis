@@ -11,14 +11,12 @@ public class ButtonScript : GenericMenueComponent {
 	//what happens when the button is triggered
 	public void Toggle()
 	{
-		myAnimator.SetTrigger("press");
-		KMeansOperator = GameObject.Find("KMeansClusteringOperator(Clone)");
-		KMeansOperator.GetComponent<KMeansClusteringOperator>().Restart();
+		myAnimator.SetTrigger("press");		
 
 		List<IMenueComponentListener> listeners = getListeners();
 		foreach(IMenueComponentListener listener in listeners)
 		{
-			listener.menueChanged(this);
+			listener.menuChanged(this);
 		}	
 	}
 

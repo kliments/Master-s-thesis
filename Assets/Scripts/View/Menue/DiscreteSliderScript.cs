@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Assets.Scripts.Model;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class DiscreteSliderScript : GenericMenueComponent {
@@ -11,10 +12,11 @@ public class DiscreteSliderScript : GenericMenueComponent {
 	private int _counter = 2; //the counter that gets written into the text field
 	private KMeansClusteringOperator _kmeansClusteringOperator;
 
+	
 	//what happens when the button is triggered
 	public void toggle()
 	{
-		ToggleSliderNumber();
+		ChangeSliderNumber();
 		int transitionNumber = myAnimator.GetInteger("IsPressed");
 		if (transitionNumber < 5)
 		{
@@ -29,7 +31,7 @@ public class DiscreteSliderScript : GenericMenueComponent {
 		List<IMenueComponentListener> listeners = getListeners();
 		foreach(IMenueComponentListener listener in listeners)
 		{
-			listener.menueChanged(this);
+			listener.menuChanged(this);
 		}
 	}
 
@@ -39,8 +41,7 @@ public class DiscreteSliderScript : GenericMenueComponent {
 		return myAnimator.GetInteger("IsPressed");
 	}
 
-	//toggle text field number
-	private void ToggleSliderNumber()
+	private void ChangeSliderNumber()
 	{
 		if (_counter < 5)
 		{
@@ -52,8 +53,11 @@ public class DiscreteSliderScript : GenericMenueComponent {
 		}
 		
 		NumberField.text = _counter.ToString();
-		
-		_kmeansClusteringOperator = Observer.selectedOperator.GetComponent<KMeansClusteringOperator>();
-		_kmeansClusteringOperator.K = _counter;
+	}
+	
+	//toggle text field number
+	public int GetToggleSliderNumber()
+	{
+		return _counter;
 	}
 }

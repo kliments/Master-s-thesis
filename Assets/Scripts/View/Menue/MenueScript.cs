@@ -212,9 +212,9 @@ public class MenueScript : MonoBehaviour {
     
     public void Delete()
     {
-        while (ElementList.transform.GetChild(0) != null)
+        foreach (Transform child in ElementList.transform)
         {
-            Destroy(ElementList.transform.GetChild(0));
+            Destroy(child.gameObject);
         }
         
         _currentComponentList.Clear();
