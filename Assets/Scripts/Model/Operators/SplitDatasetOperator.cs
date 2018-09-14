@@ -15,7 +15,7 @@ namespace Model.Operators
         private List<DataItem> _dataItems;
         private SimpleDatamodel[] _simpleDataModel;
         private List<GenericOperator> _parents;
-        private int _counter = 0;
+        private int _counter = 0, _datasets = 2;
         private GameObject obj1, obj2;
         // Use this for initialization
         public override void Start()
@@ -23,7 +23,7 @@ namespace Model.Operators
             base.Start();
             _observer = (Observer)(FindObjectOfType(typeof(Observer)));
             _dataItems = _rawInputData.GetDataItems();
-            _simpleDataModel = new SimpleDatamodel[2];
+            _simpleDataModel = new SimpleDatamodel[_datasets];
             _parents = new List<GenericOperator>();
             _parents.Add(this);
 
@@ -73,27 +73,26 @@ namespace Model.Operators
                 }
             }
             //create operators
-            CreateOperators(_simpleDataModel[0]);
-            CreateOperators(_simpleDataModel[1]);
+            for(int i=0; i<_simpleDataModel.Length; i++)
+            {
+                CreateOperators(_simpleDataModel[i]);
+            }
             SetOutputData(GetRawInputData());
-            Invoke("SetPosition", 0.2f);
+            StartCoroutine(SetPosition());
+            StartCoroutine(DestroyChildren());
         }
 
         private void CreateOperators(GenericDatamodel data)
         {
-            GameObject obj = _observer.CreateOperator(_observer.GetOperatorPrefabs()[4], _parents);
+            GameObject obj = _observer.CreateOperator(_observer.GetOperatorPrefabs()[5], _parents);
             obj.GetComponent<GenericOperator>().SetRawInputData(data);
         }
 
         private Vector3 getSpawnPositionOffsetForButton(Transform origin, int nrButton, int totalButtons)
         {
             var defaultDistance = 1;
-
-
-
             Quaternion rotationSave = origin.rotation;
             Vector3 newPos;
-
             if (totalButtons == 1)
             {
                 origin.Rotate(new Vector3(0, 90, 0));
@@ -111,13 +110,12 @@ namespace Model.Operators
                 newPos = origin.position + origin.forward * defaultDistance;
             }
             origin.rotation = rotationSave;
-
-
             return newPos;
         }
 
-        void SetPosition()
+        IEnumerator SetPosition()
         {
+            yield return 0;
             Transform t = GetIcon().transform;
             foreach (var child in Children)
             {
@@ -127,6 +125,29 @@ namespace Model.Operators
                 {
                     child.Children[0].GetIcon().transform.position = child.GetIcon().transform.position + new Vector3(1f, 0, 0);
                 }
+            }
+        }
+        IEnumerator DestroyChildren()
+        {
+            yield return 0;
+            foreach(var child in Children)
+            {
+                Destroy(child);
+            }
+        }
+        private void Destroy(GenericOperator op)
+        {
+            if(op.GetType().Equals(typeof(NewOperator)))
+            {
+                Observer.DestroyOperator(op);
+            }
+            if(op.Children.Count==0)
+            {
+                return;
+            }
+            else
+            {
+                Destroy(op.Children[op.Children.Count - 1]);
             }
         }
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Controller.Interaction.Icon;
 using UnityEditor;
-
+using Model.Operators;
 
 namespace Assets.Scripts.Model
 {
@@ -166,7 +166,7 @@ namespace Assets.Scripts.Model
         /**
         * Sets the inputData
         * */
-        protected void SetRawInputData(GenericDatamodel newRawInputData)
+        public void SetRawInputData(GenericDatamodel newRawInputData)
         {
             hasInput = (newRawInputData != null);
             _rawInputData = newRawInputData;
@@ -244,7 +244,8 @@ namespace Assets.Scripts.Model
                 isSelectedHighlighting.SetActive(true);
 
                 // spawn a new NewOperator for newly initialized operator
-                if (!this.GetType().Equals((typeof(NewOperator)))){
+                if (!this.GetType().Equals((typeof(NewOperator))) && !this.GetType().Equals((typeof(SplitDatasetOperator))))
+                {
                     StartCoroutine(spawnNewOperatorAfterNewlyCreatedOperatorHasFinishedProcess());
                 }
             }
