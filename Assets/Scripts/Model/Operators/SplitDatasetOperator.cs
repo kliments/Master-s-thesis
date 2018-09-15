@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using Assets.Scripts.Model;
 using System;
+using UnityEngine.UI;
 
 namespace Model.Operators
 {
     public class SplitDatasetOperator : GenericOperator
     {
-        public float _yThreshold = 0.5f;
+        public float threshold = 0.5f;
+        public string axis;
         public bool press = false;
+        public GameObject menueInputPrefab, menueButtonPrefab;
 
         private Observer _observer;
         private List<DataItem> _dataItems;
         private SimpleDatamodel[] _simpleDataModel;
         private List<GenericOperator> _parents;
         private int _counter = 0, _datasets = 2;
-        private GameObject obj1, obj2;
+        private GameObject _canvas, _menueStartButton, _thresholdInput, _axisInput;
         // Use this for initialization
         public override void Start()
         {
@@ -26,8 +29,10 @@ namespace Model.Operators
             _simpleDataModel = new SimpleDatamodel[_datasets];
             _parents = new List<GenericOperator>();
             _parents.Add(this);
-
+            _canvas = GameObject.Find("Canvas");
             SplitDataset();
+            CreateMenueButtons();
+            axis = "X";
         }
 
         private void Update()
@@ -63,29 +68,54 @@ namespace Model.Operators
             }
             foreach (var dataItem in _dataItems)
             {
-                if (dataItem.GetfirstThreeNumericColsAsVector().y >= _yThreshold)
+                if(axis == "X")
                 {
-                    _simpleDataModel[0].Add(dataItem);
+                    if (dataItem.GetfirstThreeNumericColsAsVector().x >= threshold)
+                    {
+                        _simpleDataModel[0].Add(dataItem);
+                    }
+                    else
+                    {
+                        _simpleDataModel[1].Add(dataItem);
+                    }
                 }
-                else
+                else if (axis == "Y")
                 {
-                    _simpleDataModel[1].Add(dataItem);
+                    if (dataItem.GetfirstThreeNumericColsAsVector().y >= threshold)
+                    {
+                        _simpleDataModel[0].Add(dataItem);
+                    }
+                    else
+                    {
+                        _simpleDataModel[1].Add(dataItem);
+                    }
+                }
+                else if (axis == "Z")
+                {
+                    if (dataItem.GetfirstThreeNumericColsAsVector().z >= threshold)
+                    {
+                        _simpleDataModel[0].Add(dataItem);
+                    }
+                    else
+                    {
+                        _simpleDataModel[1].Add(dataItem);
+                    }
                 }
             }
             //create operators
             for(int i=0; i<_simpleDataModel.Length; i++)
             {
-                CreateOperators(_simpleDataModel[i]);
+                StartCoroutine(CreateOperators(_simpleDataModel[i]));
             }
             SetOutputData(GetRawInputData());
-            StartCoroutine(SetPosition());
-            StartCoroutine(DestroyChildren());
         }
 
-        private void CreateOperators(GenericDatamodel data)
+        IEnumerator CreateOperators(GenericDatamodel data)
         {
+            yield return 0;
             GameObject obj = _observer.CreateOperator(_observer.GetOperatorPrefabs()[5], _parents);
             obj.GetComponent<GenericOperator>().SetRawInputData(data);
+            StartCoroutine(SetPosition());
         }
 
         private Vector3 getSpawnPositionOffsetForButton(Transform origin, int nrButton, int totalButtons)
@@ -126,6 +156,8 @@ namespace Model.Operators
                     child.Children[0].GetIcon().transform.position = child.GetIcon().transform.position + new Vector3(1f, 0, 0);
                 }
             }
+            StartCoroutine(DestroyChildren());
+            Observer.selectOperator(this);
         }
         IEnumerator DestroyChildren()
         {
@@ -149,6 +181,47 @@ namespace Model.Operators
             {
                 Destroy(op.Children[op.Children.Count - 1]);
             }
+        }
+
+        private void CreateMenueButtons()
+        {
+            _thresholdInput = Instantiate(menueInputPrefab, _canvas.transform);
+            _thresholdInput.GetComponent<RectTransform>().localPosition = new Vector3(-100, 230, 0);
+            _thresholdInput.GetComponent<InputField>().contentType = InputField.ContentType.DecimalNumber;
+            _thresholdInput.GetComponent<InputField>().text = "0.5";
+            _thresholdInput.GetComponent<InputField>().onEndEdit.AddListener(delegate { this.UpdateValues(); });
+
+            _axisInput = Instantiate(menueInputPrefab, _canvas.transform);
+            _axisInput.GetComponent<RectTransform>().localPosition = new Vector3(-100, 190, 0);
+            _axisInput.GetComponent<InputField>().contentType = InputField.ContentType.Name;
+            _axisInput.GetComponent<InputField>().text = "X";
+            _axisInput.GetComponent<InputField>().characterLimit = 1;
+            _axisInput.GetComponent<InputField>().onEndEdit.AddListener(delegate { this.UpdateValues(); });
+
+            _menueStartButton = Instantiate(menueButtonPrefab, _canvas.transform);
+            _menueStartButton.GetComponent<RectTransform>().localPosition = new Vector3(-100, 100, 0);
+            _menueStartButton.GetComponent<Button>().onClick.AddListener(delegate { StartSplitDatasets(); });
+        }
+
+        public void UpdateValues()
+        {
+            if(_thresholdInput.GetComponent<InputField>().text != "")
+            {
+                threshold = float.Parse(_thresholdInput.GetComponent<InputField>().text);
+            }
+            if(_axisInput.GetComponent<InputField>().text != "")
+            {
+                axis = _axisInput.GetComponent<InputField>().text;
+            }
+        }
+        public void StartSplitDatasets()
+        {
+            for (int i = 0; i < Children.Count; i++)
+            {
+                Children[i].Delete(Children[i]);
+                --i;
+            }
+            SplitDataset();
         }
     }
 }
