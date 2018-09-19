@@ -99,4 +99,19 @@ public class DataItem {
         
         return list;
     }
+    
+    public List<float> GetAllColsAsVector()
+    {        
+        var list = new List<float>();        
+        
+        foreach (var attr in _dataAttributeValuePairs)
+        {            
+            if (attr.GetValueDataType() == DataAttribute.Valuetype.ValFloat)
+            {
+                list.Add((float)attr.GetValue());
+            }
+        }
+        
+        return list;
+    }
 }

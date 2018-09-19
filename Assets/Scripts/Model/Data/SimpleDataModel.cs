@@ -49,9 +49,22 @@ public class SimpleDatamodel : GenericDatamodel {
     public List<List<float>> GetVariableCoords(int number)
     {
         var list = new List<List<float>>();
+        
         foreach (var dataItem in DataItems)
         {
             list.Add(dataItem.GetVariableNumericColsAsVector(number));
+        }
+
+        return list;
+    }
+    
+    public List<List<float>> GetCoordsAndAllDimensions()
+    {
+        var list = new List<List<float>>();
+        
+        foreach (var dataItem in DataItems)
+        {
+            list.Add(dataItem.GetAllColsAsVector());
         }
 
         return list;
