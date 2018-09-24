@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel.Design;
 using Assets.Scripts.Model;
 using Model.Operators;
@@ -18,7 +19,8 @@ public class ScatterplotVisualization : GenericVisualization {
     private Texture2D _colorRamp;
     private KMeansClusteringOperator _kmeansClusteringOperator;
     private int _whichTransformDimensions = 23; //per default get the first 3 dimensions of the dataItem as Vector3 coordinates 
-    private int _dimensionToColor;
+    private int _dimensionToColor = 4;
+    private List<float> _ids = new List<float>();
 
     private void Start()
     {
@@ -48,6 +50,23 @@ public class ScatterplotVisualization : GenericVisualization {
         
         
        
+        ////// TEST
+        var dictionary = new OrderedDictionary();
+        var testList = new List<int>();
+        testList.Add(1);
+        dictionary.Add("test", testList);
+        dictionary.Add(2, "TEST");
+//        dictionary.Add("test", 2);
+//        dictionary.Add("test", 1);
+        var testId = 2;
+        List<int> tempTemp = (List<int>)dictionary["test"];
+        tempTemp.Add(testId);
+        dictionary["test"] = tempTemp;
+        var output = (List<int>)dictionary[0];     
+        Debug.Log(output[0] + " UND " + output[1]);
+       
+        ////// TEST
+        
         
         
 
@@ -56,7 +75,8 @@ public class ScatterplotVisualization : GenericVisualization {
 
 //        var dataPoints = ((SimpleDatamodel)GetOperator().GetRawInputData()).GetCoordsAndAllDimensions();       
         var dataPoints = ((SimpleDatamodel)GetOperator().GetRawInputData()).GetCoordsAndAllDimensions();       
-        var dict = new Dictionary<float, List<DataItem>>();
+        var dict = new OrderedDictionary();
+//        var dict = new Dictionary<float, List<DataItem>>();
 //        Debug.Log("SO VIELE DATENPUNKTE: " + dataPoints.Count);
 //        Debug.Log("SO VIELE DIMENSIONEN: " + dataPoints[0].Count);
 //        var dataPointsCluster = ((SimpleDatamodel)GetOperator().GetRawInputData()).GetCoordsAndCluster(); //new method for getting a vector4 instead of a vector3 (vector3 + cluster)
@@ -79,19 +99,36 @@ public class ScatterplotVisualization : GenericVisualization {
         if (_dimensionToColor != 0)
         {
             float id;
-                
+            var tempList = new List<DataItem>();
+            
             foreach (DataItem dataItem in dataItems)
             { 
                 try
                 {
-                    id = (float) dataItem.GetDataAttributeValuePairs()[_dimensionToColor-1].GetValue();
-                    if (!dict.ContainsKey(id)) dict.Add(id, new List<DataItem>());
-                    dict[id].Add(dataItem);
+                    id = (float) dataItem.GetDataAttributeValuePairs()[_dimensionToColor-1].GetValue();                 
+                    tempList.Add(dataItem);
+                    if (!dict.Contains(id))
+                    {
+                        dict.Add(id, tempList);
+                    }
+                    else
+                    {
+                        tempList.Clear();
+                        tempList = (List<DataItem>) dict[id];
+                        tempList.Add(dataItem);
+                        dict[id] = tempList;
+                    }
+//                    dict[id].Add(dataItem);
+                    
+                    _ids.Add(id);
+                    tempList.Clear();
                 }
                 catch (Exception e)
                 {
                     Debug.Log("was geht?");
-                }          
+                }  
+                
+                
             } 
         }
        
@@ -107,9 +144,13 @@ public class ScatterplotVisualization : GenericVisualization {
             var vector3s = new List<Vector3>();
 //            var hasMoreThanThreeDimensions = false;
 
-            for (var j = 0; j < dict[index].Count; j++) 
+    
+//            var tempValue = _ids[index];
+            var tempValue = (List<DataItem>) dict[index];
+            
+            for (var j = 0; j < tempValue.Count; j++) 
             {
-                var choords = dict[index][j].GetfirstThreeNumericColsAsVector();
+                var choords = tempValue[j].GetfirstThreeNumericColsAsVector();
                 vector3s.Add(choords);
             }
             
