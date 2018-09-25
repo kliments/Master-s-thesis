@@ -12,14 +12,15 @@ namespace Model.Operators
         public float threshold = 0.5f;
         public string axis;
         public bool press = false;
-        public GameObject menueInputPrefab, menueButtonPrefab;
+        public GameObject menueInputPrefab, menueButtonPrefab, textNextToInputPrefab, menueDropdown;
 
         private Observer _observer;
         private List<DataItem> _dataItems;
         private SimpleDatamodel[] _simpleDataModel;
         private List<GenericOperator> _parents;
         private int _counter = 0, _datasets = 2;
-        private GameObject _canvas, _menueStartButton, _thresholdInput, _axisInput;
+        private GameObject _canvas, _menueStartButton, _thresholdInput, _axisInput, _textNextToThresholdInput, _textNextToAxisInput;
+        private bool _hasBeenRotated = false;
         // Use this for initialization
         public override void Start()
         {
@@ -112,12 +113,37 @@ namespace Model.Operators
 
         IEnumerator CreateOperators(GenericDatamodel data)
         {
+            //wait for the next frame
             yield return 0;
+
             GameObject obj = _observer.CreateOperator(_observer.GetOperatorPrefabs()[5], _parents);
             obj.GetComponent<GenericOperator>().SetRawInputData(data);
             StartCoroutine(SetPosition());
         }
 
+        IEnumerator SetPosition()
+        {
+            //make sure function is called only one time
+            if(!_hasBeenRotated)
+            {
+                _hasBeenRotated = true;
+                //wait for the next frame
+                yield return 0;
+
+                foreach (var child in Children)
+                {
+                    child.GetIcon().transform.position = getSpawnPositionOffsetForButton(GetIcon().transform, _counter, _datasets);
+                    if (child.Children.Count > 0)
+                    {
+                        child.Children[0].GetIcon().transform.position = child.GetIcon().transform.position + new Vector3(1f, 0, 0);
+                    }
+                    _counter++;
+                }
+                StartCoroutine(DestroyChildren());
+                Observer.selectOperator(this);
+            }
+        }
+        
         private Vector3 getSpawnPositionOffsetForButton(Transform origin, int nrButton, int totalButtons)
         {
             var defaultDistance = 1;
@@ -143,25 +169,11 @@ namespace Model.Operators
             return newPos;
         }
 
-        IEnumerator SetPosition()
-        {
-            yield return 0;
-            Transform t = GetIcon().transform;
-            foreach (var child in Children)
-            {
-                _counter++;
-                child.GetIcon().transform.position = getSpawnPositionOffsetForButton(t, _counter, 3);
-                if (child.Children.Count > 0)
-                {
-                    child.Children[0].GetIcon().transform.position = child.GetIcon().transform.position + new Vector3(1f, 0, 0);
-                }
-            }
-            StartCoroutine(DestroyChildren());
-            Observer.selectOperator(this);
-        }
         IEnumerator DestroyChildren()
         {
+            //wait for the next frame
             yield return 0;
+
             foreach(var child in Children)
             {
                 Destroy(child);
@@ -191,16 +203,29 @@ namespace Model.Operators
             _thresholdInput.GetComponent<InputField>().text = "0.5";
             _thresholdInput.GetComponent<InputField>().onEndEdit.AddListener(delegate { this.UpdateValues(); });
 
-            _axisInput = Instantiate(menueInputPrefab, _canvas.transform);
+            _textNextToThresholdInput = Instantiate(textNextToInputPrefab, _canvas.transform);
+            _textNextToThresholdInput.GetComponent<RectTransform>().localPosition = new Vector3(-185, 230, 0);
+            _textNextToThresholdInput.GetComponent<Text>().text = "Threshold: ";
+
+            /*_axisInput = Instantiate(menueInputPrefab, _canvas.transform);
             _axisInput.GetComponent<RectTransform>().localPosition = new Vector3(-100, 190, 0);
             _axisInput.GetComponent<InputField>().contentType = InputField.ContentType.Name;
             _axisInput.GetComponent<InputField>().text = "X";
             _axisInput.GetComponent<InputField>().characterLimit = 1;
-            _axisInput.GetComponent<InputField>().onEndEdit.AddListener(delegate { this.UpdateValues(); });
+            _axisInput.GetComponent<InputField>().onEndEdit.AddListener(delegate { this.UpdateValues(); });*/
+
+            _axisInput = Instantiate(menueDropdown, _canvas.transform);
+            _axisInput.GetComponent<RectTransform>().localPosition = new Vector3(-100, 190, 0);
+            _axisInput.GetComponent<Dropdown>().onValueChanged.AddListener(delegate { this.UpdateValues(); });
+
+            _textNextToAxisInput = Instantiate(textNextToInputPrefab, _canvas.transform);
+            _textNextToAxisInput.GetComponent<RectTransform>().localPosition = new Vector3(-185, 190, 0);
+            _textNextToAxisInput.GetComponent<Text>().text = "Axis: ";
 
             _menueStartButton = Instantiate(menueButtonPrefab, _canvas.transform);
             _menueStartButton.GetComponent<RectTransform>().localPosition = new Vector3(-100, 100, 0);
             _menueStartButton.GetComponent<Button>().onClick.AddListener(delegate { StartSplitDatasets(); });
+            _menueStartButton.transform.GetChild(0).GetComponent<Text>().text = "Split Dataset";
         }
 
         public void UpdateValues()
@@ -209,10 +234,7 @@ namespace Model.Operators
             {
                 threshold = float.Parse(_thresholdInput.GetComponent<InputField>().text);
             }
-            if(_axisInput.GetComponent<InputField>().text != "")
-            {
-                axis = _axisInput.GetComponent<InputField>().text;
-            }
+            axis = _axisInput.GetComponent<Dropdown>().options[_axisInput.GetComponent<Dropdown>().value].text;
         }
         public void StartSplitDatasets()
         {
@@ -221,7 +243,14 @@ namespace Model.Operators
                 Children[i].Delete(Children[i]);
                 --i;
             }
+            ResetMe();
             SplitDataset();
+        }
+
+        private void ResetMe()
+        {
+            _hasBeenRotated = false;
+            _counter = 0;
         }
     }
 }

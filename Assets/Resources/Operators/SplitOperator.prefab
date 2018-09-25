@@ -188,6 +188,10 @@ MonoBehaviour:
     type: 2}
   menueButtonPrefab: {fileID: 1720876169553136, guid: d4b964242acab364a88dabe19ab1eaff,
     type: 2}
+  textNextToInputPrefab: {fileID: 1290854219896982, guid: 9e9a84a4722c9d34abbaedf60d84529a,
+    type: 2}
+  menueDropdown: {fileID: 1591829654971956, guid: 98602cc6425030c40b1e139b86744fc9,
+    type: 2}
 --- !u!114 &114447600053221136
 MonoBehaviour:
   m_ObjectHideFlags: 1
