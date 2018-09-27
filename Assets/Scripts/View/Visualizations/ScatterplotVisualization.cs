@@ -337,15 +337,15 @@ public class ScatterplotVisualization : GenericVisualization, IMenueComponentLis
                 combinInstance.transform = dataPointMeshFilter.transform.localToWorldMatrix;
                 combine.Add(combinInstance);
         
-                GameObject.Destroy(datapoint);
+                Destroy(datapoint);
                 }
                 
-            
+             
            
         }
         
-        GameObject.Destroy(_pointPrimitive); 
-          
+        
+        Destroy(_pointPrimitive); 
         
        
     }
