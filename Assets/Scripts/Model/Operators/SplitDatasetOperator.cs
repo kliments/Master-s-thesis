@@ -18,7 +18,7 @@ namespace Model.Operators
         private List<DataItem> _dataItems;
         private SimpleDatamodel[] _simpleDataModel;
         private List<GenericOperator> _parents;
-        private int _counter = 0, _datasets = 2;
+        private int _counter = 0, _datasets = 2, _parentIndex;
         private GameObject _canvas, _menueStartButton, _thresholdInput, _axisInput, _textNextToThresholdInput, _textNextToAxisInput;
         private bool _hasBeenRotated = false;
         // Use this for initialization
@@ -58,7 +58,8 @@ namespace Model.Operators
 
         public override bool ValidateIfOperatorPossibleForParents(GenericOperator parent)
         {
-            return true;
+            //spawn SplitDatasetOperator only if a parent has output data
+            return parent.hasOutput;
         }
 
         public void SplitDataset()
@@ -103,6 +104,21 @@ namespace Model.Operators
                     }
                 }
             }
+            //get parent operator index for creating
+            bool toBreak = false;
+            foreach(var op in _observer.GetOperatorPrefabs())
+            {
+                foreach(var parent in Parents)
+                {
+                    if (parent.name.Contains(op.name))
+                    {
+                        toBreak = true;
+                        break;
+                    }
+                }
+                if (toBreak) break;
+                _parentIndex++;
+            }
             //create operators
             for(int i=0; i<_simpleDataModel.Length; i++)
             {
@@ -116,7 +132,7 @@ namespace Model.Operators
             //wait for the next frame
             yield return 0;
 
-            GameObject obj = _observer.CreateOperator(_observer.GetOperatorPrefabs()[5], _parents);
+            GameObject obj = _observer.CreateOperator(_observer.GetOperatorPrefabs()[_parentIndex], _parents);
             obj.GetComponent<GenericOperator>().SetRawInputData(data);
             StartCoroutine(SetPosition());
         }
@@ -251,6 +267,7 @@ namespace Model.Operators
         {
             _hasBeenRotated = false;
             _counter = 0;
+            _parentIndex = 0;
         }
     }
 }
