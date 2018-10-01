@@ -34,6 +34,7 @@ namespace Model.Operators
             SplitDataset();
             CreateMenueButtons();
             axis = "X";
+            Debug.Log(Application.dataPath);
         }
 
         private void Update()
@@ -270,5 +271,6 @@ namespace Model.Operators
             _parentIndex = 0;
         }
     }
+
 }
 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Controller.Interaction.Icon;
 using UnityEditor;
 using Model.Operators;
+using System.Xml.Serialization;
 
 namespace Assets.Scripts.Model
 {
@@ -32,7 +33,9 @@ namespace Assets.Scripts.Model
         public bool isSelected = false;
         public GenericOperator newOperator;
 
-        public GameObject isSelectedHighlighting; 
+        public GameObject isSelectedHighlighting;
+
+        public OperatorData data = new OperatorData();
 
         public virtual void Start()
         {
@@ -274,8 +277,48 @@ namespace Assets.Scripts.Model
         protected virtual void OnUnselectAction() { }
         protected virtual void OnSelectAction() { }
 
+        public void StoreData()
+        {
+            if (this == null) return;
+            data.name = gameObject.name.Replace("(Clone)", "");
+            data.posX = GetIcon().transform.position.x;
+            data.posY = GetIcon().transform.position.y;
+            data.posZ = GetIcon().transform.position.z;
+        }
+
+        public void LoadData()
+        {
+            Vector3 pos = new Vector3(data.posX, data.posY, data.posZ);
+            GetIcon().transform.position = pos;
+        }
+
+        private void OnEnable()
+        {
+            SaveLoadData.OnLoaded += delegate { LoadData(); };
+            SaveLoadData.OnBeforeSave += delegate { StoreData(); };
+            SaveLoadData.OnBeforeSave += delegate { SaveLoadData.AddOperatorData(data); };
+        }
+        private void OnDisable()
+        {
+            SaveLoadData.OnLoaded -= delegate { LoadData(); };
+            SaveLoadData.OnBeforeSave -= delegate { StoreData(); };
+            SaveLoadData.OnBeforeSave -= delegate { SaveLoadData.AddOperatorData(data); };
+        }
+    }
+
+    public class OperatorData
+    {
+        [XmlAttribute("Name")]
+        public string name;
+
+        [XmlElement("PosX")]
+        public float posX;
+        [XmlElement("PosY")]
+        public float posY;
+        [XmlElement("PosZ")]
+        public float posZ;
 
     }
 
-    
+
 }
