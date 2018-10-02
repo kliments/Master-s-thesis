@@ -1,34 +1,151 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <GenericOperatorCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <GenericOperators>
-    <GenericOperator Name="NewOperator">
-      <PosX>-4</PosX>
-      <PosY>2.5</PosY>
-      <PosZ>3.494</PosZ>
-    </GenericOperator>
     <GenericOperator Name="DataloaderOperator">
+      <ID>2</ID>
+      <Parent>-1</Parent>
       <PosX>-4</PosX>
       <PosY>2.5</PosY>
       <PosZ>3.494</PosZ>
     </GenericOperator>
     <GenericOperator Name="ScatterplotOperator">
+      <ID>4</ID>
+      <Parent>2</Parent>
       <PosX>-3</PosX>
       <PosY>2.5</PosY>
       <PosZ>3.494</PosZ>
     </GenericOperator>
     <GenericOperator Name="SplitOperator">
+      <ID>6</ID>
+      <Parent>4</Parent>
       <PosX>-2</PosX>
       <PosY>2.5</PosY>
       <PosZ>3.494</PosZ>
     </GenericOperator>
     <GenericOperator Name="ScatterplotOperator">
+      <ID>7</ID>
+      <Parent>6</Parent>
       <PosX>-1.01519227</PosX>
       <PosY>2.673648</PosY>
       <PosZ>3.494</PosZ>
     </GenericOperator>
     <GenericOperator Name="ScatterplotOperator">
+      <ID>8</ID>
+      <Parent>6</Parent>
       <PosX>-1.01519227</PosX>
       <PosY>2.326352</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>12</ID>
+      <Parent>8</Parent>
+      <PosX>-0.01519227</PosX>
+      <PosY>2.326352</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>14</ID>
+      <Parent>12</Parent>
+      <PosX>0.9848077</PosX>
+      <PosY>2.326352</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>15</ID>
+      <Parent>14</Parent>
+      <PosX>1.96961546</PosX>
+      <PosY>2.5</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>16</ID>
+      <Parent>14</Parent>
+      <PosX>1.96961546</PosX>
+      <PosY>2.15270376</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>20</ID>
+      <Parent>7</Parent>
+      <PosX>-0.01519227</PosX>
+      <PosY>2.673648</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="KMeansClusteringOperator">
+      <ID>22</ID>
+      <Parent>20</Parent>
+      <PosX>0.9848077</PosX>
+      <PosY>2.673648</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>24</ID>
+      <Parent>22</Parent>
+      <PosX>1.98480773</PosX>
+      <PosY>2.673648</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>26</ID>
+      <Parent>24</Parent>
+      <PosX>2.98480773</PosX>
+      <PosY>2.673648</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>27</ID>
+      <Parent>26</Parent>
+      <PosX>3.96961546</PosX>
+      <PosY>2.84729624</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>28</ID>
+      <Parent>26</Parent>
+      <PosX>3.96961546</PosX>
+      <PosY>2.5</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>32</ID>
+      <Parent>2</Parent>
+      <PosX>-3</PosX>
+      <PosY>3.1</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>33</ID>
+      <Parent>32</Parent>
+      <PosX>-2.01519227</PosX>
+      <PosY>3.273648</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>34</ID>
+      <Parent>32</Parent>
+      <PosX>-2.01519227</PosX>
+      <PosY>2.92635179</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>38</ID>
+      <Parent>33</Parent>
+      <PosX>-1.01519227</PosX>
+      <PosY>3.273648</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>39</ID>
+      <Parent>38</Parent>
+      <PosX>-0.030384481</PosX>
+      <PosY>3.44729614</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>40</ID>
+      <Parent>38</Parent>
+      <PosX>-0.030384481</PosX>
+      <PosY>3.1</PosY>
       <PosZ>3.494</PosZ>
     </GenericOperator>
   </GenericOperators>

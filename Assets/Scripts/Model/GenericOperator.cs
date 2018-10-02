@@ -186,7 +186,7 @@ namespace Assets.Scripts.Model
         /**
         * Sets the outputData
         * */
-        protected void SetOutputData(GenericDatamodel newOuputData)
+        public void SetOutputData(GenericDatamodel newOuputData)
         {
             hasOutput = (newOuputData != null);
             _outputData = newOuputData;
@@ -281,26 +281,21 @@ namespace Assets.Scripts.Model
         {
             if (this == null) return;
             data.name = gameObject.name.Replace("(Clone)", "");
+            data.ID = Id;
+            if (Parents == null) data.parent = -1;
+            else data.parent = Parents[0].Id;
             data.posX = GetIcon().transform.position.x;
             data.posY = GetIcon().transform.position.y;
             data.posZ = GetIcon().transform.position.z;
         }
-
-        public void LoadData()
-        {
-            Vector3 pos = new Vector3(data.posX, data.posY, data.posZ);
-            GetIcon().transform.position = pos;
-        }
-
+        
         private void OnEnable()
         {
-            SaveLoadData.OnLoaded += delegate { LoadData(); };
             SaveLoadData.OnBeforeSave += delegate { StoreData(); };
             SaveLoadData.OnBeforeSave += delegate { SaveLoadData.AddOperatorData(data); };
         }
         private void OnDisable()
         {
-            SaveLoadData.OnLoaded -= delegate { LoadData(); };
             SaveLoadData.OnBeforeSave -= delegate { StoreData(); };
             SaveLoadData.OnBeforeSave -= delegate { SaveLoadData.AddOperatorData(data); };
         }
@@ -311,6 +306,10 @@ namespace Assets.Scripts.Model
         [XmlAttribute("Name")]
         public string name;
 
+        [XmlElement("ID")]
+        public int ID;
+        [XmlElement("Parent")]
+        public int parent;
         [XmlElement("PosX")]
         public float posX;
         [XmlElement("PosY")]

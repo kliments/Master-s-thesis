@@ -8,8 +8,7 @@ using UnityEngine;
 public class SaveLoadData {
     public static GenericOperatorContainer genericOperatorContainer = new GenericOperatorContainer();
     public delegate void SerializeAction();
-
-    public static event SerializeAction OnLoaded;
+    
     public static event SerializeAction OnBeforeSave;
 
 	// Use this for initialization
@@ -27,11 +26,10 @@ public class SaveLoadData {
     public static void LoadData(string path)
     {
         genericOperatorContainer = LoadOperators(path);
-        foreach(OperatorData data in genericOperatorContainer.operators)
+        foreach (OperatorData data in genericOperatorContainer.operators)
         {
-            SaveLoadController.CreateGenericOperator(data, data.name, new Vector3(data.posX, data.posY, data.posZ));
+            SaveLoadController.CreateGenericOperator(data);
         }
-        OnLoaded();
     }
 
     public static void AddOperatorData(OperatorData data)

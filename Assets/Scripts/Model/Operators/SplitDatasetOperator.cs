@@ -27,6 +27,8 @@ namespace Model.Operators
             base.Start();
             _observer = (Observer)(FindObjectOfType(typeof(Observer)));
             _dataItems = _rawInputData.GetDataItems();
+            /*SetRawInputData(Parents[0].GetOutputData());
+            _dataItems = _rawInputData.GetDataItems();*/
             _simpleDataModel = new SimpleDatamodel[_datasets];
             _parents = new List<GenericOperator>();
             _parents.Add(this);
@@ -34,7 +36,6 @@ namespace Model.Operators
             SplitDataset();
             CreateMenueButtons();
             axis = "X";
-            Debug.Log(Application.dataPath);
         }
 
         private void Update()

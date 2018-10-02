@@ -6,13 +6,15 @@ using UnityEngine.UI;
 
 public class SaveLoadController : MonoBehaviour {
     public Button saveButton, loadButton;
-    private static Observer obs = new Observer();
 
-    private static string dataPath = string.Empty;
+    private static Observer obs;
+    private static string dataPath;
+    //instance variable is needed to call static Coroutines
+    private static SaveLoadController instance;
 	// Use this for initialization
 	void Start () {
         obs = (Observer)FindObjectOfType(typeof(Observer));
-	}
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -21,38 +23,57 @@ public class SaveLoadController : MonoBehaviour {
 
     private void Awake()
     {
+        instance = this;
         dataPath = "C:/Kliment/Master's Project/VRVis/Assets/Resources/SavedData/operators.xml";
     }
 
-    public static GenericOperator CreateGenericOperator(string name, Vector3 position)
+    public static GenericOperator CreateGenericOperator(OperatorData data)
     {
+        Vector3 position = new Vector3();
+        List<GenericOperator> parents = new List<GenericOperator>();
         List<GameObject> prefabList = obs.GetOperatorPrefabs();
-        foreach(var prefab in prefabList)
+        foreach (var prefab in prefabList)
         {
-            if(name == prefab.name)
+            if (data.name == prefab.name)
             {
-                GameObject go = Instantiate(prefab, position, Quaternion.identity);
+                parents = new List<GenericOperator>();
+                position = new Vector3(data.posX, data.posY, data.posZ);
+                int parentID = 0;
+                foreach(Transform child in obs.transform)
+                {
+                    parentID = child.GetComponent<GenericOperator>().Id;
+                    if (parentID == data.parent) parents.Add(child.GetComponent<GenericOperator>());
+                }
+                GameObject go = obs.CreateOperator(prefab, parents);
                 GenericOperator op = go.GetComponent<GenericOperator>() ?? go.AddComponent<GenericOperator>();
+                //waiting for one frame, due to generating icons and children to be generated
+                instance.StartCoroutine(instance.SetIconLocation(op, position));
+                instance.StartCoroutine(instance.DestroyNewOperatorChildren(op.Children));
+                op.Id = data.ID;
                 return op;
             }
         }
         return null;
     }
 
-    public static GenericOperator CreateGenericOperator(OperatorData data, string name, Vector3 position)
+    IEnumerator SetIconLocation(GenericOperator op, Vector3 position)
     {
-        List<GameObject> prefabList = obs.GetOperatorPrefabs();
-        foreach (var prefab in prefabList)
+        yield return 0;
+        op.GetIcon().transform.position = position;
+        op.Fetchdata();
+        op.Process();
+    }
+
+    IEnumerator DestroyNewOperatorChildren(List<GenericOperator> children)
+    {
+        yield return 0;
+        foreach(var child in children.ToArray())
         {
-            if (name == prefab.name)
+            if (child.GetType().Equals(typeof(NewOperator)))
             {
-                GameObject go = Instantiate(prefab, position, Quaternion.identity);
-                GenericOperator op = go.GetComponent<GenericOperator>() ?? go.AddComponent<GenericOperator>();
-                op.data = data;
-                return op;
+                obs.DestroyOperator(child);
             }
         }
-        return null;
     }
 
     private void OnEnable()
