@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<GenericOperatorCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <GenericOperators>
+    <GenericOperator Name="NewOperator">
+      <PosX>-4</PosX>
+      <PosY>2.5</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <PosX>-4</PosX>
+      <PosY>2.5</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <PosX>-3</PosX>
+      <PosY>2.5</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <PosX>-2</PosX>
+      <PosY>2.5</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <PosX>-1.01519227</PosX>
+      <PosY>2.673648</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <PosX>-1.01519227</PosX>
+      <PosY>2.326352</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+  </GenericOperators>
+</GenericOperatorCollection>

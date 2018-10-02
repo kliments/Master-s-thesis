@@ -21,7 +21,7 @@ public class SaveLoadController : MonoBehaviour {
 
     private void Awake()
     {
-        dataPath = System.IO.Path.Combine(Application.persistentDataPath, "Assets/Resources/operators.xml");
+        dataPath = "C:/Kliment/Master's Project/VRVis/Assets/Resources/SavedData/operators.xml";
     }
 
     public static GenericOperator CreateGenericOperator(string name, Vector3 position)

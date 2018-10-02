@@ -36,6 +36,7 @@ public class SaveLoadData {
 
     public static void AddOperatorData(OperatorData data)
     {
+        if (data.name == null) return;
         genericOperatorContainer.operators.Add(data);
     }
 
