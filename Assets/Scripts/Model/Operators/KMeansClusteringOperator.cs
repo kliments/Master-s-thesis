@@ -39,13 +39,30 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 	private bool _menuExists;
 	
 	private MenueScript _menu;
+
+	public Mesh TestMesh;
+	public Material TestMaterial;
+	public int counter;
+	public GameObject TestSphere;
+	public GameObject TestCube;
 	
 	public override void Start()
 	{
 		base.Start();
 				
 		CreateMenu();
+
+		TestSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+//		TestCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		
+		TestMesh = TestSphere.GetComponent<MeshFilter>().mesh;
+//		TestCube.GetComponent<MeshFilter>().mesh = TestMesh;
+		
+		TestMaterial = new Material(Shader.Find("Specular"));
+		TestMaterial.color = Color.red;
+		TestSphere.GetComponent<Renderer>().material = TestMaterial;
+		Destroy(TestSphere);
+//		Destroy(TestCube);
 		
 		
 //		NumberOfClusters();
@@ -86,6 +103,24 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 		{
 			CreateMenu();
 		}
+		
+		//TEST
+		//TEST
+		//TEST
+		//TEST
+		//TEST
+		//TEST
+
+		
+		Graphics.DrawMesh(TestMesh, Vector3.zero, Quaternion.identity, TestMaterial, 0);
+			
+
+
+		//TEST
+		//TEST
+		//TEST
+		//TEST
+		//TEST
 	}
 
 	//Initialize by creating random seed centroids and starting the method cascade

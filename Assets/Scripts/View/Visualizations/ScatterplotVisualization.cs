@@ -35,15 +35,7 @@ public class ScatterplotVisualization : GenericVisualization, IMenueComponentLis
     
     private void Update()
     {
-//        if (Observer.selectedOperator != this && _menuExists)
-//        {
-//            DestroyMenu();
-//            Debug.Log("test");
-//        }
-//        else if (Observer.selectedOperator.Equals(this) && !_menuExists)
-//        {
-//            CreateMenu();
-//        }
+//        Graphics.DrawMesh(mesh, Vector3.zero, Quaternion.identity, material, 0);
     }
 
     public void SetNumberOfDimensions(int number)
@@ -184,7 +176,7 @@ public class ScatterplotVisualization : GenericVisualization, IMenueComponentLis
                 
                 var datapoint = Instantiate(_pointPrimitive);
                 datapoint.transform.parent = GetOperator().Visualization.gameObject.transform;
-                
+
                 
                 
                 
@@ -207,6 +199,7 @@ public class ScatterplotVisualization : GenericVisualization, IMenueComponentLis
                 _pointRendererCluster = _pointPrimitiveCluster.GetComponent<Renderer>();
                 _pointPrimitiveCluster.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
                 _pointRendererCluster.material = new Material(Shader.Find("Specular"));
+//                _pointRendererCluster.material.enableInstancing = true;
                 _pointRendererCluster.material.color = _pointColorCluster; 
     
                 
