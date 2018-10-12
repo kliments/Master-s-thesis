@@ -16,7 +16,7 @@ namespace Model.Operators
 
         private Observer _observer;
         private List<DataItem> _dataItems;
-        private SimpleDatamodel[] _simpleDataModel;
+        private SimpleDatamodel[] _simpleDataModels;
         private List<GenericOperator> _parents;
         private int _counter = 0, _datasets = 2, _parentIndex;
         private GameObject _canvas, _menueStartButton, _thresholdInput, _axisInput, _textNextToThresholdInput, _textNextToAxisInput;
@@ -29,11 +29,17 @@ namespace Model.Operators
             _dataItems = _rawInputData.GetDataItems();
             /*SetRawInputData(Parents[0].GetOutputData());
             _dataItems = _rawInputData.GetDataItems();*/
-            _simpleDataModel = new SimpleDatamodel[_datasets];
+            _simpleDataModels = new SimpleDatamodel[_datasets];
             _parents = new List<GenericOperator>();
             _parents.Add(this);
             _canvas = GameObject.Find("Canvas");
             SplitDataset();
+            //create operators
+            for (int i = 0; i < _simpleDataModels.Length; i++)
+            {
+                StartCoroutine(CreateOperators(_simpleDataModels[i]));
+            }
+            SetOutputData(GetRawInputData());
             CreateMenueButtons();
             axis = "X";
         }
@@ -66,9 +72,9 @@ namespace Model.Operators
 
         public void SplitDataset()
         {
-            for (int i = 0; i < _simpleDataModel.Length; i++)
+            for (int i = 0; i < _simpleDataModels.Length; i++)
             {
-                _simpleDataModel[i] = new SimpleDatamodel();
+                _simpleDataModels[i] = new SimpleDatamodel();
             }
             foreach (var dataItem in _dataItems)
             {
@@ -76,33 +82,33 @@ namespace Model.Operators
                 {
                     if (dataItem.GetfirstThreeNumericColsAsVector().x >= threshold)
                     {
-                        _simpleDataModel[0].Add(dataItem);
+                        _simpleDataModels[0].Add(dataItem);
                     }
                     else
                     {
-                        _simpleDataModel[1].Add(dataItem);
+                        _simpleDataModels[1].Add(dataItem);
                     }
                 }
                 else if (axis == "Y")
                 {
                     if (dataItem.GetfirstThreeNumericColsAsVector().y >= threshold)
                     {
-                        _simpleDataModel[0].Add(dataItem);
+                        _simpleDataModels[0].Add(dataItem);
                     }
                     else
                     {
-                        _simpleDataModel[1].Add(dataItem);
+                        _simpleDataModels[1].Add(dataItem);
                     }
                 }
                 else if (axis == "Z")
                 {
                     if (dataItem.GetfirstThreeNumericColsAsVector().z >= threshold)
                     {
-                        _simpleDataModel[0].Add(dataItem);
+                        _simpleDataModels[0].Add(dataItem);
                     }
                     else
                     {
-                        _simpleDataModel[1].Add(dataItem);
+                        _simpleDataModels[1].Add(dataItem);
                     }
                 }
             }
@@ -121,12 +127,6 @@ namespace Model.Operators
                 if (toBreak) break;
                 _parentIndex++;
             }
-            //create operators
-            for(int i=0; i<_simpleDataModel.Length; i++)
-            {
-                StartCoroutine(CreateOperators(_simpleDataModel[i]));
-            }
-            SetOutputData(GetRawInputData());
         }
 
         IEnumerator CreateOperators(GenericDatamodel data)

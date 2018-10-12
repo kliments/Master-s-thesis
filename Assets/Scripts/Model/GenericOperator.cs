@@ -81,6 +81,15 @@ namespace Assets.Scripts.Model
         * */
         public abstract bool Process();
 
+
+        public void reProcess(GenericDatamodel datamodel)
+        {
+            SetRawInputData(datamodel);
+            Process();
+
+
+        }
+
         /**
         * Refreshes data by collecting and combining data models from all parents.
         * */
