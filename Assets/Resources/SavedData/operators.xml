@@ -8,53 +8,32 @@
       <PosY>2.5</PosY>
       <PosZ>3.494</PosZ>
     </GenericOperator>
-    <GenericOperator Name="ScatterplotOperator">
+    <GenericOperator Name="SplitOperator">
       <ID>4</ID>
       <Parent>2</Parent>
       <PosX>-3</PosX>
       <PosY>2.5</PosY>
       <PosZ>3.494</PosZ>
     </GenericOperator>
-    <GenericOperator Name="SplitOperator">
-      <ID>6</ID>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>5</ID>
       <Parent>4</Parent>
-      <PosX>-2</PosX>
-      <PosY>2.5</PosY>
-      <PosZ>3.494</PosZ>
-    </GenericOperator>
-    <GenericOperator Name="ScatterplotOperator">
-      <ID>7</ID>
-      <Parent>6</Parent>
-      <PosX>-1.01519227</PosX>
+      <PosX>-2.01519227</PosX>
       <PosY>2.673648</PosY>
       <PosZ>3.494</PosZ>
     </GenericOperator>
-    <GenericOperator Name="ScatterplotOperator">
-      <ID>8</ID>
-      <Parent>6</Parent>
-      <PosX>-1.01519227</PosX>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>6</ID>
+      <Parent>4</Parent>
+      <PosX>-2.01519227</PosX>
       <PosY>2.326352</PosY>
       <PosZ>3.494</PosZ>
     </GenericOperator>
-    <GenericOperator Name="DataloaderOperator">
-      <ID>12</ID>
-      <Parent>7</Parent>
-      <PosX>-0.01519227</PosX>
-      <PosY>2.673648</PosY>
-      <PosZ>3.494</PosZ>
-    </GenericOperator>
-    <GenericOperator Name="DataloaderOperator">
-      <ID>15</ID>
-      <Parent>4</Parent>
-      <PosX>-2</PosX>
-      <PosY>3.1</PosY>
-      <PosZ>3.494</PosZ>
-    </GenericOperator>
     <GenericOperator Name="NewOperator">
-      <ID>16</ID>
-      <Parent>15</Parent>
-      <PosX>-1</PosX>
-      <PosY>3.1</PosY>
+      <ID>9</ID>
+      <Parent>5</Parent>
+      <PosX>-1.01519227</PosX>
+      <PosY>2.673648</PosY>
       <PosZ>3.494</PosZ>
     </GenericOperator>
   </GenericOperators>

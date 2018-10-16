@@ -139,8 +139,8 @@ GameObject:
   - component: {fileID: 222768238831628306}
   - component: {fileID: 114702469506529504}
   - component: {fileID: 114914536225056028}
-  - component: {fileID: 114816535944953442}
   - component: {fileID: 114799820419536792}
+  - component: {fileID: 65976748833015464}
   m_Layer: 5
   m_Name: Dropdown
   m_TagString: Untagged
@@ -191,6 +191,7 @@ GameObject:
   - component: {fileID: 224419954135171084}
   - component: {fileID: 222317281674050484}
   - component: {fileID: 114942243114436372}
+  - component: {fileID: 114004403452933824}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -250,6 +251,29 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!65 &65976748833015464
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1591829654971956}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 160, y: 30, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114004403452933824
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1764933039672834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca0732eba1a2d644d82aba61aeca9e6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114094439217645630
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -617,17 +641,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 20f74b55ee8fff144ba3c708de5801c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114816535944953442
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1591829654971956}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca0732eba1a2d644d82aba61aeca9e6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114874436434813094

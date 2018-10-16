@@ -23,6 +23,6 @@ public class ButtonComponent : Targetable {
     }
     protected override void OnLeftClickOnTargetEventAction()
     {
-        Debug.Log("button pressed");
+        transform.parent.GetComponent<GenericMenueComponent>().getListeners()[0].menueChanged(transform.parent.GetComponent<GenericMenueComponent>());
     }
 }

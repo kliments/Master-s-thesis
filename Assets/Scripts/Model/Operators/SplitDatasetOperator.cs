@@ -22,6 +22,9 @@ namespace Model.Operators
         private GameObject _canvas, _menueStartButton, _thresholdInput, _axisInput, _textNextToThresholdInput, _textNextToAxisInput;
         private MenueScript _menu;
         private bool _hasBeenRotated = false;
+        private InputFieldScript _input;
+        private DropdownScript _dropdown;
+        private ButtonScript _button;
         // Use this for initialization
         public override void Start()
         {
@@ -231,38 +234,9 @@ namespace Model.Operators
 
         private void CreateMenueButtons()
         {
-            /*_thresholdInput = Instantiate(menueInputPrefab, _canvas.transform);
-            _thresholdInput.GetComponent<RectTransform>().localPosition = new Vector3(-100, 230, 0);
-            _thresholdInput.GetComponent<InputField>().contentType = InputField.ContentType.DecimalNumber;
-            _thresholdInput.GetComponent<InputField>().text = "0.5";
-            _thresholdInput.GetComponent<InputField>().onEndEdit.AddListener(delegate { this.UpdateValues(); });
-
-            _textNextToThresholdInput = Instantiate(textNextToInputPrefab, _canvas.transform);
-            _textNextToThresholdInput.GetComponent<RectTransform>().localPosition = new Vector3(-185, 230, 0);
-            _textNextToThresholdInput.GetComponent<Text>().text = "Threshold: ";
-
-            /*_axisInput = Instantiate(menueInputPrefab, _canvas.transform);
-            _axisInput.GetComponent<RectTransform>().localPosition = new Vector3(-100, 190, 0);
-            _axisInput.GetComponent<InputField>().contentType = InputField.ContentType.Name;
-            _axisInput.GetComponent<InputField>().text = "X";
-            _axisInput.GetComponent<InputField>().characterLimit = 1;
-            _axisInput.GetComponent<InputField>().onEndEdit.AddListener(delegate { this.UpdateValues(); });*/
-
-            /*_axisInput = Instantiate(menueDropdown, _canvas.transform);
-            _axisInput.GetComponent<RectTransform>().localPosition = new Vector3(-100, 190, 0);
-            _axisInput.GetComponent<Dropdown>().onValueChanged.AddListener(delegate { this.UpdateValues(); });
-
-            _textNextToAxisInput = Instantiate(textNextToInputPrefab, _canvas.transform);
-            _textNextToAxisInput.GetComponent<RectTransform>().localPosition = new Vector3(-185, 190, 0);
-            _textNextToAxisInput.GetComponent<Text>().text = "Axis: ";
-
-            _menueStartButton = Instantiate(menueButtonPrefab, _canvas.transform);
-            _menueStartButton.GetComponent<RectTransform>().localPosition = new Vector3(-100, 100, 0);
-            _menueStartButton.GetComponent<Button>().onClick.AddListener(delegate { StartSplitDatasets(); });
-            _menueStartButton.transform.GetChild(0).GetComponent<Text>().text = "Split Dataset";*/
-            InputFieldScript input = _menu.AddInputField("Threshold", this);
-            DropdownScript drop = _menu.AddDropdown("Axis", this);
-            ButtonScript button = _menu.AddButton("SplitDataset", this);
+            _input = _menu.AddInputField("Threshold", this);
+            _dropdown = _menu.AddDropdown("Axis", this);
+            _button = _menu.AddButton("SplitDataset", this);
         }
 
         public void UpdateValues()
@@ -299,7 +273,20 @@ namespace Model.Operators
 
         public void menueChanged(GenericMenueComponent changedComponent)
         {
-            Debug.Log("blah blah");
+            threshold = float.Parse(_input.GetComponent<InputField>().text);
+            switch(_dropdown.GetComponent<Dropdown>().value)
+            {
+                case 0:
+                    axis = "X";
+                    break;
+                case 1:
+                    axis = "Y";
+                    break;
+                case 2:
+                    axis = "Z";
+                    break;
+            }
+            StartSplitDatasets();
         }
     }
 

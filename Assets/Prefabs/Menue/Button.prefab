@@ -21,6 +21,8 @@ GameObject:
   - component: {fileID: 224888583760093368}
   - component: {fileID: 222199270361754056}
   - component: {fileID: 114902020809074084}
+  - component: {fileID: 114113382342787080}
+  - component: {fileID: 65684466005625084}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -39,7 +41,6 @@ GameObject:
   - component: {fileID: 222856174459753584}
   - component: {fileID: 114111951745080122}
   - component: {fileID: 114311114680067022}
-  - component: {fileID: 114231817344518906}
   - component: {fileID: 114561058903929334}
   m_Layer: 5
   m_Name: Button
@@ -48,6 +49,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!65 &65684466005625084
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1577611586020042}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 160, y: 30, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114111951745080122
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -75,12 +88,12 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
---- !u!114 &114231817344518906
+--- !u!114 &114113382342787080
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1720876169553136}
+  m_GameObject: {fileID: 1577611586020042}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0bf406dfaba932b449766367f9ce1563, type: 3}
