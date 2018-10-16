@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class SaveLoadController : MonoBehaviour {
     public Button saveButton, loadButton;
+    public static List<GenericOperator> operatorList;
 
     private static Observer obs;
     private static string dataPath;
@@ -14,6 +15,7 @@ public class SaveLoadController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         obs = (Observer)FindObjectOfType(typeof(Observer));
+        operatorList = new List<GenericOperator>();
     }
 	
 	// Update is called once per frame
@@ -39,17 +41,23 @@ public class SaveLoadController : MonoBehaviour {
                 parents = new List<GenericOperator>();
                 position = new Vector3(data.posX, data.posY, data.posZ);
                 int parentID = 0;
-                foreach(Transform child in obs.transform)
+                foreach(var child in obs.GetOperators())
                 {
-                    parentID = child.GetComponent<GenericOperator>().Id;
-                    if (parentID == data.parent) parents.Add(child.GetComponent<GenericOperator>());
+                    parentID = child.Id;
+                    if (parentID == data.parent)
+                    {
+                        parents.Add(child.GetComponent<GenericOperator>());
+                        break;
+                    }
                 }
                 GameObject go = obs.CreateOperator(prefab, parents);
                 GenericOperator op = go.GetComponent<GenericOperator>() ?? go.AddComponent<GenericOperator>();
-                //waiting for one frame, due to generating icons and children to be generated
+                //waiting for one frame, due to generating icons and children
                 instance.StartCoroutine(instance.SetIconLocation(op, position));
                 instance.StartCoroutine(instance.DestroyNewOperatorChildren(op.Children));
                 op.Id = data.ID;
+
+                operatorList.Add(op);
                 return op;
             }
         }
@@ -80,6 +88,7 @@ public class SaveLoadController : MonoBehaviour {
     {
         saveButton.onClick.AddListener(delegate { SaveLoadData.SaveData(dataPath, SaveLoadData.genericOperatorContainer); });
         loadButton.onClick.AddListener(delegate { SaveLoadData.LoadData(dataPath); });
+        operatorList = new List<GenericOperator>();
     }
 
     private void OnDisable()

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Model.Operators
 {
-    public class SplitDatasetOperator : GenericOperator
+    public class SplitDatasetOperator : GenericOperator, IMenueComponentListener
     {
         public float threshold = 0.5f;
         public string axis;
@@ -20,28 +20,19 @@ namespace Model.Operators
         private List<GenericOperator> _parents;
         private int _counter = 0, _datasets = 2, _parentIndex;
         private GameObject _canvas, _menueStartButton, _thresholdInput, _axisInput, _textNextToThresholdInput, _textNextToAxisInput;
+        private MenueScript _menu;
         private bool _hasBeenRotated = false;
         // Use this for initialization
         public override void Start()
         {
-            base.Start();
             _observer = (Observer)(FindObjectOfType(typeof(Observer)));
-            _dataItems = _rawInputData.GetDataItems();
-            /*SetRawInputData(Parents[0].GetOutputData());
-            _dataItems = _rawInputData.GetDataItems();*/
-            _simpleDataModels = new SimpleDatamodel[_datasets];
             _parents = new List<GenericOperator>();
             _parents.Add(this);
             _canvas = GameObject.Find("Canvas");
-            SplitDataset();
-            //create operators
-            for (int i = 0; i < _simpleDataModels.Length; i++)
-            {
-                StartCoroutine(CreateOperators(_simpleDataModels[i]));
-            }
-            SetOutputData(GetRawInputData());
-            CreateMenueButtons();
+            _menu = (MenueScript)(FindObjectOfType(typeof(MenueScript)));
             axis = "X";
+
+            base.Start();
         }
 
         private void Update()
@@ -61,6 +52,31 @@ namespace Model.Operators
 
         public override bool Process()
         {
+            if (GetRawInputData()!=null)
+            {
+                _dataItems = _rawInputData.GetDataItems();
+                _simpleDataModels = new SimpleDatamodel[_datasets];
+                SplitDataset();
+                //create operators
+                if (Children.Count == 0)
+                {
+                    for (int i = 0; i < _simpleDataModels.Length; i++)
+                    {
+                        StartCoroutine(CreateOperators(_simpleDataModels[i]));
+                    }
+                    SetOutputData(GetRawInputData());
+                    CreateMenueButtons();
+                }
+                else
+                {
+                    for (int i = 0; i < Children.Count; i++)
+                    {
+                        Children[i].SetRawInputData(null);
+                        Children[i].SetRawInputData(_simpleDataModels[i]);
+                        Children[i].reProcess(_simpleDataModels[i]);
+                    }
+                }
+            }
             return true;
         }
 
@@ -194,10 +210,10 @@ namespace Model.Operators
 
             foreach(var child in Children)
             {
-                Destroy(child);
+                DestroyNewOperatorChildren(child);
             }
         }
-        private void Destroy(GenericOperator op)
+        private void DestroyNewOperatorChildren(GenericOperator op)
         {
             if(op.GetType().Equals(typeof(NewOperator)))
             {
@@ -209,13 +225,13 @@ namespace Model.Operators
             }
             else
             {
-                Destroy(op.Children[op.Children.Count - 1]);
+                DestroyNewOperatorChildren(op.Children[op.Children.Count - 1]);
             }
         }
 
         private void CreateMenueButtons()
         {
-            _thresholdInput = Instantiate(menueInputPrefab, _canvas.transform);
+            /*_thresholdInput = Instantiate(menueInputPrefab, _canvas.transform);
             _thresholdInput.GetComponent<RectTransform>().localPosition = new Vector3(-100, 230, 0);
             _thresholdInput.GetComponent<InputField>().contentType = InputField.ContentType.DecimalNumber;
             _thresholdInput.GetComponent<InputField>().text = "0.5";
@@ -232,7 +248,7 @@ namespace Model.Operators
             _axisInput.GetComponent<InputField>().characterLimit = 1;
             _axisInput.GetComponent<InputField>().onEndEdit.AddListener(delegate { this.UpdateValues(); });*/
 
-            _axisInput = Instantiate(menueDropdown, _canvas.transform);
+            /*_axisInput = Instantiate(menueDropdown, _canvas.transform);
             _axisInput.GetComponent<RectTransform>().localPosition = new Vector3(-100, 190, 0);
             _axisInput.GetComponent<Dropdown>().onValueChanged.AddListener(delegate { this.UpdateValues(); });
 
@@ -243,7 +259,10 @@ namespace Model.Operators
             _menueStartButton = Instantiate(menueButtonPrefab, _canvas.transform);
             _menueStartButton.GetComponent<RectTransform>().localPosition = new Vector3(-100, 100, 0);
             _menueStartButton.GetComponent<Button>().onClick.AddListener(delegate { StartSplitDatasets(); });
-            _menueStartButton.transform.GetChild(0).GetComponent<Text>().text = "Split Dataset";
+            _menueStartButton.transform.GetChild(0).GetComponent<Text>().text = "Split Dataset";*/
+            InputFieldScript input = _menu.AddInputField("Threshold", this);
+            DropdownScript drop = _menu.AddDropdown("Axis", this);
+            ButtonScript button = _menu.AddButton("SplitDataset", this);
         }
 
         public void UpdateValues()
@@ -256,13 +275,13 @@ namespace Model.Operators
         }
         public void StartSplitDatasets()
         {
-            for (int i = 0; i < Children.Count; i++)
+            /*for (int i = 0; i < Children.Count; i++)
             {
                 Children[i].Delete(Children[i]);
                 --i;
-            }
+            }*/
             ResetMe();
-            SplitDataset();
+            Process();
         }
 
         private void ResetMe()
@@ -270,6 +289,17 @@ namespace Model.Operators
             _hasBeenRotated = false;
             _counter = 0;
             _parentIndex = 0;
+        }
+
+        protected override void OnUnselectAction()
+        {
+            base.OnUnselectAction();
+
+        }
+
+        public void menueChanged(GenericMenueComponent changedComponent)
+        {
+            Debug.Log("blah blah");
         }
     }
 

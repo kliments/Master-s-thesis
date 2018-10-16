@@ -26,7 +26,7 @@ namespace Model.Operators
             // Enable Interaction Script
 
             SetOutputData(GetRawInputData()); // Visualization does not change data
-            return true;
+            return true; 
         }
     
     }

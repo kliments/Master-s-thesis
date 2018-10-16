@@ -6,16 +6,9 @@ namespace Controller.Interaction.Icon
 {
     public class SplitDatasetInteractionIconController : GenericIconInteractionController
     {
-
-        // Use this for initialization
-        void Start()
+        protected override void OnLeftClickOnTargetEventAction()
         {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
+            Debug.Log("Split Icon OnLeftClickEvent");
 
         }
     }

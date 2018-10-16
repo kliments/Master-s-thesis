@@ -84,10 +84,11 @@ namespace Assets.Scripts.Model
 
         public void reProcess(GenericDatamodel datamodel)
         {
-            SetRawInputData(datamodel);
             Process();
-
-
+            foreach(var child in Children)
+            {
+                child.reProcess(datamodel);
+            }
         }
 
         /**
@@ -113,13 +114,19 @@ namespace Assets.Scripts.Model
         {
             if (op.Equals(this) || Parents.Count == 1)
             {
-                foreach (var parent in Parents)
+                if(Parents!=null)
                 {
-                    parent.RemoveChild(op);
+                    foreach (var parent in Parents)
+                    {
+                        parent.RemoveChild(op);
+                    }
                 }
-                foreach (var child in Children)
+                if(Children != null)
                 {
-                    child.Delete(this);
+                    foreach (var child in Children)
+                    {
+                        child.Delete(this);
+                    }
                 }
                 DestroyGenericOperator();
             }
