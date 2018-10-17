@@ -68,7 +68,6 @@ namespace Model.Operators
                         StartCoroutine(CreateOperators(_simpleDataModels[i]));
                     }
                     SetOutputData(GetRawInputData());
-                    CreateMenueButtons();
                 }
                 else
                 {
@@ -176,6 +175,7 @@ namespace Model.Operators
                     }
                     _counter++;
                 }
+                //destroy newoperators that are generated due to selection of child nodes
                 StartCoroutine(DestroyChildren());
                 Observer.selectOperator(this);
             }
@@ -232,8 +232,9 @@ namespace Model.Operators
             }
         }
 
-        private void CreateMenueButtons()
+        private IEnumerator CreateMenueButtons()
         {
+            yield return 0;
             _input = _menu.AddInputField("Threshold", this);
             _dropdown = _menu.AddDropdown("Axis", this);
             _button = _menu.AddButton("SplitDataset", this);
@@ -249,11 +250,6 @@ namespace Model.Operators
         }
         public void StartSplitDatasets()
         {
-            /*for (int i = 0; i < Children.Count; i++)
-            {
-                Children[i].Delete(Children[i]);
-                --i;
-            }*/
             ResetMe();
             Process();
         }
@@ -265,10 +261,16 @@ namespace Model.Operators
             _parentIndex = 0;
         }
 
+        protected override void OnSelectAction()
+        {
+            base.OnSelectAction();
+            StartCoroutine(CreateMenueButtons());
+        }
+
         protected override void OnUnselectAction()
         {
             base.OnUnselectAction();
-
+            _menu.RemoveAllComponents();
         }
 
         public void menueChanged(GenericMenueComponent changedComponent)

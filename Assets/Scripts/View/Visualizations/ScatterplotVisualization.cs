@@ -37,6 +37,15 @@ public class ScatterplotVisualization : GenericVisualization {
             return;
 
         var dataPoints = ((SimpleDatamodel)GetOperator().GetRawInputData()).GetCoords();
+
+        //check whether this already has old visualizations and if yes, destroy them
+        if(transform.childCount>0)
+        {
+            foreach(Transform child in transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
 //        var dataPointsCluster = ((SimpleDatamodel)GetOperator().GetRawInputData()).GetCoordsAndCluster(); //new method for getting a vector4 instead of a vector3 (vector3 + cluster)
 
         // Constructs a dictionary/lookup with the cluster ID value (float) from the previous kmeansclustering (if any) as key and a list of the corresponding data points as the value

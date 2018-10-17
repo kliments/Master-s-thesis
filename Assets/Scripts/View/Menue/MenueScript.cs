@@ -196,10 +196,11 @@ public class MenueScript : MonoBehaviour {
 
     public void RemoveAllComponents()
     {
-        foreach(var comp in currentComponentList)
+        for(int i=0; i<currentComponentList.Count; i++)
         {
-            currentComponentList.Remove(comp);
-            Destroy(comp.gameObject);
+            Destroy(currentComponentList[i].gameObject);
+            currentComponentList.Remove(currentComponentList[i]);
+            i--;
         }
     }
 }
