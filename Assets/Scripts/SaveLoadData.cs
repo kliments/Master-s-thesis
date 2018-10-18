@@ -26,6 +26,7 @@ public class SaveLoadData:MonoBehaviour {
 
     public static void SaveData(string path, GenericOperatorContainer operators)
     {
+        if (genericOperatorContainer.operators.Count > 0) ClearOperators();
         OnBeforeSave();
         SaveOperators(path, operators);
         ClearOperators();
@@ -33,16 +34,13 @@ public class SaveLoadData:MonoBehaviour {
 
     public static void LoadData(string path)
     {
+        ClearOperators();
         //destroy any current nodes in observer
         if(observer.GetOperators()!=null)
         {
-            for(int i=0; i< observer.GetOperators().Count; i++)
+            for(int i= observer.GetOperators().Count-1; i>=0; i--)
             {
-                if(observer.GetOperators()[i]!= null)
-                {
-                    observer.DestroyOperator(observer.GetOperators()[i]);
-                    i = -1;
-                }
+                observer.DestroyOperator(observer.GetOperators()[i]);
             }
         }
 
@@ -57,9 +55,10 @@ public class SaveLoadData:MonoBehaviour {
 
     public static void AddOperatorData(OperatorData data)
     {
-        if (data.name == null) return;
+        if (data.name == null || genericOperatorContainer.Contains(data)) return;
         genericOperatorContainer.operators.Add(data);
     }
+    
 
     public static void ClearOperators()
     {
@@ -93,6 +92,13 @@ public class SaveLoadData:MonoBehaviour {
     IEnumerator ReloadData(GenericOperator firstNode)
     {
         yield return 0;
-        firstNode.reProcess(firstNode.GetOutputData());
+        if(firstNode.GetRawInputData()!=null)
+        {
+            firstNode.ReProcess(firstNode.GetRawInputData());
+        }
+        else
+        {
+            firstNode.ReProcess(firstNode.GetOutputData());
+        }
     }
 }

@@ -7,34 +7,48 @@
       <PosX>-4</PosX>
       <PosY>2.5</PosY>
       <PosZ>3.494</PosZ>
+      <Threshold>0</Threshold>
     </GenericOperator>
-    <GenericOperator Name="SplitOperator">
+    <GenericOperator Name="ScatterplotOperator">
       <ID>4</ID>
       <Parent>2</Parent>
       <PosX>-3</PosX>
       <PosY>2.5</PosY>
       <PosZ>3.494</PosZ>
+      <Threshold>0</Threshold>
     </GenericOperator>
-    <GenericOperator Name="DataloaderOperator">
-      <ID>5</ID>
-      <Parent>4</Parent>
-      <PosX>-2.01519227</PosX>
-      <PosY>2.673648</PosY>
-      <PosZ>3.494</PosZ>
-    </GenericOperator>
-    <GenericOperator Name="DataloaderOperator">
+    <GenericOperator Name="SplitOperator">
       <ID>6</ID>
       <Parent>4</Parent>
-      <PosX>-2.01519227</PosX>
-      <PosY>2.326352</PosY>
+      <PosX>-2</PosX>
+      <PosY>2.5</PosY>
       <PosZ>3.494</PosZ>
+      <Threshold>0.5</Threshold>
+      <Axis>X</Axis>
     </GenericOperator>
-    <GenericOperator Name="NewOperator">
-      <ID>9</ID>
-      <Parent>5</Parent>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>7</ID>
+      <Parent>6</Parent>
       <PosX>-1.01519227</PosX>
       <PosY>2.673648</PosY>
       <PosZ>3.494</PosZ>
+      <Threshold>0</Threshold>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>8</ID>
+      <Parent>6</Parent>
+      <PosX>-1.01519227</PosX>
+      <PosY>2.326352</PosY>
+      <PosZ>3.494</PosZ>
+      <Threshold>0</Threshold>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>21</ID>
+      <Parent>4</Parent>
+      <PosX>-2</PosX>
+      <PosY>3.1</PosY>
+      <PosZ>3.494</PosZ>
+      <Threshold>0</Threshold>
     </GenericOperator>
   </GenericOperators>
 </GenericOperatorCollection>

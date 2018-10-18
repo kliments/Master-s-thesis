@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Model;
+using Model.Operators;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -56,6 +57,11 @@ public class SaveLoadController : MonoBehaviour {
                 instance.StartCoroutine(instance.SetIconLocation(op, position));
                 instance.StartCoroutine(instance.DestroyNewOperatorChildren(op.Children));
                 op.Id = data.ID;
+                if (data.name == "SplitOperator")
+                {
+                    op.GetComponent<SplitDatasetOperator>().threshold = data.thr;
+                    op.GetComponent<SplitDatasetOperator>().axis = data.axis;
+                }
 
                 operatorList.Add(op);
                 return op;

@@ -9,7 +9,7 @@ namespace Model.Operators
 {
     public class SplitDatasetOperator : GenericOperator, IMenueComponentListener
     {
-        public float threshold = 0.5f;
+        public float threshold;
         public string axis;
         public bool press = false;
         public GameObject menueInputPrefab, menueButtonPrefab, textNextToInputPrefab, menueDropdown;
@@ -33,7 +33,8 @@ namespace Model.Operators
             _parents.Add(this);
             _canvas = GameObject.Find("Canvas");
             _menu = (MenueScript)(FindObjectOfType(typeof(MenueScript)));
-            axis = "X";
+            if (axis == null) axis = "X";
+            if (threshold == 0) threshold = 0.5f;
 
             base.Start();
         }
@@ -75,7 +76,7 @@ namespace Model.Operators
                     {
                         Children[i].SetRawInputData(null);
                         Children[i].SetRawInputData(_simpleDataModels[i]);
-                        Children[i].reProcess(_simpleDataModels[i]);
+                        Children[i].ReProcess(_simpleDataModels[i]);
                     }
                 }
             }
@@ -232,22 +233,15 @@ namespace Model.Operators
             }
         }
 
-        private IEnumerator CreateMenueButtons()
+        private void CreateMenueButtons()
         {
-            yield return 0;
             _input = _menu.AddInputField("Threshold", this);
+            _input.UpdateInputText(threshold.ToString());
             _dropdown = _menu.AddDropdown("Axis", this);
+            _dropdown.UpdateOption(axis);
             _button = _menu.AddButton("SplitDataset", this);
         }
-
-        public void UpdateValues()
-        {
-            if(_thresholdInput.GetComponent<InputField>().text != "")
-            {
-                threshold = float.Parse(_thresholdInput.GetComponent<InputField>().text);
-            }
-            axis = _axisInput.GetComponent<Dropdown>().options[_axisInput.GetComponent<Dropdown>().value].text;
-        }
+        
         public void StartSplitDatasets()
         {
             ResetMe();
@@ -264,7 +258,7 @@ namespace Model.Operators
         protected override void OnSelectAction()
         {
             base.OnSelectAction();
-            StartCoroutine(CreateMenueButtons());
+            CreateMenueButtons();
         }
 
         protected override void OnUnselectAction()

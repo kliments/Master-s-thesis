@@ -24,4 +24,9 @@ public class InputFieldScript : GenericMenueComponent{
     {
         GetComponent<InputField>().characterLimit = limit;
     }
+
+    public void UpdateInputText(string text)
+    {
+        GetComponent<InputField>().text = text;
+    }
 }

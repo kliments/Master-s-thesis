@@ -82,12 +82,23 @@ namespace Assets.Scripts.Model
         public abstract bool Process();
 
 
-        public void reProcess(GenericDatamodel datamodel)
+        /**
+        * Reprocesses the data, parsing the updated data from the parent node to its children recursively
+        * */
+        public void ReProcess(GenericDatamodel datamodel)
         {
+            if(!GetType().Equals(typeof(DataloaderOperator)) || !GetType().Equals(typeof(DatageneratorOperator))) SetRawInputData(datamodel);
             Process();
-            foreach(var child in Children)
+            
+             //it is necessary not to call SplitdatasetOperator, because it's children Reprocess function is already called within
+             //calling it twice, overwrites the data
+             
+            if(GetType()!=typeof(SplitDatasetOperator))
             {
-                child.reProcess(datamodel);
+                foreach (var child in Children)
+                {
+                    child.ReProcess(GetOutputData());
+                }
             }
         }
 
@@ -295,23 +306,33 @@ namespace Assets.Scripts.Model
 
         public void StoreData()
         {
-            if (this == null) return;
-            data.name = gameObject.name.Replace("(Clone)", "");
-            data.ID = Id;
-            if (Parents == null) data.parent = -1;
-            else data.parent = Parents[0].Id;
-            data.posX = GetIcon().transform.position.x;
-            data.posY = GetIcon().transform.position.y;
-            data.posZ = GetIcon().transform.position.z;
+            if(data.name==null)
+            {
+                data.name = gameObject.name.Replace("(Clone)", "");
+                data.ID = Id;
+                if (Parents == null || Parents.Count == 0) data.parent = -1;
+                else data.parent = Parents[0].Id;
+                data.posX = GetIcon().transform.position.x;
+                data.posY = GetIcon().transform.position.y;
+                data.posZ = GetIcon().transform.position.z;
+
+                if (data.name == "SplitOperator")
+                {
+                    data.thr = GetComponent<SplitDatasetOperator>().threshold;
+                    data.axis = GetComponent<SplitDatasetOperator>().axis;
+                }
+            }
         }
         
         private void OnEnable()
         {
+            if (this == null || GetType().Equals(typeof(NewOperator))) return;
             SaveLoadData.OnBeforeSave += delegate { StoreData(); };
             SaveLoadData.OnBeforeSave += delegate { SaveLoadData.AddOperatorData(data); };
         }
         private void OnDisable()
         {
+            if (this == null || GetType().Equals(typeof(NewOperator))) return;
             SaveLoadData.OnBeforeSave -= delegate { StoreData(); };
             SaveLoadData.OnBeforeSave -= delegate { SaveLoadData.AddOperatorData(data); };
         }
@@ -332,6 +353,10 @@ namespace Assets.Scripts.Model
         public float posY;
         [XmlElement("PosZ")]
         public float posZ;
+        [XmlElement("Threshold")]
+        public float thr;
+        [XmlElement("Axis")]
+        public string axis;
 
     }
 

@@ -21,4 +21,22 @@ public class DropdownScript : GenericMenueComponent{
         opt.text = text;
         GetComponent<Dropdown>().options.Add(opt);
     }
+
+    public void UpdateOption(string text)
+    {
+        int value = 0;
+        switch(text)
+        {
+            case "X":
+                value = 0;
+                break;
+            case "Y":
+                value = 1;
+                break;
+            case "Z":
+                value = 2;
+                break;
+        }
+        GetComponent<Dropdown>().value = value;
+    }
 }
