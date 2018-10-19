@@ -13,8 +13,10 @@ public class SaveLoadController : MonoBehaviour {
     private static string dataPath;
     //instance variable is needed to call static Coroutines
     private static SaveLoadController instance;
-	// Use this for initialization
-	void Start () {
+    private static UnityEngine.Events.UnityAction saveData;
+    private static UnityEngine.Events.UnityAction loadData;
+    // Use this for initialization
+    void Start () {
         obs = (Observer)FindObjectOfType(typeof(Observer));
         operatorList = new List<GenericOperator>();
     }
@@ -92,14 +94,16 @@ public class SaveLoadController : MonoBehaviour {
 
     private void OnEnable()
     {
-        saveButton.onClick.AddListener(delegate { SaveLoadData.SaveData(dataPath, SaveLoadData.genericOperatorContainer); });
-        loadButton.onClick.AddListener(delegate { SaveLoadData.LoadData(dataPath); });
+        saveData = delegate { SaveLoadData.SaveData(dataPath, SaveLoadData.genericOperatorContainer); };
+        loadData = delegate { SaveLoadData.LoadData(dataPath); };
+        saveButton.onClick.AddListener(saveData);
+        loadButton.onClick.AddListener(loadData);
         operatorList = new List<GenericOperator>();
     }
 
     private void OnDisable()
     {
-        saveButton.onClick.RemoveListener(delegate { SaveLoadData.SaveData(dataPath, SaveLoadData.genericOperatorContainer); });
-        loadButton.onClick.RemoveListener(delegate { SaveLoadData.LoadData(dataPath); });
+        saveButton.onClick.RemoveListener(saveData);
+        loadButton.onClick.RemoveListener(loadData);
     }
 }
