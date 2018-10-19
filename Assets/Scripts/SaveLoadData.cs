@@ -26,6 +26,7 @@ public class SaveLoadData:MonoBehaviour {
 
     public static void SaveData(string path, GenericOperatorContainer operators)
     {
+        Debug.Log("press save");
         if (genericOperatorContainer.operators.Count > 0) ClearOperators();
         OnBeforeSave();
         SaveOperators(path, operators);
@@ -34,16 +35,17 @@ public class SaveLoadData:MonoBehaviour {
 
     public static void LoadData(string path)
     {
+        Debug.Log("press load");
         ClearOperators();
         //destroy any current nodes in observer
         if(observer.GetOperators()!=null)
         {
             for(int i= observer.GetOperators().Count-1; i>=0; i--)
             {
+                observer.GetOperators()[i].Disable();
                 observer.DestroyOperator(observer.GetOperators()[i]);
             }
         }
-
         genericOperatorContainer = LoadOperators(path);
         foreach (OperatorData data in genericOperatorContainer.operators)
         {
@@ -55,7 +57,7 @@ public class SaveLoadData:MonoBehaviour {
 
     public static void AddOperatorData(OperatorData data)
     {
-        if (data.name == null || genericOperatorContainer.Contains(data)) return;
+        if (data.name == null) return;
         genericOperatorContainer.operators.Add(data);
     }
     

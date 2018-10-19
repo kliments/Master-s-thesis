@@ -326,13 +326,20 @@ namespace Assets.Scripts.Model
         
         private void OnEnable()
         {
-            if (this == null || GetType().Equals(typeof(NewOperator))) return;
+            if (GetType().Equals(typeof(NewOperator))) return;
             SaveLoadData.OnBeforeSave += delegate { StoreData(); };
             SaveLoadData.OnBeforeSave += delegate { SaveLoadData.AddOperatorData(data); };
         }
         private void OnDisable()
         {
-            if (this == null || GetType().Equals(typeof(NewOperator))) return;
+            if (GetType().Equals(typeof(NewOperator))) return;
+            SaveLoadData.OnBeforeSave -= delegate { StoreData(); };
+            SaveLoadData.OnBeforeSave -= delegate { SaveLoadData.AddOperatorData(data); };
+        }
+
+        public void Disable()
+        {
+            if (GetType().Equals(typeof(NewOperator))) return;
             SaveLoadData.OnBeforeSave -= delegate { StoreData(); };
             SaveLoadData.OnBeforeSave -= delegate { SaveLoadData.AddOperatorData(data); };
         }
