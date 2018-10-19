@@ -37,6 +37,8 @@ namespace Assets.Scripts.Model
 
         public OperatorData data = new OperatorData();
 
+        private SaveLoadData.SerializeAction storeDataAction;
+        private SaveLoadData.SerializeAction saveDataAction;
         public virtual void Start()
         {
 
@@ -327,21 +329,23 @@ namespace Assets.Scripts.Model
         private void OnEnable()
         {
             if (GetType().Equals(typeof(NewOperator))) return;
-            SaveLoadData.OnBeforeSave += delegate { StoreData(); };
-            SaveLoadData.OnBeforeSave += delegate { SaveLoadData.AddOperatorData(data); };
+            storeDataAction = delegate { StoreData(); };
+            saveDataAction = delegate { SaveLoadData.AddOperatorData(data); };
+            SaveLoadData.OnBeforeSave += storeDataAction;
+            SaveLoadData.OnBeforeSave += saveDataAction;
         }
         private void OnDisable()
         {
             if (GetType().Equals(typeof(NewOperator))) return;
-            SaveLoadData.OnBeforeSave -= delegate { StoreData(); };
-            SaveLoadData.OnBeforeSave -= delegate { SaveLoadData.AddOperatorData(data); };
+            SaveLoadData.OnBeforeSave -= storeDataAction;
+            SaveLoadData.OnBeforeSave -= saveDataAction;
         }
 
         public void Disable()
         {
             if (GetType().Equals(typeof(NewOperator))) return;
-            SaveLoadData.OnBeforeSave -= delegate { StoreData(); };
-            SaveLoadData.OnBeforeSave -= delegate { SaveLoadData.AddOperatorData(data); };
+            SaveLoadData.OnBeforeSave -= storeDataAction;
+            SaveLoadData.OnBeforeSave -= saveDataAction;
         }
     }
 
