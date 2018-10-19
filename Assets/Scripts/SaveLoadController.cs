@@ -5,16 +5,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SaveLoadController : MonoBehaviour {
+public class SaveLoadController : Targetable,IMenueComponentListener {
     public Button saveButton, loadButton;
     public static List<GenericOperator> operatorList;
+    public static UnityEngine.Events.UnityAction saveData;
+    public static UnityEngine.Events.UnityAction loadData;
 
     private static Observer obs;
     private static string dataPath;
     //instance variable is needed to call static Coroutines
     private static SaveLoadController instance;
-    private static UnityEngine.Events.UnityAction saveData;
-    private static UnityEngine.Events.UnityAction loadData;
     // Use this for initialization
     void Start () {
         obs = (Observer)FindObjectOfType(typeof(Observer));
@@ -29,7 +29,7 @@ public class SaveLoadController : MonoBehaviour {
     private void Awake()
     {
         instance = this;
-        dataPath = "C:/Kliment/Master's Project/VRVis/Assets/Resources/SavedData/operators.xml";
+        dataPath = "D:/kliment/VRVis/Assets/Resources/SavedData/operators.xml";
     }
 
     public static GenericOperator CreateGenericOperator(OperatorData data)
@@ -96,14 +96,32 @@ public class SaveLoadController : MonoBehaviour {
     {
         saveData = delegate { SaveLoadData.SaveData(dataPath, SaveLoadData.genericOperatorContainer); };
         loadData = delegate { SaveLoadData.LoadData(dataPath); };
-        saveButton.onClick.AddListener(saveData);
-        loadButton.onClick.AddListener(loadData);
+        //saveButton.onClick.AddListener(saveData);
+        //loadButton.onClick.AddListener(loadData);
+        saveButton.GetComponent<GenericMenueComponent>().addListener(this);
+        loadButton.GetComponent<GenericMenueComponent>().addListener(this);
+        InputController.LeftClickOnTargetEvent += OnLeftClickOnTargetEvent;
         operatorList = new List<GenericOperator>();
     }
 
     private void OnDisable()
     {
-        saveButton.onClick.RemoveListener(saveData);
-        loadButton.onClick.RemoveListener(loadData);
+        //saveButton.onClick.RemoveListener(saveData);
+        //loadButton.onClick.RemoveListener(loadData);
+        saveButton.GetComponent<GenericMenueComponent>().removeListener(this);
+        loadButton.GetComponent<GenericMenueComponent>().removeListener(this);
+        InputController.LeftClickOnTargetEvent -= OnLeftClickOnTargetEvent;
+    }
+
+    public void menueChanged(GenericMenueComponent changedComponent)
+    {
+        if(changedComponent.gameObject.name == "SaveButton")
+        {
+            saveData();
+        }
+        else if(changedComponent.gameObject.name == "LoadButton")
+        {
+            loadData();
+        }
     }
 }

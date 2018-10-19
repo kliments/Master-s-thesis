@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DropdownComponent : Targetable {
-
 	// Use this for initialization
 	void Start () {
 		
@@ -24,6 +24,20 @@ public class DropdownComponent : Targetable {
     }
     protected override void OnLeftClickOnTargetEventAction()
     {
-        Debug.Log("dropdown pressed");
+        ShowOptions();
+    }
+
+    public void ShowOptions()
+    {
+        transform.parent.GetComponent<Dropdown>().Show();
+        foreach(var selectable in Selectable.allSelectables)
+        {
+            if(selectable.name.Contains("Item"))
+            {
+                var box = selectable.gameObject.AddComponent<BoxCollider>();
+                box.size = new Vector3(160, 20, 1.1f);
+                selectable.gameObject.AddComponent<DropdownSelectableComponent>();
+            }
+        }
     }
 }

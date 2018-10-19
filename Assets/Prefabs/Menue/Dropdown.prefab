@@ -140,7 +140,6 @@ GameObject:
   - component: {fileID: 114702469506529504}
   - component: {fileID: 114914536225056028}
   - component: {fileID: 114799820419536792}
-  - component: {fileID: 65976748833015464}
   m_Layer: 5
   m_Name: Dropdown
   m_TagString: Untagged
@@ -192,6 +191,7 @@ GameObject:
   - component: {fileID: 222317281674050484}
   - component: {fileID: 114942243114436372}
   - component: {fileID: 114004403452933824}
+  - component: {fileID: 65701281340155756}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -251,12 +251,12 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!65 &65976748833015464
+--- !u!65 &65701281340155756
 BoxCollider:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1591829654971956}
+  m_GameObject: {fileID: 1764933039672834}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1

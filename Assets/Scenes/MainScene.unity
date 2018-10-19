@@ -1793,6 +1793,7 @@ GameObject:
   - component: {fileID: 1007136806}
   - component: {fileID: 1007136805}
   - component: {fileID: 1007136804}
+  - component: {fileID: 1007136807}
   m_Layer: 5
   m_Name: LoadButton
   m_TagString: Untagged
@@ -1894,6 +1895,17 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1007136802}
   m_CullTransparentMesh: 0
+--- !u!114 &1007136807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1007136802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ea54685caea9f40a5356b956a5d1f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1081341293
 GameObject:
   m_ObjectHideFlags: 0
@@ -2059,6 +2071,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VRCamera: {fileID: 556153576}
   NormalCamera: {fileID: 1796779524}
+  Menue: {fileID: 2030706468}
+  controller: {fileID: 87412754}
 --- !u!4 &1118577951
 Transform:
   m_ObjectHideFlags: 0
@@ -2082,6 +2096,8 @@ GameObject:
   - component: {fileID: 1145742986}
   - component: {fileID: 1145742988}
   - component: {fileID: 1145742987}
+  - component: {fileID: 1145742990}
+  - component: {fileID: 1145742989}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -2149,6 +2165,29 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1145742985}
   m_CullTransparentMesh: 0
+--- !u!65 &1145742989
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1145742985}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 160, y: 30, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1145742990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1145742985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bf406dfaba932b449766367f9ce1563, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1198062191
 GameObject:
   m_ObjectHideFlags: 0
@@ -2160,6 +2199,7 @@ GameObject:
   - component: {fileID: 1198062195}
   - component: {fileID: 1198062194}
   - component: {fileID: 1198062193}
+  - component: {fileID: 1198062196}
   m_Layer: 5
   m_Name: SaveButton
   m_TagString: Untagged
@@ -2261,6 +2301,17 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1198062191}
   m_CullTransparentMesh: 0
+--- !u!114 &1198062196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1198062191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4ea54685caea9f40a5356b956a5d1f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1356010979
 GameObject:
   m_ObjectHideFlags: 0
@@ -3494,6 +3545,8 @@ GameObject:
   - component: {fileID: 1919071065}
   - component: {fileID: 1919071067}
   - component: {fileID: 1919071066}
+  - component: {fileID: 1919071068}
+  - component: {fileID: 1919071069}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -3559,6 +3612,29 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1919071064}
   m_CullTransparentMesh: 0
+--- !u!114 &1919071068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1919071064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bf406dfaba932b449766367f9ce1563, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!65 &1919071069
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1919071064}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 160, y: 30, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2030706467
 GameObject:
   m_ObjectHideFlags: 0

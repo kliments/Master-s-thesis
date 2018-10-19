@@ -236,10 +236,13 @@ namespace Model.Operators
         private void CreateMenueButtons()
         {
             _input = _menu.AddInputField("Threshold", this);
+            _input.GetComponent<RectTransform>().localRotation = new Quaternion(0, 0, 0, 0);
             _input.UpdateInputText(threshold.ToString());
             _dropdown = _menu.AddDropdown("Axis", this);
             _dropdown.UpdateOption(axis);
+            _dropdown.GetComponent<RectTransform>().localRotation = new Quaternion(0, 0, 0, 0);
             _button = _menu.AddButton("SplitDataset", this);
+            _button.GetComponent<RectTransform>().localRotation = new Quaternion(0, 0, 0, 0);
         }
         
         public void StartSplitDatasets()

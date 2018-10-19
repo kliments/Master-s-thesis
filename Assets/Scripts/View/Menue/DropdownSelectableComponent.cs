@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InputFieldComponent : Targetable{
+public class DropdownSelectableComponent : Targetable {
 
 	// Use this for initialization
 	void Start () {
@@ -12,8 +12,9 @@ public class InputFieldComponent : Targetable{
 	
 	// Update is called once per frame
 	void Update () {
-
-    }
+		
+	}
+    
     private void OnEnable()
     {
         InputController.LeftClickOnTargetEvent += OnLeftClickOnTargetEvent;
@@ -23,9 +24,19 @@ public class InputFieldComponent : Targetable{
     {
         InputController.LeftClickOnTargetEvent -= OnLeftClickOnTargetEvent;
     }
+
     protected override void OnLeftClickOnTargetEventAction()
     {
-        transform.parent.GetComponent<InputField>().Select();
-        Debug.Log("input field pressed");
+        /*var selectables = Selectable.allSelectables;
+        for(int i=selectables.Count; i>=0; i++)
+        {
+            if (selectables[selectables.Count - 1] == null) continue;
+            if (selectables[selectables.Count - 1].name.Contains("Item"))
+            {
+                selectables[selectables.Count - 1].GetComponent<Toggle>().isOn = false;
+            }
+            i--;
+        }*/
+        GetComponent<Toggle>().isOn = true;
     }
 }
