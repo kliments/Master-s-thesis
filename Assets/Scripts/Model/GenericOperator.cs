@@ -306,26 +306,10 @@ namespace Assets.Scripts.Model
         protected virtual void OnUnselectAction() { }
         protected virtual void OnSelectAction() { }
 
-        public void StoreData()
-        {
-            if(data.name==null)
-            {
-                data.name = gameObject.name.Replace("(Clone)", "");
-                data.ID = Id;
-                if (Parents == null || Parents.Count == 0) data.parent = -1;
-                else data.parent = Parents[0].Id;
-                data.posX = GetIcon().transform.position.x;
-                data.posY = GetIcon().transform.position.y;
-                data.posZ = GetIcon().transform.position.z;
+        public abstract void StoreData();
 
-                if (data.name == "SplitOperator")
-                {
-                    data.thr = GetComponent<SplitDatasetOperator>().threshold;
-                    data.axis = GetComponent<SplitDatasetOperator>().axis;
-                }
-            }
-        }
-        
+        public abstract void LoadSpecificData(OperatorData data);
+
         private void OnEnable()
         {
             if (GetType().Equals(typeof(NewOperator))) return;
@@ -349,6 +333,8 @@ namespace Assets.Scripts.Model
         }
     }
 
+    [Serializable]
+    [XmlInclude(typeof(SplitDatasetOperator.CustomSplitData))]
     public class OperatorData
     {
         [XmlAttribute("Name")]
@@ -364,12 +350,12 @@ namespace Assets.Scripts.Model
         public float posY;
         [XmlElement("PosZ")]
         public float posZ;
-        [XmlElement("Threshold")]
-        public float thr;
-        [XmlElement("Axis")]
-        public string axis;
 
+        public CustomOperatorData customData;
     }
 
+    public abstract class CustomOperatorData
+    {
 
+    }
 }

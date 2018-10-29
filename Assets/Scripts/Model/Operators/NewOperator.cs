@@ -30,4 +30,14 @@ public class NewOperator :  GenericOperator
         NewIconInteractionController interactionController = Icon.GetComponentInChildren<NewIconInteractionController>();
         if(interactionController!=null) interactionController.hideOptions();
     }
+
+    public override void StoreData()
+    {
+
+    }
+
+    public override void LoadSpecificData(OperatorData data)
+    {
+
+    }
 }

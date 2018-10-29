@@ -26,5 +26,21 @@ namespace Model.Operators
         {
             base.Start();
         }
+
+        public override void StoreData()
+        {
+            data.name = gameObject.name.Replace("(Clone)", "");
+            data.ID = Id;
+            if (Parents == null || Parents.Count == 0) data.parent = -1;
+            else data.parent = Parents[0].Id;
+            data.posX = GetIcon().transform.position.x;
+            data.posY = GetIcon().transform.position.y;
+            data.posZ = GetIcon().transform.position.z;
+        }
+
+        public override void LoadSpecificData(OperatorData data)
+        {
+
+        }
     }
 }

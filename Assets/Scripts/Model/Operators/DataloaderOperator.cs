@@ -12,6 +12,7 @@ namespace Model.Operators
         private String _filename = "points.csv";
         private bool _hasHeader = false; 
         private string _delimiter = " ";
+        
 
         public override bool Process()
         {
@@ -112,6 +113,22 @@ namespace Model.Operators
                 toTrim[i] = toTrim[i].Trim();
             }
             return toTrim;
+        }
+
+        public override void StoreData()
+        {
+            data.name = gameObject.name.Replace("(Clone)", "");
+            data.ID = Id;
+            if (Parents == null || Parents.Count == 0) data.parent = -1;
+            else data.parent = Parents[0].Id;
+            data.posX = GetIcon().transform.position.x;
+            data.posY = GetIcon().transform.position.y;
+            data.posZ = GetIcon().transform.position.z;
+        }
+
+        public override void LoadSpecificData(OperatorData data)
+        {
+
         }
     }
 }

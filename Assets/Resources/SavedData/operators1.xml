@@ -24,7 +24,7 @@
       <PosY>2.5</PosY>
       <PosZ>3.494</PosZ>
       <Threshold>0.5</Threshold>
-      <Axis>X</Axis>
+      <Axis>Y</Axis>
     </GenericOperator>
     <GenericOperator Name="ScatterplotOperator">
       <ID>7</ID>
@@ -42,69 +42,110 @@
       <PosZ>3.494</PosZ>
       <Threshold>0</Threshold>
     </GenericOperator>
-    <GenericOperator Name="DataloaderOperator">
-      <ID>21</ID>
-      <Parent>4</Parent>
-      <PosX>-2</PosX>
-      <PosY>3.1</PosY>
-      <PosZ>3.494</PosZ>
-      <Threshold>0</Threshold>
-    </GenericOperator>
-    <GenericOperator Name="DataloaderOperator">
-      <ID>26</ID>
-      <Parent>21</Parent>
-      <PosX>-1</PosX>
-      <PosY>3.1</PosY>
-      <PosZ>3.494</PosZ>
-      <Threshold>0</Threshold>
-    </GenericOperator>
     <GenericOperator Name="SplitOperator">
-      <ID>42</ID>
+      <ID>14</ID>
       <Parent>7</Parent>
       <PosX>-0.01519227</PosX>
       <PosY>2.673648</PosY>
       <PosZ>3.494</PosZ>
       <Threshold>0.5</Threshold>
-      <Axis>Z</Axis>
+      <Axis>X</Axis>
     </GenericOperator>
     <GenericOperator Name="ScatterplotOperator">
-      <ID>43</ID>
-      <Parent>42</Parent>
+      <ID>15</ID>
+      <Parent>14</Parent>
       <PosX>0.9696155</PosX>
       <PosY>2.84729624</PosY>
       <PosZ>3.494</PosZ>
       <Threshold>0</Threshold>
     </GenericOperator>
     <GenericOperator Name="ScatterplotOperator">
-      <ID>44</ID>
-      <Parent>42</Parent>
+      <ID>16</ID>
+      <Parent>14</Parent>
       <PosX>0.9696155</PosX>
       <PosY>2.5</PosY>
       <PosZ>3.494</PosZ>
       <Threshold>0</Threshold>
     </GenericOperator>
     <GenericOperator Name="SplitOperator">
-      <ID>48</ID>
-      <Parent>43</Parent>
+      <ID>20</ID>
+      <Parent>15</Parent>
       <PosX>1.96961546</PosX>
       <PosY>2.84729624</PosY>
       <PosZ>3.494</PosZ>
-      <Threshold>0.5</Threshold>
-      <Axis>Y</Axis>
+      <Threshold>0.7</Threshold>
+      <Axis>Z</Axis>
     </GenericOperator>
     <GenericOperator Name="ScatterplotOperator">
-      <ID>49</ID>
-      <Parent>48</Parent>
+      <ID>21</ID>
+      <Parent>20</Parent>
       <PosX>2.95442319</PosX>
       <PosY>3.02094436</PosY>
       <PosZ>3.494</PosZ>
       <Threshold>0</Threshold>
     </GenericOperator>
     <GenericOperator Name="ScatterplotOperator">
-      <ID>50</ID>
-      <Parent>48</Parent>
+      <ID>22</ID>
+      <Parent>20</Parent>
       <PosX>2.95442319</PosX>
       <PosY>2.673648</PosY>
+      <PosZ>3.494</PosZ>
+      <Threshold>0</Threshold>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>28</ID>
+      <Parent>16</Parent>
+      <PosX>1.96961546</PosX>
+      <PosY>2.5</PosY>
+      <PosZ>3.494</PosZ>
+      <Threshold>0</Threshold>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>30</ID>
+      <Parent>28</Parent>
+      <PosX>2.96961546</PosX>
+      <PosY>2.5</PosY>
+      <PosZ>3.494</PosZ>
+      <Threshold>0</Threshold>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>32</ID>
+      <Parent>30</Parent>
+      <PosX>3.96961546</PosX>
+      <PosY>2.5</PosY>
+      <PosZ>3.494</PosZ>
+      <Threshold>0.5</Threshold>
+      <Axis>Z</Axis>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>33</ID>
+      <Parent>32</Parent>
+      <PosX>4.95442343</PosX>
+      <PosY>2.673648</PosY>
+      <PosZ>3.494</PosZ>
+      <Threshold>0</Threshold>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>34</ID>
+      <Parent>32</Parent>
+      <PosX>4.95442343</PosX>
+      <PosY>2.326352</PosY>
+      <PosZ>3.494</PosZ>
+      <Threshold>0</Threshold>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>37</ID>
+      <Parent>15</Parent>
+      <PosX>1.96961546</PosX>
+      <PosY>3.44729614</PosY>
+      <PosZ>3.494</PosZ>
+      <Threshold>0</Threshold>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>39</ID>
+      <Parent>37</Parent>
+      <PosX>2.96961546</PosX>
+      <PosY>3.44729614</PosY>
       <PosZ>3.494</PosZ>
       <Threshold>0</Threshold>
     </GenericOperator>

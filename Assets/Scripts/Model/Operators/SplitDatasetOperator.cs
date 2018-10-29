@@ -4,6 +4,7 @@ using UnityEngine;
 using Assets.Scripts.Model;
 using System;
 using UnityEngine.UI;
+using System.Xml.Serialization;
 
 namespace Model.Operators
 {
@@ -25,6 +26,9 @@ namespace Model.Operators
         private InputFieldScript _input;
         private DropdownScript _dropdown;
         private ButtonScript _button;
+
+        public CustomSplitData splitCustomData;
+
         // Use this for initialization
         public override void Start()
         {
@@ -35,7 +39,7 @@ namespace Model.Operators
             _menu = (MenueScript)(FindObjectOfType(typeof(MenueScript)));
             if (axis == null) axis = "X";
             if (threshold == 0) threshold = 0.5f;
-
+            splitCustomData = new CustomSplitData();
             base.Start();
         }
 
@@ -287,7 +291,40 @@ namespace Model.Operators
             }
             StartSplitDatasets();
         }
+
+
+        public override void StoreData()
+        {
+            data.name = gameObject.name.Replace("(Clone)", "");
+            data.ID = Id;
+            if (Parents == null || Parents.Count == 0) data.parent = -1;
+            else data.parent = Parents[0].Id;
+            data.posX = GetIcon().transform.position.x;
+            data.posY = GetIcon().transform.position.y;
+            data.posZ = GetIcon().transform.position.z;
+
+            splitCustomData.thr = threshold;
+            splitCustomData.axis = axis;
+            data.customData = splitCustomData;
+        }
+
+        public override void LoadSpecificData(OperatorData data)
+        {
+            splitCustomData = (CustomSplitData)data.customData;
+            threshold = splitCustomData.thr;
+            axis = splitCustomData.axis;
+        }
+        
+        public class CustomSplitData:CustomOperatorData
+        {
+            [XmlElement("Threshold")]
+            public float thr;
+            [XmlElement("Axis")]
+            public string axis;
+        }
     }
+
+
 
 }
 

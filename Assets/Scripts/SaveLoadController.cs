@@ -29,7 +29,7 @@ public class SaveLoadController : Targetable,IMenueComponentListener {
     private void Awake()
     {
         instance = this;
-        dataPath = "D:/kliment/VRVis/Assets/Resources/SavedData/operators.xml";
+        dataPath = "C:/Kliment/Master's Project/VRVis/Assets/Resources/SavedData/operators.xml";
     }
 
     public static GenericOperator CreateGenericOperator(OperatorData data)
@@ -59,11 +59,7 @@ public class SaveLoadController : Targetable,IMenueComponentListener {
                 instance.StartCoroutine(instance.SetIconLocation(op, position));
                 instance.StartCoroutine(instance.DestroyNewOperatorChildren(op.Children));
                 op.Id = data.ID;
-                if (data.name == "SplitOperator")
-                {
-                    op.GetComponent<SplitDatasetOperator>().threshold = data.thr;
-                    op.GetComponent<SplitDatasetOperator>().axis = data.axis;
-                }
+                op.LoadSpecificData(data);
 
                 operatorList.Add(op);
                 return op;

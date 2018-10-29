@@ -683,4 +683,20 @@ public class DatageneratorOperator : GenericOperator
         Debug.Log("Comparison for normal distribution... Given Values: mean " + mean + " , standard deviation: " + stddev + "\n" + "actual mean: " + actualMean + " ,actual standard deviation: " + actualStdDv);
 
     }
+
+    public override void StoreData()
+    {
+        data.name = gameObject.name.Replace("(Clone)", "");
+        data.ID = Id;
+        if (Parents == null || Parents.Count == 0) data.parent = -1;
+        else data.parent = Parents[0].Id;
+        data.posX = GetIcon().transform.position.x;
+        data.posY = GetIcon().transform.position.y;
+        data.posZ = GetIcon().transform.position.z;
+    }
+
+    public override void LoadSpecificData(OperatorData data)
+    {
+
+    }
 }
