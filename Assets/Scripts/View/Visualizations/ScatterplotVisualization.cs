@@ -87,29 +87,33 @@ public class ScatterplotVisualization : GenericVisualization, IMenueComponentLis
             Matrix4x4 matrix = Matrix4x4.TRS(vec, Quaternion.identity, scale);
             
             
-            if (newCounter < 1023 && i < counter-1)
+            if (matrix4X4s.Count < 1023)
             {
                 matrix4X4s.Add(matrix);
 //                Debug.Log(newCounter);
           
+                if(i == counter-1) Matrices.Add(matrix4X4s);
             }
-            else if (newCounter < 1023 && i == counter - 1)
+            else 
             {
+                /*
                 var newMatrix = new List<Matrix4x4>();
                 for (var x = 0; x < 1023; x++)
                 {
                     Debug.Log("Test1");
                     Debug.Log(matrix4X4s[x]);
-                    newMatrix[x] = matrix4X4s[x];
+                    newMatrix.Add(matrix4X4s[x]);
                     Debug.Log("Test2");
-                }
+                } */
                 
-                Matrices.Add(newMatrix);   
+                Matrices.Add(matrix4X4s);   
                 Debug.Log("so viele sachen simd im lister1: " + matrix4X4s.Count);
-                Debug.Log("so viele sachen simd im lister2: " + newMatrix.Count);
-                matrix4X4s.Clear();
+               // Debug.Log("so viele sachen simd im lister2: " + newMatrix.Count);
+
+                matrix4X4s = new List<Matrix4x4>();
+                //matrix4X4s.Clear();
                 Debug.Log("so viele sachen simd im lister1 nach clear: " + matrix4X4s.Count);
-                Debug.Log("so viele sachen simd im lister2 nach clear: " + newMatrix.Count);
+                //Debug.Log("so viele sachen simd im lister2 nach clear: " + newMatrix.Count);
 //                Debug.Log("erste volle liste: " + Matrices[0].Count);
 //                Debug.Log("erste volle liste nach der leerung: " + Matrices[0].Count);
 //                matrix4X4s = new List<Matrix4x4>();
@@ -118,25 +122,7 @@ public class ScatterplotVisualization : GenericVisualization, IMenueComponentLis
                 newCounter = 0;
 //                interestingCounter++;
             }
-            else if (newCounter >= 1023)
-            {
-                var newMatrix = new List<Matrix4x4>();
-//                for (var x = 0; x < 1023; x++)
-//                {
-//                    newMatrix[x] = matrix4X4s[x];
-//                }
-                
-                Matrices.Add(newMatrix);   
-//                Debug.Log("so viele sachen simd im lister: " + matrix4X4s.Count);
-                matrix4X4s.Clear();
-//                Debug.Log("erste volle liste: " + Matrices[0].Count);
-//                Debug.Log("erste volle liste nach der leerung: " + Matrices[0].Count);
-//                matrix4X4s = new List<Matrix4x4>();
-                matrix4X4s.Add(matrix);
-//                Debug.Log("jetzt ist wieder eine liste voll!");
-                newCounter = 0;
-//                interestingCounter++;
-            }
+            
 
             newCounter++;
 
