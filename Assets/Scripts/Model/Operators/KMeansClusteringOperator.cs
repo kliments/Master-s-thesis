@@ -45,24 +45,41 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 	public int counter;
 	public GameObject TestSphere;
 	public GameObject TestCube;
+	private Vector3 scale;
+
 	
 	public override void Start()
 	{
 		base.Start();
 				
 		CreateMenu();
-
-		TestSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-//		TestCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		
+		
+		
+		///////
+	
+		TestSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+		TestSphere.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);		
 		TestMesh = TestSphere.GetComponent<MeshFilter>().mesh;
-//		TestCube.GetComponent<MeshFilter>().mesh = TestMesh;
+		
+		scale = new Vector3(0.01f,0.01f,0.01f);
+		
 		
 		TestMaterial = new Material(Shader.Find("Specular"));
 		TestMaterial.color = Color.red;
 		TestSphere.GetComponent<Renderer>().material = TestMaterial;
 		Destroy(TestSphere);
-//		Destroy(TestCube);
+
+//		Graphics.DrawMesh(TestMesh, Vector3.zero, Quaternion.identity, TestMaterial, 0);
+		
+		
+		
+		
+		
+		////////////
+		
+		
+		
 		
 		
 //		NumberOfClusters();
@@ -92,6 +109,17 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 		return true;
 	}
 
+
+
+	private void GetData()
+	{
+		
+	}
+	
+	
+	
+	
+
 	private void Update()
 	{
 		if (Observer.selectedOperator != this && _menuExists)
@@ -111,8 +139,27 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
 		//TEST
 		//TEST
 
-		
-		Graphics.DrawMesh(TestMesh, Vector3.zero, Quaternion.identity, TestMaterial, 0);
+		for (var i = 0; i < 50; i++)
+		{
+//			Color color;
+			
+			for (var j = 0; j < 50; j++)
+			{
+//				color = Color.Lerp(Color.red, Color.blue, (float)j/100);
+
+				for (var p = 0; p < 5; p++)
+				{
+					//				Graphics.DrawMesh(TestMesh, new Vector3(j,i,0), Quaternion.identity, TestMaterial, 0);
+					Matrix4x4 matrix = Matrix4x4.TRS(new Vector3(j*0.01f, i*0.01f, p*0.01f), Quaternion.identity, scale);
+//					Graphics.DrawMesh(TestMesh, matrix, TestMaterial, 0, Camera.current,0,new MaterialPropertyBlock(),false,false);
+					Graphics.DrawMesh(TestMesh, matrix, TestMaterial, 0);
+				}
+				
+
+			}
+			
+		}
+		TestMaterial.color = Color.black;
 			
 
 

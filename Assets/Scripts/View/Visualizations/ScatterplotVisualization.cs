@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel.Design;
+using System.Xml.Xsl;
 using Assets.Scripts.Model;
 using Model.Operators;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class ScatterplotVisualization : GenericVisualization, IMenueComponentListener {
@@ -23,19 +25,277 @@ public class ScatterplotVisualization : GenericVisualization, IMenueComponentLis
     private MenueScript _menu;
     private bool _menuExists;
 //    private List<float> _ids = new List<float>();
+    
+    
+    
+    //
+    public Mesh TestMesh;
+    public Material TestMaterial;
+    public int counter;
+    public GameObject TestSphere;
+    public GameObject TestCube;
+    private Vector3 scale;
+    private MaterialPropertyBlock _materialPropertyBlock;
+    private List<Vector3>dataPoints;
+//    public List<Matrix4x4> _matrix4X4s;
+  
+    public List<List<Matrix4x4>> Matrices2;
+    private int _instanceChunks;
 
-    private void Start()
+    public bool Done;
+    //
+
+   
+
+    public void Start()
     {
 //        CreateMenu();
         
         var viz = GameObject.Find("Visualization");
         viz.AddComponent<ScatterplotInteractionController>();
         viz.AddComponent<BoxCollider>();
+        
+        
+        ///////
+	
+        TestSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        TestSphere.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);		
+        TestMesh = TestSphere.GetComponent<MeshFilter>().mesh;
+		
+        scale = new Vector3(0.01f,0.01f,0.01f);
+		
+		
+        TestMaterial = new Material(Shader.Find("Specular"));
+        TestMaterial.color = Color.red;
+        TestMaterial.enableInstancing = true;
+        TestSphere.GetComponent<Renderer>().material = TestMaterial;
+        Destroy(TestSphere);
+        
+        dataPoints = ((SimpleDatamodel)GetOperator().GetRawInputData()).GetCoords();
+        counter = dataPoints.Count;
+        var newCounter = 0;
+        var matrix4X4s = new List<Matrix4x4>();
+        var Matrices = new List<List<Matrix4x4>>();
+//        Debug.Log(counter);
+//        var interestingCounter = 0;
+
+        for (var i = 0; i < counter; i++)
+        {
+            
+            var vec = dataPoints[i];
+//            Debug.Log(vec);
+            Matrix4x4 matrix = Matrix4x4.TRS(vec, Quaternion.identity, scale);
+            
+            
+            if (newCounter < 1023 && i < counter-1)
+            {
+                matrix4X4s.Add(matrix);
+//                Debug.Log(newCounter);
+          
+            }
+            else if (newCounter < 1023 && i == counter - 1)
+            {
+                var newMatrix = new List<Matrix4x4>();
+                for (var x = 0; x < 1023; x++)
+                {
+                    Debug.Log("Test1");
+                    Debug.Log(matrix4X4s[x]);
+                    newMatrix[x] = matrix4X4s[x];
+                    Debug.Log("Test2");
+                }
+                
+                Matrices.Add(newMatrix);   
+                Debug.Log("so viele sachen simd im lister1: " + matrix4X4s.Count);
+                Debug.Log("so viele sachen simd im lister2: " + newMatrix.Count);
+                matrix4X4s.Clear();
+                Debug.Log("so viele sachen simd im lister1 nach clear: " + matrix4X4s.Count);
+                Debug.Log("so viele sachen simd im lister2 nach clear: " + newMatrix.Count);
+//                Debug.Log("erste volle liste: " + Matrices[0].Count);
+//                Debug.Log("erste volle liste nach der leerung: " + Matrices[0].Count);
+//                matrix4X4s = new List<Matrix4x4>();
+                matrix4X4s.Add(matrix);
+//                Debug.Log("jetzt ist wieder eine liste voll!");
+                newCounter = 0;
+//                interestingCounter++;
+            }
+            else if (newCounter >= 1023)
+            {
+                var newMatrix = new List<Matrix4x4>();
+//                for (var x = 0; x < 1023; x++)
+//                {
+//                    newMatrix[x] = matrix4X4s[x];
+//                }
+                
+                Matrices.Add(newMatrix);   
+//                Debug.Log("so viele sachen simd im lister: " + matrix4X4s.Count);
+                matrix4X4s.Clear();
+//                Debug.Log("erste volle liste: " + Matrices[0].Count);
+//                Debug.Log("erste volle liste nach der leerung: " + Matrices[0].Count);
+//                matrix4X4s = new List<Matrix4x4>();
+                matrix4X4s.Add(matrix);
+//                Debug.Log("jetzt ist wieder eine liste voll!");
+                newCounter = 0;
+//                interestingCounter++;
+            }
+
+            newCounter++;
+
+        }
+        
+//        Test();
+
+//        Done = true;
+
+        Matrices2 = Matrices;
+        Debug.Log(Matrices2.Count);
+        Debug.Log(Matrices[0].Count);
+        Debug.Log(Matrices2[1].Count);
+        Debug.Log(Matrices2[2].Count);
+        Debug.Log(Matrices2[3].Count);
+//        Debug.Log(dataPoints.Count);
+//        Debug.Log(interestingCounter);
+        
+        
+        _colorRamp = GameObject.Find("VisualizationSpace").GetComponent<ColorRamp>().RGBGradient;
+        _materialPropertyBlock = new MaterialPropertyBlock();
+//        _materialPropertyBlock.SetColor("_Color", Color.blue);
+        
+        
+//		Graphics.DrawMesh(TestMesh, Vector3.zero, Quaternion.identity, TestMaterial, 0);
+
+
+//        _instanceChunks = counter / 1023;
+
+
+        ////////////
+
+    }
+
+    public void Test()
+    {
+        dataPoints = ((SimpleDatamodel)GetOperator().GetRawInputData()).GetCoords();
+        counter = dataPoints.Count;
+        var newCounter = 0;
+        var matrix4X4s = new List<Matrix4x4>();
+        var Matrices = new List<List<Matrix4x4>>();
+//        Debug.Log(counter);
+//        var interestingCounter = 0;
+
+        for (var i = 0; i < counter; i++)
+        {
+            
+            var vec = dataPoints[i];
+//            Debug.Log(vec);
+            Matrix4x4 matrix = Matrix4x4.TRS(vec, Quaternion.identity, scale);
+            
+            
+            if (newCounter < 1023 && i < counter-1)
+            {
+                matrix4X4s.Add(matrix);
+//                Debug.Log(newCounter);
+          
+            }
+            else if (newCounter < 1023 && i == counter - 1)
+            {
+                var newMatrix = new List<Matrix4x4>();
+                for (var x = 0; x < 1023; x++)
+                {
+                    Debug.Log("Test1");
+                    
+                    newMatrix[x+1] = matrix4X4s[x];
+                    Debug.Log("Test2");
+                }
+                
+                Matrices.Add(newMatrix);   
+                Debug.Log("so viele sachen simd im lister1: " + matrix4X4s.Count);
+                Debug.Log("so viele sachen simd im lister2: " + newMatrix.Count);
+                matrix4X4s.Clear();
+                Debug.Log("so viele sachen simd im lister1 nach clear: " + matrix4X4s.Count);
+                Debug.Log("so viele sachen simd im lister2 nach clear: " + newMatrix.Count);
+//                Debug.Log("erste volle liste: " + Matrices[0].Count);
+//                Debug.Log("erste volle liste nach der leerung: " + Matrices[0].Count);
+//                matrix4X4s = new List<Matrix4x4>();
+                matrix4X4s.Add(matrix);
+//                Debug.Log("jetzt ist wieder eine liste voll!");
+                newCounter = 0;
+//                interestingCounter++;
+            }
+            else if (newCounter >= 1023)
+            {
+                var newMatrix = new List<Matrix4x4>();
+//                for (var x = 0; x < 1023; x++)
+//                {
+//                    newMatrix[x] = matrix4X4s[x];
+//                }
+                
+                Matrices.Add(newMatrix);   
+//                Debug.Log("so viele sachen simd im lister: " + matrix4X4s.Count);
+                matrix4X4s.Clear();
+//                Debug.Log("erste volle liste: " + Matrices[0].Count);
+//                Debug.Log("erste volle liste nach der leerung: " + Matrices[0].Count);
+//                matrix4X4s = new List<Matrix4x4>();
+                matrix4X4s.Add(matrix);
+//                Debug.Log("jetzt ist wieder eine liste voll!");
+                newCounter = 0;
+//                interestingCounter++;
+            }
+
+            newCounter++;
+
+        }
+        
+        Matrices2 = Matrices;
     }
     
     private void Update()
     {
-//        Graphics.DrawMesh(mesh, Vector3.zero, Quaternion.identity, material, 0);
+        //TEST
+        //TEST
+        //TEST
+        //TEST
+        //TEST
+        //TEST
+
+       
+
+        for (var i = 0; i < counter; i++)
+        {
+           
+            
+//            var colorPoint = (8192 / counter) / 2;           
+//            var color = _colorRamp.GetPixel(i * (8192 / counter) + colorPoint, 250);
+//            _materialPropertyBlock.SetColor("_Color", color);
+//            var vec = dataPoints[i];
+            //				Graphics.DrawMesh(TestMesh, new Vector3(j,i,0), Quaternion.identity, TestMaterial, 0);
+//            Matrix4x4 matrix = Matrix4x4.TRS(vec, Quaternion.identity, scale);
+//					Graphics.DrawMesh(TestMesh, matrix, TestMaterial, 0, Camera.current,0,new MaterialPropertyBlock(),false,false);
+//            Graphics.DrawMesh(TestMesh, matrix, TestMaterial, 0, null, 0, _materialPropertyBlock);
+//            Graphics.DrawMeshInstanced(TestMesh,0,TestMaterial,_matrix4X4s);
+        }
+
+       
+        
+        foreach (var list in Matrices2)
+        {
+            Graphics.DrawMeshInstanced(TestMesh,0,TestMaterial,list);
+//            Debug.Log(list.Count);
+        }
+        
+      
+	    
+        
+            
+			
+        
+//        TestMaterial.color = Color.black;
+			
+
+
+        //TEST
+        //TEST
+        //TEST
+        //TEST
+        //TEST
     }
 
     public void SetNumberOfDimensions(int number)
@@ -83,7 +343,8 @@ public class ScatterplotVisualization : GenericVisualization, IMenueComponentLis
             return;
 
 //        var dataPoints = ((SimpleDatamodel)GetOperator().GetRawInputData()).GetCoordsAndAllDimensions();       
-        var dataPoints = ((SimpleDatamodel)GetOperator().GetRawInputData()).GetCoordsAndAllDimensions();       
+        var dataPoints = ((SimpleDatamodel)GetOperator().GetRawInputData()).GetCoordsAndAllDimensions();  
+        
         var dict = new OrderedDictionary();
 //        var dict = new Dictionary<float, List<DataItem>>();
 //        Debug.Log("SO VIELE DATENPUNKTE: " + dataPoints.Count);
@@ -96,6 +357,11 @@ public class ScatterplotVisualization : GenericVisualization, IMenueComponentLis
 
         var attributeValuePairs = GetOperator().GetRawInputData().GetDataItems()[0].GetDataAttributeValuePairs();
         var dataItems = GetOperator().GetRawInputData().GetDataItems();
+        //VORSICHT
+//        var tempBack = dataItems[0];
+//        dataItems.Clear();
+//        dataItems[0] = tempBack;
+        //VORSICHT
 //        _whichTransformDimensions = dataPoints[0].Count;
 
         Debug.Log("whichtransformdimensions: " + _whichTransformDimensions);
