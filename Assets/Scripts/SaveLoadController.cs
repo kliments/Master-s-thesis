@@ -92,28 +92,16 @@ public class SaveLoadController : Targetable,IMenueComponentListener {
     {
         saveData = delegate { SaveLoadData.SaveData(dataPath, SaveLoadData.genericOperatorContainer); };
         loadData = delegate { SaveLoadData.LoadData(dataPath); };
-        //saveButton.GetComponent<GenericMenueComponent>().addListener(this);
-        //loadButton.GetComponent<GenericMenueComponent>().addListener(this);
-        InputController.LeftClickOnTargetEvent += OnLeftClickOnTargetEvent;
         operatorList = new List<GenericOperator>();
     }
 
     private void OnDisable()
     {
-        //saveButton.GetComponent<GenericMenueComponent>().removeListener(this);
-        //loadButton.GetComponent<GenericMenueComponent>().removeListener(this);
-        InputController.LeftClickOnTargetEvent -= OnLeftClickOnTargetEvent;
+
     }
 
     public void menueChanged(GenericMenueComponent changedComponent)
     {
-        if(changedComponent.gameObject.name == "SaveButton")
-        {
-            saveData();
-        }
-        else if(changedComponent.gameObject.name == "LoadButton")
-        {
-            loadData();
-        }
+        Debug.Log("goes here");
     }
 }

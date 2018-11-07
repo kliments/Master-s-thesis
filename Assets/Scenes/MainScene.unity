@@ -960,15 +960,19 @@ Prefab:
       propertyPath: m_RootOrder
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 114565750721570278, guid: 16a4bdc1909fe4028a30197a43320934,
+        type: 2}
+      propertyPath: saveButton
+      value: 
+      objectReference: {fileID: 1198062191}
+    - target: {fileID: 114565750721570278, guid: 16a4bdc1909fe4028a30197a43320934,
+        type: 2}
+      propertyPath: loadButton
+      value: 
+      objectReference: {fileID: 1007136802}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 16a4bdc1909fe4028a30197a43320934, type: 2}
   m_IsPrefabAsset: 0
---- !u!114 &403829243 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114565750721570278, guid: 16a4bdc1909fe4028a30197a43320934,
-    type: 2}
-  m_PrefabInternal: {fileID: 403829242}
-  m_Script: {fileID: 11500000, guid: b73e093c826b645c088ad1897a4f03f4, type: 3}
 --- !u!4 &451086292
 Transform:
   m_ObjectHideFlags: 0
@@ -1914,8 +1918,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 403829243}
-        m_MethodName: OpenFileBrowser
+      - m_Target: {fileID: 0}
+        m_MethodName: 
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2331,8 +2335,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 403829243}
-        m_MethodName: OpenFileBrowser
+      - m_Target: {fileID: 0}
+        m_MethodName: 
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

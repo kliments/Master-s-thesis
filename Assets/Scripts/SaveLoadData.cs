@@ -83,8 +83,8 @@ public class SaveLoadData:MonoBehaviour {
     private static void SaveOperators(string path, GenericOperatorContainer operators)
     {
         XmlSerializer serializer = new XmlSerializer(typeof(GenericOperatorContainer));
-
-        FileStream stream = new FileStream(path, FileMode.Truncate);
+        FileStream stream;
+        stream = new FileStream(path, FileMode.Create);
 
         serializer.Serialize(stream, operators);
 

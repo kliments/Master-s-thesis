@@ -150,5 +150,72 @@
       <PosY>3.1</PosY>
       <PosZ>3.494</PosZ>
     </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>39</ID>
+      <Parent>2</Parent>
+      <PosX>-3</PosX>
+      <PosY>3.1</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>39</ID>
+      <Parent>58</Parent>
+      <PosX>-1</PosX>
+      <PosY>3.1</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>42</ID>
+      <Parent>58</Parent>
+      <PosX>-1</PosX>
+      <PosY>3.69999981</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>45</ID>
+      <Parent>39</Parent>
+      <PosX>-2</PosX>
+      <PosY>3.1</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>48</ID>
+      <Parent>39</Parent>
+      <PosX>-2</PosX>
+      <PosY>3.69999981</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>50</ID>
+      <Parent>48</Parent>
+      <PosX>-1</PosX>
+      <PosY>3.69999981</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>49</ID>
+      <Parent>44</Parent>
+      <PosX>5.95442343</PosX>
+      <PosY>2.326352</PosY>
+      <PosZ>3.494</PosZ>
+      <customData xsi:type="CustomSplitData">
+        <Threshold>0.5</Threshold>
+        <Axis>X</Axis>
+      </customData>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>50</ID>
+      <Parent>49</Parent>
+      <PosX>6.939232</PosX>
+      <PosY>2.5</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>51</ID>
+      <Parent>49</Parent>
+      <PosX>6.939232</PosX>
+      <PosY>2.15270376</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
   </GenericOperators>
 </GenericOperatorCollection>
