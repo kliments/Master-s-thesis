@@ -914,6 +914,61 @@ MonoBehaviour:
   isSelected: 0
   newOperator: {fileID: 0}
   isSelectedHighlighting: {fileID: 0}
+  data:
+    name: 
+    ID: 0
+    parent: 0
+    posX: 0
+    posY: 0
+    posZ: 0
+--- !u!1001 &403829242
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4455502657589730, guid: 16a4bdc1909fe4028a30197a43320934, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455502657589730, guid: 16a4bdc1909fe4028a30197a43320934, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455502657589730, guid: 16a4bdc1909fe4028a30197a43320934, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455502657589730, guid: 16a4bdc1909fe4028a30197a43320934, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455502657589730, guid: 16a4bdc1909fe4028a30197a43320934, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455502657589730, guid: 16a4bdc1909fe4028a30197a43320934, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455502657589730, guid: 16a4bdc1909fe4028a30197a43320934, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455502657589730, guid: 16a4bdc1909fe4028a30197a43320934, type: 2}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 16a4bdc1909fe4028a30197a43320934, type: 2}
+  m_IsPrefabAsset: 0
+--- !u!114 &403829243 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114565750721570278, guid: 16a4bdc1909fe4028a30197a43320934,
+    type: 2}
+  m_PrefabInternal: {fileID: 403829242}
+  m_Script: {fileID: 11500000, guid: b73e093c826b645c088ad1897a4f03f4, type: 3}
 --- !u!4 &451086292
 Transform:
   m_ObjectHideFlags: 0
@@ -1858,7 +1913,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1007136805}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 403829243}
+        m_MethodName: OpenFileBrowser
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1007136805
@@ -2264,7 +2330,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1198062194}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 403829243}
+        m_MethodName: OpenFileBrowser
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1198062194

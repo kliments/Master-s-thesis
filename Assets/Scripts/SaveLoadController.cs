@@ -10,9 +10,9 @@ public class SaveLoadController : Targetable,IMenueComponentListener {
     public static List<GenericOperator> operatorList;
     public static UnityEngine.Events.UnityAction saveData;
     public static UnityEngine.Events.UnityAction loadData;
+    public static string dataPath;
 
     private static Observer obs;
-    private static string dataPath;
     //instance variable is needed to call static Coroutines
     private static SaveLoadController instance;
     // Use this for initialization
@@ -92,20 +92,16 @@ public class SaveLoadController : Targetable,IMenueComponentListener {
     {
         saveData = delegate { SaveLoadData.SaveData(dataPath, SaveLoadData.genericOperatorContainer); };
         loadData = delegate { SaveLoadData.LoadData(dataPath); };
-        //saveButton.onClick.AddListener(saveData);
-        //loadButton.onClick.AddListener(loadData);
-        saveButton.GetComponent<GenericMenueComponent>().addListener(this);
-        loadButton.GetComponent<GenericMenueComponent>().addListener(this);
+        //saveButton.GetComponent<GenericMenueComponent>().addListener(this);
+        //loadButton.GetComponent<GenericMenueComponent>().addListener(this);
         InputController.LeftClickOnTargetEvent += OnLeftClickOnTargetEvent;
         operatorList = new List<GenericOperator>();
     }
 
     private void OnDisable()
     {
-        //saveButton.onClick.RemoveListener(saveData);
-        //loadButton.onClick.RemoveListener(loadData);
-        saveButton.GetComponent<GenericMenueComponent>().removeListener(this);
-        loadButton.GetComponent<GenericMenueComponent>().removeListener(this);
+        //saveButton.GetComponent<GenericMenueComponent>().removeListener(this);
+        //loadButton.GetComponent<GenericMenueComponent>().removeListener(this);
         InputController.LeftClickOnTargetEvent -= OnLeftClickOnTargetEvent;
     }
 

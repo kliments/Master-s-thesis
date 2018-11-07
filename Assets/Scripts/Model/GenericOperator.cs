@@ -333,7 +333,12 @@ namespace Assets.Scripts.Model
         }
     }
 
+    /*
+     * Generic class that contains the generic data such as ID, parentID, x,y,z positions and CustomOperatorData
+     * If added CustomOperatorData then the derived class must be included using XmlInclude below
+     */
     [Serializable]
+    //Add derived classes here
     [XmlInclude(typeof(SplitDatasetOperator.CustomSplitData))]
     public class OperatorData
     {

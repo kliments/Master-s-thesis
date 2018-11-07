@@ -150,5 +150,12 @@
       <PosY>3.1</PosY>
       <PosZ>3.494</PosZ>
     </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>39</ID>
+      <Parent>2</Parent>
+      <PosX>-3</PosX>
+      <PosY>3.1</PosY>
+      <PosZ>3.494</PosZ>
+    </GenericOperator>
   </GenericOperators>
 </GenericOperatorCollection>
