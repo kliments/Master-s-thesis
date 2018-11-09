@@ -28,7 +28,7 @@ public class SwitchVRDebug : MonoBehaviour
             Menue.parent = null;
             Menue.localPosition = outsidePos;
             Menue.localScale = outsideScale;
-            Menue.Rotate(outsideRotation);
+            Menue.eulerAngles = outsideRotation;
         }
 		
 		if (GUI.Button(new Rect(10, 60, 100, 40), "VR"))
@@ -39,7 +39,7 @@ public class SwitchVRDebug : MonoBehaviour
             Menue.parent = controller;
             Menue.localPosition = controllerPos;
             Menue.localScale = controllerScale;
-            Menue.Rotate(controllerRotation);
-		}
+            Menue.localEulerAngles = controllerRotation;
+        }
 	}
 }

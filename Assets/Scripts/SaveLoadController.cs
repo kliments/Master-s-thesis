@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SaveLoadController : Targetable,IMenueComponentListener {
+public class SaveLoadController : Targetable {
     public Button saveButton, loadButton;
     public static List<GenericOperator> operatorList;
     public static UnityEngine.Events.UnityAction saveData;
@@ -98,10 +98,5 @@ public class SaveLoadController : Targetable,IMenueComponentListener {
     private void OnDisable()
     {
 
-    }
-
-    public void menueChanged(GenericMenueComponent changedComponent)
-    {
-        Debug.Log("goes here");
     }
 }
