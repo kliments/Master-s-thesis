@@ -39,6 +39,7 @@ namespace Assets.Scripts.Model
 
         private SaveLoadData.SerializeAction storeDataAction;
         private SaveLoadData.SerializeAction saveDataAction;
+        
         public virtual void Start()
         {
 
