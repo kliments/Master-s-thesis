@@ -18,4 +18,9 @@ public class IconProperties : MonoBehaviour {
 	void Update () {
 		
 	}
+
+    public void ApplyForce(Vector3 force)
+    {
+        acceleration += force;
+    }
 }

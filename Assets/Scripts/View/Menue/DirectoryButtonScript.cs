@@ -1,15 +1,15 @@
-﻿using GracesGames.SimpleFileBrowser.Scripts.UI;
+﻿//using GracesGames.SimpleFileBrowser.Scripts.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class DirectoryButtonScript : GenericMenueComponent {
     private List<IMenueComponentListener> listeners;
-    private UserInterface UI;
+    //private UserInterface UI;
     // Use this for initialization
     void Start ()
     {
-        UI = (UserInterface)(FindObjectOfType(typeof(UserInterface)));
+       // UI = (UserInterface)(FindObjectOfType(typeof(UserInterface)));
     }
 	
 	// Update is called once per frame
@@ -26,6 +26,6 @@ public class DirectoryButtonScript : GenericMenueComponent {
             removeListener(listeners[i - 1]);
             listeners = getListeners();
         }
-        if(UI!=null) UI.dirList.Remove(gameObject);
+        //if(UI!=null) UI.dirList.Remove(gameObject);
     }
 }
