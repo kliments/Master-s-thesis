@@ -65,11 +65,9 @@ namespace Assets.Scripts.Model
             ProperInitializedStart = true;
 
             Observer.notifyObserverOperatorInitComplete(this);
-
-            Icon.GetComponent<IconProperties>().position = Icon.transform.localPosition;
+            
             Icon.GetComponent<IconProperties>().op = this;
             Icon.GetComponent<IconProperties>().acceleration = new Vector3(0, 0, 0);
-            Icon.GetComponent<IconProperties>().velocity = new Vector3(0, 0, 0);
         }
 
         /**

@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Model;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,87 +7,130 @@ using UnityEngine;
 public class ForceDirectedAlgorithm : MonoBehaviour {
     public Observer observer;
 
-    private const float STIFFNESS_CONSTANT = 81.76f;
-    private const int REPLUSION_CONSTANT = 10000;
+    //Default initial temperature for simulated annealing
+    public float DefaultStartingTemperature = 0.2f;
+    
+    //Temperature where the simulated annealing should stop
+    public float DefaultMinimumTemperature = 0.01f;
 
-    private const float DEFAULT_DAMPING = 0.5f;
-    private const int DEFAULT_SPRING_LENGHT = 1;
-    private const int DEFAULT_MAX_ITERATIONS = 500;
-    private const float SPRING_LENGHT = 0.05f;
-    public bool touch;
+    //The ratio between two successive temperatures in the simulated annealing
+    public float DefaultTemperatureAttenuation = 0.95f;
 
-    private int threshold = 500;
-    private int x = 0;
-	// Use this for initialization
-	void Start () {
-		
-	}
+    //The current temperature in the simulated annealing
+    public float Temperature;
+
+    public float STIFFNESS_CONSTANT;
+    public int REPLUSION_CONSTANT;
+
+    public float DEFAULT_DAMPING;
+    public float SPRING_LENGHT;
+    public int DEFAULT_MAX_ITERATIONS;
+    public int x;
+    public bool calculateForceDirected, randomize;
+
+    /// The function defining the attraction force between two connected nodes.
+    /// Arcs are viewed as springs that want to bring the two connected nodes together.
+    /// The function takes a single parameter, which is the distance of the two nodes.
+    public Func<double, double> SpringForce { get; set; }
+
+    /// The function defining the repulsion force between two nodes.
+    /// Nodes are viewed as electrically charged particles which repel each other.
+    /// The function takes a single parameter, which is the distance of the two nodes.
+    public Func<double, double> ElectricForce { get; set; }
+
+    // Use this for initialization
+    void Start () {
+        ElectricForce = (d => 1 / (d * d));
+        SpringForce = (d => 2 * Math.Log(d));
+
+        // reset the temperature
+        Temperature = DefaultStartingTemperature;
+    }
 	
 	// Update is called once per frame
 	void Update () {
-		if(touch)
+        if(randomize)
         {
-            if (x == threshold) touch = false;
-            Calculate(0.5f);
-            UpdatePosition(0.5f);
+            randomize = false;
+            RandomizePositions();
+        }
+		if(calculateForceDirected)
+        {
+            if (x > DEFAULT_MAX_ITERATIONS)
+            {
+                calculateForceDirected = false;
+                x = -1;
+            }
+            Calculate();
             x++;
         }
 	}
 
-    protected void Calculate(float iTimeStep)
+    void RandomizePositions()
+    {
+        // reset the temperature
+        Temperature = DefaultStartingTemperature;
+        foreach (var op in observer.GetOperators())
+        {
+            var newPos = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f));
+            op.GetIcon().transform.localPosition = newPos;
+        }
+    }
+
+    protected void Calculate()
     {
         foreach(var op1 in observer.GetOperators())
         {
-            //apply Coulomb's law for the nodes
+            Vector3 pos1 = op1.GetIcon().transform.localPosition;
+            double xForce = 0, yForce = 0, zForce = 0;
+
+            //attraction forces towards children
+            foreach(var child in op1.Children)
+            {
+                Vector3 pos2 = child.GetIcon().transform.localPosition;
+                double d = Vector3.Distance(pos1, pos2) * 10;
+                double force = Temperature * SpringForce(d);
+                xForce += (pos2.x - pos1.x) / d * force;
+                yForce += (pos2.y - pos1.y) / d * force;
+                zForce += (pos2.z - pos1.z) / d * force;
+            }
+
+            //attraction forces towards parents
+            foreach (var parent in op1.Parents)
+            {
+                Vector3 pos2 = parent.GetIcon().transform.localPosition;
+                double d = Vector3.Distance(pos1, pos2) * 10;
+                double force = Temperature * SpringForce(d);
+                xForce += (pos2.x - pos1.x) / d * force;
+                yForce += (pos2.y - pos1.y) / d * force;
+                zForce += (pos2.z - pos1.z) / d * force;
+            }
+
+            //repulsion forces
             foreach(var op2 in observer.GetOperators())
             {
-                if(op1!=op2)
-                {
-                    Vector3 d = op1.GetIcon().transform.localPosition - op2.GetIcon().transform.localPosition;
-                    float distance = Vector3.Distance(op1.GetIcon().transform.localPosition, op2.GetIcon().transform.localPosition);
-                    Vector3 direction = d.normalized;
-
-                    ApplyForce(op1, (direction * REPLUSION_CONSTANT)/(distance*0.5f));
-                    ApplyForce(op2, (direction * REPLUSION_CONSTANT) / (distance * -0.5f));
-                }
+                if (op1 == op2) continue;
+                Vector3 pos2 = op2.GetIcon().transform.localPosition;
+                double d = Vector3.Distance(pos1, pos2) * 10;
+                double force = Temperature * ElectricForce(d);
+                xForce += (pos1.x - pos2.x) / d * force;
+                yForce += (pos1.y - pos2.y) / d * force;
+                zForce += (pos1.z - pos2.z) / d * force;
             }
-
-            //apply Hook's law for the edges
-            foreach(var op3 in op1.Children)
-            {
-                Vector3 d = op3.GetIcon().transform.localPosition - op1.GetIcon().transform.localPosition;
-                float displacement = SPRING_LENGHT - d.magnitude;
-                Vector3 direction = d.normalized;
-
-                ApplyForce(op1, (direction * (STIFFNESS_CONSTANT * displacement * -0.5f)));
-                ApplyForce(op3, (direction * (STIFFNESS_CONSTANT * displacement * 0.5f)));
-            }
-
-            //attract to centre
-            Vector3 dir = op1.GetIcon().transform.localPosition * -1;
-            float displ = dir.magnitude;
-            dir = dir.normalized;
-            ApplyForce(op1,(dir * (STIFFNESS_CONSTANT * displ * 0.4f)));
-
-            //update velocity
-            Vector3 temp = op1.GetIcon().GetComponent<IconProperties>().acceleration * 0.5f;
-            op1.GetIcon().GetComponent<IconProperties>().velocity += temp;
-            op1.GetIcon().GetComponent<IconProperties>().velocity *= DEFAULT_DAMPING;
-            op1.GetIcon().GetComponent<IconProperties>().acceleration = Vector3.zero;
+            Vector3 finalForce = new Vector3((float)xForce, (float)yForce, (float)zForce);
+            op1.GetIcon().GetComponent<IconProperties>().ApplyForce(finalForce);
         }
-    }
 
+        //update positions
+        foreach(var op in observer.GetOperators())
+        {
+            op.GetIcon().transform.localPosition += op.GetIcon().GetComponent<IconProperties>().acceleration;
+            op.GetIcon().GetComponent<IconProperties>().acceleration = Vector3.zero;
+        }
+        Temperature *= DefaultTemperatureAttenuation;
+    }
     private void ApplyForce(GenericOperator op, Vector3 force)
     {
         op.GetIcon().GetComponent<IconProperties>().ApplyForce(force);
-    }
-
-    protected void UpdatePosition(float iTimeStep)
-    {
-        foreach(var op in observer.GetOperators())
-        {
-            var velocity = op.GetIcon().GetComponent<IconProperties>().velocity;
-            op.GetIcon().transform.localPosition += velocity * iTimeStep;
-        }
     }
 }

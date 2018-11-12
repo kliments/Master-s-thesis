@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class IconProperties : MonoBehaviour {
-
-    public Vector3 position;
-    public Vector3 velocity;
+    
     public Vector3 acceleration;
     public GenericOperator op;
 	// Use this for initialization

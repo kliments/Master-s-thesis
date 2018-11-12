@@ -332,7 +332,7 @@ Transform:
   m_GameObject: {fileID: 113367144}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 2.5, z: 0}
-  m_LocalScale: {x: 10, y: 5, z: 0.01}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2092954265}
   m_RootOrder: 0
@@ -877,6 +877,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   observer: {fileID: 573206911}
+  DefaultStartingTemperature: 0.2
+  DefaultMinimumTemperature: 0.01
+  DefaultTemperatureAttenuation: 0.95
+  Temperature: 0
+  STIFFNESS_CONSTANT: 200
+  REPLUSION_CONSTANT: 100
+  DEFAULT_DAMPING: 0.01
+  SPRING_LENGHT: 1
+  DEFAULT_MAX_ITERATIONS: 150
+  x: 0
+  calculateForceDirected: 0
+  randomize: 0
 --- !u!4 &360191223
 Transform:
   m_ObjectHideFlags: 0
