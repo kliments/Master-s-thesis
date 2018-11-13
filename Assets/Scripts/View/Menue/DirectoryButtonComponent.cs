@@ -1,12 +1,15 @@
-﻿using System.Collections;
+﻿using GracesGames.SimpleFileBrowser.Scripts.UI;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class DirectoryButtonComponent : Targetable {
-	// Use this for initialization
-	void Start () {
-		
-	}
+    private UserInterface UI;
+    // Use this for initialization
+    void Start ()
+    {
+        UI = (UserInterface)FindObjectOfType(typeof(UserInterface));
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -20,6 +23,7 @@ public class DirectoryButtonComponent : Targetable {
     private void OnDisable()
     {
         InputController.LeftClickOnTargetEvent -= OnLeftClickOnTargetEvent;
+        if(UI != null) UI.dirList.Remove(transform.parent.gameObject);
     }
     protected override void OnLeftClickOnTargetEventAction()
     {

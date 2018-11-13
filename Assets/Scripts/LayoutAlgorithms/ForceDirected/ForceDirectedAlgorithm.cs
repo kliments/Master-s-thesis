@@ -18,15 +18,8 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
 
     //The current temperature in the simulated annealing
     public float Temperature;
-
-    public float STIFFNESS_CONSTANT;
-    public int REPLUSION_CONSTANT;
-
-    public float DEFAULT_DAMPING;
-    public float SPRING_LENGHT;
-    public int DEFAULT_MAX_ITERATIONS;
-    public int x;
-    public bool calculateForceDirected, randomize;
+    
+    public bool calculateForceDirected, randomize, reloadOriginalLocations, saveLoc;
 
     /// The function defining the attraction force between two connected nodes.
     /// Arcs are viewed as springs that want to bring the two connected nodes together.
@@ -45,10 +38,16 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
 
         // reset the temperature
         Temperature = DefaultStartingTemperature;
+
+        saveLoc = true;
     }
 	
 	// Update is called once per frame
 	void Update () {
+        if(observer.GetOperators().Count > 10 && saveLoc)
+        {
+
+        }
         if(randomize)
         {
             randomize = false;
@@ -56,13 +55,12 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
         }
 		if(calculateForceDirected)
         {
-            if (x > DEFAULT_MAX_ITERATIONS)
+            if (Temperature < DefaultMinimumTemperature)
             {
                 calculateForceDirected = false;
-                x = -1;
+                Temperature = 0.2f;
             }
             Calculate();
-            x++;
         }
 	}
 
@@ -72,8 +70,8 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
         Temperature = DefaultStartingTemperature;
         foreach (var op in observer.GetOperators())
         {
-            var newPos = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f));
-            op.GetIcon().transform.localPosition = newPos;
+            var newPos = new Vector3(op.GetIcon().transform.position.x, UnityEngine.Random.Range(0f, 3f), UnityEngine.Random.Range(2f, 6f));
+            op.GetIcon().transform.position = newPos;
         }
     }
 
@@ -81,15 +79,15 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
     {
         foreach(var op1 in observer.GetOperators())
         {
-            Vector3 pos1 = op1.GetIcon().transform.localPosition;
+            Vector3 pos1 = op1.GetIcon().transform.position;
             double xForce = 0, yForce = 0, zForce = 0;
 
             //attraction forces towards children
             foreach(var child in op1.Children)
             {
-                Vector3 pos2 = child.GetIcon().transform.localPosition;
-                double d = Vector3.Distance(pos1, pos2) * 10;
-                double force = Temperature * SpringForce(d);
+                Vector3 pos2 = child.GetIcon().transform.position;
+                double d = Vector3.Distance(pos1, pos2);
+                double force = Temperature * SpringForce(d*10);
                 xForce += (pos2.x - pos1.x) / d * force;
                 yForce += (pos2.y - pos1.y) / d * force;
                 zForce += (pos2.z - pos1.z) / d * force;
@@ -98,9 +96,9 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
             //attraction forces towards parents
             foreach (var parent in op1.Parents)
             {
-                Vector3 pos2 = parent.GetIcon().transform.localPosition;
-                double d = Vector3.Distance(pos1, pos2) * 10;
-                double force = Temperature * SpringForce(d);
+                Vector3 pos2 = parent.GetIcon().transform.position;
+                double d = Vector3.Distance(pos1, pos2);
+                double force = Temperature * SpringForce(d*10);
                 xForce += (pos2.x - pos1.x) / d * force;
                 yForce += (pos2.y - pos1.y) / d * force;
                 zForce += (pos2.z - pos1.z) / d * force;
@@ -110,8 +108,8 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
             foreach(var op2 in observer.GetOperators())
             {
                 if (op1 == op2) continue;
-                Vector3 pos2 = op2.GetIcon().transform.localPosition;
-                double d = Vector3.Distance(pos1, pos2) * 10;
+                Vector3 pos2 = op2.GetIcon().transform.position;
+                double d = Vector3.Distance(pos1, pos2);
                 double force = Temperature * ElectricForce(d);
                 xForce += (pos1.x - pos2.x) / d * force;
                 yForce += (pos1.y - pos2.y) / d * force;
@@ -124,7 +122,7 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
         //update positions
         foreach(var op in observer.GetOperators())
         {
-            op.GetIcon().transform.localPosition += op.GetIcon().GetComponent<IconProperties>().acceleration;
+            op.GetIcon().transform.position += op.GetIcon().GetComponent<IconProperties>().acceleration;
             op.GetIcon().GetComponent<IconProperties>().acceleration = Vector3.zero;
         }
         Temperature *= DefaultTemperatureAttenuation;
@@ -132,5 +130,14 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
     private void ApplyForce(GenericOperator op, Vector3 force)
     {
         op.GetIcon().GetComponent<IconProperties>().ApplyForce(force);
+    }
+
+    double Distance(Vector3 a, Vector3 b)
+    {
+        Vector3 difference = a - b;
+        difference.x /= 10;
+        difference.y /= 5;
+        difference.z *= 100;
+        return Math.Sqrt(Math.Pow(difference.x, 2) + Math.Pow(difference.y, 2) + Math.Pow(difference.z, 2));
     }
 }

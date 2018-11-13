@@ -4,7 +4,7 @@ using Assets.Scripts.Model;
 using UnityEngine;
 
 public class GraphSpaceController : MonoBehaviour {
-    private Vector3 _scale = new Vector3(0.03f, 0.06f, 0);
+    private Vector3 _scale = new Vector3(0.03f, 0.03f, 0.03f);
 
     private Observer observer;
 
@@ -21,7 +21,7 @@ public class GraphSpaceController : MonoBehaviour {
     public void InstallNewIcon(GenericOperator op)
     {
         op.GetIcon().gameObject.transform.parent = GameObject.Find("ControlWall").transform;
-        op.GetIcon().gameObject.transform.localPosition = new Vector3(-0.4f, 0, -0.6f);
+        op.GetIcon().gameObject.transform.localPosition = new Vector3(-0.4f, 0, 0);
         op.GetIcon().gameObject.transform.localScale = _scale;
     }
 
@@ -32,7 +32,7 @@ public class GraphSpaceController : MonoBehaviour {
             op.GetIcon().transform.position = op.Parents[0].GetIcon().transform.position + new Vector3(1, 0, 0);
         }
 
-        if (op.Parents != null && op.Parents[0].Children != null)
+        if (op.Parents != null && op.Parents.Count > 0 && op.Parents[0].Children != null)
         {
             op.GetIcon().transform.position += new Vector3(0, (op.Parents[0].Children.Count - 1) * 0.3f, 0);
         }

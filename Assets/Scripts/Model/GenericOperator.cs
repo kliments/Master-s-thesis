@@ -66,7 +66,6 @@ namespace Assets.Scripts.Model
 
             Observer.notifyObserverOperatorInitComplete(this);
             
-            Icon.GetComponent<IconProperties>().op = this;
             Icon.GetComponent<IconProperties>().acceleration = new Vector3(0, 0, 0);
         }
 
