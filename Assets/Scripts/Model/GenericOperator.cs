@@ -67,6 +67,16 @@ namespace Assets.Scripts.Model
             Observer.notifyObserverOperatorInitComplete(this);
             
             Icon.GetComponent<IconProperties>().acceleration = new Vector3(0, 0, 0);
+            //increase the depth of the node
+            if(Parents.Count != 0 && Parents != null)
+            {
+                Icon.GetComponent<IconProperties>().depth = Parents[0].GetIcon().GetComponent<IconProperties>().depth + 1;
+            }
+            else
+            {
+                //only root node has depth 1
+                Icon.GetComponent<IconProperties>().depth = 1;
+            }
         }
 
         /**
