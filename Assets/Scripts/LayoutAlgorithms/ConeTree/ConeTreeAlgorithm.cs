@@ -5,7 +5,7 @@ public class ConeTreeAlgorithm : MonoBehaviour {
     public Observer observer;
     public bool runConeTree;
 
-    private int _minRadius = 1;
+    private float _minRadius = 0.5f;
     private Vector3 _anchor;
     private GenericOperator root;
 	// Use this for initialization
@@ -27,6 +27,7 @@ public class ConeTreeAlgorithm : MonoBehaviour {
     {
         FirstWalk(root);
         SecondWalk(root, x, z, 1f, 0f);
+        //SecondWalk2(root, x, z, 1f, 0f);
     }
 
     /* Bottom up proceeding, computing value for distances 
@@ -46,8 +47,10 @@ public class ConeTreeAlgorithm : MonoBehaviour {
             cp.a = Mathf.Atan(cp.r / (np.d + cp.r));
             s += cp.a;
         }
+        //if(node.Children.Count > 0) s -= (s / node.Children.Count);
         AdjustChildren(np, s);
         SetRadius(np);
+        //SetRadius2(node, np);
     }
 
     // Adjusting the radii of the halfsectors of the children
@@ -71,17 +74,58 @@ public class ConeTreeAlgorithm : MonoBehaviour {
         np.r = Mathf.Max(np.d, _minRadius) + 2 * np.d;
     }
 
+    private void SetRadius2(GenericOperator nodeN, IconProperties np)
+    {
+        int numChildren = nodeN.Children.Count;
+        float pi = Mathf.PI;
+        float freeSpace = (numChildren == 0 ? 0 : np.f / numChildren);
+        float previous = 0;
+        float bx = 0, bz = 0;
+        foreach (var child in nodeN.Children)
+        {
+            IconProperties cp = child.GetIcon().GetComponent<IconProperties>();
+            pi += previous + cp.a + freeSpace;
+            bx += (cp.r) * Mathf.Cos(pi);
+            bz += (cp.r) * Mathf.Sin(pi);
+            previous = cp.a;
+        }
+
+        if (numChildren != 0)
+        {
+            bx /= numChildren;
+            bz /= numChildren;
+        }
+
+        np.rx = -bx;
+        np.rz = -bz;
+
+        pi = Mathf.PI;
+        previous = 0;
+        np.r = 0;
+
+        foreach (var child in nodeN.Children)
+        {
+            IconProperties cp = child.GetIcon().GetComponent<IconProperties>();
+            pi += previous + cp.a + freeSpace;
+            float x = cp.r * Mathf.Cos(pi) - bx;
+            float z = cp.r * Mathf.Sin(pi) - bz;
+            float d = Mathf.Sqrt(x * x + z * z) + cp.r;
+            np.r = Mathf.Max(np.r, (int)Mathf.Round(d));
+            previous = cp.a;
+        }
+        if (np.r == 0) np.r = _minRadius + 2 * np.d;
+    }
+
     // Computation of the absolute x and z coordinates for each node
     private void SecondWalk(GenericOperator nodeN, float x, float z, float l, float t)
     {
         IconProperties np = nodeN.GetIcon().GetComponent<IconProperties>();
         Vector3 pos = new Vector3(x, 2, z);
-        l = np.depth / (np.depth + 1);
-
+        //l = np.depth / (np.depth + 1);
         nodeN.GetIcon().transform.position = pos;
         float dd = l * np.d;
         float p = t + Mathf.PI;
-        float freeSpace = (nodeN.Children.Count == 0 ? 0 : np.f / (nodeN.Children.Count + 1));
+        float freeSpace = (nodeN.Children.Count == 0 ? 0 : np.f / nodeN.Children.Count);
         float previous = 0;
 
         foreach(var child in nodeN.Children)
@@ -89,11 +133,39 @@ public class ConeTreeAlgorithm : MonoBehaviour {
             IconProperties cp = child.GetIcon().GetComponent<IconProperties>();
             float aa = np.c * cp.a;
             float rr = np.d * Mathf.Tan(aa) / (1 - Mathf.Tan(aa));
-            p += previous + aa + freeSpace;
+            p += previous + aa + freeSpace + freeSpace;
             float xx = (l * rr + dd) * Mathf.Cos(p);
             float zz = (l * rr + dd) * Mathf.Sin(p);
             previous = aa;
-            SecondWalk(child, x + xx, z + zz, l * np.c, p);
+            SecondWalk(child, x + xx, z + zz, l * rr / cp.r, p);
+        }
+    }
+
+    private void SecondWalk2(GenericOperator nodeN, float bx, float bz, float l, float t)
+    {
+        IconProperties np = nodeN.GetIcon().GetComponent<IconProperties>();
+        float cosT = Mathf.Cos(t);
+        float sinT = Mathf.Sin(t);
+        float nx = bx + l * (np.rx * cosT - np.rz * sinT);
+        float nz = bz + l * (np.rx * sinT + np.rz * cosT);
+        Vector3 pos = new Vector3(nx, 2, bz); ;
+        nodeN.GetIcon().transform.position = pos;
+        float dd = l * np.d;
+        float p = Mathf.PI;
+        float freeSpace = np.f / (nodeN.Children.Count + 1);
+        float previous = 0;
+        foreach (var child in nodeN.Children)
+        {
+            IconProperties cp = child.GetIcon().GetComponent<IconProperties>();
+            float aa = np.c * cp.a;
+            float rr = np.d * Mathf.Tan(aa) / (1 - Mathf.Tan(aa));
+            p += previous + aa + freeSpace;
+            float xx = (l * rr + dd) * Mathf.Cos(p) + np.rx;
+            float zz = (l * rr + dd) * Mathf.Sin(p) + np.rz;
+            float x2 = xx * cosT - zz * sinT;
+            float z2 = xx * sinT + zz * cosT;
+            previous = aa;
+            SecondWalk2(child, bx + x2, bz + z2, l * rr / cp.r, p);
         }
     }
 }

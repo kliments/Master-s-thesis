@@ -561,29 +561,11 @@
       <PosY>1.74600029</PosY>
       <PosZ>3.5</PosZ>
     </GenericOperator>
-    <GenericOperator Name="SplitOperator">
+    <GenericOperator Name="DataloaderOperator">
       <ID>247</ID>
       <Parent>51</Parent>
       <PosX>0.108999908</PosX>
       <PosY>2.34600019</PosY>
-      <PosZ>3.5</PosZ>
-      <customData xsi:type="CustomSplitData">
-        <Threshold>0.5</Threshold>
-        <Axis>X</Axis>
-      </customData>
-    </GenericOperator>
-    <GenericOperator Name="DataloaderOperator">
-      <ID>248</ID>
-      <Parent>247</Parent>
-      <PosX>1.0938077</PosX>
-      <PosY>2.51964831</PosY>
-      <PosZ>3.5</PosZ>
-    </GenericOperator>
-    <GenericOperator Name="DataloaderOperator">
-      <ID>249</ID>
-      <Parent>247</Parent>
-      <PosX>1.0938077</PosX>
-      <PosY>2.17235231</PosY>
       <PosZ>3.5</PosZ>
     </GenericOperator>
     <GenericOperator Name="DataloaderOperator">

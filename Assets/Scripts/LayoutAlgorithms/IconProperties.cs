@@ -20,6 +20,9 @@ public class IconProperties : MonoBehaviour {
     public float c;
     // free angle
     public float f;
+
+    //
+    public float rx, rz;
     #endregion
 
     public float depth;
