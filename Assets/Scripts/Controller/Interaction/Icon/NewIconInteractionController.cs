@@ -151,8 +151,8 @@ namespace Controller.Interaction.Icon
         {
             if (spawnedPrefab.GetComponent<GenericOperator>() == genericOperator) //genericOperator.GetType().Equals((typeof(NewOperator))) && 
             {
-                genericOperator.GetIcon().gameObject.transform.localPosition =
-                    GetOperator().GetIcon().transform.localPosition;
+                /*genericOperator.GetIcon().gameObject.transform.localPosition =
+                    GetOperator().GetIcon().transform.localPosition;*/
                 GetOperator().Observer.NewOperatorInitializedAndRunnningEvent -= moveNewIconAndDestroyOperator;
                 GetOperator().Observer.DestroyOperator(GetOperator());
             }

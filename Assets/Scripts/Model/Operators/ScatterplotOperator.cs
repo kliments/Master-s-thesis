@@ -5,6 +5,7 @@ namespace Model.Operators
 {
     public class ScatterplotOperator : GenericOperator
     {
+        public bool toggle;
     
         public override void Start()
         {
@@ -36,6 +37,10 @@ namespace Model.Operators
             data.posX = GetIcon().transform.position.x;
             data.posY = GetIcon().transform.position.y;
             data.posZ = GetIcon().transform.position.z;
+            data.hour = hour;
+            data.minute = minute;
+            data.second = second;
+            data.ms = millisecond;
         }
 
         public override void LoadSpecificData(OperatorData data)

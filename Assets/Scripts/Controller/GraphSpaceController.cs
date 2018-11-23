@@ -11,6 +11,8 @@ public class GraphSpaceController : MonoBehaviour {
     private List<GameObject> graphEdges;
     private GameObject Container;
 
+    private int counter = 0;
+
 
     private void Awake()
     {
@@ -20,8 +22,14 @@ public class GraphSpaceController : MonoBehaviour {
 
     public void InstallNewIcon(GenericOperator op)
     {
+        if(!op.GetType().Equals((typeof(NewOperator)))) counter++;
         op.GetIcon().gameObject.transform.parent = GameObject.Find("ControlWall").transform;
-        op.GetIcon().gameObject.transform.localPosition = new Vector3(-0.4f, 0, 0);
+        //shift icon one position more to the right than the previous operator
+        if (op.Parents != null && op.Parents.Count > 0)
+        {
+            op.GetIcon().gameObject.transform.localPosition = new Vector3(counter * 0.05f, op.Parents[0].GetIcon().transform.localPosition.y, 0);
+        }
+        else op.GetIcon().gameObject.transform.localPosition = new Vector3(0, 0, 0);
         op.GetIcon().gameObject.transform.localScale = _scale;
     }
 

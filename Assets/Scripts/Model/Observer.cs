@@ -12,6 +12,7 @@ namespace Assets.Scripts.Model
         private int _currentId = 1;
         private int _operatorNewId = -1;
         public GenericOperator selectedOperator;
+        private float[] _timeStamps;
 
         private GraphSpaceController _graphSpaceController;
         private VisualizationSpaceController _visualizationSpaceController;
@@ -194,6 +195,17 @@ namespace Assets.Scripts.Model
             return _operators;
         }
 
+        // Normalizes the timestamps between 0 and 2
+        public void NormalizeTimeStamps()
+        {
+
+            double min = GetOperators()[0].timeStamp;
+            double max = GetOperators()[GetOperators().Count - 1].timeStamp;
+            foreach(var op in GetOperators())
+            {
+                op.normalizedTimeStamp = 2 * ((op.timeStamp - min) / (max - min));
+            }
+        }
 
     }
 }

@@ -8,6 +8,7 @@ public class ConeTreeAlgorithm : MonoBehaviour {
     private float _minRadius = 0.5f;
     private Vector3 _anchor;
     private GenericOperator root;
+    private float[] _timeStamps;
 	// Use this for initialization
 	void Start () {
 	}
@@ -19,6 +20,7 @@ public class ConeTreeAlgorithm : MonoBehaviour {
             root = observer.GetOperators()[0];
             _anchor = root.GetIcon().transform.position;
             runConeTree = false;
+            observer.NormalizeTimeStamps();
             Layout(root, _anchor.x, _anchor.z);
         }
 	}
@@ -26,8 +28,8 @@ public class ConeTreeAlgorithm : MonoBehaviour {
     private void Layout(GenericOperator root, float x, float z)
     {
         FirstWalk(root);
+        //SecondWalk(root, x, z, 1f, 0f);
         SecondWalk(root, x, z, 1f, 0f);
-        //SecondWalk2(root, x, z, 1f, 0f);
     }
 
     /* Bottom up proceeding, computing value for distances 
@@ -49,8 +51,8 @@ public class ConeTreeAlgorithm : MonoBehaviour {
         }
         //if(node.Children.Count > 0) s -= (s / node.Children.Count);
         AdjustChildren(np, s);
-        SetRadius(np);
-        //SetRadius2(node, np);
+        //SetRadius(np);
+        SetRadius(node, np);
     }
 
     // Adjusting the radii of the halfsectors of the children
@@ -69,12 +71,13 @@ public class ConeTreeAlgorithm : MonoBehaviour {
     }
 
     //Setting the radius of a node
-    private void SetRadius(IconProperties np)
+    /*private void SetRadius(IconProperties np)
     {
         np.r = Mathf.Max(np.d, _minRadius) + 2 * np.d;
-    }
+    }*/
 
-    private void SetRadius2(GenericOperator nodeN, IconProperties np)
+    //Setting the radius of a node
+    private void SetRadius(GenericOperator nodeN, IconProperties np)
     {
         int numChildren = nodeN.Children.Count;
         float pi = Mathf.PI;
@@ -117,11 +120,11 @@ public class ConeTreeAlgorithm : MonoBehaviour {
     }
 
     // Computation of the absolute x and z coordinates for each node
-    private void SecondWalk(GenericOperator nodeN, float x, float z, float l, float t)
+    /*private void SecondWalk(GenericOperator nodeN, float x, float z, float l, float t)
     {
         IconProperties np = nodeN.GetIcon().GetComponent<IconProperties>();
-        Vector3 pos = new Vector3(x, 2, z);
-        //l = np.depth / (np.depth + 1);
+        float y = 5*(1 + (1 / np.depth));
+        Vector3 pos = new Vector3(x, y, z);
         nodeN.GetIcon().transform.position = pos;
         float dd = l * np.d;
         float p = t + Mathf.PI;
@@ -139,18 +142,20 @@ public class ConeTreeAlgorithm : MonoBehaviour {
             previous = aa;
             SecondWalk(child, x + xx, z + zz, l * rr / cp.r, p);
         }
-    }
+    }*/
 
-    private void SecondWalk2(GenericOperator nodeN, float bx, float bz, float l, float t)
+    // Computation of the absolute x and z coordinates for each node
+    private void SecondWalk(GenericOperator nodeN, float bx, float bz, float l, float t)
     {
         IconProperties np = nodeN.GetIcon().GetComponent<IconProperties>();
+        double y = 2 - nodeN.normalizedTimeStamp;
         float cosT = Mathf.Cos(t);
         float sinT = Mathf.Sin(t);
         float nx = bx + l * (np.rx * cosT - np.rz * sinT);
         float nz = bz + l * (np.rx * sinT + np.rz * cosT);
-        Vector3 pos = new Vector3(nx, 2, bz); ;
+        Vector3 pos = new Vector3(nx, (float)y, bz); ;
         nodeN.GetIcon().transform.position = pos;
-        float dd = l * np.d;
+        float dd = (l/5) * np.d;
         float p = Mathf.PI;
         float freeSpace = np.f / (nodeN.Children.Count + 1);
         float previous = 0;
@@ -159,13 +164,13 @@ public class ConeTreeAlgorithm : MonoBehaviour {
             IconProperties cp = child.GetIcon().GetComponent<IconProperties>();
             float aa = np.c * cp.a;
             float rr = np.d * Mathf.Tan(aa) / (1 - Mathf.Tan(aa));
-            p += previous + aa + freeSpace;
+            p += previous + aa + freeSpace + freeSpace;
             float xx = (l * rr + dd) * Mathf.Cos(p) + np.rx;
             float zz = (l * rr + dd) * Mathf.Sin(p) + np.rz;
             float x2 = xx * cosT - zz * sinT;
             float z2 = xx * sinT + zz * cosT;
             previous = aa;
-            SecondWalk2(child, bx + x2, bz + z2, l * rr / cp.r, p);
+            SecondWalk(child, bx + x2, bz + z2, l * rr / cp.r, p);
         }
     }
 }

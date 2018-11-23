@@ -7,6 +7,9 @@ using UnityEngine;
 public class ForceDirectedAlgorithm : MonoBehaviour {
     public Observer observer;
 
+    // Time bins where nodes are contained depending on the time of their creation
+    public List<List<GenericOperator>> _timeBins;
+
     //Default initial temperature for simulated annealing
     public float DefaultStartingTemperature = 0.2f;
     
@@ -19,7 +22,8 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
     //The current temperature in the simulated annealing
     public float Temperature;
     
-    public bool calculateForceDirected, randomize, reloadOriginalLocations, saveLoc;
+    public bool calculateForceDirected, randomize, reloadOriginalLocations, saveLoc, applyTimeBins;
+    private int counter = 0;
 
     /// The function defining the attraction force between two connected nodes.
     /// Arcs are viewed as springs that want to bring the two connected nodes together.
@@ -40,14 +44,12 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
         Temperature = DefaultStartingTemperature;
 
         saveLoc = true;
+
+        _timeBins = new List<List<GenericOperator>>();
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if(observer.GetOperators().Count > 10 && saveLoc)
-        {
-
-        }
         if(randomize)
         {
             randomize = false;
@@ -57,8 +59,13 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
         {
             if (Temperature < DefaultMinimumTemperature)
             {
-                calculateForceDirected = false;
+                counter++;
                 Temperature = 0.2f;
+                if(counter > 5)
+                {
+                    calculateForceDirected = false;
+                    counter = 0;
+                }
             }
             Calculate();
         }
@@ -75,37 +82,138 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
         }
     }
 
+    void AllocateTimeBins()
+    {
+        _timeBins = new List<List<GenericOperator>>();
+        DateTime _firstNode = observer.GetOperators()[0].timeOfCreation;
+        DateTime _lastNode = observer.GetOperators()[observer.GetOperators().Count - 1].timeOfCreation;
+        double diffInSeconds = (_lastNode - _firstNode).TotalSeconds;
+        int chunks = (int)diffInSeconds / 10;
+        int counter = 0;
+        for(int i = 0; i < chunks + 1; i++)
+        {
+            DateTime tempTime = _firstNode.AddSeconds(i*10 + 10);
+            List<GenericOperator> tempList = new List<GenericOperator>();
+            for(int j = counter; j < observer.GetOperators().Count; j++)
+            {
+                if(observer.GetOperators()[j].timeOfCreation < tempTime)
+                {
+                    tempList.Add(observer.GetOperators()[j]);
+                    counter++;
+                }
+            }
+            if(tempList.Count != 0) _timeBins.Add(tempList);
+        }
+    }
+
     protected void Calculate()
     {
-        foreach(var op1 in observer.GetOperators())
+        //ForceDirectedWithTemporalDependency();
+        ForceDirectedWithoutTemporalDependency();
+        //update positions
+        foreach (var op in observer.GetOperators())
+        {
+            op.GetIcon().transform.position += op.GetIcon().GetComponent<IconProperties>().acceleration;
+            op.GetIcon().GetComponent<IconProperties>().acceleration = Vector3.zero;
+        }
+        Temperature *= DefaultTemperatureAttenuation;
+    }
+
+    private void ForceDirectedWithTemporalDependency()
+    {
+        if (_timeBins.Count == 0) AllocateTimeBins();
+        foreach (var list in _timeBins)
+        {
+            foreach (var node1 in list)
+            {
+                Vector3 pos1 = node1.GetIcon().transform.position;
+                double xForce = 0, yForce = 0, zForce = 0;
+
+                //attraction forces towards children
+                if (node1.Children != null)
+                {
+                    foreach (var child in node1.Children)
+                    {
+                        //if (!list.Contains(child)) continue;
+                        Vector3 pos2 = child.GetIcon().transform.position;
+                        double d = Vector3.Distance(pos1, pos2);
+                        double force = Temperature * SpringForce(d * 10);
+                        //xForce += (pos2.x - pos1.x) / d * force;
+                        yForce += (pos2.y - pos1.y) / d * force;
+                        zForce += (pos2.z - pos1.z) / d * force;
+                    }
+                }
+
+                //attraction forces towards parents
+                if (node1.Parents != null)
+                {
+                    foreach (var parent in node1.Parents)
+                    {
+                        //if (!list.Contains(parent)) continue;
+                        Vector3 pos2 = parent.GetIcon().transform.position;
+                        double d = Vector3.Distance(pos1, pos2);
+                        double force = Temperature * SpringForce(d * 10);
+                        //xForce += (pos2.x - pos1.x) / d * force;
+                        yForce += (pos2.y - pos1.y) / d * force;
+                        zForce += (pos2.z - pos1.z) / d * force;
+                    }
+                }
+
+                //repulsion forces
+                foreach (var node2 in list)
+                {
+                    if (node1 == node2) continue;
+                    if (!list.Contains(node2)) continue;
+                    Vector3 pos2 = node2.GetIcon().transform.position;
+                    double d = Vector3.Distance(pos1, pos2);
+                    double force = Temperature * ElectricForce(d);
+                    //xForce += (pos1.x - pos2.x) / d * force;
+                    yForce += (pos1.y - pos2.y) / d * force;
+                    zForce += (pos1.z - pos2.z) / d * force;
+                }
+                Vector3 finalForce = new Vector3((float)xForce, (float)yForce, (float)zForce);
+                node1.GetIcon().GetComponent<IconProperties>().ApplyForce(finalForce);
+            }
+        }
+    }
+
+    private void ForceDirectedWithoutTemporalDependency()
+    {
+        foreach (var op1 in observer.GetOperators())
         {
             Vector3 pos1 = op1.GetIcon().transform.position;
             double xForce = 0, yForce = 0, zForce = 0;
 
             //attraction forces towards children
-            foreach(var child in op1.Children)
+            if (op1.Children != null)
             {
-                Vector3 pos2 = child.GetIcon().transform.position;
-                double d = Vector3.Distance(pos1, pos2);
-                double force = Temperature * SpringForce(d*10);
-                xForce += (pos2.x - pos1.x) / d * force;
-                yForce += (pos2.y - pos1.y) / d * force;
-                zForce += (pos2.z - pos1.z) / d * force;
+                foreach (var child in op1.Children)
+                {
+                    Vector3 pos2 = child.GetIcon().transform.position;
+                    double d = Vector3.Distance(pos1, pos2);
+                    double force = Temperature * SpringForce(d * 10);
+                    xForce += (pos2.x - pos1.x) / d * force;
+                    yForce += (pos2.y - pos1.y) / d * force;
+                    zForce += (pos2.z - pos1.z) / d * force;
+                }
             }
 
             //attraction forces towards parents
-            foreach (var parent in op1.Parents)
+            if (op1.Parents != null)
             {
-                Vector3 pos2 = parent.GetIcon().transform.position;
-                double d = Vector3.Distance(pos1, pos2);
-                double force = Temperature * SpringForce(d*10);
-                xForce += (pos2.x - pos1.x) / d * force;
-                yForce += (pos2.y - pos1.y) / d * force;
-                zForce += (pos2.z - pos1.z) / d * force;
+                foreach (var parent in op1.Parents)
+                {
+                    Vector3 pos2 = parent.GetIcon().transform.position;
+                    double d = Vector3.Distance(pos1, pos2);
+                    double force = Temperature * SpringForce(d * 10);
+                    xForce += (pos2.x - pos1.x) / d * force;
+                    yForce += (pos2.y - pos1.y) / d * force;
+                    zForce += (pos2.z - pos1.z) / d * force;
+                }
             }
 
             //repulsion forces
-            foreach(var op2 in observer.GetOperators())
+            foreach (var op2 in observer.GetOperators())
             {
                 if (op1 == op2) continue;
                 Vector3 pos2 = op2.GetIcon().transform.position;
@@ -118,26 +226,5 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
             Vector3 finalForce = new Vector3((float)xForce, (float)yForce, (float)zForce);
             op1.GetIcon().GetComponent<IconProperties>().ApplyForce(finalForce);
         }
-
-        //update positions
-        foreach(var op in observer.GetOperators())
-        {
-            op.GetIcon().transform.position += op.GetIcon().GetComponent<IconProperties>().acceleration;
-            op.GetIcon().GetComponent<IconProperties>().acceleration = Vector3.zero;
-        }
-        Temperature *= DefaultTemperatureAttenuation;
-    }
-    private void ApplyForce(GenericOperator op, Vector3 force)
-    {
-        op.GetIcon().GetComponent<IconProperties>().ApplyForce(force);
-    }
-
-    double Distance(Vector3 a, Vector3 b)
-    {
-        Vector3 difference = a - b;
-        difference.x /= 10;
-        difference.y /= 5;
-        difference.z *= 100;
-        return Math.Sqrt(Math.Pow(difference.x, 2) + Math.Pow(difference.y, 2) + Math.Pow(difference.z, 2));
     }
 }

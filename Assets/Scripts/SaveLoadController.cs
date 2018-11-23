@@ -60,7 +60,10 @@ public class SaveLoadController : Targetable {
                 instance.StartCoroutine(instance.DestroyNewOperatorChildren(op.Children));
                 op.Id = data.ID;
                 op.LoadSpecificData(data);
-
+                op.hour = data.hour;
+                op.minute = data.minute;
+                op.second = data.second;
+                op.millisecond = data.ms;
                 operatorList.Add(op);
                 return op;
             }

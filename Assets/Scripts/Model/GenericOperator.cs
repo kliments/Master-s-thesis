@@ -39,6 +39,9 @@ namespace Assets.Scripts.Model
 
         private SaveLoadData.SerializeAction storeDataAction;
         private SaveLoadData.SerializeAction saveDataAction;
+
+        public double timeStamp, normalizedTimeStamp, hour, minute, second, millisecond;
+        public DateTime timeOfCreation;
         
         public virtual void Start()
         {
@@ -66,6 +69,7 @@ namespace Assets.Scripts.Model
 
             Observer.notifyObserverOperatorInitComplete(this);
             
+            //set acceleration to 0, for Force-Directed Algorithm
             Icon.GetComponent<IconProperties>().acceleration = new Vector3(0, 0, 0);
             //increase the depth of the node
             if(Parents != null)
@@ -76,6 +80,22 @@ namespace Assets.Scripts.Model
             }
             //only root node has depth 1
             else Icon.GetComponent<IconProperties>().depth = 1;
+
+            //time of creation of the operator, later used as temporal variable in visualization of the tree
+            if (hour == 0 && minute == 0 && second == 0 && millisecond == 0)
+            {
+                timeStamp = (double)DateTime.Now.Hour + (double)DateTime.Now.Minute / 60 + (double)DateTime.Now.Second / 3600 + (double)DateTime.Now.Millisecond / 3600000;
+                hour = DateTime.Now.Hour;
+                minute = DateTime.Now.Minute;
+                second = DateTime.Now.Second;
+                millisecond = DateTime.Now.Millisecond;
+                timeOfCreation = DateTime.Now;
+            }
+            else
+            {
+                timeStamp = hour + minute / 60 + second / 3600 + millisecond / 3600000;
+                timeOfCreation = timeOfCreation.AddHours(hour).AddMinutes(minute).AddSeconds(second).AddMilliseconds(millisecond);
+            }
         }
 
         /**
@@ -367,6 +387,14 @@ namespace Assets.Scripts.Model
         public float posY;
         [XmlElement("PosZ")]
         public float posZ;
+        [XmlElement("Hour")]
+        public double hour;
+        [XmlElement("Minute")]
+        public double minute;
+        [XmlElement("Second")]
+        public double second;
+        [XmlElement("MilliSecond")]
+        public double ms;
 
         public CustomOperatorData customData;
     }

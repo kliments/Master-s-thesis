@@ -14,4 +14,13 @@ public class ButtonScript : GenericMenueComponent {
 		
 	}
 
+    private void OnDisable()
+    {
+        List<IMenueComponentListener> list = getListeners();
+        for(int i=list.Count-1; i>0; i--)
+        {
+            removeListener(getListeners()[i]);
+        }
+    }
+
 }

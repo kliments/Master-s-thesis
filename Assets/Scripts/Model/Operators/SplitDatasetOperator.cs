@@ -302,6 +302,10 @@ namespace Model.Operators
             data.posX = GetIcon().transform.position.x;
             data.posY = GetIcon().transform.position.y;
             data.posZ = GetIcon().transform.position.z;
+            data.hour = hour;
+            data.minute = minute;
+            data.second = second;
+            data.ms = millisecond;
 
             splitCustomData.thr = threshold;
             splitCustomData.axis = axis;
