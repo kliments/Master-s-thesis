@@ -174,6 +174,8 @@ namespace Model.Operators
                 foreach (var child in Children)
                 {
                     child.GetIcon().transform.position = getSpawnPositionOffsetForButton(GetIcon().transform, _counter, _datasets);
+
+                    GameObject.Find("GraphSpace").GetComponent<GraphSpaceController>().DrawEdge(this, child);
                     if (child.Children.Count > 0)
                     {
                         child.Children[0].GetIcon().transform.position = child.GetIcon().transform.position + new Vector3(1f, 0, 0);

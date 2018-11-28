@@ -10,6 +10,9 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
     // Time bins where nodes are contained depending on the time of their creation
     public List<List<GenericOperator>> _timeBins;
 
+    // Original positions of nodes
+    public Vector3[] positions;
+
     //Default initial temperature for simulated annealing
     public float DefaultStartingTemperature = 0.2f;
     
@@ -17,13 +20,12 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
     public float DefaultMinimumTemperature = 0.01f;
 
     //The ratio between two successive temperatures in the simulated annealing
-    public float DefaultTemperatureAttenuation = 0.95f;
+    public float DefaultTemperatureAttenuation = 0.999f;
 
     //The current temperature in the simulated annealing
     public float Temperature;
     
-    public bool calculateForceDirected, randomize, reloadOriginalLocations, saveLoc, applyTimeBins;
-    private int counter = 0;
+    public bool calculateForceDirected, randomize, saveOriginalLocations, saveLoc, timeDependent;
 
     /// The function defining the attraction force between two connected nodes.
     /// Arcs are viewed as springs that want to bring the two connected nodes together.
@@ -50,6 +52,15 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if(saveOriginalLocations)
+        {
+            saveOriginalLocations = false;
+            positions = new Vector3[observer.GetOperators().Count];
+            for(int i=0; i<positions.Length; i++)
+            {
+                positions[i] = observer.GetOperators()[i].GetIcon().transform.position;
+            }
+        }
         if(randomize)
         {
             randomize = false;
@@ -59,13 +70,8 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
         {
             if (Temperature < DefaultMinimumTemperature)
             {
-                counter++;
                 Temperature = 0.2f;
-                if(counter > 5)
-                {
-                    calculateForceDirected = false;
-                    counter = 0;
-                }
+                calculateForceDirected = false;
             }
             Calculate();
         }
@@ -75,10 +81,10 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
     {
         // reset the temperature
         Temperature = DefaultStartingTemperature;
-        foreach (var op in observer.GetOperators())
+        for(int i=0; i<observer.GetOperators().Count; i++)
         {
-            var newPos = new Vector3(op.GetIcon().transform.position.x, UnityEngine.Random.Range(0f, 3f), UnityEngine.Random.Range(2f, 6f));
-            op.GetIcon().transform.position = newPos;
+            var newPos = new Vector3(positions[i].x, UnityEngine.Random.Range(0f, 3f), UnityEngine.Random.Range(0f, 3f));
+            observer.GetOperators()[i].GetIcon().transform.position = newPos;
         }
     }
 
@@ -108,8 +114,8 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
 
     protected void Calculate()
     {
-        //ForceDirectedWithTemporalDependency();
-        ForceDirectedWithoutTemporalDependency();
+        if(timeDependent) ForceDirectedWithTemporalDependency();
+        else ForceDirectedWithoutTemporalDependency();
         //update positions
         foreach (var op in observer.GetOperators())
         {

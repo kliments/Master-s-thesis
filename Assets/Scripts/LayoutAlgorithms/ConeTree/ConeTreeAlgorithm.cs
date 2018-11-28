@@ -1,16 +1,22 @@
 ﻿using Assets.Scripts.Model;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ConeTreeAlgorithm : MonoBehaviour {
     public Observer observer;
-    public bool runConeTree;
+    public bool runConeTree, timeDependent, RDT;
+    public float height;
+    public List<Vector3> referencePoints;
 
     private float _minRadius = 0.5f;
     private Vector3 _anchor;
     private GenericOperator root;
     private float[] _timeStamps;
+    private GraphSpaceController _graphSpace;
 	// Use this for initialization
 	void Start () {
+        referencePoints = new List<Vector3>();
+        _graphSpace = GameObject.Find("GraphSpace").GetComponent<GraphSpaceController>();
 	}
 	
 	// Update is called once per frame
@@ -23,13 +29,20 @@ public class ConeTreeAlgorithm : MonoBehaviour {
             observer.NormalizeTimeStamps();
             Layout(root, _anchor.x, _anchor.z);
         }
+        if(RDT)
+        {
+            RDT = false;
+            CalculateRDT();
+        }
 	}
 
     private void Layout(GenericOperator root, float x, float z)
     {
+        NormalizeDepth();
         FirstWalk(root);
         //SecondWalk(root, x, z, 1f, 0f);
         SecondWalk(root, x, z, 1f, 0f);
+        CalculateRDT();
     }
 
     /* Bottom up proceeding, computing value for distances 
@@ -51,8 +64,8 @@ public class ConeTreeAlgorithm : MonoBehaviour {
         }
         //if(node.Children.Count > 0) s -= (s / node.Children.Count);
         AdjustChildren(np, s);
-        //SetRadius(np);
-        SetRadius(node, np);
+        SetRadius(np);
+        //SetRadius(node, np);
     }
 
     // Adjusting the radii of the halfsectors of the children
@@ -71,13 +84,13 @@ public class ConeTreeAlgorithm : MonoBehaviour {
     }
 
     //Setting the radius of a node
-    /*private void SetRadius(IconProperties np)
+    private void SetRadius(IconProperties np)
     {
         np.r = Mathf.Max(np.d, _minRadius) + 2 * np.d;
-    }*/
+    }
 
     //Setting the radius of a node
-    private void SetRadius(GenericOperator nodeN, IconProperties np)
+    /*private void SetRadius(GenericOperator nodeN, IconProperties np)
     {
         int numChildren = nodeN.Children.Count;
         float pi = Mathf.PI;
@@ -117,14 +130,16 @@ public class ConeTreeAlgorithm : MonoBehaviour {
             previous = cp.a;
         }
         if (np.r == 0) np.r = _minRadius + 2 * np.d;
-    }
+    }*/
 
     // Computation of the absolute x and z coordinates for each node
-    /*private void SecondWalk(GenericOperator nodeN, float x, float z, float l, float t)
+    private void SecondWalk(GenericOperator nodeN, float x, float z, float l, float t)
     {
         IconProperties np = nodeN.GetIcon().GetComponent<IconProperties>();
-        float y = 5*(1 + (1 / np.depth));
-        Vector3 pos = new Vector3(x, y, z);
+        double y = 0;
+        if (timeDependent) y = 2 - nodeN.normalizedTimeStamp;
+        else y = 2 - np.normalizedDepth;
+        Vector3 pos = new Vector3(x, (float)y, z);
         nodeN.GetIcon().transform.position = pos;
         float dd = l * np.d;
         float p = t + Mathf.PI;
@@ -142,18 +157,21 @@ public class ConeTreeAlgorithm : MonoBehaviour {
             previous = aa;
             SecondWalk(child, x + xx, z + zz, l * rr / cp.r, p);
         }
-    }*/
+    }
 
     // Computation of the absolute x and z coordinates for each node
-    private void SecondWalk(GenericOperator nodeN, float bx, float bz, float l, float t)
+    /*private void SecondWalk(GenericOperator nodeN, float bx, float bz, float l, float t)
     {
+        double y;
         IconProperties np = nodeN.GetIcon().GetComponent<IconProperties>();
-        double y = 2 - nodeN.normalizedTimeStamp;
+        if(timeDependent) y = 2 - nodeN.normalizedTimeStamp;
+        else y = 2 - np.normalizedDepth;
         float cosT = Mathf.Cos(t);
         float sinT = Mathf.Sin(t);
         float nx = bx + l * (np.rx * cosT - np.rz * sinT);
         float nz = bz + l * (np.rx * sinT + np.rz * cosT);
-        Vector3 pos = new Vector3(nx, (float)y, bz); ;
+        Vector3 pos = new Vector3(nx, (float)y, bz);
+        //if (nodeN.Parents != null && nodeN.Parents.Count != 0) graphSpace.DrawEdge(nodeN.Parents[0], nodeN);
         nodeN.GetIcon().transform.position = pos;
         float dd = (l/5) * np.d;
         float p = Mathf.PI;
@@ -171,6 +189,64 @@ public class ConeTreeAlgorithm : MonoBehaviour {
             float z2 = xx * sinT + zz * cosT;
             previous = aa;
             SecondWalk(child, bx + x2, bz + z2, l * rr / cp.r, p);
+        }
+    }*/
+
+    private void CalculateRDT()
+    {
+        int x = 0;
+        int counter = 0;
+        Vector3 referencePoint = new Vector3();
+        GraphSpaceController gsc = (GraphSpaceController)FindObjectOfType(typeof(GraphSpaceController));
+        Vector3 dir = new Vector3();
+        float distance = 0;
+        for (int op= 0; op < observer.GetOperators().Count; op++)
+        {
+            if(observer.GetOperators()[op].Children!=null)
+            {
+                if(observer.GetOperators()[op].Children.Count > 0)
+                {
+                    float avgPt = 0;
+                    float refPt = 0;
+                    float sum = 0;
+                    for(int i=0; i< observer.GetOperators()[op].Children.Count; i++)
+                    {
+                        sum += observer.GetOperators()[op].Children[i].GetIcon().transform.position.y;
+                        x++;
+                    }
+                    avgPt = sum / observer.GetOperators()[op].Children.Count;
+                    dir = observer.GetOperators()[op].GetIcon().transform.position - new Vector3(observer.GetOperators()[op].GetIcon().transform.position.x, avgPt, observer.GetOperators()[op].GetIcon().transform.position.z);
+                    distance = Vector3.Distance(observer.GetOperators()[op].GetIcon().transform.position, new Vector3(observer.GetOperators()[op].GetIcon().transform.position.x, avgPt, observer.GetOperators()[op].GetIcon().transform.position.z));
+                    refPt = (observer.GetOperators()[op].GetIcon().transform.position.y + avgPt) * height;
+                    referencePoint = observer.GetOperators()[op].GetIcon().transform.position - dir * (distance * height);
+                    referencePoints.Add(referencePoint);
+                    for(int i=0; i < observer.GetOperators()[op].Children.Count; i++)
+                    {
+                        gsc.graphEdges[counter].positionCount = 3;
+                        gsc.graphEdges[counter].SetPosition(0, observer.GetOperators()[op].GetIcon().transform.position);
+                        gsc.graphEdges[counter].SetPosition(1, referencePoint);
+                        gsc.graphEdges[counter].SetPosition(2, observer.GetOperators()[op].Children[i].GetIcon().transform.position);
+                        counter++;
+                    }
+                }
+            }
+        }
+        Debug.Log("end");
+    }
+
+    private void NormalizeDepth()
+    {
+        float minDepth = 1;
+        float maxDepth = 0;
+        float depth = 0;
+        foreach(var op in observer.GetOperators())
+        {
+            if (maxDepth < op.GetIcon().GetComponent<IconProperties>().depth) maxDepth = op.GetIcon().GetComponent<IconProperties>().depth;
+        }
+        foreach(var op in observer.GetOperators())
+        {
+            depth = op.GetIcon().GetComponent<IconProperties>().depth;
+            op.GetIcon().GetComponent<IconProperties>().normalizedDepth = 2 * ((depth - minDepth) / (maxDepth - minDepth));
         }
     }
 }

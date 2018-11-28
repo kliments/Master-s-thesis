@@ -878,14 +878,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   observer: {fileID: 573206911}
+  positions: []
   DefaultStartingTemperature: 0.2
   DefaultMinimumTemperature: 0.01
   DefaultTemperatureAttenuation: 0.95
   Temperature: 0
   calculateForceDirected: 0
   randomize: 0
-  reloadOriginalLocations: 0
+  saveOriginalLocations: 0
   saveLoc: 0
+  timeDependent: 0
 --- !u!4 &360191223
 Transform:
   m_ObjectHideFlags: 0
@@ -912,6 +914,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   observer: {fileID: 573206911}
   runConeTree: 0
+  timeDependent: 0
+  RDT: 0
+  height: 0.5
+  referencePoints: []
 --- !u!1 &370536914
 GameObject:
   m_ObjectHideFlags: 0
@@ -984,8 +990,16 @@ MonoBehaviour:
     posX: 0
     posY: 0
     posZ: 0
+    hour: 0
+    minute: 0
+    second: 0
+    ms: 0
   timeStamp: 0
   normalizedTimeStamp: 0
+  hour: 0
+  minute: 0
+  second: 0
+  millisecond: 0
 --- !u!1001 &403829242
 Prefab:
   m_ObjectHideFlags: 0
@@ -4021,6 +4035,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71969f6c48d3c6944878a0eb887e968c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  graphEdges: []
 --- !u!1 &2120592819
 GameObject:
   m_ObjectHideFlags: 0

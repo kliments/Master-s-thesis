@@ -42,11 +42,14 @@ namespace Assets.Scripts.Model
 
         public double timeStamp, normalizedTimeStamp, hour, minute, second, millisecond;
         public DateTime timeOfCreation;
+
+        private GraphSpaceController _graphSpace;
+        private Vector3 _oldParentPos, _newParentPos;
         
         public virtual void Start()
         {
 
-
+            _graphSpace = GameObject.Find("GraphSpace").GetComponent<GraphSpaceController>();
 
             Visualization = GetComponentInChildren<GenericVisualization>();
             Icon = GetComponentInChildren<GenericIcon>();
@@ -54,17 +57,13 @@ namespace Assets.Scripts.Model
             //properties for Layout algorithms
             Icon.gameObject.AddComponent<IconProperties>();
             Observer = FindObjectOfType<Observer>();
-
-
-
+            
             GameObject iconHighlight = Resources.Load<GameObject>("Highlights/IconHighlight");
             isSelectedHighlighting = Instantiate(iconHighlight);
             isSelectedHighlighting.transform.parent = Icon.transform;
             isSelectedHighlighting.transform.position = Icon.transform.position;
             isSelectedHighlighting.SetActive(false);
-
-
-
+            
             ProperInitializedStart = true;
 
             Observer.notifyObserverOperatorInitComplete(this);
@@ -95,6 +94,26 @@ namespace Assets.Scripts.Model
             {
                 timeStamp = hour + minute / 60 + second / 3600 + millisecond / 3600000;
                 timeOfCreation = timeOfCreation.AddHours(hour).AddMinutes(minute).AddSeconds(second).AddMilliseconds(millisecond);
+            }
+
+            _oldParentPos = new Vector3();
+            _newParentPos = new Vector3();
+        }
+
+        private void Update()
+        {
+            if(Parents != null)
+            {
+                if(Parents.Count != 0)
+                {
+                    _oldParentPos = _newParentPos;
+                    _newParentPos = Parents[0].GetIcon().transform.position;
+                    // Update the line renderer if position of parent changes
+                    if (_oldParentPos != _newParentPos)
+                    {
+                        GetComponent<LineRenderer>().SetPosition(0, _newParentPos);
+                    }
+                }
             }
         }
 

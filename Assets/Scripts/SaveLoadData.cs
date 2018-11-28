@@ -13,9 +13,10 @@ public class SaveLoadData:MonoBehaviour {
     public static event SerializeAction OnBeforeSave;
     private static GenericOperator root;
     private static SaveLoadData instance;
+    private static GraphSpaceController graphSpace;
     // Use this for initialization
     void Start () {
-
+        graphSpace = (GraphSpaceController)FindObjectOfType(typeof(GraphSpaceController));
 	}
 
     private void Awake()
@@ -47,6 +48,7 @@ public class SaveLoadData:MonoBehaviour {
             }
         }
         genericOperatorContainer = LoadOperators(path);
+        graphSpace.graphEdges = new List<LineRenderer>();
         foreach (OperatorData data in genericOperatorContainer.operators)
         {
             SaveLoadController.CreateGenericOperator(data);

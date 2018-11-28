@@ -12,6 +12,7 @@ public class SaveLoadController : Targetable {
     public static UnityEngine.Events.UnityAction loadData;
     public static string dataPath;
 
+    private GraphSpaceController graphSpace;
     private static Observer obs;
     //instance variable is needed to call static Coroutines
     private static SaveLoadController instance;
@@ -19,6 +20,7 @@ public class SaveLoadController : Targetable {
     void Start () {
         obs = (Observer)FindObjectOfType(typeof(Observer));
         operatorList = new List<GenericOperator>();
+        graphSpace = GameObject.Find("GraphSpace").GetComponent<GraphSpaceController>();
     }
 	
 	// Update is called once per frame
@@ -57,7 +59,6 @@ public class SaveLoadController : Targetable {
                 GenericOperator op = go.GetComponent<GenericOperator>() ?? go.AddComponent<GenericOperator>();
                 //waiting for one frame, due to generating icons and children
                 instance.StartCoroutine(instance.SetIconLocation(op, position));
-                instance.StartCoroutine(instance.DestroyNewOperatorChildren(op.Children));
                 op.Id = data.ID;
                 op.LoadSpecificData(data);
                 op.hour = data.hour;
@@ -77,6 +78,11 @@ public class SaveLoadController : Targetable {
         op.GetIcon().transform.position = position;
         op.Fetchdata();
         op.Process();
+        if (op.Parents != null)
+        {
+            if(op.Parents.Count != 0) graphSpace.DrawEdge(op.Parents[0], op);
+        }
+        instance.StartCoroutine(instance.DestroyNewOperatorChildren(op.Children));
     }
 
     IEnumerator DestroyNewOperatorChildren(List<GenericOperator> children)

@@ -8,7 +8,7 @@ public class GraphSpaceController : MonoBehaviour {
 
     private Observer observer;
 
-    private List<GameObject> graphEdges;
+    public List<LineRenderer> graphEdges;
     private GameObject Container;
 
     private int counter = 0;
@@ -16,7 +16,7 @@ public class GraphSpaceController : MonoBehaviour {
 
     private void Awake()
     {
-        graphEdges = new List<GameObject>();
+        graphEdges = new List<LineRenderer>();
         Container = new GameObject("GraphEdges");
     }
 
@@ -48,24 +48,40 @@ public class GraphSpaceController : MonoBehaviour {
 
     private void Update()
     {
-        drawGraphConnections();
+        //drawGraphConnections();
     }
 
-    public void drawGraphConnections()
+    /*public void drawGraphConnections()
     {
         foreach (GameObject edge in graphEdges)
         {
             Destroy(edge);
         }
 
-
         foreach (GenericOperator go in observer.GetOperators())
         {
             drawConnectionToChildren(go);
         }
+    }*/
+
+    public void DrawEdge(GenericOperator parent, GenericOperator op)
+    {
+        LineRenderer lr;
+        if (parent == null) return;
+        if (op.gameObject.GetComponent<LineRenderer>() != null) lr = op.gameObject.GetComponent<LineRenderer>();
+        else lr = op.gameObject.AddComponent<LineRenderer>();
+        lr.startWidth = 0.01f;
+        lr.endWidth = 0.01f;
+        lr.SetPositions(new Vector3[] { parent.GetIcon().transform.position + new Vector3(0, 0, 0.001f), parent.GetIcon().transform.position + new Vector3(0, 0, 0.001f), op.GetIcon().transform.position + new Vector3(0, 0, 0.001f) });
+        if(!graphEdges.Contains(lr)) graphEdges.Add(lr);
     }
 
-    private void drawConnectionToChildren(GenericOperator go)
+    public void DestroyEdge()
+    {
+        Destroy(graphEdges[graphEdges.Count - 1].gameObject);
+    }
+
+    /*private void drawConnectionToChildren(GenericOperator go)
     {
         if (go.Children == null || go.Children.Count == 0) return; 
         foreach (GenericOperator child in go.Children)
@@ -83,9 +99,7 @@ public class GraphSpaceController : MonoBehaviour {
             lineRenderer.transform.parent = Container.transform;
             graphEdges.Add(line);
         }
-
-        
-    }
+    }*/
 
     public void setObserver(Observer observer)
     {

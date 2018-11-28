@@ -24,8 +24,8 @@ public class IconProperties : MonoBehaviour {
     //
     public float rx, rz;
     #endregion
-
-    public float depth;
+    
+    public float depth, normalizedDepth;
     public Camera myCamera;
     public Transform child;
     private Vector3 _target;

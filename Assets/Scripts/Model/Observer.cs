@@ -121,6 +121,10 @@ namespace Assets.Scripts.Model
 
             
             _graphSpaceController.moveToSpawnPosition(genericOperator);
+            if (genericOperator.Parents != null)
+            {
+                if(genericOperator.Parents.Count != 0) _graphSpaceController.DrawEdge(genericOperator.Parents[0], genericOperator);
+            }
 
         }
 
