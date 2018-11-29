@@ -125,6 +125,7 @@ namespace Assets.Scripts.Model
             {
                 if(genericOperator.Parents.Count != 0) _graphSpaceController.DrawEdge(genericOperator.Parents[0], genericOperator);
             }
+            genericOperator.GetIcon().GetComponent<IconProperties>().originalPos = genericOperator.GetIcon().transform.position;
 
         }
 

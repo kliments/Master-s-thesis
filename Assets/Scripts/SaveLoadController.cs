@@ -76,6 +76,8 @@ public class SaveLoadController : Targetable {
     {
         yield return 0;
         op.GetIcon().transform.position = position;
+        op.GetIcon().GetComponent<IconProperties>().originalPos = position;
+        op.GetIcon().GetComponent<IconProperties>().oldPos = position;
         op.Fetchdata();
         op.Process();
         if (op.Parents != null)

@@ -83,8 +83,14 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
         Temperature = DefaultStartingTemperature;
         for(int i=0; i<observer.GetOperators().Count; i++)
         {
-            var newPos = new Vector3(positions[i].x, UnityEngine.Random.Range(0f, 3f), UnityEngine.Random.Range(0f, 3f));
+            var newPos = new Vector3(observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().originalPos.x, UnityEngine.Random.Range(0f, 3f), UnityEngine.Random.Range(0f, 3f));
             observer.GetOperators()[i].GetIcon().transform.position = newPos;
+            if(observer.GetOperators()[i].Parents != null)
+            {
+                if (observer.GetOperators()[i].Parents.Count != 0) observer.GetOperators()[i].GetComponent<LineRenderer>().SetPositions(new Vector3[] {
+                                                                                        observer.GetOperators()[i].Parents[0].GetIcon().transform.position,
+                                                                                        observer.GetOperators()[i].GetIcon().transform.position});
+            }
         }
     }
 
@@ -121,6 +127,11 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
         {
             op.GetIcon().transform.position += op.GetIcon().GetComponent<IconProperties>().acceleration;
             op.GetIcon().GetComponent<IconProperties>().acceleration = Vector3.zero;
+            op.GetIcon().GetComponent<IconProperties>().oldPos = op.GetIcon().transform.position;
+            if (op.Parents != null)
+            {
+                if(op.Parents.Count!=0) op.GetComponent<LineRenderer>().SetPositions(new Vector3[] { op.Parents[0].GetIcon().transform.position, op.GetIcon().transform.position });
+            }
         }
         Temperature *= DefaultTemperatureAttenuation;
     }

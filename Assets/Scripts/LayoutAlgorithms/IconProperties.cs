@@ -24,7 +24,10 @@ public class IconProperties : MonoBehaviour {
     //
     public float rx, rz;
     #endregion
-    
+
+    //original, old and new positions for smooth transition of nodes
+    public Vector3 originalPos, oldPos, newPos;
+    public bool repos;
     public float depth, normalizedDepth;
     public Camera myCamera;
     public Transform child;

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ConeTreeAlgorithm : MonoBehaviour {
     public Observer observer;
-    public bool runConeTree, timeDependent, RDT;
+    public bool runConeTree, timeDependent, RDT, reposition;
     public float height;
     public List<Vector3> referencePoints;
 
@@ -34,15 +34,44 @@ public class ConeTreeAlgorithm : MonoBehaviour {
             RDT = false;
             CalculateRDT();
         }
+        if(reposition)
+        {
+            foreach(var op in observer.GetOperators())
+            {
+                if(op.GetIcon().GetComponent<IconProperties>().repos)
+                {
+                    op.GetIcon().transform.position = Vector3.Lerp(op.GetIcon().transform.position, op.GetIcon().GetComponent<IconProperties>().newPos, Time.deltaTime);
+                    if(Vector3.Distance(op.GetIcon().transform.position, op.GetIcon().GetComponent<IconProperties>().newPos) < 0.01f)
+                    {
+                        op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
+                        op.GetIcon().GetComponent<IconProperties>().oldPos = op.GetIcon().GetComponent<IconProperties>().newPos;
+                        op.GetIcon().GetComponent<IconProperties>().repos = false;
+                    }
+                    if (op.Parents != null)
+                    {
+                        if (op.Parents.Count != 0) op.GetComponent<LineRenderer>().SetPositions(new Vector3[] { op.Parents[0].GetIcon().transform.position, op.GetIcon().transform.position });
+                    }
+                }
+            }
+            if (AllNodesPlaced()) reposition = false;
+        }
 	}
-
+    private bool AllNodesPlaced()
+    {
+        foreach(var node in observer.GetOperators())
+        {
+            if (node.GetIcon().GetComponent<IconProperties>().repos) return false;
+        }
+        return true;
+    }
     private void Layout(GenericOperator root, float x, float z)
     {
         NormalizeDepth();
         FirstWalk(root);
         //SecondWalk(root, x, z, 1f, 0f);
         SecondWalk(root, x, z, 1f, 0f);
-        CalculateRDT();
+        reposition = true;
+        //CalculateRDT();
     }
 
     /* Bottom up proceeding, computing value for distances 
@@ -140,7 +169,9 @@ public class ConeTreeAlgorithm : MonoBehaviour {
         if (timeDependent) y = 2 - nodeN.normalizedTimeStamp;
         else y = 2 - np.normalizedDepth;
         Vector3 pos = new Vector3(x, (float)y, z);
-        nodeN.GetIcon().transform.position = pos;
+        //nodeN.GetIcon().transform.position = pos;
+        np.newPos = pos;
+        np.repos = true;
         float dd = l * np.d;
         float p = t + Mathf.PI;
         float freeSpace = (nodeN.Children.Count == 0 ? 0 : np.f / nodeN.Children.Count);
