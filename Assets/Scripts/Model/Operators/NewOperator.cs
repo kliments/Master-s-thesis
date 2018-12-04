@@ -7,7 +7,9 @@ using UnityEngine;
 
 public class NewOperator :  GenericOperator
 {
-
+    private Vector3 _oldPos = new Vector3();
+    private Vector3 _newPos = new Vector3();
+    
     public override bool Process()
     {
         SetOutputData(GetRawInputData());
@@ -22,7 +24,20 @@ public class NewOperator :  GenericOperator
 
     // Update is called once per frame
     private void Update () {
-	   
+
+        if (Parents != null)
+        {
+            if (Parents.Count != 0)
+            {
+                _oldPos = _newPos;
+                _newPos = Parents[0].GetIcon().transform.position;
+                // Update the line renderer if position of parent changes
+                if (_oldPos != _newPos)
+                {
+                    GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newPos, GetIcon().transform.position });
+                }
+            }
+        }
     }
 
     protected override void OnUnselectAction()

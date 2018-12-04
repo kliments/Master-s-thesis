@@ -41,9 +41,11 @@ public class IconProperties : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        var lookPos = myCamera.transform.position - transform.position;
+        _target = new Vector3(myCamera.transform.position.x, myCamera.transform.position.y, myCamera.transform.position.z);
+        child.LookAt(_target);
+        /*var lookPos = myCamera.transform.position - transform.position;
         var rotation = Quaternion.LookRotation(lookPos);
-        child.localRotation = rotation;
+        child.localRotation = rotation;*/
     }
 
     public void ApplyForce(Vector3 force)

@@ -111,7 +111,7 @@ namespace Assets.Scripts.Model
                     // Update the line renderer if position of parent changes
                     if (_oldParentPos != _newParentPos)
                     {
-                        GetComponent<LineRenderer>().SetPosition(0, _newParentPos);
+                        GetComponent<LineRenderer>().SetPositions(new Vector3[]{ _newParentPos, GetIcon().transform.position});
                     }
                 }
             }

@@ -9,12 +9,14 @@ public class InputViveController : InputController
     private int _leftControllerIndex;
     private int _rightControllerIndex;
     private Targetable _lastTarget = null;
+    private ModeEventListener mode;
     
     private RaycastHit _hit;
 
     private void Awake()
     {
         _trackedObj = GetComponent<SteamVR_TrackedObject>();
+        mode = (ModeEventListener)FindObjectOfType(typeof(ModeEventListener));
     }
 
     private void Start()
@@ -47,7 +49,7 @@ public class InputViveController : InputController
                 if (target != null)
                 {
                     _lastTarget = target;
-                    if (_device.GetPress(SteamVR_Controller.ButtonMask.Trigger))
+                    if (_device.GetPressDown(SteamVR_Controller.ButtonMask.Trigger) && mode.menuAction == MENU_ACTION.SELECT)
                     {
                         EmitEvent(InputEventsEnum.LeftClickOnTargetEvent, target);
                     }
