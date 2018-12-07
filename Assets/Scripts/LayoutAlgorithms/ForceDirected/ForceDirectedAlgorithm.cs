@@ -25,7 +25,7 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
     //The current temperature in the simulated annealing
     public float Temperature;
     
-    public bool calculateForceDirected, randomize, saveOriginalLocations, saveLoc, timeDependent;
+    public bool calculateForceDirected, randomize, saveOriginalLocations, loadLocations, timeDependent;
 
     /// The function defining the attraction force between two connected nodes.
     /// Arcs are viewed as springs that want to bring the two connected nodes together.
@@ -37,6 +37,8 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
     /// The function takes a single parameter, which is the distance of the two nodes.
     public Func<double, double> ElectricForce { get; set; }
 
+
+    LineRenderer lr = new LineRenderer();
     // Use this for initialization
     void Start () {
         ElectricForce = (d => 1 / (d * d));
@@ -45,7 +47,7 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
         // reset the temperature
         Temperature = DefaultStartingTemperature;
 
-        saveLoc = true;
+        loadLocations = true;
 
         _timeBins = new List<List<GenericOperator>>();
     }
@@ -61,6 +63,14 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
                 positions[i] = observer.GetOperators()[i].GetIcon().transform.position;
             }
         }
+        if(loadLocations)
+        {
+            loadLocations = false;
+            for (int i = 0; i < positions.Length; i++)
+            {
+                observer.GetOperators()[i].GetIcon().transform.position = positions[i];
+            }
+        }
         if(randomize)
         {
             randomize = false;
@@ -72,6 +82,7 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
             {
                 Temperature = 0.2f;
                 calculateForceDirected = false;
+                GetComponent<TwoDimensionalProjection>().SetPlane();
             }
             Calculate();
         }
@@ -92,6 +103,7 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
                                                                                         observer.GetOperators()[i].GetIcon().transform.position});
             }
         }
+        GetComponent<TwoDimensionalProjection>().SetPlane();
     }
 
     void AllocateTimeBins()
@@ -130,7 +142,14 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
             op.GetIcon().GetComponent<IconProperties>().oldPos = op.GetIcon().transform.position;
             if (op.Parents != null)
             {
-                if(op.Parents.Count!=0) op.GetComponent<LineRenderer>().SetPositions(new Vector3[] { op.Parents[0].GetIcon().transform.position, op.GetIcon().transform.position });
+                if (op.Parents.Count != 0)
+                {
+                    if(op.GetComponent<LineRenderer>().positionCount == 3)
+                    {
+                        op.GetComponent<LineRenderer>().positionCount = 2;
+                    }
+                    op.GetComponent<LineRenderer>().SetPositions(new Vector3[] { op.Parents[0].GetIcon().transform.position, op.GetIcon().transform.position });
+                }
             }
         }
         Temperature *= DefaultTemperatureAttenuation;
@@ -138,7 +157,7 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
 
     private void ForceDirectedWithTemporalDependency()
     {
-        if (_timeBins.Count == 0) AllocateTimeBins();
+        if (_timeBins != null) if(_timeBins.Count == 0) AllocateTimeBins();
         foreach (var list in _timeBins)
         {
             foreach (var node1 in list)

@@ -44,7 +44,7 @@ namespace Assets.Scripts.Model
         public DateTime timeOfCreation;
 
         private GraphSpaceController _graphSpace;
-        private Vector3 _oldParentPos, _newParentPos;
+        private Vector3 _oldParentPos, _newParentPos, _oldPos, _newPos;
         
         public virtual void Start()
         {
@@ -95,7 +95,8 @@ namespace Assets.Scripts.Model
                 timeStamp = hour + minute / 60 + second / 3600 + millisecond / 3600000;
                 timeOfCreation = timeOfCreation.AddHours(hour).AddMinutes(minute).AddSeconds(second).AddMilliseconds(millisecond);
             }
-
+            _oldPos = new Vector3();
+            _newPos = new Vector3();
             _oldParentPos = new Vector3();
             _newParentPos = new Vector3();
         }
@@ -106,8 +107,15 @@ namespace Assets.Scripts.Model
             {
                 if(Parents.Count != 0)
                 {
+                    _oldPos = _newPos;
+                    _newPos = GetIcon().transform.position;
                     _oldParentPos = _newParentPos;
                     _newParentPos = Parents[0].GetIcon().transform.position;
+                    // Update the line renderer if position of this node changes
+                    if(_oldPos != _newPos)
+                    {
+                        GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newParentPos, GetIcon().transform.position });
+                    }
                     // Update the line renderer if position of parent changes
                     if (_oldParentPos != _newParentPos)
                     {

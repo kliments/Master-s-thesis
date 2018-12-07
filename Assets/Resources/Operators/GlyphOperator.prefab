@@ -254,7 +254,7 @@ GameObject:
   - component: {fileID: 114795074787621870}
   m_Layer: 0
   m_Name: GlyphIcon
-  m_TagString: Untagged
+  m_TagString: NodeIcon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2044,6 +2044,23 @@ MonoBehaviour:
   isSelected: 0
   newOperator: {fileID: 0}
   isSelectedHighlighting: {fileID: 0}
+  data:
+    name: 
+    ID: 0
+    parent: 0
+    posX: 0
+    posY: 0
+    posZ: 0
+    hour: 0
+    minute: 0
+    second: 0
+    ms: 0
+  timeStamp: 0
+  normalizedTimeStamp: 0
+  hour: 0
+  minute: 0
+  second: 0
+  millisecond: 0
 --- !u!114 &114482239986594094
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -1808,6 +1808,47 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: 0
   origin: {fileID: 0}
+--- !u!1 &337333275
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 337333276}
+  - component: {fileID: 337333277}
+  m_Layer: 9
+  m_Name: ProjectionPlane
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &337333276
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 337333275}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1796779525}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &337333277
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 337333275}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 100, y: 100, z: 0.001}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &343523368
 GameObject:
   m_ObjectHideFlags: 0
@@ -1862,8 +1903,11 @@ GameObject:
   - component: {fileID: 360191223}
   - component: {fileID: 360191222}
   - component: {fileID: 360191224}
-  m_Layer: 0
-  m_Name: GameObject
+  - component: {fileID: 360191226}
+  - component: {fileID: 360191227}
+  - component: {fileID: 360191225}
+  m_Layer: 8
+  m_Name: Algorithms
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1889,7 +1933,7 @@ MonoBehaviour:
   calculateForceDirected: 0
   randomize: 0
   saveOriginalLocations: 0
-  saveLoc: 0
+  loadLocations: 0
   timeDependent: 0
 --- !u!4 &360191223
 Transform:
@@ -1897,8 +1941,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 360191221}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.1396946, y: 1.8126034, z: 5.3342476}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.73, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1922,6 +1966,48 @@ MonoBehaviour:
   reposition: 0
   height: 0.5
   referencePoints: []
+--- !u!114 &360191225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 360191221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb2dcfb0fb3fc8949b3023b9ea912cc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  calculateNodeOverlapping: 0
+  count: 0
+  sortedList: []
+--- !u!114 &360191226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 360191221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3f8e515adc438f489c0b6e805dbe720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  project: 0
+  print: 0
+  camera: {fileID: 0}
+  projectionPlane: {fileID: 0}
+--- !u!114 &360191227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 360191221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a60a9704f21a46a4a9c98240e4bba1d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  countEdgeCrossings: 0
+  count: 0
 --- !u!1 &367106820
 GameObject:
   m_ObjectHideFlags: 0
@@ -5336,7 +5422,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1031145540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9661,6 +9747,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2065189379}
+  - {fileID: 337333276}
   m_Father: {fileID: 330329225}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: -4.7190003, y: -12.18, z: 0.437}
@@ -12033,7 +12120,7 @@ Prefab:
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 1159
+      value: 1356
       objectReference: {fileID: 0}
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}

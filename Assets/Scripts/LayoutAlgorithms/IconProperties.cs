@@ -32,6 +32,9 @@ public class IconProperties : MonoBehaviour {
     public Camera myCamera;
     public Transform child;
     private Vector3 _target;
+
+    private Vector3 lookPos;
+    private Quaternion rotation;
 	// Use this for initialization
 	void Start () {
         myCamera = Camera.main;
@@ -43,8 +46,10 @@ public class IconProperties : MonoBehaviour {
 	void Update () {
         _target = new Vector3(myCamera.transform.position.x, myCamera.transform.position.y, myCamera.transform.position.z);
         child.LookAt(_target);
-        /*var lookPos = myCamera.transform.position - transform.position;
-        var rotation = Quaternion.LookRotation(lookPos);
+        /*lookPos = myCamera.transform.position - transform.position;
+        rotation = Quaternion.LookRotation(lookPos);
+        rotation.x = 0;
+        rotation.z = 0;
         child.localRotation = rotation;*/
     }
 

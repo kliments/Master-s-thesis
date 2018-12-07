@@ -29,14 +29,9 @@ public class ConeTreeAlgorithm : MonoBehaviour {
             observer.NormalizeTimeStamps();
             Layout(root, _anchor.x, _anchor.z);
         }
-        if(RDT)
-        {
-            RDT = false;
-            CalculateRDT();
-        }
         if(reposition)
         {
-            foreach(var op in observer.GetOperators())
+            foreach (var op in observer.GetOperators())
             {
                 if(op.GetIcon().GetComponent<IconProperties>().repos)
                 {
@@ -53,7 +48,15 @@ public class ConeTreeAlgorithm : MonoBehaviour {
                     }
                 }
             }
-            if (AllNodesPlaced()) reposition = false;
+            if (RDT)
+            {
+                CalculateRDT();
+            }
+            if (AllNodesPlaced())
+            {
+                RDT = false;
+                reposition = false;
+            }
         }
 	}
     private bool AllNodesPlaced()
@@ -71,6 +74,7 @@ public class ConeTreeAlgorithm : MonoBehaviour {
         //SecondWalk(root, x, z, 1f, 0f);
         SecondWalk(root, x, z, 1f, 0f);
         reposition = true;
+        GetComponent<TwoDimensionalProjection>().SetPlane();
         //CalculateRDT();
     }
 

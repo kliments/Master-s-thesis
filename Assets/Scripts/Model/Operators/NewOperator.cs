@@ -7,8 +7,10 @@ using UnityEngine;
 
 public class NewOperator :  GenericOperator
 {
-    private Vector3 _oldPos = new Vector3();
-    private Vector3 _newPos = new Vector3();
+    private Vector3 _oldPosOp = new Vector3();
+    private Vector3 _newPosOp = new Vector3();
+    private Vector3 _oldPosParent = new Vector3();
+    private Vector3 _newPosParent = new Vector3();
     
     public override bool Process()
     {
@@ -29,12 +31,19 @@ public class NewOperator :  GenericOperator
         {
             if (Parents.Count != 0)
             {
-                _oldPos = _newPos;
-                _newPos = Parents[0].GetIcon().transform.position;
-                // Update the line renderer if position of parent changes
-                if (_oldPos != _newPos)
+                _oldPosOp = _newPosOp;
+                _newPosOp = GetIcon().transform.position;
+                _oldPosParent = _newPosParent;
+                _newPosParent = Parents[0].GetIcon().transform.position;
+                //Update the line renderer if position of node changes
+                if(_oldPosOp != _newPosOp)
                 {
-                    GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newPos, GetIcon().transform.position });
+                    GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newPosParent, GetIcon().transform.position });
+                }
+                // Update the line renderer if position of parent changes
+                if (_oldPosParent != _newPosParent)
+                {
+                    GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newPosParent, GetIcon().transform.position });
                 }
             }
         }
