@@ -95,7 +95,8 @@ namespace Assets.Scripts.Model
             _operators.Remove(operatorInstance);
             
             operatorInstance.DestroyGenericOperator();
-           
+
+            _graphSpaceController.graphEdges.Remove(operatorInstance.GetComponent<LineRenderer>());
         }
 
         public void DestroyOperator(int id)

@@ -85,7 +85,7 @@ public class NodeOverlapping : MonoBehaviour {
         return count;
     }
 
-    //
+    //sorting nodes by distance, starting with the furthest one
     void SortListOfNodes()
     {
         sortedList = observer.GetOperators().OrderBy(node => -Vector3.Distance(camera.transform.position, node.GetIcon().transform.position)).ToList();

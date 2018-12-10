@@ -70,6 +70,7 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
             {
                 observer.GetOperators()[i].GetIcon().transform.position = positions[i];
             }
+            if (GetComponent<ConeTreeAlgorithm>().RDT) GetComponent<ConeTreeAlgorithm>().CalculateRDT();
         }
         if(randomize)
         {
@@ -98,9 +99,13 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
             observer.GetOperators()[i].GetIcon().transform.position = newPos;
             if(observer.GetOperators()[i].Parents != null)
             {
-                if (observer.GetOperators()[i].Parents.Count != 0) observer.GetOperators()[i].GetComponent<LineRenderer>().SetPositions(new Vector3[] {
+                if (observer.GetOperators()[i].Parents.Count != 0)
+                {
+                    observer.GetOperators()[i].GetComponent<LineRenderer>().positionCount = 2;
+                    observer.GetOperators()[i].GetComponent<LineRenderer>().SetPositions(new Vector3[] {
                                                                                         observer.GetOperators()[i].Parents[0].GetIcon().transform.position,
                                                                                         observer.GetOperators()[i].GetIcon().transform.position});
+                }
             }
         }
         GetComponent<TwoDimensionalProjection>().SetPlane();

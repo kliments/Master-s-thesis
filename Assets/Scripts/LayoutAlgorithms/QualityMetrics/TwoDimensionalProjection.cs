@@ -31,10 +31,11 @@ public class TwoDimensionalProjection : MonoBehaviour {
                 direction = op.GetIcon().transform.position - camera.transform.position;
                 if(Physics.Raycast(camera.transform.position, direction, out _hit, 50, _layerMask))
                 {
+                    if(op.GetComponent<LineRenderer>() != null) op.GetComponent<LineRenderer>().positionCount = 2;
                     op.GetIcon().transform.position = _hit.point;
-                    Debug.Log(op.name + " " + projectionPlane.transform.InverseTransformPoint(_hit.point));
                 }
             }
+            if (GetComponent<ConeTreeAlgorithm>().RDT) GetComponent<ConeTreeAlgorithm>().CalculateRDT();
         }
 	}
 

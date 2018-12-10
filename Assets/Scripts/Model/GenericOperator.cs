@@ -111,15 +111,18 @@ namespace Assets.Scripts.Model
                     _newPos = GetIcon().transform.position;
                     _oldParentPos = _newParentPos;
                     _newParentPos = Parents[0].GetIcon().transform.position;
-                    // Update the line renderer if position of this node changes
-                    if(_oldPos != _newPos)
+                    if(GetComponent<LineRenderer>().positionCount == 2)
                     {
-                        GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newParentPos, GetIcon().transform.position });
-                    }
-                    // Update the line renderer if position of parent changes
-                    if (_oldParentPos != _newParentPos)
-                    {
-                        GetComponent<LineRenderer>().SetPositions(new Vector3[]{ _newParentPos, GetIcon().transform.position});
+                        // Update the line renderer if position of this node changes
+                        if (_oldPos != _newPos)
+                        {
+                            GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newParentPos, GetIcon().transform.position });
+                        }
+                        // Update the line renderer if position of parent changes
+                        if (_oldParentPos != _newParentPos)
+                        {
+                            GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newParentPos, GetIcon().transform.position });
+                        }
                     }
                 }
             }

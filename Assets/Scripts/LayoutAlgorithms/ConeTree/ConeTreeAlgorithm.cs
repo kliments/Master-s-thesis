@@ -6,16 +6,15 @@ public class ConeTreeAlgorithm : MonoBehaviour {
     public Observer observer;
     public bool runConeTree, timeDependent, RDT, reposition;
     public float height;
-    public List<Vector3> referencePoints;
 
     private float _minRadius = 0.5f;
     private Vector3 _anchor;
     private GenericOperator root;
     private float[] _timeStamps;
     private GraphSpaceController _graphSpace;
+    private bool calculateRDT;
 	// Use this for initialization
 	void Start () {
-        referencePoints = new List<Vector3>();
         _graphSpace = GameObject.Find("GraphSpace").GetComponent<GraphSpaceController>();
 	}
 	
@@ -44,21 +43,26 @@ public class ConeTreeAlgorithm : MonoBehaviour {
                     }
                     if (op.Parents != null)
                     {
-                        if (op.Parents.Count != 0) op.GetComponent<LineRenderer>().SetPositions(new Vector3[] { op.Parents[0].GetIcon().transform.position, op.GetIcon().transform.position });
+                        if (op.Parents.Count != 0)
+                        {
+                            op.GetComponent<LineRenderer>().positionCount = 2;
+                            op.GetComponent<LineRenderer>().SetPositions(new Vector3[] { op.Parents[0].GetIcon().transform.position, op.GetIcon().transform.position });
+                        }
                     }
                 }
             }
-            if (RDT)
-            {
-                CalculateRDT();
-            }
             if (AllNodesPlaced())
             {
-                RDT = false;
                 reposition = false;
+                if (RDT) calculateRDT = true;
             }
         }
-	}
+        if (calculateRDT)
+        {
+            calculateRDT = false;
+            CalculateRDT();
+        }
+    }
     private bool AllNodesPlaced()
     {
         foreach(var node in observer.GetOperators())
@@ -72,7 +76,7 @@ public class ConeTreeAlgorithm : MonoBehaviour {
         NormalizeDepth();
         FirstWalk(root);
         //SecondWalk(root, x, z, 1f, 0f);
-        SecondWalk(root, x, z, 1f, 0f);
+        SecondWalk(root, x, z, 0.5f, 0f);
         reposition = true;
         GetComponent<TwoDimensionalProjection>().SetPlane();
         //CalculateRDT();
@@ -227,10 +231,9 @@ public class ConeTreeAlgorithm : MonoBehaviour {
         }
     }*/
 
-    private void CalculateRDT()
+    public void CalculateRDT()
     {
         int x = 0;
-        int counter = 0;
         Vector3 referencePoint = new Vector3();
         GraphSpaceController gsc = (GraphSpaceController)FindObjectOfType(typeof(GraphSpaceController));
         Vector3 dir = new Vector3();
@@ -254,19 +257,16 @@ public class ConeTreeAlgorithm : MonoBehaviour {
                     distance = Vector3.Distance(observer.GetOperators()[op].GetIcon().transform.position, new Vector3(observer.GetOperators()[op].GetIcon().transform.position.x, avgPt, observer.GetOperators()[op].GetIcon().transform.position.z));
                     refPt = (observer.GetOperators()[op].GetIcon().transform.position.y + avgPt) * height;
                     referencePoint = observer.GetOperators()[op].GetIcon().transform.position - dir * (distance * height);
-                    referencePoints.Add(referencePoint);
                     for(int i=0; i < observer.GetOperators()[op].Children.Count; i++)
                     {
-                        gsc.graphEdges[counter].positionCount = 3;
-                        gsc.graphEdges[counter].SetPosition(0, observer.GetOperators()[op].GetIcon().transform.position);
-                        gsc.graphEdges[counter].SetPosition(1, referencePoint);
-                        gsc.graphEdges[counter].SetPosition(2, observer.GetOperators()[op].Children[i].GetIcon().transform.position);
-                        counter++;
+                        observer.GetOperators()[op].Children[i].GetComponent<LineRenderer>().positionCount = 3;
+                        observer.GetOperators()[op].Children[i].GetComponent<LineRenderer>().SetPosition(0, observer.GetOperators()[op].GetIcon().transform.position);
+                        observer.GetOperators()[op].Children[i].GetComponent<LineRenderer>().SetPosition(1, referencePoint);
+                        observer.GetOperators()[op].Children[i].GetComponent<LineRenderer>().SetPosition(2, observer.GetOperators()[op].Children[i].GetIcon().transform.position);
                     }
                 }
             }
         }
-        Debug.Log("end");
     }
 
     private void NormalizeDepth()

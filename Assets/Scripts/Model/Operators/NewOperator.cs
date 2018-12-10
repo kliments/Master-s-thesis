@@ -35,15 +35,18 @@ public class NewOperator :  GenericOperator
                 _newPosOp = GetIcon().transform.position;
                 _oldPosParent = _newPosParent;
                 _newPosParent = Parents[0].GetIcon().transform.position;
-                //Update the line renderer if position of node changes
-                if(_oldPosOp != _newPosOp)
+                if (GetComponent<LineRenderer>().positionCount == 2)
                 {
-                    GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newPosParent, GetIcon().transform.position });
-                }
-                // Update the line renderer if position of parent changes
-                if (_oldPosParent != _newPosParent)
-                {
-                    GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newPosParent, GetIcon().transform.position });
+                    //Update the line renderer if position of node changes
+                    if (_oldPosOp != _newPosOp)
+                    {
+                        GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newPosParent, GetIcon().transform.position });
+                    }
+                    // Update the line renderer if position of parent changes
+                    if (_oldPosParent != _newPosParent)
+                    {
+                        GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newPosParent, GetIcon().transform.position });
+                    }
                 }
             }
         }
