@@ -93,7 +93,8 @@ namespace Assets.Scripts.Model
             else
             {
                 timeStamp = hour + minute / 60 + second / 3600 + millisecond / 3600000;
-                timeOfCreation = timeOfCreation.AddHours(hour).AddMinutes(minute).AddSeconds(second).AddMilliseconds(millisecond);
+                timeOfCreation = timeOfCreation.AddYears(DateTime.Now.Year).AddMonths(DateTime.Now.Month).AddDays(DateTime.Now.Day)
+                                                .AddHours(hour).AddMinutes(minute).AddSeconds(second).AddMilliseconds(millisecond);
             }
             _oldPos = new Vector3();
             _newPos = new Vector3();

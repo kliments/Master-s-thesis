@@ -8,11 +8,15 @@ public class ModeEventListener : MonoBehaviour {
     //internal variable for the action to perform
     public MENU_ACTION menuAction = MENU_ACTION.SELECT;
 
+    //parent of tree for scaling, moving and rotating
+    public GameObject treeParent;
     //layers to ignore in modify actions and select action
     public LayerMask layersToIgnoreModify;
     public LayerMask layersToIgnoreSelect;
     VRTK_SimplePointer pointer;
     VRTK_ControllerEvents controller;
+    private SteamVR_TrackedObject _trackedObj;
+    private SteamVR_Controller.Device _device;
     bool fixSelection = false;
 
     // Indicates whether the rotation of the selected object should be updated
@@ -63,6 +67,9 @@ public class ModeEventListener : MonoBehaviour {
         //Setup controller button event Listener;
         controller.TriggerPressed += new ControllerInteractionEventHandler(triggerPressed);
         controller.TriggerReleased += new ControllerInteractionEventHandler(triggerReleased);
+
+        _trackedObj = GetComponent<SteamVR_TrackedObject>();
+        _device = SteamVR_Controller.Input((int)_trackedObj.index);
     }
 	
 	// Update is called once per frame
@@ -79,11 +86,30 @@ public class ModeEventListener : MonoBehaviour {
             float scaleDiff = 1 + (gameObject.transform.position.y - initialPosition.y) * 1.2f;
             selection.transform.localScale = initialScale * scaleDiff;
         }
+
+        if(_device.GetPressDown(SteamVR_Controller.ButtonMask.Trigger))
+        {
+            if (menuAction == MENU_ACTION.MOVE || menuAction == MENU_ACTION.SCALE || menuAction == MENU_ACTION.ROTATE)
+            {
+                selectObject();
+            }
+        }
+    }
+
+    private void selectObject()
+    {
+        selection = treeParent;
+        return;
     }
 
     private void selectObject(object sender, DestinationMarkerEventArgs e)
     {
 
+        if (menuAction == MENU_ACTION.MOVE || menuAction == MENU_ACTION.SCALE || menuAction == MENU_ACTION.ROTATE)
+        {
+            selection = treeParent;
+            return;
+        }
         if (fixSelection)
         {
             return;

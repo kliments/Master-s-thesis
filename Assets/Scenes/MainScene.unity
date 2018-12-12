@@ -1967,7 +1967,6 @@ MonoBehaviour:
   RDT: 0
   reposition: 0
   height: 0.5
-  referencePoints: []
 --- !u!114 &360191225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1994,7 +1993,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   project: 0
-  print: 0
   camera: {fileID: 0}
   projectionPlane: {fileID: 0}
 --- !u!114 &360191227
@@ -2010,6 +2008,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   countEdgeCrossings: 0
   count: 0
+  averageAngle: 0
+  _angles: []
 --- !u!114 &360191228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2021,6 +2021,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e3853080421fb149a2447f5143e0e99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  position: {x: 0, y: 0, z: 0}
+  scan: 0
 --- !u!1 &367106820
 GameObject:
   m_ObjectHideFlags: 0
@@ -4371,6 +4373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuAction: 3
+  treeParent: {fileID: 113367144}
   layersToIgnoreModify:
     serializedVersion: 2
     m_Bits: 32
@@ -5463,7 +5466,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1031145540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12161,7 +12164,7 @@ Prefab:
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 1356
+      value: 1159
       objectReference: {fileID: 0}
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
