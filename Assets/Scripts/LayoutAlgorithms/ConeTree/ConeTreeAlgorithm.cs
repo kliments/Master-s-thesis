@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * Calculates the position of the nodes in Cone Tree Algorithm
+ * Also implements time-dependent positioning of the nodes, by stretching the base of a cone along the Y axis
+ * Also implements RDT (Reconfigurable Disk Trees) algorithm for reduction of edge crossings
+ */
 public class ConeTreeAlgorithm : MonoBehaviour {
     public Observer observer;
     public bool runConeTree, timeDependent, RDT, reposition;
@@ -63,6 +68,7 @@ public class ConeTreeAlgorithm : MonoBehaviour {
             CalculateRDT();
         }
     }
+    // Checks whether all nodes are placed in its place
     private bool AllNodesPlaced()
     {
         foreach(var node in observer.GetOperators())
@@ -79,7 +85,6 @@ public class ConeTreeAlgorithm : MonoBehaviour {
         SecondWalk(root, x, z, 0.5f, 0f);
         reposition = true;
         GetComponent<TwoDimensionalProjection>().SetPlane();
-        //CalculateRDT();
     }
 
     /* Bottom up proceeding, computing value for distances 
@@ -169,7 +174,7 @@ public class ConeTreeAlgorithm : MonoBehaviour {
         if (np.r == 0) np.r = _minRadius + 2 * np.d;
     }*/
 
-    // Computation of the absolute x and z coordinates for each node
+    // Computation of the absolute x, y and z coordinates for each node
     private void SecondWalk(GenericOperator nodeN, float x, float z, float l, float t)
     {
         IconProperties np = nodeN.GetIcon().GetComponent<IconProperties>();
@@ -231,6 +236,9 @@ public class ConeTreeAlgorithm : MonoBehaviour {
         }
     }*/
 
+    /*
+     * Calculates the reference point between parend and child node for RDT algorithm
+     */
     public void CalculateRDT()
     {
         int x = 0;

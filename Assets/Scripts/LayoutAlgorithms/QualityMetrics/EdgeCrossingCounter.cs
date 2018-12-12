@@ -2,18 +2,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
+ * Counts the number of edge crossings including the angles between them 
+ */
 public class EdgeCrossingCounter : MonoBehaviour {
     public bool countEdgeCrossings;
     public int count;
+    public float averageAngle;
+
     private List<List<Vector3>> _edges;
-    private Observer observer;
-    private Transform projectionPlane;
+    public List<float> _angles;
+    private Observer _observer;
+    private Transform _projectionPlane;
 	// Use this for initialization
 	void Start () {
-        observer = (Observer)FindObjectOfType(typeof(Observer));
+        _observer = (Observer)FindObjectOfType(typeof(Observer));
         _edges = new List<List<Vector3>>();
-        projectionPlane = GameObject.Find("ProjectionPlane").transform;
+        _projectionPlane = GameObject.Find("ProjectionPlane").transform;
+        _angles = new List<float>();
 	}
 	
 	// Update is called once per frame
@@ -26,25 +32,27 @@ public class EdgeCrossingCounter : MonoBehaviour {
         }
 	}
 
+    // Popupates a list of existing edges
     void PopulateEdges()
     {
         _edges = new List<List<Vector3>>();
         List<Vector3> temp = new List<Vector3>();
-        foreach(var op in observer.GetOperators())
+        foreach(var op in _observer.GetOperators())
         {
             if(op.Children != null)
             {
                 foreach(var child in op.Children)
                 {
                     temp = new List<Vector3>();
-                    temp.Add(projectionPlane.InverseTransformPoint(op.GetIcon().transform.position));
-                    temp.Add(projectionPlane.InverseTransformPoint(child.GetIcon().transform.position));
+                    temp.Add(_projectionPlane.InverseTransformPoint(op.GetIcon().transform.position));
+                    temp.Add(_projectionPlane.InverseTransformPoint(child.GetIcon().transform.position));
                     _edges.Add(temp);
                 }
             }
         }
     }
 
+    // Counts the number of edge crossings
     int CountEdgeCrossings()
     {
         count = 0;
@@ -52,12 +60,18 @@ public class EdgeCrossingCounter : MonoBehaviour {
         {
             for(int j=i+1; j<_edges.Count; j++)
             {
-                if (FasterLineSegmentIntersection(_edges[i][0], _edges[i][1], _edges[j][0], _edges[j][1])) count++;
+                if (FasterLineSegmentIntersection(_edges[i][0], _edges[i][1], _edges[j][0], _edges[j][1]))
+                {
+                    _angles.Add(EdgeAngle(_edges[i][1] - _edges[i][0], _edges[j][1] - _edges[j][0]));
+                    count++;
+                }
             }
         }
+        if (_angles.Count > 0) averageAngle = AverageAngle(_angles);
         return count;
     }
 
+    // Edge crossing algorithm
     bool FasterLineSegmentIntersection(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4)
     {
         Vector3 a = p2 - p1;
@@ -87,5 +101,25 @@ public class EdgeCrossingCounter : MonoBehaviour {
             else if (betaNumerator > 0 || betaNumerator < betaDenominator) return false;
         }
         return true;
+    }
+
+    // Returns the angle between two directional vectors
+    float EdgeAngle(Vector3 line1, Vector3 line2)
+    {
+        float angle = 0;
+        if (Vector3.Angle(line1, line2) > 90) angle = 180 - Vector3.Angle(line1, line2);
+        else angle = Vector3.Angle(line1, line2);
+        return angle;
+    }
+
+    // Returns the average crossing-edges angle
+    float AverageAngle(List<float> angles)
+    {
+        float averageAngle = 0;
+        foreach(var angle in angles)
+        {
+            averageAngle += angle;
+        }
+        return averageAngle / angles.Count;
     }
 }

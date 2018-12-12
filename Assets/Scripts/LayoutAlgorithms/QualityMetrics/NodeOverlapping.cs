@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+/*
+ * Counts the number of node overlaps by
+ * raycasting from the camera to the 4 vertices of a node
+ * starting from the furthest one
+ */
 public class NodeOverlapping : MonoBehaviour {
 
     public bool calculateNodeOverlapping;
@@ -85,7 +90,7 @@ public class NodeOverlapping : MonoBehaviour {
         return count;
     }
 
-    //sorting nodes by distance, starting with the furthest one
+    //Sorting nodes by distance, starting with the furthest one
     void SortListOfNodes()
     {
         sortedList = observer.GetOperators().OrderBy(node => -Vector3.Distance(camera.transform.position, node.GetIcon().transform.position)).ToList();

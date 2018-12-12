@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * Rotates a gameObject around the tree-graph
+ * Calculates the number of node overlaps, edge crossings and angles between them
+ * and saves it in QualityMetricViewport class for later calculation
+ */
+
 public class ViewPortOptimizer : MonoBehaviour {
     public Vector3 position;
     public bool scan;
@@ -25,6 +31,9 @@ public class ViewPortOptimizer : MonoBehaviour {
         }
 	}
 
+    /* Finds the center of the graph for rotation of the scanner object
+     *  around the tree-graph
+     */
     Vector3 FindCenterOfGraph()
     {
         Vector3 pos = new Vector3();
@@ -36,6 +45,9 @@ public class ViewPortOptimizer : MonoBehaviour {
         return pos;
     }
 
+    /* Finds the position of the furthest node and adds +1 meter 
+     * in that direction for seeing the whole graph
+     */
     Vector3 FindFurthestNode()
     {
         Vector3 pos = observer.GetOperators()[0].GetIcon().transform.position;

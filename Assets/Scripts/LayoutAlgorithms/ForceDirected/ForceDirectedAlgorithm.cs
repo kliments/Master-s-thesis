@@ -4,6 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * Calculates the position of nodes in Force Directed Algorithm
+ * Also implements time-dependent positioning of nodes, by keeping their X position
+ * and nodes affecting each-other only within particular time-bins
+ */
 public class ForceDirectedAlgorithm : MonoBehaviour {
     public Observer observer;
 
@@ -89,6 +94,7 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
         }
 	}
 
+    // Randomization of node positions
     void RandomizePositions()
     {
         // reset the temperature
@@ -111,6 +117,10 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
         GetComponent<TwoDimensionalProjection>().SetPlane();
     }
 
+    /*
+     * Allocates nodes in time-bins of 10 seconds
+     * Used for time-depending positioning of nodes
+     */
     void AllocateTimeBins()
     {
         _timeBins = new List<List<GenericOperator>>();
@@ -160,6 +170,11 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
         Temperature *= DefaultTemperatureAttenuation;
     }
 
+    /*
+     * Time-dependent force-directed algorithm
+     * Nodes affect each-other only within specific time-bins of 10 seconds
+     * Also, keeping their X position
+     */
     private void ForceDirectedWithTemporalDependency()
     {
         if (_timeBins != null) if(_timeBins.Count == 0) AllocateTimeBins();
@@ -218,6 +233,10 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
         }
     }
 
+    /*
+     * Classical force-directed 3D algorithm where connected nodes attract,
+     * and non-connected nodes repel eachother
+     */
     private void ForceDirectedWithoutTemporalDependency()
     {
         foreach (var op1 in observer.GetOperators())

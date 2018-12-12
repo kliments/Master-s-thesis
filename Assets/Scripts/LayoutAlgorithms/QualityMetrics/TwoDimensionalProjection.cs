@@ -3,8 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+ * Projects the current viewport of the tree on 2D plane
+ * Used for calculation of number of edge crossings
+ * and angles between them
+ */
 public class TwoDimensionalProjection : MonoBehaviour {
-    public bool project, print;
+    public bool project;
     public GameObject camera, projectionPlane;
 
     private Observer _observer;
@@ -39,6 +44,7 @@ public class TwoDimensionalProjection : MonoBehaviour {
         }
 	}
 
+    // Sets the plane in the center of the tree-graph
     public void SetPlane()
     {
         foreach (var op in _observer.GetOperators())
