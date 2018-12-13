@@ -14,10 +14,12 @@ public class SaveLoadData:MonoBehaviour {
     private static GenericOperator root;
     private static SaveLoadData instance;
     private static GraphSpaceController graphSpace;
+    public static DefaultAlgorithm algorithm;
     // Use this for initialization
     void Start () {
         graphSpace = (GraphSpaceController)FindObjectOfType(typeof(GraphSpaceController));
-	}
+        algorithm = (DefaultAlgorithm)FindObjectOfType(typeof(DefaultAlgorithm));
+    }
 
     private void Awake()
     {
@@ -39,7 +41,7 @@ public class SaveLoadData:MonoBehaviour {
         Debug.Log("press load");
         ClearOperators();
         //destroy any current nodes in observer
-        if(observer.GetOperators()!=null)
+        if (observer.GetOperators()!=null)
         {
             for(int i= observer.GetOperators().Count-1; i>=0; i--)
             {
@@ -47,6 +49,7 @@ public class SaveLoadData:MonoBehaviour {
                 observer.DestroyOperator(observer.GetOperators()[i]);
             }
         }
+        algorithm.positions = new List<Vector3>();
         genericOperatorContainer = LoadOperators(path);
         graphSpace.graphEdges = new List<LineRenderer>();
         foreach (OperatorData data in genericOperatorContainer.operators)
@@ -96,7 +99,8 @@ public class SaveLoadData:MonoBehaviour {
     IEnumerator ReloadData(GenericOperator firstNode)
     {
         yield return 0;
-        if(firstNode.GetRawInputData()!=null)
+        algorithm.positions = new List<Vector3>();
+        if (firstNode.GetRawInputData()!=null)
         {
             firstNode.ReProcess(firstNode.GetRawInputData());
         }

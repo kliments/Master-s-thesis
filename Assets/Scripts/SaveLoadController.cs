@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class SaveLoadController : Targetable {
+    public static DefaultAlgorithm algorithm;
     public Button saveButton, loadButton;
     public static List<GenericOperator> operatorList;
     public static UnityEngine.Events.UnityAction saveData;
@@ -21,6 +22,7 @@ public class SaveLoadController : Targetable {
         obs = (Observer)FindObjectOfType(typeof(Observer));
         operatorList = new List<GenericOperator>();
         graphSpace = GameObject.Find("GraphSpace").GetComponent<GraphSpaceController>();
+        algorithm = (DefaultAlgorithm)FindObjectOfType(typeof(DefaultAlgorithm));
     }
 	
 	// Update is called once per frame
@@ -84,10 +86,10 @@ public class SaveLoadController : Targetable {
         {
             if(op.Parents.Count != 0) graphSpace.DrawEdge(op.Parents[0], op);
         }
-        instance.StartCoroutine(instance.DestroyNewOperatorChildren(op.Children));
+        instance.StartCoroutine(instance.DestroyNewOperatorChildren(op, op.Children));
     }
 
-    IEnumerator DestroyNewOperatorChildren(List<GenericOperator> children)
+    IEnumerator DestroyNewOperatorChildren(GenericOperator op, List<GenericOperator> children)
     {
         yield return 0;
         foreach(var child in children.ToArray())
@@ -97,6 +99,7 @@ public class SaveLoadController : Targetable {
                 obs.DestroyOperator(child);
             }
         }
+        algorithm.positions.Add(op.GetIcon().transform.position);
     }
 
     private void OnEnable()

@@ -41,10 +41,14 @@ namespace Assets.Scripts.Model
         private SaveLoadData.SerializeAction saveDataAction;
 
         public double timeStamp, normalizedTimeStamp, hour, minute, second, millisecond;
-        public DateTime timeOfCreation;
+        public DateTime timeOfCreation, timeNow;
 
         private GraphSpaceController _graphSpace;
         private Vector3 _oldParentPos, _newParentPos, _oldPos, _newPos;
+
+        private LayoutAlgorithm layout;
+        //Default algorithm for saving original positions of nodes
+        private DefaultAlgorithm defaultAlgorithm;
         
         public virtual void Start()
         {
@@ -83,23 +87,41 @@ namespace Assets.Scripts.Model
             //time of creation of the operator, later used as temporal variable in visualization of the tree
             if (hour == 0 && minute == 0 && second == 0 && millisecond == 0)
             {
-                timeStamp = (double)DateTime.Now.Hour + (double)DateTime.Now.Minute / 60 + (double)DateTime.Now.Second / 3600 + (double)DateTime.Now.Millisecond / 3600000;
-                hour = DateTime.Now.Hour;
-                minute = DateTime.Now.Minute;
-                second = DateTime.Now.Second;
-                millisecond = DateTime.Now.Millisecond;
-                timeOfCreation = DateTime.Now;
+                timeNow = DateTime.Now;
+                timeOfCreation = timeNow;
+                if(Observer.GetOperators().Count > 1)
+                {
+                    timeOfCreation = Observer.GetOperators()[Observer.GetOperators().Count - 2].timeOfCreation.
+                        AddMilliseconds((timeNow - Observer.GetOperators()[Observer.GetOperators().Count - 2].timeNow).TotalMilliseconds);
+                }
+                timeStamp = (double)timeOfCreation.Hour + (double)timeOfCreation.Minute/60 + (double)timeOfCreation.Second/3600 + (double)timeOfCreation.Millisecond / 3600000;
+                hour = timeOfCreation.Hour;
+                minute = timeOfCreation.Minute;
+                second = timeOfCreation.Second;
+                millisecond = timeOfCreation.Millisecond;
             }
             else
             {
                 timeStamp = hour + minute / 60 + second / 3600 + millisecond / 3600000;
-                timeOfCreation = timeOfCreation.AddYears(DateTime.Now.Year).AddMonths(DateTime.Now.Month).AddDays(DateTime.Now.Day)
-                                                .AddHours(hour).AddMinutes(minute).AddSeconds(second).AddMilliseconds(millisecond);
+                DateTime x = DateTime.Today;
+                timeOfCreation = new DateTime(x.Year, x.Month, x.Day).AddHours(hour).AddMinutes(minute).AddSeconds(second).AddMilliseconds(millisecond);
+                timeNow = DateTime.Now;
             }
             _oldPos = new Vector3();
             _newPos = new Vector3();
             _oldParentPos = new Vector3();
             _newParentPos = new Vector3();
+
+            // Reload current layout algorithm when Operator is created
+            if(GetType() != typeof(NewOperator))
+            {
+                //save the default position of node
+                defaultAlgorithm = (DefaultAlgorithm)FindObjectOfType(typeof(DefaultAlgorithm));
+                defaultAlgorithm.positions.Add(GetIcon().transform.position);
+                //re-run current layout algorithm
+                layout = (LayoutAlgorithm)FindObjectOfType(typeof(LayoutAlgorithm));
+                if (layout.currentLayout != null) layout.currentLayout.StartAlgorithm();
+            }
         }
 
         private void Update()
@@ -123,6 +145,18 @@ namespace Assets.Scripts.Model
                         if (_oldParentPos != _newParentPos)
                         {
                             GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newParentPos, GetIcon().transform.position });
+                        }
+                    }
+                    else if(GetComponent<LineRenderer>().positionCount == 3)
+                    {// Update the line renderer if position of this node changes
+                        if (_oldPos != _newPos)
+                        {
+                            GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newParentPos, Parents[0].GetIcon().GetComponent<IconProperties>().refPoint , GetIcon().transform.position });
+                        }
+                        // Update the line renderer if position of parent changes
+                        if (_oldParentPos != _newParentPos)
+                        {
+                            GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newParentPos, Parents[0].GetIcon().GetComponent<IconProperties>().refPoint, GetIcon().transform.position });
                         }
                     }
                 }

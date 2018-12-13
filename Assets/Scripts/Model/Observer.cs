@@ -13,7 +13,7 @@ namespace Assets.Scripts.Model
         private int _operatorNewId = -1;
         public GenericOperator selectedOperator;
         private float[] _timeStamps;
-
+        
         private GraphSpaceController _graphSpaceController;
         private VisualizationSpaceController _visualizationSpaceController;
 
@@ -40,7 +40,8 @@ namespace Assets.Scripts.Model
             _graphSpaceController.setObserver(this);
             _visualizationSpaceController =
                 GameObject.Find("VisualizationSpace").GetComponent<VisualizationSpaceController>();
-            
+
+
             // Spawn initial "New Operator"
             CreateOperator(_operatorNewId);
         }

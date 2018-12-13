@@ -17,6 +17,7 @@ public class ModeEventListener : MonoBehaviour {
     VRTK_ControllerEvents controller;
     private SteamVR_TrackedObject _trackedObj;
     private SteamVR_Controller.Device _device;
+    private LayoutAlgorithm layout;
     bool fixSelection = false;
 
     // Indicates whether the rotation of the selected object should be updated
@@ -70,6 +71,8 @@ public class ModeEventListener : MonoBehaviour {
 
         _trackedObj = GetComponent<SteamVR_TrackedObject>();
         _device = SteamVR_Controller.Input((int)_trackedObj.index);
+
+        layout = (LayoutAlgorithm)FindObjectOfType(typeof(LayoutAlgorithm));
     }
 	
 	// Update is called once per frame
@@ -92,6 +95,17 @@ public class ModeEventListener : MonoBehaviour {
             if (menuAction == MENU_ACTION.MOVE || menuAction == MENU_ACTION.SCALE || menuAction == MENU_ACTION.ROTATE)
             {
                 selectObject();
+            }
+        }
+
+        if(_device.GetPress(SteamVR_Controller.ButtonMask.Trigger))
+        {
+            if (menuAction == MENU_ACTION.MOVE || menuAction == MENU_ACTION.SCALE || menuAction == MENU_ACTION.ROTATE)
+            {
+                if (layout.currentLayout.GetType() == typeof(ConeTreeAlgorithm) && layout.currentLayout.GetComponent<ConeTreeAlgorithm>().RDT)
+                {
+                    layout.currentLayout.GetComponent<ConeTreeAlgorithm>().CalculateRDT();
+                }
             }
         }
     }

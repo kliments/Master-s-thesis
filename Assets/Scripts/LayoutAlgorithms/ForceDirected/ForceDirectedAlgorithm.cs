@@ -9,7 +9,7 @@ using UnityEngine;
  * Also implements time-dependent positioning of nodes, by keeping their X position
  * and nodes affecting each-other only within particular time-bins
  */
-public class ForceDirectedAlgorithm : MonoBehaviour {
+public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
     public Observer observer;
 
     // Time bins where nodes are contained depending on the time of their creation
@@ -30,7 +30,7 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
     //The current temperature in the simulated annealing
     public float Temperature;
     
-    public bool calculateForceDirected, randomize, saveOriginalLocations, loadLocations, timeDependent;
+    public bool calculateForceDirected, randomize, saveOriginalLocations, loadLocations;
 
     /// The function defining the attraction force between two connected nodes.
     /// Arcs are viewed as springs that want to bring the two connected nodes together.
@@ -41,6 +41,12 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
     /// Nodes are viewed as electrically charged particles which repel each other.
     /// The function takes a single parameter, which is the distance of the two nodes.
     public Func<double, double> ElectricForce { get; set; }
+
+    //frame counter for slower forceDirected visualization
+    private int frameCounter;
+
+    //repeater of algorithm
+    private int repeatCounter;
 
 
     LineRenderer lr = new LineRenderer();
@@ -77,22 +83,67 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
             }
             if (GetComponent<ConeTreeAlgorithm>().RDT) GetComponent<ConeTreeAlgorithm>().CalculateRDT();
         }
-        if(randomize)
-        {
-            randomize = false;
-            RandomizePositions();
-        }
-		if(calculateForceDirected)
-        {
-            if (Temperature < DefaultMinimumTemperature)
-            {
-                Temperature = 0.2f;
-                calculateForceDirected = false;
-                GetComponent<TwoDimensionalProjection>().SetPlane();
-            }
-            Calculate();
-        }
 	}
+
+    private void FixedUpdate()
+    {
+        if (calculateForceDirected)
+        {
+            frameCounter++;
+            if (frameCounter == 2)
+            {
+                frameCounter = 0;
+                if (Temperature < DefaultMinimumTemperature)
+                {
+                    Temperature = 0.2f;
+                    calculateForceDirected = false;
+                    GetComponent<TwoDimensionalProjection>().SetPlane();
+                    //re-run algorithm if nodes are not placed accodringly
+                    ReRunAlgorithm();
+                    if (repeatCounter < 5)
+                    {
+                        calculateForceDirected = true;
+                        repeatCounter++;
+                    }
+                    else
+                    {
+                        repeatCounter = 0;
+                        calculateForceDirected = false;
+                    }
+                }
+                Calculate();
+            }
+        }
+    }
+
+    public override void StartAlgorithm()
+    {
+        if (GetComponent<LayoutAlgorithm>().currentLayout != this) RandomizePositions();
+        //Algorithm is called in Update function
+        calculateForceDirected = true;
+        GetComponent<LayoutAlgorithm>().currentLayout = this;
+    }
+
+    void ReRunAlgorithm()
+    {
+        foreach (var op1 in observer.GetOperators())
+        {
+            float distance = 0;
+            foreach (var op2 in op1.Children)
+            {
+                if (op1 == op2) continue;
+                distance = Vector3.Distance(op1.GetIcon().transform.position, op2.GetIcon().transform.position);
+                if (distance > 10 && !GetTemporal())
+                {
+                    if(op2.Children != null)
+                    {
+                        if (op2.Children.Count == 0) StartAlgorithm();
+                    }
+                    else if(op2.Children.Count == 0) StartAlgorithm();
+                }
+            }
+        }
+    }
 
     // Randomization of node positions
     void RandomizePositions()
@@ -147,12 +198,12 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
 
     protected void Calculate()
     {
-        if(timeDependent) ForceDirectedWithTemporalDependency();
+        if(GetTemporal()) ForceDirectedWithTemporalDependency();
         else ForceDirectedWithoutTemporalDependency();
         //update positions
         foreach (var op in observer.GetOperators())
         {
-            op.GetIcon().transform.position += op.GetIcon().GetComponent<IconProperties>().acceleration;
+            op.GetIcon().transform.position += op.GetIcon().GetComponent<IconProperties>().acceleration/2;
             op.GetIcon().GetComponent<IconProperties>().acceleration = Vector3.zero;
             op.GetIcon().GetComponent<IconProperties>().oldPos = op.GetIcon().transform.position;
             if (op.Parents != null)
@@ -177,7 +228,7 @@ public class ForceDirectedAlgorithm : MonoBehaviour {
      */
     private void ForceDirectedWithTemporalDependency()
     {
-        if (_timeBins != null) if(_timeBins.Count == 0) AllocateTimeBins();
+        AllocateTimeBins();
         foreach (var list in _timeBins)
         {
             foreach (var node1 in list)
