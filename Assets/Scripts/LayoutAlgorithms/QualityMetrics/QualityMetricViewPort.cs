@@ -7,16 +7,9 @@ using UnityEngine;
  * It contains number of node overlaps, number of edge crossings,
  * angles between them and its camera position
  */
-public class QualityMetricViewPort : MonoBehaviour {
-    public int nrNodeOverlaps, nrEdgeCrossings, averageAngle;
+public class QualityMetricViewPort {
+    public float nrNodeOverlaps, nrEdgeCrossings;
+    public float edgeLength, minimumAngle, minAngRes, overallGrade;
+    public float _ZnodeOverlap, _ZedgeCross, _ZminAngle, _ZangRes, _ZedgeLength;
     public Vector3 cameraPosition;
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }

@@ -9,39 +9,23 @@ using UnityEngine;
  * and angles between them
  */
 public class TwoDimensionalProjection : MonoBehaviour {
-    public bool project;
     public GameObject camera, projectionPlane;
 
     private Observer _observer;
     private RaycastHit _hit;
-    private Vector3 direction;
+    private Vector3 direction, _averageNode;
     private LayerMask _layerMask;
-    private Vector3  _averageNode;
+    private List<Vector3> _originalPositions;
 	// Use this for initialization
 	void Start () {
         _observer = (Observer)FindObjectOfType(typeof(Observer));
         _layerMask = 1 << LayerMask.NameToLayer("ProjectionPlane");
         _averageNode = new Vector3();
-        camera = Camera.main.gameObject;
-        projectionPlane = GameObject.Find("ProjectionPlane");
     }
 	
 	// Update is called once per frame
 	void Update () {
-		if(project)
-        {
-            project = false;
-            foreach(var op in _observer.GetOperators())
-            {
-                direction = op.GetIcon().transform.position - camera.transform.position;
-                if(Physics.Raycast(camera.transform.position, direction, out _hit, 50, _layerMask))
-                {
-                    if(op.GetComponent<LineRenderer>() != null) op.GetComponent<LineRenderer>().positionCount = 2;
-                    op.GetIcon().transform.position = _hit.point;
-                }
-            }
-            if (GetComponent<ConeTreeAlgorithm>().RDT) GetComponent<ConeTreeAlgorithm>().CalculateRDT();
-        }
+
 	}
 
     // Sets the plane in the center of the tree-graph
@@ -55,5 +39,29 @@ public class TwoDimensionalProjection : MonoBehaviour {
         float distance = Vector3.Distance(camera.transform.position, _averageNode);
         Vector3 planePos = new Vector3(projectionPlane.transform.localPosition.x, projectionPlane.transform.localPosition.y, distance);
         projectionPlane.transform.localPosition = planePos;
+    }
+
+    public void RestorePositions()
+    {
+        for(int i=0; i<_observer.GetOperators().Count; i++)
+        {
+            _observer.GetOperators()[i].GetIcon().transform.position = _originalPositions[i];
+        }
+    }
+
+    public void ProjectTree()
+    {
+        _originalPositions = new List<Vector3>();
+        foreach (var op in _observer.GetOperators())
+        {
+            _originalPositions.Add(op.GetIcon().transform.position);
+            direction = op.GetIcon().transform.position - camera.transform.position;
+            if (Physics.Raycast(camera.transform.position, direction, out _hit, 50, _layerMask))
+            {
+                if (op.GetComponent<LineRenderer>() != null) op.GetComponent<LineRenderer>().positionCount = 2;
+                op.GetIcon().transform.position = _hit.point;
+            }
+        }
+        if (GetComponent<ConeTreeAlgorithm>().RDT) GetComponent<ConeTreeAlgorithm>().CalculateRDT();
     }
 }

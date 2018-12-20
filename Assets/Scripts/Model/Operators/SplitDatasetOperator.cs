@@ -43,21 +43,6 @@ namespace Model.Operators
             base.Start();
         }
 
-        private void Update()
-        {
-            //for debugging
-            if(press)
-            {
-                press = false;
-                for(int i=0;i<Children.Count;i++)
-                {
-                    Children[i].Delete(Children[i]);
-                    --i;
-                }
-                SplitDataset();
-            }
-        }
-
         public override bool Process()
         {
             if (GetRawInputData()!=null)
