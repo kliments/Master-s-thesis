@@ -78,6 +78,7 @@ public class ViewPortOptimizer : MonoBehaviour {
             }
             cam.position = observationList[counter].cameraPosition;
             cam.LookAt(transform);
+            Debug.Log(observationList[counter].overallGrade);
         }
         if(switchBackView)
         {
@@ -141,9 +142,6 @@ public class ViewPortOptimizer : MonoBehaviour {
                     }
                 }
                 if (_toBreak) continue;
-                /*GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                obj.transform.position = cam.transform.position;
-                obj.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);*/
                 NodeOverlapping node = new NodeOverlapping();
                 temp = new QualityMetricViewPort();
                 temp.nrNodeOverlaps = GetComponent<NodeOverlapping>().CalculateNodeOverlapping();
@@ -195,7 +193,6 @@ public class ViewPortOptimizer : MonoBehaviour {
 
         observationList = SortList(observationList);
         nrOfViews = observationList.Count;
-        Debug.Log("done");
     }
 
     // Function for calculating Mean of values in list

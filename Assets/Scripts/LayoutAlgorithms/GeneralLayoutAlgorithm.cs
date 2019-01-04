@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class GeneralLayoutAlgorithm : MonoBehaviour {
-
+    
     private bool _temporal;
 	// Use this for initialization
 	void Start () {

@@ -10,7 +10,7 @@ using UnityEngine;
 public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
 {
     public Observer observer;
-    public bool RDT, reposition;
+    public bool RDT, reposition, startConeTree;
     public float height;
 
     private float _minRadius = 0.5f;
@@ -28,35 +28,12 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
     // Update is called once per frame
     void Update()
     {
-        if (reposition)
+        if(startConeTree)
         {
-            foreach (var op in observer.GetOperators())
-            {
-                if (op.GetIcon().GetComponent<IconProperties>().repos)
-                {
-                    op.GetIcon().transform.position = Vector3.Lerp(op.GetIcon().transform.position, op.GetIcon().GetComponent<IconProperties>().newPos, Time.deltaTime);
-                    if (Vector3.Distance(op.GetIcon().transform.position, op.GetIcon().GetComponent<IconProperties>().newPos) < 0.01f)
-                    {
-                        op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
-                        op.GetIcon().GetComponent<IconProperties>().oldPos = op.GetIcon().GetComponent<IconProperties>().newPos;
-                        op.GetIcon().GetComponent<IconProperties>().repos = false;
-                    }
-                    if (op.Parents != null)
-                    {
-                        if (op.Parents.Count != 0)
-                        {
-                            op.GetComponent<LineRenderer>().positionCount = 2;
-                            op.GetComponent<LineRenderer>().SetPositions(new Vector3[] { op.Parents[0].GetIcon().transform.position, op.GetIcon().transform.position });
-                        }
-                    }
-                }
-            }
-            if (AllNodesPlaced())
-            {
-                reposition = false;
-                if (RDT) calculateRDT = true;
-            }
+            startConeTree = false;
+            StartAlgorithm();
         }
+        if (AllNodesPlaced() && RDT) calculateRDT = true;
         if (calculateRDT)
         {
             calculateRDT = false;
@@ -98,6 +75,7 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
     }
     private void Layout(GenericOperator root, float x, float z)
     {
+        ResetValues();
         NormalizeDepth();
         FirstWalk(root);
         SecondWalk(root, x, z, 0.5f, 0f);
@@ -109,13 +87,14 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
      * possibly computing scaling factor for children and
      * computing radius of circles
      */
-    private void FirstWalk(GenericOperator node)
+    public void FirstWalk(GenericOperator node)
     {
         IconProperties np = node.GetIcon().GetComponent<IconProperties>();
         np.d = 0;
         float s = 0;
         foreach (var child in node.Children)
         {
+            if (child.GetType() == typeof(NewOperator)) continue;
             FirstWalk(child);
             IconProperties cp = child.GetIcon().GetComponent<IconProperties>();
             np.d = Mathf.Max(np.d, cp.r);
@@ -146,11 +125,11 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
     //Setting the radius of a node
     private void SetRadius(IconProperties np)
     {
-        np.r = Mathf.Max(np.d, _minRadius) + 2 * np.d;
+        np.r = Mathf.Max(np.d, _minRadius) + np.d;
     }
 
     // Computation of the absolute x, y and z coordinates for each node
-    private void SecondWalk(GenericOperator nodeN, float x, float z, float l, float t)
+    public void SecondWalk(GenericOperator nodeN, float x, float z, float l, float t)
     {
         IconProperties np = nodeN.GetIcon().GetComponent<IconProperties>();
         double y = 0;
@@ -165,16 +144,28 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
         float freeSpace = (nodeN.Children.Count == 0 ? 0 : np.f / nodeN.Children.Count);
         float previous = 0;
 
-        foreach (var child in nodeN.Children)
+        if(nodeN.Children.Count == 1)
         {
-            IconProperties cp = child.GetIcon().GetComponent<IconProperties>();
+            IconProperties cp = nodeN.Children[0].GetIcon().GetComponent<IconProperties>();
             float aa = np.c * cp.a;
             float rr = np.d * Mathf.Tan(aa) / (1 - Mathf.Tan(aa));
             p += previous + aa + freeSpace + freeSpace;
-            float xx = (l * rr + dd) * Mathf.Cos(p);
-            float zz = (l * rr + dd) * Mathf.Sin(p);
             previous = aa;
-            SecondWalk(child, x + xx, z + zz, l * rr / cp.r, p);
+            SecondWalk(nodeN.Children[0], np.newPos.x, np.newPos.z, l * rr / cp.r, p);
+        }
+        else
+        {
+            foreach (var child in nodeN.Children)
+            {
+                IconProperties cp = child.GetIcon().GetComponent<IconProperties>();
+                float aa = np.c * cp.a;
+                float rr = np.d * Mathf.Tan(aa) / (1 - Mathf.Tan(aa));
+                p += previous + aa + freeSpace + freeSpace;
+                float xx = (l * rr + dd) * Mathf.Cos(p);
+                float zz = (l * rr + dd) * Mathf.Sin(p);
+                previous = aa;
+                SecondWalk(child, x + xx, z + zz, l * rr / cp.r, p);
+            }
         }
     }
 
@@ -221,19 +212,32 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
     }
     
     //Normalizes depth between 0-2
-    private void NormalizeDepth()
+    public void NormalizeDepth()
     {
+        int i = 0;
         float minDepth = 1;
         float maxDepth = 0;
         float depth = 0;
+        List<GenericOperator> list = observer.GetOperators();
         foreach (var op in observer.GetOperators())
         {
             if (maxDepth < op.GetIcon().GetComponent<IconProperties>().depth) maxDepth = op.GetIcon().GetComponent<IconProperties>().depth;
+            i++;
         }
+        i = 0;
         foreach (var op in observer.GetOperators())
         {
             depth = op.GetIcon().GetComponent<IconProperties>().depth;
             op.GetIcon().GetComponent<IconProperties>().normalizedDepth = 2 * ((depth - minDepth) / (maxDepth - minDepth));
+            i++;
+        }
+    }
+
+    void ResetValues()
+    {
+        foreach(var op in observer.GetOperators())
+        {
+            op.GetIcon().GetComponent<IconProperties>().Reset();
         }
     }
 }

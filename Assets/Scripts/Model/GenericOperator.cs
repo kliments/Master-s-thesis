@@ -113,14 +113,15 @@ namespace Assets.Scripts.Model
             _newParentPos = new Vector3();
 
             // Reload current layout algorithm when Operator is created
-            if(GetType() != typeof(NewOperator))
+            if(GetType() != typeof(NewOperator) && GetType() != typeof(SplitDatasetOperator))
             {
                 //save the default position of node
                 defaultAlgorithm = (DefaultAlgorithm)FindObjectOfType(typeof(DefaultAlgorithm));
                 defaultAlgorithm.positions.Add(GetIcon().transform.position);
                 //re-run current layout algorithm
                 layout = (LayoutAlgorithm)FindObjectOfType(typeof(LayoutAlgorithm));
-                if (layout.currentLayout != null) layout.currentLayout.StartAlgorithm();
+                //call the current layout algorithm, if it wasn't called before
+                if(!layout.coroutineIsRunning) StartCoroutine(layout.StartAlgorithm());
             }
         }
 
@@ -429,7 +430,7 @@ namespace Assets.Scripts.Model
             SaveLoadData.OnBeforeSave -= saveDataAction;
         }
     }
-
+    
     /*
      * Generic class that contains the generic data such as ID, parentID, x,y,z positions and CustomOperatorData
      * If added CustomOperatorData then the derived class must be included using XmlInclude below
@@ -464,6 +465,10 @@ namespace Assets.Scripts.Model
         public CustomOperatorData customData;
     }
 
+    /*
+     * Class for custom data for each operator
+     * Data attributes are added in each operator classes
+     */
     public abstract class CustomOperatorData
     {
 

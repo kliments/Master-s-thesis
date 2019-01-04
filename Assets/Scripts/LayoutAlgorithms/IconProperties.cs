@@ -46,15 +46,41 @@ public class IconProperties : MonoBehaviour {
 	void Update () {
         _target = new Vector3(myCamera.transform.position.x, myCamera.transform.position.y, myCamera.transform.position.z);
         child.LookAt(_target);
-        /*lookPos = myCamera.transform.position - transform.position;
-        rotation = Quaternion.LookRotation(lookPos);
-        rotation.x = 0;
-        rotation.z = 0;
-        child.localRotation = rotation;*/
+        if(repos)
+        {
+            transform.position = Vector3.Lerp(transform.position, newPos, Time.deltaTime);
+            if (Vector3.Distance(transform.position, newPos) < 0.01f)
+            {
+                transform.position = newPos;
+                oldPos = newPos;
+                repos = false;
+            }
+            if (GetComponent<GenericIcon>().Op.Parents != null)
+            {
+                if (GetComponent<GenericIcon>().Op.Parents.Count != 0)
+                {
+                    GetComponent<GenericIcon>().Op.GetComponent<LineRenderer>().positionCount = 2;
+                    GetComponent<GenericIcon>().Op.GetComponent<LineRenderer>().SetPositions(new Vector3[] { GetComponent<GenericIcon>().Op.Parents[0].GetIcon().transform.position, transform.position });
+                }
+            }
+        }
     }
 
     public void ApplyForce(Vector3 force)
     {
         acceleration += force;
+    }
+
+    public void Reset()
+    {
+        acceleration = Vector3.zero;
+        d = 0;
+        r = 0;
+        a = 0;
+        c = 0;
+        f = 0;
+        rx = 0;
+        rz = 0;
+
     }
 }
