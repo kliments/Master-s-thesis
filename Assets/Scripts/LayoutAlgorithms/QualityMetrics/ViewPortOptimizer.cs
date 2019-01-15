@@ -117,7 +117,7 @@ public class ViewPortOptimizer : MonoBehaviour {
         {
             if (Vector3.Distance(transform.position, pos) < Vector3.Distance(transform.position, op.GetIcon().transform.position)) pos = op.GetIcon().transform.position;
         }
-        pos = new Vector3(Vector3.Distance(transform.position, pos) + 5, 0, 0);
+        pos = new Vector3(Vector3.Distance(transform.position, pos) + 2, 0, 0);
         return pos;
     }
 

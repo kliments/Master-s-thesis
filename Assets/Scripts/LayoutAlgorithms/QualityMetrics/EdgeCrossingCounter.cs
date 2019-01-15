@@ -25,7 +25,14 @@ public class EdgeCrossingCounter : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+        if (countEdgeCrossings)
+        {
+            GetComponent<TwoDimensionalProjection>().ProjectTree();
+            count = 0;
+            _angles = new List<float>();
+            countEdgeCrossings = false;
+            CountEdgeCrossings();
+        }
 	}
 
     // Popupates a list of existing edges

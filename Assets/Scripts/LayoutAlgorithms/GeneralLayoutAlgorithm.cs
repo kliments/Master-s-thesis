@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class GeneralLayoutAlgorithm : MonoBehaviour {
     
-    private bool _temporal;
+    public bool _temporal;
 	// Use this for initialization
 	void Start () {
 	}

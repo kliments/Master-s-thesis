@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ForceDirectedConeTree : GeneralLayoutAlgorithm {
+public class ConeBurst : GeneralLayoutAlgorithm {
     public bool start, reposition, putOldRot;
     public Transform defaultParent;
     private Observer observer;
@@ -79,8 +79,8 @@ public class ForceDirectedConeTree : GeneralLayoutAlgorithm {
             child.GetIcon().GetComponent<IconProperties>().repos = true;
 
             var oldRot = child.GetIcon().transform.rotation;
-            var dir = _root.GetIcon().transform.position - child.GetIcon().transform.position;
-            Quaternion rotation = Quaternion.FromToRotation(child.GetIcon().transform.up, dir);
+            var dir = rootPos - child.GetIcon().GetComponent<IconProperties>().newPos;
+            Quaternion rotation = Quaternion.FromToRotation(Vector3.up, dir);
             child.GetIcon().transform.rotation = rotation;
 
             //save position of grand children for animated positioning
@@ -101,11 +101,6 @@ public class ForceDirectedConeTree : GeneralLayoutAlgorithm {
             {
                 if (child.GetIcon().transform.GetChild(c).GetComponent<IconProperties>() != null) child.GetIcon().transform.GetChild(c).transform.parent = defaultParent;
             }
-            /*foreach(Transform grandChild in child.GetIcon().transform)
-            {
-                if (grandChild.GetComponent<IconProperties>() == null) continue;
-                grandChild.parent = defaultParent;
-            }*/
         }
 
 

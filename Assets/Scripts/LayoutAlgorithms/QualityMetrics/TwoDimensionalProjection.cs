@@ -10,7 +10,6 @@ using UnityEngine;
  */
 public class TwoDimensionalProjection : MonoBehaviour {
     public GameObject camera, projectionPlane;
-
     private Observer _observer;
     private RaycastHit _hit;
     private Vector3 direction, _averageNode;
