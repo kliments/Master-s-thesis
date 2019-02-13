@@ -159,7 +159,7 @@ namespace Model.Operators
                 foreach (var child in Children)
                 {
                     child.GetIcon().transform.position = getSpawnPositionOffsetForButton(GetIcon().transform, _counter, _datasets);
-
+                    child.GetIcon().GetComponent<IconProperties>().newPos = child.GetIcon().transform.position;
                     GameObject.Find("GraphSpace").GetComponent<GraphSpaceController>().DrawEdge(this, child);
                     if (child.Children.Count > 0)
                     {
@@ -167,13 +167,11 @@ namespace Model.Operators
                     }
                     _counter++;
                 }
-                //destroy newoperators that are generated due to selection of child nodes
-                StartCoroutine(DestroyChildren());
                 Observer.selectOperator(this);
             }
         }
         
-        private Vector3 getSpawnPositionOffsetForButton(Transform origin, int nrButton, int totalButtons)
+        public Vector3 getSpawnPositionOffsetForButton(Transform origin, int nrButton, int totalButtons)
         {
             var defaultDistance = 1;
             Quaternion rotationSave = origin.rotation;
@@ -195,33 +193,8 @@ namespace Model.Operators
                 newPos = origin.position + origin.forward * defaultDistance;
             }
             origin.rotation = rotationSave;
+            newPos.z = 0;
             return newPos;
-        }
-
-        IEnumerator DestroyChildren()
-        {
-            //wait for the next frame
-            yield return 0;
-
-            foreach(var child in Children)
-            {
-                DestroyNewOperatorChildren(child);
-            }
-        }
-        private void DestroyNewOperatorChildren(GenericOperator op)
-        {
-            if(op.GetType().Equals(typeof(NewOperator)))
-            {
-                Observer.DestroyOperator(op);
-            }
-            if(op.Children.Count==0)
-            {
-                return;
-            }
-            else
-            {
-                DestroyNewOperatorChildren(op.Children[op.Children.Count - 1]);
-            }
         }
 
         private void CreateMenueButtons()

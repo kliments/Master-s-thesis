@@ -32,7 +32,6 @@ public class InputController : MonoBehaviour {
 
     public void EmitEvent(InputEventsEnum inputEvent, Targetable target = null)
     {
-        Debug.Log(inputEvent);
 
         switch (inputEvent)
         {

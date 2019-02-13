@@ -1,18 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts.Model;
+using Model.Operators;
 using UnityEngine;
 
 public class GraphSpaceController : MonoBehaviour {
-    private Vector3 _scale = new Vector3(0.03f, 0.03f, 0.03f);
+    private Vector3 _scale = new Vector3(0.3f, 0.3f, 0.3f);
 
     private Observer observer;
 
     public List<LineRenderer> graphEdges;
     private GameObject Container;
 
-    private int counter = 0;
+    private float counter = 1;
 
+    private GeneralLayoutAlgorithm currentAlgorithm;
 
     private void Awake()
     {
@@ -22,14 +24,31 @@ public class GraphSpaceController : MonoBehaviour {
 
     public void InstallNewIcon(GenericOperator op)
     {
-        if(!op.GetType().Equals((typeof(NewOperator)))) counter++;
+        currentAlgorithm = ((LayoutAlgorithm)FindObjectOfType(typeof(LayoutAlgorithm))).currentLayout;
         op.GetIcon().gameObject.transform.parent = GameObject.Find("ControlWall").transform;
         //shift icon one position more to the right than the previous operator
         if (op.Parents != null && op.Parents.Count > 0)
         {
-            op.GetIcon().gameObject.transform.localPosition = new Vector3(counter * 0.05f, op.Parents[0].GetIcon().transform.localPosition.y, 0);
+            if (currentAlgorithm.GetType().Equals(typeof(DefaultAlgorithm)) || (currentAlgorithm.GetType().Equals(typeof(ForceDirectedAlgorithm))&& currentAlgorithm.GetTemporal()))
+            {
+                op.GetIcon().gameObject.transform.localPosition = new Vector3(counter, op.Parents[0].GetIcon().transform.localPosition.y, 0);
+            }
+            else
+            {
+                Vector3 temp = op.Parents[0].GetIcon().transform.localPosition;
+                temp.x += 1;
+                op.GetIcon().gameObject.transform.localPosition = temp;
+            }
+            if (!op.GetType().Equals((typeof(NewOperator))))
+            {
+                if (!op.Parents[0].GetType().Equals(typeof(SplitDatasetOperator))) counter++;
+                else counter += 0.5f;
+            }
         }
-        else op.GetIcon().gameObject.transform.localPosition = new Vector3(0, 0, 0);
+        else
+        {
+            op.GetIcon().gameObject.transform.localPosition = new Vector3(0, 0, 0);
+        }
         op.GetIcon().gameObject.transform.localScale = _scale;
     }
 
@@ -42,8 +61,10 @@ public class GraphSpaceController : MonoBehaviour {
 
         if (op.Parents != null && op.Parents.Count > 0 && op.Parents[0].Children != null)
         {
+            //op.GetIcon().transform.position += new Vector3(0, (op.Parents[0].Children.Count - 1) * 0.3f, 0);
             op.GetIcon().transform.position += new Vector3(0, (op.Parents[0].Children.Count - 1) * 0.3f, 0);
         }
+        op.GetIcon().GetComponent<IconProperties>().newPos = op.GetIcon().transform.position;
     }
 
     private void Update()

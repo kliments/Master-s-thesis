@@ -99,7 +99,6 @@ public class SaveLoadController : Targetable {
                 obs.DestroyOperator(child);
             }
         }
-        algorithm.positions.Add(op.GetIcon().transform.position);
     }
 
     private void OnEnable()

@@ -14,11 +14,13 @@ public class SaveLoadData:MonoBehaviour {
     private static GenericOperator root;
     private static SaveLoadData instance;
     private static GraphSpaceController graphSpace;
-    public static DefaultAlgorithm algorithm;
+    public DefaultAlgorithm defaultAlgorithm;
+    public LayoutAlgorithm algorithm;
     // Use this for initialization
     void Start () {
         graphSpace = (GraphSpaceController)FindObjectOfType(typeof(GraphSpaceController));
-        algorithm = (DefaultAlgorithm)FindObjectOfType(typeof(DefaultAlgorithm));
+        defaultAlgorithm = (DefaultAlgorithm)FindObjectOfType(typeof(DefaultAlgorithm));
+        algorithm = (LayoutAlgorithm)FindObjectOfType(typeof(LayoutAlgorithm));
     }
 
     private void Awake()
@@ -49,7 +51,6 @@ public class SaveLoadData:MonoBehaviour {
                 observer.DestroyOperator(observer.GetOperators()[i]);
             }
         }
-        algorithm.positions = new List<Vector3>();
         genericOperatorContainer = LoadOperators(path);
         graphSpace.graphEdges = new List<LineRenderer>();
         foreach (OperatorData data in genericOperatorContainer.operators)
@@ -81,7 +82,6 @@ public class SaveLoadData:MonoBehaviour {
         GenericOperatorContainer operators = serializer.Deserialize(stream) as GenericOperatorContainer;
 
         stream.Close();
-
         return operators;
     }
 
@@ -98,8 +98,8 @@ public class SaveLoadData:MonoBehaviour {
 
     IEnumerator ReloadData(GenericOperator firstNode)
     {
+        algorithm.currentLayout = defaultAlgorithm;
         yield return 0;
-        algorithm.positions = new List<Vector3>();
         if (firstNode.GetRawInputData()!=null)
         {
             firstNode.ReProcess(firstNode.GetRawInputData());

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Model.Operators;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -153,7 +154,13 @@ namespace Assets.Scripts.Model
 
             if (!op.GetType().Equals((typeof(NewOperator))))
             {
-                selectOperator(op);
+                //Select operator only if parent is not SplitdatasetOperator when creating it. 
+                //Preventing from creating newOperator
+                if (op.Parents!=null && op.Parents.Count!= 0)
+                {
+                    if(!op.Parents[0].GetType().Equals(typeof(SplitDatasetOperator))) selectOperator(op);
+                }
+                else selectOperator(op);
             }
         }
 

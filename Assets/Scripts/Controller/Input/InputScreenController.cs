@@ -20,7 +20,6 @@ namespace Controller.Input
             if (UnityEngine.Input.GetMouseButtonDown(0))
             {
                 EmitEvent(InputEventsEnum.LeftClickEvent);
-                Debug.Log(gameObject.GetInstanceID());
 
                 var ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
                 if (Physics.Raycast(ray, out _hit, 100, layerMask))

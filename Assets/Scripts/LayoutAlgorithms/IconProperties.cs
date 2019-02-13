@@ -7,6 +7,7 @@ public class IconProperties : MonoBehaviour {
 
     #region ForceDirectedParameters
     public Vector3 acceleration;
+    public Vector3 previousPosition;
     #endregion
 
     #region ConeTreeParameters
@@ -35,11 +36,13 @@ public class IconProperties : MonoBehaviour {
 
     private Vector3 lookPos;
     private Quaternion rotation;
+    private LayoutAlgorithm alg;
 	// Use this for initialization
 	void Start () {
         myCamera = Camera.main;
         if(transform.GetChild(0).name != "Plane") child = transform.GetChild(0);
         else child = transform.GetChild(1);
+        alg = (LayoutAlgorithm)(FindObjectOfType(typeof(LayoutAlgorithm)));
     }
 	
 	// Update is called once per frame
@@ -48,20 +51,17 @@ public class IconProperties : MonoBehaviour {
         child.LookAt(_target);
         if(repos)
         {
-            transform.position = Vector3.Lerp(transform.position, newPos, Time.deltaTime);
+            if(GetComponent<GenericIcon>().GetOperator().Id == 12)
+            {
+                Debug.Log("");
+            }
+            transform.position = Vector3.Lerp(transform.position, newPos, Time.deltaTime*alg.currentLayout.speed);
             if (Vector3.Distance(transform.position, newPos) < 0.01f)
             {
                 transform.position = newPos;
                 oldPos = newPos;
+                previousPosition = transform.position;
                 repos = false;
-            }
-            if (GetComponent<GenericIcon>().Op.Parents != null)
-            {
-                if (GetComponent<GenericIcon>().Op.Parents.Count != 0)
-                {
-                    GetComponent<GenericIcon>().Op.GetComponent<LineRenderer>().positionCount = 2;
-                    GetComponent<GenericIcon>().Op.GetComponent<LineRenderer>().SetPositions(new Vector3[] { GetComponent<GenericIcon>().Op.Parents[0].GetIcon().transform.position, transform.position });
-                }
             }
         }
     }

@@ -115,13 +115,10 @@ namespace Assets.Scripts.Model
             // Reload current layout algorithm when Operator is created
             if(GetType() != typeof(NewOperator) && GetType() != typeof(SplitDatasetOperator))
             {
-                //save the default position of node
-                defaultAlgorithm = (DefaultAlgorithm)FindObjectOfType(typeof(DefaultAlgorithm));
-                defaultAlgorithm.positions.Add(GetIcon().transform.position);
                 //re-run current layout algorithm
                 layout = (LayoutAlgorithm)FindObjectOfType(typeof(LayoutAlgorithm));
                 //call the current layout algorithm, if it wasn't called before
-                if(!layout.coroutineIsRunning) StartCoroutine(layout.StartAlgorithm());
+                StartCoroutine(layout.StartAlgorithm());
             }
         }
 
@@ -397,6 +394,7 @@ namespace Assets.Scripts.Model
                 yield return new WaitForFixedUpdate();
             }
             newOperator = Observer.spawnNewOperator(this);
+
         }
 
         public abstract bool ValidateIfOperatorPossibleForParents(GenericOperator parent);

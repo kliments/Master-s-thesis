@@ -19,13 +19,13 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
     public Vector3[] positions;
 
     //Default initial temperature for simulated annealing
-    public float DefaultStartingTemperature = 0.2f;
+    public float DefaultStartingTemperature = 1f;
     
     //Temperature where the simulated annealing should stop
     public float DefaultMinimumTemperature = 0.01f;
 
     //The ratio between two successive temperatures in the simulated annealing
-    public float DefaultTemperatureAttenuation = 0.999f;
+    public float DefaultTemperatureAttenuation = 0.99f;
 
     //The current temperature in the simulated annealing
     public float Temperature;
@@ -48,6 +48,8 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
     //repeater of algorithm
     private int repeatCounter;
 
+    //Default algorithm used for temporal force directed
+    private DefaultAlgorithm defaultAlg;
 
     LineRenderer lr = new LineRenderer();
     // Use this for initialization
@@ -61,100 +63,86 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
         loadLocations = true;
 
         _timeBins = new List<List<GenericOperator>>();
+
+        defaultAlg = (DefaultAlgorithm)FindObjectOfType(typeof(DefaultAlgorithm));
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if(saveOriginalLocations)
-        {
-            saveOriginalLocations = false;
-            positions = new Vector3[observer.GetOperators().Count];
-            for(int i=0; i<positions.Length; i++)
-            {
-                positions[i] = observer.GetOperators()[i].GetIcon().transform.position;
-            }
-        }
-        if(loadLocations)
-        {
-            loadLocations = false;
-            for (int i = 0; i < positions.Length; i++)
-            {
-                observer.GetOperators()[i].GetIcon().transform.position = positions[i];
-            }
-            if (GetComponent<ConeTreeAlgorithm>().RDT) GetComponent<ConeTreeAlgorithm>().CalculateRDT();
-        }
-	}
-
-    private void FixedUpdate()
-    {
+        
         if (calculateForceDirected)
         {
-            frameCounter++;
-            if (frameCounter == 2)
+            Calculate();
+            if (Temperature < DefaultMinimumTemperature)
             {
-                frameCounter = 0;
-                if (Temperature < DefaultMinimumTemperature)
+                Temperature = 0.2f;
+                GetComponent<TwoDimensionalProjection>().SetPlane();
+                if (!ReRunAlgorithm())
                 {
-                    Temperature = 0.2f;
                     calculateForceDirected = false;
-                    GetComponent<TwoDimensionalProjection>().SetPlane();
-                    //re-run algorithm if nodes are not placed accodringly
-                    ReRunAlgorithm();
-                    if (repeatCounter < 5)
-                    {
-                        calculateForceDirected = true;
-                        repeatCounter++;
-                    }
-                    else
-                    {
-                        repeatCounter = 0;
-                        calculateForceDirected = false;
-                    }
+                    //set flag that this algorithm has finished
+                    SetFinish();
                 }
-                Calculate();
             }
         }
     }
 
     public override void StartAlgorithm()
     {
-        if (GetComponent<LayoutAlgorithm>().currentLayout != this) RandomizePositions();
+        //check if another algorithm is running
+        if (!GetComponent<LayoutAlgorithm>().currentLayout.AlgorithmHasFinished()) return;
+
+        if (GetComponent<LayoutAlgorithm>().currentLayout != this)
+        {
+            if (GetTemporal()) defaultAlg.StartAlgorithm();
+            GetComponent<LayoutAlgorithm>().currentLayout = this;
+            RandomizePositions();
+        }
+        //set flag that this algorithm has started
+        SetStart();
         //Algorithm is called in Update function
         calculateForceDirected = true;
-        GetComponent<LayoutAlgorithm>().currentLayout = this;
     }
 
-    void ReRunAlgorithm()
+    bool ReRunAlgorithm()
     {
-        foreach (var op1 in observer.GetOperators())
+        float maxDistance = 0;
+        foreach(var op in observer.GetOperators())
         {
-            float distance = 0;
-            foreach (var op2 in op1.Children)
+            if (Vector3.Distance(op.GetIcon().GetComponent<IconProperties>().previousPosition, op.GetIcon().GetComponent<IconProperties>().newPos) > maxDistance)
             {
-                if (op1 == op2) continue;
-                distance = Vector3.Distance(op1.GetIcon().transform.position, op2.GetIcon().transform.position);
-                if (distance > 10 && !GetTemporal())
-                {
-                    if(op2.Children != null)
-                    {
-                        if (op2.Children.Count == 0) StartAlgorithm();
-                    }
-                    else if(op2.Children.Count == 0) StartAlgorithm();
-                }
+                maxDistance = Vector3.Distance(op.GetIcon().GetComponent<IconProperties>().previousPosition, op.GetIcon().GetComponent<IconProperties>().newPos);
             }
         }
+        if(maxDistance > 0.01f)
+        {
+            return true;
+        }
+        Debug.Log(maxDistance);
+        return false;
     }
 
     // Randomization of node positions
     void RandomizePositions()
     {
+        Vector3 pos = new Vector3();
+        Vector3 pos2 = new Vector3();
+        float xRange = 1.5f;
+        if(GetTemporal())
+        {
+            xRange = 0;
+        }
         // reset the temperature
         Temperature = DefaultStartingTemperature;
         for(int i=0; i<observer.GetOperators().Count; i++)
         {
-            var newPos = new Vector3(observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().originalPos.x, UnityEngine.Random.Range(0f, 3f), UnityEngine.Random.Range(0f, 3f));
-            observer.GetOperators()[i].GetIcon().transform.position = newPos;
-            if(observer.GetOperators()[i].Parents != null)
+            pos = new Vector3(observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos.x, UnityEngine.Random.Range(0.5f, 1.5f), UnityEngine.Random.Range(-1.5f, 1.5f));
+            pos2 = observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos;
+            observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = pos;
+            pos += new Vector3(UnityEngine.Random.Range(-xRange, xRange), 0, 0);
+            observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = pos;
+            pos2 = observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos;
+            if (observer.GetOperators()[i].Parents != null)
             {
                 if (observer.GetOperators()[i].Parents.Count != 0)
                 {
@@ -198,12 +186,17 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
 
     protected void Calculate()
     {
+        IconProperties np = new IconProperties();
+        Vector3 test = new Vector3();
         if(GetTemporal()) ForceDirectedWithTemporalDependency();
         else ForceDirectedWithoutTemporalDependency();
         //update positions
         foreach (var op in observer.GetOperators())
         {
-            op.GetIcon().transform.position += op.GetIcon().GetComponent<IconProperties>().acceleration/2;
+            test = op.GetIcon().GetComponent<IconProperties>().acceleration / 2;
+            np = op.GetIcon().GetComponent<IconProperties>();
+            op.GetIcon().GetComponent<IconProperties>().newPos += op.GetIcon().GetComponent<IconProperties>().acceleration / 2;
+            op.GetIcon().GetComponent<IconProperties>().repos = true;
             op.GetIcon().GetComponent<IconProperties>().acceleration = Vector3.zero;
             op.GetIcon().GetComponent<IconProperties>().oldPos = op.GetIcon().transform.position;
             if (op.Parents != null)
@@ -233,7 +226,8 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
         {
             foreach (var node1 in list)
             {
-                Vector3 pos1 = node1.GetIcon().transform.position;
+                //Vector3 pos1 = node1.GetIcon().transform.position;
+                Vector3 pos1 = node1.GetIcon().GetComponent<IconProperties>().newPos;
                 double xForce = 0, yForce = 0, zForce = 0;
 
                 //attraction forces towards children
@@ -241,8 +235,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
                 {
                     foreach (var child in node1.Children)
                     {
-                        //if (!list.Contains(child)) continue;
-                        Vector3 pos2 = child.GetIcon().transform.position;
+                        Vector3 pos2 = child.GetIcon().GetComponent<IconProperties>().newPos;
                         double d = Vector3.Distance(pos1, pos2);
                         double force = Temperature * SpringForce(d * 10);
                         //xForce += (pos2.x - pos1.x) / d * force;
@@ -256,8 +249,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
                 {
                     foreach (var parent in node1.Parents)
                     {
-                        //if (!list.Contains(parent)) continue;
-                        Vector3 pos2 = parent.GetIcon().transform.position;
+                        Vector3 pos2 = parent.GetIcon().GetComponent<IconProperties>().newPos;
                         double d = Vector3.Distance(pos1, pos2);
                         double force = Temperature * SpringForce(d * 10);
                         //xForce += (pos2.x - pos1.x) / d * force;
@@ -271,7 +263,8 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
                 {
                     if (node1 == node2) continue;
                     if (!list.Contains(node2)) continue;
-                    Vector3 pos2 = node2.GetIcon().transform.position;
+                    //Vector3 pos2 = node2.GetIcon().transform.position;
+                    Vector3 pos2 = node2.GetIcon().GetComponent<IconProperties>().newPos;
                     double d = Vector3.Distance(pos1, pos2);
                     double force = Temperature * ElectricForce(d);
                     //xForce += (pos1.x - pos2.x) / d * force;
@@ -292,7 +285,8 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
     {
         foreach (var op1 in observer.GetOperators())
         {
-            Vector3 pos1 = op1.GetIcon().transform.position;
+            //Vector3 pos1 = op1.GetIcon().transform.position;
+            Vector3 pos1 = op1.GetIcon().GetComponent<IconProperties>().newPos;
             double xForce = 0, yForce = 0, zForce = 0;
 
             //attraction forces towards children
@@ -300,7 +294,8 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
             {
                 foreach (var child in op1.Children)
                 {
-                    Vector3 pos2 = child.GetIcon().transform.position;
+                    //Vector3 pos2 = child.GetIcon().transform.position;
+                    Vector3 pos2 = child.GetIcon().GetComponent<IconProperties>().newPos;
                     double d = Vector3.Distance(pos1, pos2);
                     double force = Temperature * SpringForce(d * 10);
                     xForce += (pos2.x - pos1.x) / d * force;
@@ -314,7 +309,8 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
             {
                 foreach (var parent in op1.Parents)
                 {
-                    Vector3 pos2 = parent.GetIcon().transform.position;
+                    //Vector3 pos2 = parent.GetIcon().transform.position;
+                    Vector3 pos2 = parent.GetIcon().GetComponent<IconProperties>().newPos;
                     double d = Vector3.Distance(pos1, pos2);
                     double force = Temperature * SpringForce(d * 10);
                     xForce += (pos2.x - pos1.x) / d * force;
@@ -327,7 +323,8 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
             foreach (var op2 in observer.GetOperators())
             {
                 if (op1 == op2) continue;
-                Vector3 pos2 = op2.GetIcon().transform.position;
+                //Vector3 pos2 = op2.GetIcon().transform.position;
+                Vector3 pos2 = op2.GetIcon().GetComponent<IconProperties>().newPos;
                 double d = Vector3.Distance(pos1, pos2);
                 double force = Temperature * ElectricForce(d);
                 xForce += (pos1.x - pos2.x) / d * force;
@@ -337,5 +334,19 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
             Vector3 finalForce = new Vector3((float)xForce, (float)yForce, (float)zForce);
             op1.GetIcon().GetComponent<IconProperties>().ApplyForce(finalForce);
         }
+    }
+
+    bool AllNodesInPlace()
+    {
+        foreach(var op in observer.GetOperators())
+        {
+            if (op.GetIcon().GetComponent<IconProperties>().repos) return false;
+        }
+        return true;
+    }
+
+    void OnEnable()
+    {
+        subscriber.addListener(this);
     }
 }

@@ -8,6 +8,7 @@ TagManager:
   - Controller_Right
   - InputField
   - NodeIcon
+  - AlgorithmButton
   layers:
   - Default
   - TransparentFX
