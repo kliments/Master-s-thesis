@@ -9,7 +9,7 @@ public class EdgeCrossingCounter : MonoBehaviour {
     public bool countEdgeCrossings;
     public int count;
     public float averageAngle;
-    public float minimumAngle;
+    public float edgeCrossRM;
 
     private List<List<Vector3>> _edges;
     public List<float> _angles;
@@ -74,11 +74,11 @@ public class EdgeCrossingCounter : MonoBehaviour {
         if (_angles.Count > 0)
         {
             averageAngle = AverageAngle(_angles);
-            minimumAngle = MinimumAngle(_angles);
+            edgeCrossRM = CrossingAngleReadabilityMetric(_angles);
         }
         else
         {
-            minimumAngle = 90;
+            edgeCrossRM = 1;
         }
         return count;
     }
@@ -135,14 +135,15 @@ public class EdgeCrossingCounter : MonoBehaviour {
         return averageAngle / angles.Count;
     }
 
-    // Returns the minimum angle of all existing angles
-    float MinimumAngle(List<float> angles)
+    float CrossingAngleReadabilityMetric(List<float> angles)
     {
-        float minimumAngle = angles[0];
+        float value = 0;
+        float idealAngle = 70;
         foreach(var angle in angles)
         {
-            if (minimumAngle > angle) minimumAngle = angle;
+            value += Mathf.Abs(idealAngle - angle);
         }
-        return minimumAngle;
+        value /= angles.Count*idealAngle;
+        return 1 - value;
     }
 }

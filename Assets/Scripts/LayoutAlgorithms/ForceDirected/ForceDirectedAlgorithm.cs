@@ -10,7 +10,6 @@ using UnityEngine;
  * and nodes affecting each-other only within particular time-bins
  */
 public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
-    public Observer observer;
 
     // Time bins where nodes are contained depending on the time of their creation
     public List<List<GenericOperator>> _timeBins;
@@ -80,6 +79,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
                 if (!ReRunAlgorithm())
                 {
                     calculateForceDirected = false;
+                    base.ColorEdges();
                     //set flag that this algorithm has finished
                     SetFinish();
                 }
@@ -91,6 +91,8 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
     {
         //check if another algorithm is running
         if (!GetComponent<LayoutAlgorithm>().currentLayout.AlgorithmHasFinished()) return;
+
+        if (observer == null) observer = (Observer)FindObjectOfType(typeof(Observer));
 
         if (GetComponent<LayoutAlgorithm>().currentLayout != this)
         {

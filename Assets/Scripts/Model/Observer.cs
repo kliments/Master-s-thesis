@@ -20,7 +20,6 @@ namespace Assets.Scripts.Model
 
         public delegate void NewOperatorInitializedAndRunnning(GenericOperator genericOperator);
         public event NewOperatorInitializedAndRunnning NewOperatorInitializedAndRunnningEvent;
-
         // Use this for initialization
         private void Start()
         {

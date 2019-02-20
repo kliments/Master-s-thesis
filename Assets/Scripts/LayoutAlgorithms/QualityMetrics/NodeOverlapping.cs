@@ -14,9 +14,8 @@ public class NodeOverlapping : MonoBehaviour {
     public bool calculateNodeOverlapping;
     public float count;
     public List<GenericOperator> sortedList;
-
     private int layerMask;
-    private Vector3 dir, center;
+    private Vector3 dir, center, currentPoint, startXY, endX, endY, tempX, tempY;
     private Observer observer;
     private GameObject camera, currentIcon;
     private RaycastHit[] hits, hitsCenter;
@@ -40,29 +39,13 @@ public class NodeOverlapping : MonoBehaviour {
     public float CalculateNodeOverlapping()
     {
         SortListOfNodes();
-        /*
-         * List that adds every time an object covers a vertex
-         */
-        List<GameObject> allHitObjects = new List<GameObject>();
 
-        /*
-         * list that contains only one time the objects that are hit (cover a vertex),
-         * for later comparison with above list, and see how many vertices
-         * does the current object cover
-         */
-        List<GameObject> justHitObjects = new List<GameObject>();
-
-        /*
-         * List that contains all the objects that are hit when raycasting in the center
-         * If an object is hit, means that covers more than 50% of the current icon
-         * which increases the coefficient of the current hit object towards the current icon
-         */
-        List<GameObject> centerHitObjects = new List<GameObject>();
-
-        count = 0;
+        float coef = 0;
+        //Distance for shifting point in X and 
+        float dist = 0;
         foreach(var op in sortedList)
         {
-            float coef = 0;
+            count = 0;
             if (op.GetType() == typeof(NewOperator)) continue;
             foreach (Transform child in op.GetIcon().transform)
             {
@@ -72,79 +55,40 @@ public class NodeOverlapping : MonoBehaviour {
                     break;
                 }
             }
-            allHitObjects = new List<GameObject>();
-            justHitObjects = new List<GameObject>();
-            centerHitObjects = new List<GameObject>();
-            center = new Vector3();
-            //raycast to each corner of the icon and detect other colliders if hit
-            for(int i=0; i<4; i++)
+            if(dist == 0)
             {
-                dir = currentIcon.transform.TransformPoint(currentIcon.GetComponent<MeshFilter>().mesh.vertices[i]) - camera.transform.position;
-                center += currentIcon.transform.TransformPoint(currentIcon.GetComponent<MeshFilter>().mesh.vertices[i]);
-                hits = Physics.RaycastAll(camera.transform.position, dir, 100, layerMask);
-                foreach(var hit in hits)
-                {
-                    if (hit.transform.tag != "NodeIcon") continue;
-                    if (hit.transform.parent.GetComponent<GenericIcon>().Op.GetType() == typeof(NewOperator)) continue;
-                    if (hit.transform.gameObject != currentIcon)
-                    {
-                        if (!justHitObjects.Contains(hit.transform.gameObject)) justHitObjects.Add(hit.transform.gameObject);
-                        allHitObjects.Add(hit.transform.gameObject);
-                    }
-                }
+                dist = Vector3.Distance(currentIcon.transform.TransformPoint(currentIcon.GetComponent<MeshFilter>().mesh.vertices[0]), currentIcon.transform.TransformPoint(currentIcon.GetComponent<MeshFilter>().mesh.vertices[1]));
+                dist /= 10;
             }
-
-            //raycast in the center of the icon, for coefficient calculation
-            center /= 4;
-            dir = center - camera.transform.position;
-            hitsCenter = Physics.RaycastAll(camera.transform.position, dir, 100, layerMask);
-            foreach (var hit in hitsCenter)
+            /*
+             * Start and end points for interpolation between them to get the points to raycast
+             */
+            startXY = currentIcon.transform.TransformPoint(currentIcon.GetComponent<MeshFilter>().mesh.vertices[0]);
+            endX = currentIcon.transform.TransformPoint(currentIcon.GetComponent<MeshFilter>().mesh.vertices[1]);
+            endY = currentIcon.transform.TransformPoint(currentIcon.GetComponent<MeshFilter>().mesh.vertices[2]);
+            for (int i=0; i<=10; i++)
             {
-                if (hit.transform.tag != "NodeIcon") continue;
-                if (hit.transform.parent.GetComponent<GenericIcon>().Op.GetType() == typeof(NewOperator)) continue;
-                if (hit.transform.gameObject != currentIcon)
+                tempX = Vector3.Lerp(startXY, endY, (float)i/10);
+                tempY = Vector3.Lerp(endX, currentIcon.transform.TransformPoint(currentIcon.GetComponent<MeshFilter>().mesh.vertices[3]), (float)i / 10);
+                for(int j=0; j<=10;j++)
                 {
-                    centerHitObjects.Add(hit.transform.gameObject);
-                }
-            }
-
-            foreach(var justHitObj in justHitObjects)
-            {
-                bool centerIsHit = false;
-                int verticesCovered = 0;
-                foreach(var allHitObj in allHitObjects)
-                {
-                    if (allHitObj == justHitObj) verticesCovered++;
-                }
-                if (verticesCovered == 4) coef += 1;
-                else if (verticesCovered == 2)
-                {
-                    foreach (var centerHit in centerHitObjects)
+                    currentPoint = Vector3.Lerp(tempX, tempY, (float)j / 10);
+                    dir = currentPoint - camera.transform.position;
+                    hits = Physics.RaycastAll(camera.transform.position, dir, 100, layerMask);
+                    foreach (var hit in hits)
                     {
-                        if (centerHit == justHitObj)
+                        if (hit.transform.tag != "NodeIcon") continue;
+                        if (hit.transform.parent.GetComponent<GenericIcon>().Op.GetType() == typeof(NewOperator)) continue;
+                        if (hit.transform.gameObject != currentIcon)
                         {
-                            coef += 0.75f;
-                            centerIsHit = true;
+                            count++;
+                            break;
                         }
                     }
-                    if (!centerIsHit) coef += 0.5f;
-                }
-                else if (verticesCovered == 1)
-                {
-                    foreach (var centerHit in centerHitObjects)
-                    {
-                        if (centerHit == justHitObj)
-                        {
-                            coef += 0.25f;
-                            centerIsHit = true;
-                        }
-                    }
-                    if (!centerIsHit) coef += 0.125f;
                 }
             }
-
-            count += coef;
-
+            count /= 121;
+            coef += count;
             //change layer so it will be ignored in the future raycasts
             currentIcon.layer = 10;
         }
@@ -164,12 +108,13 @@ public class NodeOverlapping : MonoBehaviour {
             }
         }
         int sum = 0;
-        for(int i = 1; i <= observer.GetOperators().Count; i++)
+        for(int i = 0; i < observer.GetOperators().Count; i++)
         {
-            sum += i;
+            if (observer.GetOperators()[i].GetType().Equals(typeof(NewOperator))) continue;
+            sum++;
         }
 
-        return count/sum;
+        return coef / sum;
     }
 
     //Sorting nodes by distance, starting with the furthest one

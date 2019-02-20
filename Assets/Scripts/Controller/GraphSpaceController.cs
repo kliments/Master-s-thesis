@@ -5,6 +5,7 @@ using Model.Operators;
 using UnityEngine;
 
 public class GraphSpaceController : MonoBehaviour {
+    public Material edgeMaterial;
     private Vector3 _scale = new Vector3(0.3f, 0.3f, 0.3f);
 
     private Observer observer;
@@ -95,6 +96,7 @@ public class GraphSpaceController : MonoBehaviour {
         lr.endWidth = 0.01f;
         lr.SetPositions(new Vector3[] { parent.GetIcon().transform.position + new Vector3(0, 0, 0.001f), op.GetIcon().transform.position + new Vector3(0, 0, 0.001f) });
         if(!graphEdges.Contains(lr)) graphEdges.Add(lr);
+        lr.material = new Material(Shader.Find("Particles/Alpha Blended"));
     }
 
     public void DestroyEdge()

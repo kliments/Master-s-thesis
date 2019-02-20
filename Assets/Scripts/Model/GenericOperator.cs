@@ -83,7 +83,7 @@ namespace Assets.Scripts.Model
             }
             //only root node has depth 1
             else Icon.GetComponent<IconProperties>().depth = 1;
-
+            
             //time of creation of the operator, later used as temporal variable in visualization of the tree
             if (hour == 0 && minute == 0 && second == 0 && millisecond == 0)
             {

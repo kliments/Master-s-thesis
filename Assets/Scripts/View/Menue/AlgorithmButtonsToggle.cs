@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AlgorithmButtonsToggle : MonoBehaviour, IMenueComponentListener {
-    public GameObject[] algorithmButtons;
+    public GameObject algorithmButtonsContainer;
     public GenericMenueComponent listener;
     private bool _areShown;
     // Use this for initialization
@@ -20,18 +20,12 @@ public class AlgorithmButtonsToggle : MonoBehaviour, IMenueComponentListener {
          if(_areShown)
         {
             _areShown = false;
-            foreach(var button in algorithmButtons)
-            {
-                button.SetActive(false);
-            }
+            algorithmButtonsContainer.SetActive(false);
         }
         else
         {
             _areShown = true;
-            foreach(var button in algorithmButtons)
-            {
-                button.SetActive(true);
-            }
+            algorithmButtonsContainer.SetActive(true);
         }
     }
 

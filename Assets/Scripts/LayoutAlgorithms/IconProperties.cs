@@ -29,7 +29,8 @@ public class IconProperties : MonoBehaviour {
     //original, old and new positions for smooth transition of nodes
     public Vector3 originalPos, oldPos, newPos, refPoint;
     public bool repos;
-    public float depth, normalizedDepth;
+    public float depth;
+    public float normalizedDepth;
     public Camera myCamera;
     public Transform child;
     private Vector3 _target;
@@ -47,8 +48,7 @@ public class IconProperties : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        _target = new Vector3(myCamera.transform.position.x, myCamera.transform.position.y, myCamera.transform.position.z);
-        child.LookAt(_target);
+        child.LookAt(myCamera.transform.position);
         if(repos)
         {
             if(GetComponent<GenericIcon>().GetOperator().Id == 12)

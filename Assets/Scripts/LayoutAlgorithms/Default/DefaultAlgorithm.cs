@@ -7,7 +7,6 @@ using UnityEngine;
 public class DefaultAlgorithm : GeneralLayoutAlgorithm {
 
     public List<Vector3> positions;
-    private Observer observer;
     private Transform tempTransform;
 	// Use this for initialization
 	void Start () {
@@ -27,6 +26,22 @@ public class DefaultAlgorithm : GeneralLayoutAlgorithm {
         //set flag that this algorithm is running
         SetStart();
 
+        if (observer == null) observer = (Observer)FindObjectOfType(typeof(Observer));
+        //set 2 lines, in case previous algorithm had changed it to 3 (ex. RDT)
+        if (GetComponent<LayoutAlgorithm>().currentLayout != this)
+        {
+            foreach (var op in observer.GetOperators())
+            {
+                if (op.Parents != null)
+                {
+                    if (op.Parents.Count != 0)
+                    {
+                        op.GetComponent<LineRenderer>().positionCount = 2;
+                        op.GetComponent<LineRenderer>().SetPositions(new Vector3[] { op.Parents[0].GetIcon().transform.position, op.GetIcon().transform.position });
+                    }
+                }
+            }
+        }
         float counter = 1;
         Vector3 inverseTempPosition = new Vector3();
         Vector3 tempTransformPos = new Vector3();
@@ -75,7 +90,7 @@ public class DefaultAlgorithm : GeneralLayoutAlgorithm {
                 op.GetIcon().GetComponent<IconProperties>().repos = true;
             }
         }
-
+        base.ColorEdges();
         //set flag for this algorithm has finished
         SetFinish();
     }

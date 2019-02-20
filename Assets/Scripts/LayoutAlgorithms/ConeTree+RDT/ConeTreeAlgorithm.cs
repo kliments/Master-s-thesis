@@ -9,7 +9,6 @@ using UnityEngine;
  */
 public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
 {
-    public Observer observer;
     public bool RDT, reposition, startConeTree;
     public float height;
 
@@ -46,6 +45,23 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
         //set flag that this algorithm is running
         SetStart();
 
+        if (observer == null) observer = (Observer)FindObjectOfType(typeof(Observer));
+        //set 2 lines, in case previous algorithm had changed it to 3 (ex. RDT)
+        if (GetComponent<LayoutAlgorithm>().currentLayout!=this)
+        {
+            foreach(var op in observer.GetOperators())
+            {
+                if (op.Parents != null)
+                {
+                    if (op.Parents.Count != 0)
+                    {
+                        op.GetComponent<LineRenderer>().positionCount = 2;
+                        op.GetComponent<LineRenderer>().SetPositions(new Vector3[] {op.Parents[0].GetIcon().transform.position, op.GetIcon().transform.position});
+                    }
+                }
+            }
+        }
+
         //get root and anchor of tree
         root = observer.GetOperators()[0];
         _anchor = root.GetIcon().transform.position;
@@ -57,6 +73,7 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
         GetComponent<LayoutAlgorithm>().currentLayout = this;
         calculationFinished = true;
 
+        base.ColorEdges();
         //set flag for this algorithm has finished
         SetFinish();
     }

@@ -20,6 +20,13 @@ public class EdgeLength : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if(calculateEdgeLength)
+        {
+            calculateEdgeLength = false;
+            GetComponent<TwoDimensionalProjection>().ProjectTree();
+            edgeLengthSTD = CalculateEdgeLength();
+            GetComponent<TwoDimensionalProjection>().RestorePositions();
+        }
 	}
 
     public float CalculateEdgeLength()

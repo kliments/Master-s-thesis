@@ -6,6 +6,7 @@ using UnityEngine;
 public class NodeAngularResolution : MonoBehaviour {
     public float angularResolution;
     public bool calculateAngularRes;
+    public int count = 0;
 
     private List<float> _angles;
     private Observer observer;
@@ -23,26 +24,40 @@ public class NodeAngularResolution : MonoBehaviour {
         _angles = new List<float>();
         Vector3 edge1 = new Vector3();
         Vector3 edge2 = new Vector3();
+        float angRes = 0;
+        float idealAngle = 0;
+        float min = 0;
+        count = 0;
         foreach(var op in observer.GetOperators())
         {
             if (op.Children == null) continue;
             if (op.Children.Count < 2) continue;
-
+            idealAngle = 360 / op.Children.Count;
             for(int i=0; i<op.Children.Count; i++)
             {
-                for(int j=i+1; j<op.Children.Count; j++)
+                count++;
+                _angles = new List<float>();
+                for(int j=0; j<op.Children.Count; j++)
                 {
+                    if (i == j) continue;
                     edge1 = op.Children[i].GetIcon().transform.position - op.GetIcon().transform.position;
                     edge2 = op.Children[j].GetIcon().transform.position - op.GetIcon().transform.position;
                     _angles.Add(Vector3.Angle(edge1, edge2));
                 }
+                min = ReturnMinAngle(_angles);
+                angRes += Mathf.Abs((idealAngle - min) / idealAngle);
             }
         }
-        float angRes = _angles[0];
-        for(int i=0; i<_angles.Count; i++)
+        return (1 - angRes/count);
+    }
+
+    private float ReturnMinAngle(List<float> angles)
+    {
+        float min = angles[0];
+        foreach(var angle in angles)
         {
-            if (angRes > _angles[i]) angRes = _angles[i];
+            if (min > angle) min = angle;
         }
-        return angRes;
+        return min;
     }
 }
