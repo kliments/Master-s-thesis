@@ -10,9 +10,11 @@ public class EdgeCrossingCounter : MonoBehaviour {
     public int count;
     public float averageAngle;
     public float edgeCrossRM;
+    public List<float> _angles;
+    public GeneralLayoutAlgorithm algorithm;
+    public ConeTreeAlgorithm RDT;
 
     private List<List<Vector3>> _edges;
-    public List<float> _angles;
     private Observer _observer;
     private Transform _projectionPlane;
 	// Use this for initialization
@@ -21,6 +23,7 @@ public class EdgeCrossingCounter : MonoBehaviour {
         _edges = new List<List<Vector3>>();
         _projectionPlane = GameObject.Find("ProjectionPlane").transform;
         _angles = new List<float>();
+        algorithm = GetComponent<LayoutAlgorithm>().currentLayout;
 	}
 	
 	// Update is called once per frame
@@ -31,25 +34,47 @@ public class EdgeCrossingCounter : MonoBehaviour {
             count = 0;
             _angles = new List<float>();
             countEdgeCrossings = false;
-            CountEdgeCrossings();
+            Debug.Log("crossings " + CountEdgeCrossings().ToString());
+            Debug.Log("edges " + _edges.Count);
+            GetComponent<TwoDimensionalProjection>().RestorePositions();
+            if (algorithm == RDT) RDT.CalculateRDT();
         }
 	}
 
     // Popupates a list of existing edges
     void PopulateEdges()
     {
+        algorithm = GetComponent<LayoutAlgorithm>().currentLayout;
         _edges = new List<List<Vector3>>();
         List<Vector3> temp = new List<Vector3>();
         foreach(var op in _observer.GetOperators())
         {
-            if(op.Children != null)
+            if (algorithm != RDT)
             {
-                foreach(var child in op.Children)
+                if (op.Children != null)
+                {
+                    foreach (var child in op.Children)
+                    {
+                        temp = new List<Vector3>();
+                        temp.Add(_projectionPlane.InverseTransformPoint(op.GetIcon().transform.position));
+                        temp.Add(_projectionPlane.InverseTransformPoint(child.GetIcon().transform.position));
+                        _edges.Add(temp);
+                    }
+                }
+            }
+            else
+            {
+                if (op.GetComponent<LineRenderer>()!=null)
                 {
                     temp = new List<Vector3>();
-                    temp.Add(_projectionPlane.InverseTransformPoint(op.GetIcon().transform.position));
-                    temp.Add(_projectionPlane.InverseTransformPoint(child.GetIcon().transform.position));
-                    _edges.Add(temp);
+                    temp.Add(_projectionPlane.InverseTransformPoint(op.GetComponent<LineRenderer>().GetPosition(0)));
+                    temp.Add(_projectionPlane.InverseTransformPoint(op.GetComponent<LineRenderer>().GetPosition(1)));
+                    if (!Contains(temp)) _edges.Add(temp);
+
+                    temp = new List<Vector3>();
+                    temp.Add(_projectionPlane.InverseTransformPoint(op.GetComponent<LineRenderer>().GetPosition(1)));
+                    temp.Add(_projectionPlane.InverseTransformPoint(op.GetComponent<LineRenderer>().GetPosition(2)));
+                    if (!Contains(temp)) _edges.Add(temp);
                 }
             }
         }
@@ -145,5 +170,14 @@ public class EdgeCrossingCounter : MonoBehaviour {
         }
         value /= angles.Count*idealAngle;
         return 1 - value;
+    }
+
+    bool Contains(List<Vector3> edge)
+    {
+        foreach(var current in _edges)
+        {
+            if (edge[0] == current[0] && edge[1] == current[1]) return true;
+        }
+        return false;
     }
 }

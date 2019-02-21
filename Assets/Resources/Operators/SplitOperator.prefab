@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 65730274657671374}
   - component: {fileID: 23185325984266132}
   - component: {fileID: 114866030590048788}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SplitDatasetIcon
   m_TagString: NodeIcon
   m_Icon: {fileID: 0}

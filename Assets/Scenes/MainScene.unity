@@ -2463,6 +2463,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camera: {fileID: 1796779524}
   projectionPlane: {fileID: 337333275}
+  RDT: {fileID: 360191236}
 --- !u!114 &360191227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2479,6 +2480,8 @@ MonoBehaviour:
   averageAngle: 0
   edgeCrossRM: 0
   _angles: []
+  algorithm: {fileID: 0}
+  RDT: {fileID: 360191236}
 --- !u!114 &360191228
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2491,11 +2494,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   position: {x: 0, y: 0, z: 0}
+  globalScan: 0
   scan: 0
   switchView: 0
   switchBackView: 0
   cam: {fileID: 1796779525}
   nrOfViews: 0
+  algorithmsList:
+  - {fileID: 360191222}
+  - {fileID: 360191234}
+  - {fileID: 360191224}
+  - {fileID: 360191235}
+  - {fileID: 360191230}
+  - {fileID: 360191236}
+  - {fileID: 360191233}
   edge: {fileID: 425428961}
   node: {fileID: 481080621}
   crossAngle: {fileID: 1150214622}
@@ -2529,6 +2541,7 @@ MonoBehaviour:
   subscriber: {fileID: 1833115721}
   speed: 1
   _finished: 1
+  observer: {fileID: 0}
   positions: []
 --- !u!114 &360191231
 MonoBehaviour:
@@ -2573,6 +2586,7 @@ MonoBehaviour:
   subscriber: {fileID: 1048905101}
   speed: 1
   _finished: 1
+  observer: {fileID: 0}
   start: 0
   defaultParent: {fileID: 113367145}
 --- !u!114 &360191234
@@ -3101,7 +3115,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 556153576}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.08575574, y: -3.8657827, z: 5.55302}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 87412754}
@@ -3531,7 +3545,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &556153577
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6319,7 +6333,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1031145540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6349,7 +6363,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1031145539}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.08575574, y: 3.3657827, z: -5.55302}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1191950889}
@@ -12531,7 +12545,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1820098906}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 451086292}
@@ -15317,7 +15331,7 @@ Prefab:
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 1233
+      value: 1159
       objectReference: {fileID: 0}
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}

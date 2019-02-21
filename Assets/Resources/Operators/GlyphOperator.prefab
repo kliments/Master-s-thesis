@@ -252,7 +252,7 @@ GameObject:
   - component: {fileID: 65274192362405580}
   - component: {fileID: 23732979374417192}
   - component: {fileID: 114795074787621870}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: GlyphIcon
   m_TagString: NodeIcon
   m_Icon: {fileID: 0}

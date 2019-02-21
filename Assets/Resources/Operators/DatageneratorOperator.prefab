@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 65325158322198388}
   - component: {fileID: 23074065073657034}
   - component: {fileID: 114477889015930466}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: DataGenerator
   m_TagString: NodeIcon
   m_Icon: {fileID: 0}

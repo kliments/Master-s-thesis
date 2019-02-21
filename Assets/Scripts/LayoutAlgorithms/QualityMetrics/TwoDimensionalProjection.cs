@@ -10,6 +10,7 @@ using UnityEngine;
  */
 public class TwoDimensionalProjection : MonoBehaviour {
     public GameObject camera, projectionPlane;
+    public ConeTreeAlgorithm RDT;
     private Observer _observer;
     private RaycastHit _hit;
     private Vector3 direction, _averageNode;
@@ -45,6 +46,12 @@ public class TwoDimensionalProjection : MonoBehaviour {
         for(int i=0; i<_observer.GetOperators().Count; i++)
         {
             _observer.GetOperators()[i].GetIcon().transform.position = _originalPositions[i];
+            if (_observer.GetOperators()[i].GetComponent<LineRenderer>() != null)
+            {
+                _observer.GetOperators()[i].GetComponent<LineRenderer>().positionCount = 2;
+                _observer.GetOperators()[i].GetComponent<LineRenderer>().SetPosition(0, _observer.GetOperators()[i].GetIcon().transform.position);
+                _observer.GetOperators()[i].GetComponent<LineRenderer>().SetPosition(1, _observer.GetOperators()[i].Parents[0].GetIcon().transform.position);
+            }
         }
     }
 
@@ -61,6 +68,6 @@ public class TwoDimensionalProjection : MonoBehaviour {
                 op.GetIcon().transform.position = _hit.point;
             }
         }
-        if (GetComponent<ConeTreeAlgorithm>().RDT) GetComponent<ConeTreeAlgorithm>().CalculateRDT();
+        if (RDT.RDT) RDT.CalculateRDT();
     }
 }

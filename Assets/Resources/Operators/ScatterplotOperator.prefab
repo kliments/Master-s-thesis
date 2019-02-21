@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 65232400884669170}
   - component: {fileID: 23323973822414678}
   - component: {fileID: 114769805475448318}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ScatterplotIcon
   m_TagString: NodeIcon
   m_Icon: {fileID: 0}

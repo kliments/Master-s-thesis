@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 65845108645419012}
   - component: {fileID: 23733768717384662}
   - component: {fileID: 114868009466994572}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: KMeansClusteringIcon
   m_TagString: NodeIcon
   m_Icon: {fileID: 0}

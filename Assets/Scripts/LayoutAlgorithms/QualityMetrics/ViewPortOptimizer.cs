@@ -11,9 +11,10 @@ using UnityEngine;
 
 public class ViewPortOptimizer : MonoBehaviour {
     public Vector3 position;
-    public bool scan, switchView, switchBackView;
+    public bool globalScan, scan, switchView, switchBackView;
     public Transform cam;
     public int nrOfViews;
+    public List<GeneralLayoutAlgorithm> algorithmsList;
 
     public List<List<QualityMetricViewPort>> globalObservationList;
     public List<QualityMetricViewPort> observationList;
@@ -29,14 +30,16 @@ public class ViewPortOptimizer : MonoBehaviour {
     /* Mean and Standard Deviation values of 
      * quality metrics for calculating z score
      */
-    private float _nodeOverlapMean, _nodeOverlapSTD;
+    /*private float _nodeOverlapMean, _nodeOverlapSTD;
     private float _edgeCrossMean, _edgeCrossSTD;
     private float _edgeCrossAngleMean, _edgeCrossAngleSTD;
     private float _angResMean, _angResSTD;
-    private float _edgeLengthMean, _edgeLengthSTD;
+    private float _edgeLengthMean, _edgeLengthSTD;*/
 
+
+    private float minEdgeCross, maxEdgeCross, minNodeOverlap, maxNodeOverlap;
     // Z scores of quality metrics
-    private float _ZnodeOverlap, _ZedgeCross, _ZedgeCrossAngle, _ZangRes, _ZedgeLength;
+    //private float _ZnodeOverlap, _ZedgeCross, _ZedgeCrossAngle, _ZangRes, _ZedgeLength;
 
     // counter for switching views
     private int counter = -1;
@@ -74,6 +77,14 @@ public class ViewPortOptimizer : MonoBehaviour {
             cam.LookAt(transform);
             globalObservationList.Add(observationList);
         }
+        /*if(globalScan)
+        {
+            globalScan = false;
+            while(!current.currentLayout.AlgorithmHasFinished())
+            {
+                algorithmsList[0].StartAlgorithm();
+            }
+        }*/
         if(switchView)
         {
             switchView = false;
@@ -179,41 +190,13 @@ public class ViewPortOptimizer : MonoBehaviour {
                 _edgeLengths.Add(temp.edgeLength);
             }
         }
-
-        //Calculates the mean of each quality metric
-        _nodeOverlapMean = MeanCalc(_nodeOverlaps);
-        _edgeCrossMean = MeanCalc(_edgeCrossings);
-        _edgeCrossAngleMean = MeanCalc(_edgeCrossAngle);
-        _angResMean = MeanCalc(_angRes);
-        _edgeLengthMean = MeanCalc(_edgeLengths);
-
-        //Calculates the Standard Deviation of each quality metric
-        _nodeOverlapSTD = STDCalc(_nodeOverlaps, _nodeOverlapMean);
-        _edgeCrossSTD = STDCalc(_edgeCrossings, _edgeCrossMean);
-        _edgeCrossAngleSTD = STDCalc(_edgeCrossAngle, _edgeCrossAngleMean);
-        _angResSTD = STDCalc(_angRes, _angResMean);
-        _edgeLengthSTD = STDCalc(_edgeLengths, _edgeLengthMean);
-
+        minNodeOverlap = MinimumNodeOverlap(observationList);
+        maxNodeOverlap = MaximumNodeOverlap(observationList);
+        minEdgeCross = MinimumEdgeCross(observationList);
+        maxEdgeCross = MaximumEdgeCross(observationList);
         foreach(var currentView in observationList)
         {
-            if (currentView.nrNodeOverlaps == 0) _ZnodeOverlap = 0;
-            else _ZnodeOverlap = (currentView.nrNodeOverlaps - _nodeOverlapMean) / _nodeOverlapSTD;
-            _ZnodeOverlap = 1 - _ZnodeOverlap;
-            if (currentView.nrEdgeCrossings == 0) _ZedgeCross = 0;
-            else _ZedgeCross = (currentView.nrEdgeCrossings - _edgeCrossMean) / _edgeCrossSTD;
-            _ZedgeCross = 1 - _ZedgeCross;
-            if (currentView.edgeCrossAngle == 1) _ZedgeCrossAngle = 1;
-            else _ZedgeCrossAngle = (currentView.edgeCrossAngle - _edgeCrossAngleMean) / _edgeCrossAngleSTD;
-            if (currentView.angResRM == 1) _ZangRes = 1;
-            else _ZangRes = (currentView.angResRM - _angResMean) / _angResSTD;
-            _ZedgeLength = (currentView.edgeLength - _edgeLengthMean) / _edgeLengthSTD;
-            _ZedgeLength = 1 - _ZedgeLength;
-            currentView.overallGrade = ((crossAngle.qualityFactor * _ZedgeCrossAngle) + (angRes.qualityFactor * _ZangRes) + (node.qualityFactor * _ZnodeOverlap) + (edge.qualityFactor * _ZedgeCross) + (edgeLength.qualityFactor * _ZedgeLength)) / (crossAngle.qualityFactor + edge.qualityFactor + node.qualityFactor + angRes.qualityFactor + edgeLength.qualityFactor);
-            currentView._ZnodeOverlap = _ZnodeOverlap;
-            currentView._ZedgeCross = _ZedgeCross;
-            currentView._ZedgeLength = _ZedgeLength;
-            currentView._ZangRes = _ZangRes;
-            currentView._ZminAngle = _ZedgeCrossAngle;
+            currentView.overallGrade = ((crossAngle.qualityFactor * currentView.edgeCrossAngle) + (angRes.qualityFactor * currentView.angResRM) + (node.qualityFactor * NormalizedNodeOverlaps(currentView.nrNodeOverlaps)) + (edge.qualityFactor * NormalizedEdgeCrossings(currentView.nrEdgeCrossings)) + (edgeLength.qualityFactor * currentView.edgeLength)) / (crossAngle.qualityFactor + edge.qualityFactor + node.qualityFactor + angRes.qualityFactor + edgeLength.qualityFactor);
         }
 
         observationList = SortList(observationList);
@@ -268,6 +251,15 @@ public class ViewPortOptimizer : MonoBehaviour {
         }
         return max;
     }
+    private float MinimumEdgeCross(List<QualityMetricViewPort> list)
+    {
+        float min = 0;
+        foreach (var item in list)
+        {
+            if (min > item.nrEdgeCrossings) min = item.nrEdgeCrossings;
+        }
+        return min;
+    }
     private float MaximumNodeOverlap(List<QualityMetricViewPort> list)
     {
         float max = 0;
@@ -276,6 +268,15 @@ public class ViewPortOptimizer : MonoBehaviour {
             if (max < item.nrNodeOverlaps) max = item.nrNodeOverlaps;
         }
         return max;
+    }
+    private float MinimumNodeOverlap(List<QualityMetricViewPort> list)
+    {
+        float min = 0;
+        foreach (var item in list)
+        {
+            if (min > item.nrNodeOverlaps) min = item.nrNodeOverlaps;
+        }
+        return min;
     }
     private float MaximumEdgeAngle(List<QualityMetricViewPort> list)
     {
@@ -294,5 +295,17 @@ public class ViewPortOptimizer : MonoBehaviour {
             if (max < item.angResRM) max = item.angResRM;
         }
         return max;
+    }
+
+    private float NormalizedEdgeCrossings(float edgeCross)
+    {
+        float cubeRoot = 1f / 3f;
+        return 1 - ((Mathf.Pow(edgeCross, cubeRoot) - Mathf.Pow(minEdgeCross, cubeRoot)) / (Mathf.Pow(maxEdgeCross, cubeRoot) - Mathf.Pow(minEdgeCross, cubeRoot)));
+    }
+    private float NormalizedNodeOverlaps(float nodeOverlaps)
+    {
+        float cubeRoot = 1f / 3f;
+        float result = ((Mathf.Pow(nodeOverlaps, cubeRoot) - Mathf.Pow(minNodeOverlap, cubeRoot)) / (Mathf.Pow(maxNodeOverlap, cubeRoot) - Mathf.Pow(minNodeOverlap, cubeRoot)));
+        return 1 - result;
     }
 }

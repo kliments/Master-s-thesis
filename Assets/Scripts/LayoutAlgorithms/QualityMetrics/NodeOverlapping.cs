@@ -18,12 +18,12 @@ public class NodeOverlapping : MonoBehaviour {
     private Vector3 dir, center, currentPoint, startXY, endX, endY, tempX, tempY;
     private Observer observer;
     private GameObject camera, currentIcon;
-    private RaycastHit[] hits, hitsCenter;
+    private RaycastHit hit;
 	// Use this for initialization
 	void Start () {
         camera = Camera.main.gameObject;
         observer = (Observer)FindObjectOfType(typeof(Observer));
-        layerMask = ~(1 << 10);
+        layerMask = LayerMask.GetMask("NodeOverlapping");
         sortedList = new List<GenericOperator>();
 	}
 	
@@ -58,7 +58,7 @@ public class NodeOverlapping : MonoBehaviour {
             if(dist == 0)
             {
                 dist = Vector3.Distance(currentIcon.transform.TransformPoint(currentIcon.GetComponent<MeshFilter>().mesh.vertices[0]), currentIcon.transform.TransformPoint(currentIcon.GetComponent<MeshFilter>().mesh.vertices[1]));
-                dist /= 10;
+                dist /= 5;
             }
             /*
              * Start and end points for interpolation between them to get the points to raycast
@@ -66,34 +66,30 @@ public class NodeOverlapping : MonoBehaviour {
             startXY = currentIcon.transform.TransformPoint(currentIcon.GetComponent<MeshFilter>().mesh.vertices[0]);
             endX = currentIcon.transform.TransformPoint(currentIcon.GetComponent<MeshFilter>().mesh.vertices[1]);
             endY = currentIcon.transform.TransformPoint(currentIcon.GetComponent<MeshFilter>().mesh.vertices[2]);
-            for (int i=0; i<=10; i++)
+            for (int i=0; i<=4; i++)
             {
-                tempX = Vector3.Lerp(startXY, endY, (float)i/10);
-                tempY = Vector3.Lerp(endX, currentIcon.transform.TransformPoint(currentIcon.GetComponent<MeshFilter>().mesh.vertices[3]), (float)i / 10);
-                for(int j=0; j<=10;j++)
+                tempX = Vector3.Lerp(startXY, endY, (float)i/4);
+                tempY = Vector3.Lerp(endX, currentIcon.transform.TransformPoint(currentIcon.GetComponent<MeshFilter>().mesh.vertices[3]), (float)i / 4);
+                for(int j=0; j<=4;j++)
                 {
-                    currentPoint = Vector3.Lerp(tempX, tempY, (float)j / 10);
+                    currentPoint = Vector3.Lerp(tempX, tempY, (float)j / 4);
                     dir = currentPoint - camera.transform.position;
-                    hits = Physics.RaycastAll(camera.transform.position, dir, 100, layerMask);
-                    foreach (var hit in hits)
+                    if(Physics.Raycast(camera.transform.position, dir, out hit, 100, layerMask))
                     {
-                        if (hit.transform.tag != "NodeIcon") continue;
-                        if (hit.transform.parent.GetComponent<GenericIcon>().Op.GetType() == typeof(NewOperator)) continue;
-                        if (hit.transform.gameObject != currentIcon)
+                        if(hit.transform.gameObject != currentIcon)
                         {
                             count++;
-                            break;
                         }
                     }
                 }
             }
-            count /= 121;
+            count /= 25;
             coef += count;
-            //change layer so it will be ignored in the future raycasts
-            currentIcon.layer = 10;
+            //change layer so it will be ignored in the future raycasts / NodeOverlapChecked
+            currentIcon.layer = 11;
         }
 
-        //reset back the layers to default
+        //reset back the layers to default / NodeOverlapping
         foreach(var op in observer.GetOperators())
         {
             if (op.GetType() == typeof(NewOperator)) continue;
@@ -102,7 +98,7 @@ public class NodeOverlapping : MonoBehaviour {
                 if (child.gameObject.activeSelf)
                 {
                     currentIcon = child.gameObject;
-                    currentIcon.layer = 0;
+                    currentIcon.layer = 10;
                     break;
                 }
             }

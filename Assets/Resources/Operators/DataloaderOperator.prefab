@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 65989957736988010}
   - component: {fileID: 23195897876899838}
   - component: {fileID: 114184626643347826}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: DataLoader
   m_TagString: NodeIcon
   m_Icon: {fileID: 0}
