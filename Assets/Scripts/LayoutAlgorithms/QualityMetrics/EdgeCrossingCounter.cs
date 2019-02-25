@@ -17,6 +17,7 @@ public class EdgeCrossingCounter : MonoBehaviour {
     private List<List<Vector3>> _edges;
     private Observer _observer;
     private Transform _projectionPlane;
+    private LineRenderer lr;
 	// Use this for initialization
 	void Start () {
         _observer = (Observer)FindObjectOfType(typeof(Observer));
@@ -30,6 +31,8 @@ public class EdgeCrossingCounter : MonoBehaviour {
 	void Update () {
         if (countEdgeCrossings)
         {
+            transform.position = GetComponent<ViewPortOptimizer>().FindCenterOfGraph();
+            Camera.main.transform.LookAt(transform);
             GetComponent<TwoDimensionalProjection>().ProjectTree();
             count = 0;
             _angles = new List<float>();
@@ -37,7 +40,6 @@ public class EdgeCrossingCounter : MonoBehaviour {
             Debug.Log("crossings " + CountEdgeCrossings().ToString());
             Debug.Log("edges " + _edges.Count);
             GetComponent<TwoDimensionalProjection>().RestorePositions();
-            if (algorithm == RDT) RDT.CalculateRDT();
         }
 	}
 
@@ -66,14 +68,15 @@ public class EdgeCrossingCounter : MonoBehaviour {
             {
                 if (op.GetComponent<LineRenderer>()!=null)
                 {
+                    lr = op.GetComponent<LineRenderer>();
                     temp = new List<Vector3>();
-                    temp.Add(_projectionPlane.InverseTransformPoint(op.GetComponent<LineRenderer>().GetPosition(0)));
-                    temp.Add(_projectionPlane.InverseTransformPoint(op.GetComponent<LineRenderer>().GetPosition(1)));
+                    temp.Add(_projectionPlane.InverseTransformPoint(lr.GetPosition(0)));
+                    temp.Add(_projectionPlane.InverseTransformPoint(lr.GetPosition(1)));
                     if (!Contains(temp)) _edges.Add(temp);
 
                     temp = new List<Vector3>();
-                    temp.Add(_projectionPlane.InverseTransformPoint(op.GetComponent<LineRenderer>().GetPosition(1)));
-                    temp.Add(_projectionPlane.InverseTransformPoint(op.GetComponent<LineRenderer>().GetPosition(2)));
+                    temp.Add(_projectionPlane.InverseTransformPoint(lr.GetPosition(1)));
+                    temp.Add(_projectionPlane.InverseTransformPoint(lr.GetPosition(2)));
                     if (!Contains(temp)) _edges.Add(temp);
                 }
             }
@@ -85,12 +88,20 @@ public class EdgeCrossingCounter : MonoBehaviour {
     {
         PopulateEdges();
         count = 0;
+        _angles = new List<float>();
+        float angle = 0;
         for(int i=0; i<_edges.Count; i++)
         {
             for(int j=i+1; j<_edges.Count; j++)
             {
-                if (FasterLineSegmentIntersection(_edges[i][0], _edges[i][1], _edges[j][0], _edges[j][1]))
+                if(Overlap(_edges[i].ToArray(), _edges[j].ToArray()))
                 {
+                    continue;
+                }
+                else if (FasterLineSegmentIntersection(_edges[i][0], _edges[i][1], _edges[j][0], _edges[j][1]))
+                {
+                    angle = EdgeAngle(_edges[i][1] - _edges[i][0], _edges[j][1] - _edges[j][0]);
+                    if (angle < 1f) continue;
                     _angles.Add(EdgeAngle(_edges[i][1] - _edges[i][0], _edges[j][1] - _edges[j][0]));
                     count++;
                 }
@@ -180,4 +191,20 @@ public class EdgeCrossingCounter : MonoBehaviour {
         }
         return false;
     }
+
+    bool Overlap(Vector3[] line1, Vector3[] line2)
+    {
+        if (LaysOnLine(line1[0], line2)) return true;
+        else if (LaysOnLine(line1[1], line2)) return true;
+        else if (LaysOnLine(line2[0], line1)) return true;
+        else if (LaysOnLine(line2[1], line1)) return true;
+        return false;
+    }
+    public bool LaysOnLine(Vector3 point, Vector3[] line)
+    {
+        if (point == line[0] || point == line[1]) return false;
+        else if (Vector3.Distance(point, line[0]) + Vector3.Distance(point, line[1]) == Vector3.Distance(line[0], line[1])) return true;
+        return false;
+    }
+
 }

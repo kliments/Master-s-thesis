@@ -32,4 +32,13 @@ public class ToggleScript : GenericMenueComponent
     {
         return myAnimator.GetBool("isPressed");
     }
+
+    public override void CloseAllMenus()
+    {
+        List<IMenueComponentListener> listeners = getListeners();
+        foreach (IMenueComponentListener listener in listeners)
+        {
+            listener.CloseAllMenus();
+        }
+    }
 }

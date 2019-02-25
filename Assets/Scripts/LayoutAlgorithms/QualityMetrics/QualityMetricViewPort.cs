@@ -9,7 +9,9 @@ using UnityEngine;
  */
 public class QualityMetricViewPort {
     public float nrNodeOverlaps, nrEdgeCrossings;
-    public float edgeLength, edgeCrossAngle, angResRM, overallGrade;
+    public float normalizedNodeOverlaps, normalizedEdgeCrossings, normalizedEdgeLength, edgeLength, edgeCrossAngle, angResRM, overallGrade;
     public Vector3 cameraPosition;
     public GeneralLayoutAlgorithm algorithm;
+    public Vector3[] listPos;
+    public int index;
 }

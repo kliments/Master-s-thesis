@@ -13,4 +13,9 @@ public class CloseButtonScript : GenericMenueComponent {
 	void Update () {
 		
 	}
+
+    public override void CloseAllMenus()
+    {
+        if(getListeners().Count != 0) getListeners()[0].CloseAllMenus();
+    }
 }

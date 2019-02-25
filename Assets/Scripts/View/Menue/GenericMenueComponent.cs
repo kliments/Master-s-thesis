@@ -66,4 +66,9 @@ public class GenericMenueComponent : MonoBehaviour {
     {
         return myListener;
     }
+
+    public virtual void CloseAllMenus()
+    {
+
+    }
 }

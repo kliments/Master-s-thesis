@@ -9,21 +9,27 @@ using UnityEngine;
  * and saves it in QualityMetricViewport class for later calculation
  */
 
-public class ViewPortOptimizer : MonoBehaviour {
+public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     public Vector3 position;
-    public bool globalScan, scan, switchView, switchBackView;
+    public bool globalScan, scan, switchView, switchBackView, debug;
     public Transform cam;
     public int nrOfViews;
     public List<GeneralLayoutAlgorithm> algorithmsList;
+    public ConeTreeAlgorithm RDT;
+    public GenericMenueComponent localScanListener, globalScanListener;
+    public GameObject guidanceMarker;
 
     public List<List<QualityMetricViewPort>> globalObservationList;
-    public List<QualityMetricViewPort> observationList;
+    public List<QualityMetricViewPort> observationList, combinedObservationList;
     public QualityMetricViewPort temp;
     public QualityMetricSlider edge, node, crossAngle, angRes, edgeLength;
 
     private Transform[] opIcons;
     private LayoutAlgorithm current;
     private Observer observer;
+    private List<GameObject> guidanceMarkers;
+    private int index = 0;
+    private int maxCrossIndex = 0;
     // Lists of all metrics for calculating Mean and STD values
     private List<float> _edgeLengths, _angRes, _edgeCrossAngle;
     private List<float> _nodeOverlaps, _edgeCrossings;
@@ -37,12 +43,13 @@ public class ViewPortOptimizer : MonoBehaviour {
     private float _edgeLengthMean, _edgeLengthSTD;*/
 
 
-    private float minEdgeCross, maxEdgeCross, minNodeOverlap, maxNodeOverlap;
+    private float minEdgeCross, maxEdgeCross, minNodeOverlap, maxNodeOverlap, maxEdgeLength, minEdgeLength;
+    GeneralLayoutAlgorithm edgeAlg, nodeAlg;
     // Z scores of quality metrics
     //private float _ZnodeOverlap, _ZedgeCross, _ZedgeCrossAngle, _ZangRes, _ZedgeLength;
 
     // counter for switching views
-    private int counter = -1;
+    private int counter = 0;
 
     private bool _toBreak;
 	// Use this for initialization
@@ -51,51 +58,138 @@ public class ViewPortOptimizer : MonoBehaviour {
         globalObservationList = new List<List<QualityMetricViewPort>>();
         observationList = new List<QualityMetricViewPort>();
         current = GetComponent<LayoutAlgorithm>();
-        _edgeLengths = new List<float>();
-        _angRes = new List<float>();
-        _edgeCrossAngle = new List<float>();
-        _nodeOverlaps = new List<float>();
-        _edgeCrossings = new List<float>();
+        guidanceMarkers = new List<GameObject>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if(scan)
         {
+            combinedObservationList = new List<QualityMetricViewPort>();
+            maxEdgeCross = 0;
+            maxNodeOverlap = 0;
+            maxEdgeLength = 0;
             scan = false;
             //set gameobject in the center of the graph
             transform.position = FindCenterOfGraph();
-            //set camera to position of the furthest node + 1 meter
-            transform.GetChild(0).localPosition = FindFurthestNode();
+            //set camera to position of the furthest node + 2 meters
             cam.parent = transform;
             cam.localPosition = FindFurthestNode();
             cam.LookAt(transform);
             observationList = new List<QualityMetricViewPort>();
             ScanAndCalculate();
             cam.parent = null;
-            cam.position = observationList[0].cameraPosition;
-            cam.LookAt(transform);
             globalObservationList.Add(observationList);
-        }
-        /*if(globalScan)
-        {
-            globalScan = false;
-            while(!current.currentLayout.AlgorithmHasFinished())
+            //Debug.Log(MaximumEdgeCross(observationList) + " " + observationList[0].algorithm);
+            if (maxEdgeCross < MaximumEdgeCross(observationList, false))
             {
-                algorithmsList[0].StartAlgorithm();
+                maxEdgeCross = MaximumEdgeCross(observationList, false);
+                //listIndex++;
             }
-        }*/
+            if (maxNodeOverlap < MaximumNodeOverlap(observationList))
+            {
+                maxNodeOverlap = MaximumNodeOverlap(observationList);
+            }
+            if (maxEdgeLength < MaximumEdgeLength(observationList))
+            {
+                maxEdgeLength = MaximumEdgeLength(observationList);
+            }
+            cam.transform.position = observationList[counter].cameraPosition;
+            cam.LookAt(transform);
+        }
+        if(globalScan)
+        {
+            combinedObservationList = new List<QualityMetricViewPort>();
+            maxEdgeCross = 0;
+            maxNodeOverlap = 0;
+            index = 0;
+            int listIndex = -1;
+            globalScan = false;
+            globalObservationList = new List<List<QualityMetricViewPort>>();
+            foreach(var algorithm in algorithmsList)
+            {
+                algorithm.PreScanCalculation();
+                //set gameobject in the center of the graph
+                transform.position = FindCenterOfGraph();
+                cam.parent = transform;
+                //set camera to position of the furthest node + 2 meters
+                cam.localPosition = FindFurthestNode();
+                cam.LookAt(transform);
+                observationList = new List<QualityMetricViewPort>();
+                ScanAndCalculate();
+                cam.parent = null;
+                cam.position = observationList[0].cameraPosition;
+                cam.LookAt(transform);
+                globalObservationList.Add(observationList);
+            }
+            foreach(var list in globalObservationList)
+            {
+                if (maxEdgeCross < MaximumEdgeCross(list, false))
+                {
+                    maxEdgeCross = MaximumEdgeCross(list, false);
+                    //listIndex++;
+                }
+                if(maxNodeOverlap < MaximumNodeOverlap(list))
+                {
+                    maxNodeOverlap = MaximumNodeOverlap(list);
+                }
+                if (maxEdgeLength < MaximumEdgeLength(observationList))
+                {
+                    maxEdgeLength = MaximumEdgeLength(observationList);
+                }
+            }
+            //cam.transform.position = globalObservationList[listIndex][index].cameraPosition;
+            //current.currentLayout = globalObservationList[listIndex][index].algorithm;
+            /*for (int op = 0; op<observer.GetOperators().Count; op++)
+            {
+                observer.GetOperators()[op].GetIcon().transform.position = globalObservationList[listIndex][index].listPos[op];
+                observer.GetOperators()[op].GetIcon().GetComponent<IconProperties>().newPos = globalObservationList[listIndex][index].listPos[op];
+            }*/
+            foreach(var list in globalObservationList)
+            {
+                foreach(var view in list)
+                {
+                    view.normalizedEdgeCrossings = NormalizedEdgeCrossings(view.nrEdgeCrossings);
+                    view.normalizedNodeOverlaps = NormalizedNodeOverlaps(view.nrNodeOverlaps);
+                    view.normalizedEdgeLength = NormalizedEdgeLengths(view.edgeLength);
+                    view.overallGrade = ((crossAngle.qualityFactor*view.edgeCrossAngle) + (angRes.qualityFactor * view.angResRM) + (edgeLength.qualityFactor*view.normalizedEdgeLength) + (node.qualityFactor * view.normalizedNodeOverlaps) + (edge.qualityFactor * view.normalizedEdgeCrossings)) / (crossAngle.qualityFactor + edge.qualityFactor + node.qualityFactor + angRes.qualityFactor + edgeLength.qualityFactor);
+                }
+            }
+            SortList(combinedObservationList);
+            if (current.currentLayout == RDT)
+            {
+                RDT.CalculateRDT();
+            }
+            else
+            {
+                current.currentLayout.PlaceEdges();
+            }
+            transform.position = FindCenterOfGraph();
+            cam.LookAt(transform);
+        }
         if(switchView)
         {
             switchView = false;
             counter++;
-            if (counter == observationList.Count)
+            if (counter == combinedObservationList.Count)
             {
-                counter = observationList.Count - 1;
+                counter = combinedObservationList.Count - 1;
             }
-            cam.position = observationList[counter].cameraPosition;
+            if(current.currentLayout != combinedObservationList[counter].algorithm)
+            {
+                current.currentLayout = combinedObservationList[counter].algorithm;
+                for(int i=0; i<observer.GetOperators().Count; i++)
+                {
+                    observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = combinedObservationList[counter].listPos[i];
+                    observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().repos = true;
+                }
+                if (current.currentLayout == RDT) CalculateRDT();
+                else current.currentLayout.PlaceEdges();
+            }
+            cam.position = combinedObservationList[counter].cameraPosition;
+            transform.position = FindCenterOfGraph();
             cam.LookAt(transform);
-            Debug.Log(observationList[counter].overallGrade + " node overlap " + observationList[counter].nrNodeOverlaps + " edge cross " + observationList[counter].nrEdgeCrossings + " edge cross angle " + observationList[counter].edgeCrossAngle + " angular res " + observationList[counter].angResRM + " edge length " + observationList[counter].edgeLength);
+            Debug.Log("Algorithm = " + combinedObservationList[counter].algorithm + " overall grade=" + combinedObservationList[counter].overallGrade + " edge cross=" + combinedObservationList[counter].nrEdgeCrossings + " edgeCrossNrmlzd=" + combinedObservationList[counter].normalizedEdgeCrossings + " node overlap=" + combinedObservationList[counter].nrNodeOverlaps + " nodeOverlapNrmzld=" + combinedObservationList[counter].normalizedNodeOverlaps + " edge cross angle=" + combinedObservationList[counter].edgeCrossAngle + " angular res angle=" + combinedObservationList[counter].angResRM + " edge length=" + combinedObservationList[counter].edgeLength + " edgeLengthNrmlzd=" + combinedObservationList[counter].normalizedEdgeLength + " index=" + combinedObservationList[counter].index);
         }
         if(switchBackView)
         {
@@ -105,20 +199,36 @@ public class ViewPortOptimizer : MonoBehaviour {
             {
                 counter = 0;
             }
-            cam.position = observationList[counter].cameraPosition;
+            if (current.currentLayout != combinedObservationList[counter].algorithm)
+            {
+                current.currentLayout = combinedObservationList[counter].algorithm;
+                for (int i = 0; i < observer.GetOperators().Count; i++)
+                {
+                    observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = combinedObservationList[counter].listPos[i];
+                    observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().repos = true;
+                }
+                if (current.currentLayout == RDT) CalculateRDT();
+                else current.currentLayout.PlaceEdges();
+            }
+            cam.position = combinedObservationList[counter].cameraPosition;
+            transform.position = FindCenterOfGraph();
             cam.LookAt(transform);
+        }
+        if(debug)
+        {
+            debug = false;
         }
 	}
 
     /* Finds the center of the graph for rotation of the scanner object
      *  around the tree-graph
      */
-    Vector3 FindCenterOfGraph()
+    public Vector3 FindCenterOfGraph()
     {
         Vector3 pos = new Vector3();
         foreach(var op in observer.GetOperators())
         {
-            pos += op.GetIcon().transform.position;
+            pos += op.GetIcon().GetComponent<IconProperties>().newPos;
         }
         pos /= observer.GetOperators().Count;
         return pos;
@@ -141,12 +251,14 @@ public class ViewPortOptimizer : MonoBehaviour {
     // Repositiones the camera around the graph and calculates the quality metrics
     void ScanAndCalculate()
     {
+        index = 0;
         opIcons = new Transform[observer.GetOperators().Count];
         for(int i=0; i<opIcons.Length; i++)
         {
             if (observer.GetOperators()[i].GetIcon().transform.GetChild(0).name != "Plane") opIcons[i] = observer.GetOperators()[i].GetIcon().transform.GetChild(0);
             else opIcons[i] = observer.GetOperators()[i].GetIcon().transform.GetChild(1);
         }
+        GetComponent<TwoDimensionalProjection>().SetPlane();
         for(int i = 0; i<180; i+=10)
         {
             for(int j=0; j<360; j+=10)
@@ -166,11 +278,12 @@ public class ViewPortOptimizer : MonoBehaviour {
                 }
                 if (_toBreak) continue;
                 temp = new QualityMetricViewPort();
-
+                temp.listPos = new Vector3[observer.GetOperators().Count];
                 //rotate icons towards camera before calculating node overlapping
-                foreach(var icon in opIcons)
+                for(int icon = 0; icon<opIcons.Length; icon++)
                 {
-                    icon.LookAt(cam);
+                    opIcons[icon].LookAt(cam);
+                    temp.listPos[icon] = opIcons[icon].transform.position;
                 }
                 temp.nrNodeOverlaps = GetComponent<NodeOverlapping>().CalculateNodeOverlapping();
                 GetComponent<TwoDimensionalProjection>().ProjectTree();
@@ -178,53 +291,21 @@ public class ViewPortOptimizer : MonoBehaviour {
                 temp.edgeCrossAngle = GetComponent<EdgeCrossingCounter>().edgeCrossRM;
                 temp.angResRM = GetComponent<NodeAngularResolution>().CalculateAngularResolution();
                 temp.edgeLength = GetComponent<EdgeLength>().CalculateEdgeLength();
-                GetComponent<TwoDimensionalProjection>().RestorePositions();
                 temp.cameraPosition = cam.position;
                 temp.algorithm = current.currentLayout;
+                temp.index = index;
+                GetComponent<TwoDimensionalProjection>().RestorePositions();
                 observationList.Add(temp);
-
-                _nodeOverlaps.Add(temp.nrNodeOverlaps);
-                _edgeCrossings.Add(temp.nrEdgeCrossings);
-                _edgeCrossAngle.Add(temp.edgeCrossAngle);
-                _angRes.Add(temp.angResRM);
-                _edgeLengths.Add(temp.edgeLength);
+                combinedObservationList.Add(temp);
+                index++;
             }
         }
-        minNodeOverlap = MinimumNodeOverlap(observationList);
+        /*minNodeOverlap = MinimumNodeOverlap(observationList);
         maxNodeOverlap = MaximumNodeOverlap(observationList);
         minEdgeCross = MinimumEdgeCross(observationList);
-        maxEdgeCross = MaximumEdgeCross(observationList);
-        foreach(var currentView in observationList)
-        {
-            currentView.overallGrade = ((crossAngle.qualityFactor * currentView.edgeCrossAngle) + (angRes.qualityFactor * currentView.angResRM) + (node.qualityFactor * NormalizedNodeOverlaps(currentView.nrNodeOverlaps)) + (edge.qualityFactor * NormalizedEdgeCrossings(currentView.nrEdgeCrossings)) + (edgeLength.qualityFactor * currentView.edgeLength)) / (crossAngle.qualityFactor + edge.qualityFactor + node.qualityFactor + angRes.qualityFactor + edgeLength.qualityFactor);
-        }
-
-        observationList = SortList(observationList);
+        maxEdgeCross = MaximumEdgeCross(observationList);*/
+        
         nrOfViews = observationList.Count;
-    }
-
-    // Function for calculating Mean of values in list
-    float MeanCalc(List<float> list)
-    {
-        float mean = 0;
-        for (int i = 0; i < list.Count; i++)
-        {
-            mean += list[i];
-        }
-        mean /= list.Count;
-        return mean;
-    }
-
-    // Function for calculating Standard Deviation of values in list
-    float STDCalc(List<float> list, float mean)
-    {
-        float sum = 0;
-        for (int i = 0; i < list.Count; i++)
-        {
-            sum += Mathf.Pow(list[i] - mean, 2);
-        }
-        sum /= list.Count;
-        return Mathf.Sqrt(sum);
     }
 
     private List<QualityMetricViewPort> SortList(List<QualityMetricViewPort> list)
@@ -233,32 +314,20 @@ public class ViewPortOptimizer : MonoBehaviour {
         return list;
     }
 
-    private float MaximumEdgeLength(List<QualityMetricViewPort> list)
+    private float MaximumEdgeCross(List<QualityMetricViewPort> list, bool getIndex)
     {
-        float max = 0;
-        foreach(var item in list)
-        {
-            if (max < item.edgeLength) max = item.edgeLength;
-        }
-        return max;
-    }
-    private float MaximumEdgeCross(List<QualityMetricViewPort> list)
-    {
-        float max = 0;
+        int tempIndex = 0;
+        float tempEdgeCross = 0;
         foreach (var item in list)
         {
-            if (max < item.nrEdgeCrossings) max = item.nrEdgeCrossings;
+            if (tempEdgeCross < item.nrEdgeCrossings)
+            {
+                tempEdgeCross = item.nrEdgeCrossings;
+                if (getIndex) index = tempIndex;
+            }
+            tempIndex++;
         }
-        return max;
-    }
-    private float MinimumEdgeCross(List<QualityMetricViewPort> list)
-    {
-        float min = 0;
-        foreach (var item in list)
-        {
-            if (min > item.nrEdgeCrossings) min = item.nrEdgeCrossings;
-        }
-        return min;
+        return tempEdgeCross;
     }
     private float MaximumNodeOverlap(List<QualityMetricViewPort> list)
     {
@@ -269,43 +338,216 @@ public class ViewPortOptimizer : MonoBehaviour {
         }
         return max;
     }
-    private float MinimumNodeOverlap(List<QualityMetricViewPort> list)
-    {
-        float min = 0;
-        foreach (var item in list)
-        {
-            if (min > item.nrNodeOverlaps) min = item.nrNodeOverlaps;
-        }
-        return min;
-    }
-    private float MaximumEdgeAngle(List<QualityMetricViewPort> list)
+    private float MaximumEdgeLength(List<QualityMetricViewPort> list)
     {
         float max = 0;
         foreach (var item in list)
         {
-            if (max < item.edgeCrossAngle) max = item.edgeCrossAngle;
+            if (max < item.edgeLength) max = item.edgeLength;
         }
         return max;
     }
-    private float MaximumAngRes(List<QualityMetricViewPort> list)
-    {
-        float max = 0;
-        foreach (var item in list)
-        {
-            if (max < item.angResRM) max = item.angResRM;
-        }
-        return max;
-    }
-
     private float NormalizedEdgeCrossings(float edgeCross)
     {
         float cubeRoot = 1f / 3f;
+        if (minEdgeCross == maxEdgeCross) return 1;
         return 1 - ((Mathf.Pow(edgeCross, cubeRoot) - Mathf.Pow(minEdgeCross, cubeRoot)) / (Mathf.Pow(maxEdgeCross, cubeRoot) - Mathf.Pow(minEdgeCross, cubeRoot)));
     }
     private float NormalizedNodeOverlaps(float nodeOverlaps)
     {
         float cubeRoot = 1f / 3f;
+        if (minNodeOverlap == maxNodeOverlap) return 1;
         float result = ((Mathf.Pow(nodeOverlaps, cubeRoot) - Mathf.Pow(minNodeOverlap, cubeRoot)) / (Mathf.Pow(maxNodeOverlap, cubeRoot) - Mathf.Pow(minNodeOverlap, cubeRoot)));
         return 1 - result;
+    }
+    private float NormalizedEdgeLengths(float edgeLengths)
+    {
+        float cubeRoot = 1f / 3f;
+        if (minEdgeLength == maxEdgeLength) return 1;
+        float result = ((Mathf.Pow(edgeLengths, cubeRoot) - Mathf.Pow(minEdgeLength, cubeRoot)) / (Mathf.Pow(maxEdgeLength, cubeRoot) - Mathf.Pow(minEdgeLength, cubeRoot)));
+        return 1 - result;
+    }
+
+    public void menueChanged(GenericMenueComponent changedComponent)
+    {
+        if (changedComponent == localScanListener)
+        {
+            LocalScan();
+
+            for (float i = 0; i < 5; i++)
+            {
+                GameObject marker = Instantiate(guidanceMarker);
+                marker.transform.position = combinedObservationList[(int)i].cameraPosition;
+                marker.transform.LookAt(transform);
+                marker.GetComponent<MeshRenderer>().material.color = new Color(1, i / 5f, i / 5f);
+                guidanceMarkers.Add(marker);
+            }
+        }
+        else
+        {
+            GlobalScan();
+        }
+    }
+
+    void OnEnable()
+    {
+        localScanListener.addListener(this);
+        globalScanListener.addListener(this);
+    }
+
+    private void LocalScan()
+    {
+        for (int i = guidanceMarkers.Count - 1; i >= 0; i--)
+        {
+            Destroy(guidanceMarkers[i]);
+        }
+        guidanceMarkers = new List<GameObject>();
+
+        combinedObservationList = new List<QualityMetricViewPort>();
+        maxEdgeCross = 0;
+        maxNodeOverlap = 0;
+        maxEdgeLength = 0;
+        //set gameobject in the center of the graph
+        transform.position = FindCenterOfGraph();
+        //set camera to position of the furthest node + 2 meters
+        cam.parent = transform;
+        cam.localPosition = FindFurthestNode();
+        cam.LookAt(transform);
+        observationList = new List<QualityMetricViewPort>();
+        ScanAndCalculate();
+        cam.parent = null;
+        globalObservationList.Add(observationList);
+        //Debug.Log(MaximumEdgeCross(observationList) + " " + observationList[0].algorithm);
+        if (maxEdgeCross < MaximumEdgeCross(observationList, false))
+        {
+            maxEdgeCross = MaximumEdgeCross(observationList, false);
+            //listIndex++;
+        }
+        if (maxNodeOverlap < MaximumNodeOverlap(observationList))
+        {
+            maxNodeOverlap = MaximumNodeOverlap(observationList);
+        }
+        if (maxEdgeLength < MaximumEdgeLength(observationList))
+        {
+            maxEdgeLength = MaximumEdgeLength(observationList);
+        }
+
+        foreach (var view in observationList)
+        {
+            view.normalizedEdgeCrossings = NormalizedEdgeCrossings(view.nrEdgeCrossings);
+            view.normalizedNodeOverlaps = NormalizedNodeOverlaps(view.nrNodeOverlaps);
+            view.normalizedEdgeLength = NormalizedEdgeLengths(view.edgeLength);
+            view.overallGrade = ((crossAngle.qualityFactor * view.edgeCrossAngle) + (angRes.qualityFactor * view.angResRM) + (edgeLength.qualityFactor * view.normalizedEdgeLength) + (node.qualityFactor * view.normalizedNodeOverlaps) + (edge.qualityFactor * view.normalizedEdgeCrossings)) / (crossAngle.qualityFactor + edge.qualityFactor + node.qualityFactor + angRes.qualityFactor + edgeLength.qualityFactor);
+        }
+
+        SortList(combinedObservationList);
+        cam.transform.position = combinedObservationList[counter].cameraPosition;
+        cam.LookAt(transform);
+    }
+
+    private void GlobalScan()
+    {
+        for (int i = guidanceMarkers.Count - 1; i >= 0; i--)
+        {
+            Destroy(guidanceMarkers[i]);
+        }
+        guidanceMarkers = new List<GameObject>();
+        combinedObservationList = new List<QualityMetricViewPort>();
+        maxEdgeCross = 0;
+        maxNodeOverlap = 0;
+        index = 0;
+        globalScan = false;
+        globalObservationList = new List<List<QualityMetricViewPort>>();
+        foreach (var algorithm in algorithmsList)
+        {
+            algorithm.PreScanCalculation();
+            //set gameobject in the center of the graph
+            transform.position = FindCenterOfGraph();
+            cam.parent = transform;
+            //set camera to position of the furthest node + 2 meters
+            cam.localPosition = FindFurthestNode();
+            cam.LookAt(transform);
+            observationList = new List<QualityMetricViewPort>();
+            ScanAndCalculate();
+            cam.parent = null;
+            cam.position = observationList[0].cameraPosition;
+            cam.LookAt(transform);
+            globalObservationList.Add(observationList);
+        }
+        foreach (var list in globalObservationList)
+        {
+            if (maxEdgeCross < MaximumEdgeCross(list, false))
+            {
+                maxEdgeCross = MaximumEdgeCross(list, false);
+                //listIndex++;
+            }
+            if (maxNodeOverlap < MaximumNodeOverlap(list))
+            {
+                maxNodeOverlap = MaximumNodeOverlap(list);
+            }
+            if (maxEdgeLength < MaximumEdgeLength(observationList))
+            {
+                maxEdgeLength = MaximumEdgeLength(observationList);
+            }
+        }
+        foreach (var list in globalObservationList)
+        {
+            foreach (var view in list)
+            {
+                view.normalizedEdgeCrossings = NormalizedEdgeCrossings(view.nrEdgeCrossings);
+                view.normalizedNodeOverlaps = NormalizedNodeOverlaps(view.nrNodeOverlaps);
+                view.normalizedEdgeLength = NormalizedEdgeLengths(view.edgeLength);
+                view.overallGrade = ((crossAngle.qualityFactor * view.edgeCrossAngle) + (angRes.qualityFactor * view.angResRM) + (edgeLength.qualityFactor * view.normalizedEdgeLength) + (node.qualityFactor * view.normalizedNodeOverlaps) + (edge.qualityFactor * view.normalizedEdgeCrossings)) / (crossAngle.qualityFactor + edge.qualityFactor + node.qualityFactor + angRes.qualityFactor + edgeLength.qualityFactor);
+            }
+        }
+        SortList(combinedObservationList);
+        if (current.currentLayout == RDT) CalculateRDT();
+        else current.currentLayout.PlaceEdges();
+
+        transform.position = FindCenterOfGraph();
+        cam.transform.position = combinedObservationList[counter].cameraPosition;
+        cam.LookAt(transform);
+    }
+
+    public void CloseAllMenus()
+    {
+        for(int i=guidanceMarkers.Count -1; i >= 0; i--)
+        {
+            Destroy(guidanceMarkers[i]);
+        }
+    }
+
+    void CalculateRDT()
+    {
+        int x = 0;
+        for (int op = 0; op < observer.GetOperators().Count; op++)
+        {
+            if (observer.GetOperators()[op].Children != null)
+            {
+                if (observer.GetOperators()[op].Children.Count > 0)
+                {
+                    Vector3 avgPt = new Vector3();
+                    Vector3 refPt = new Vector3();
+                    Vector3 sum = new Vector3();
+                    for (int i = 0; i < observer.GetOperators()[op].Children.Count; i++)
+                    {
+                        sum += observer.GetOperators()[op].Children[i].GetIcon().GetComponent<IconProperties>().newPos;
+                        x++;
+                    }
+                    avgPt = sum / observer.GetOperators()[op].Children.Count;
+                    avgPt.x = observer.GetOperators()[op].GetIcon().GetComponent<IconProperties>().newPos.x;
+                    avgPt.z = observer.GetOperators()[op].GetIcon().GetComponent<IconProperties>().newPos.z;
+                    refPt = Vector3.Lerp(observer.GetOperators()[op].GetIcon().GetComponent<IconProperties>().newPos, avgPt, 0.5f);
+                    observer.GetOperators()[op].GetIcon().GetComponent<IconProperties>().refPoint = refPt;
+                    for (int i = 0; i < observer.GetOperators()[op].Children.Count; i++)
+                    {
+                        observer.GetOperators()[op].Children[i].GetComponent<LineRenderer>().positionCount = 3;
+                        observer.GetOperators()[op].Children[i].GetComponent<LineRenderer>().SetPosition(0, observer.GetOperators()[op].GetIcon().GetComponent<IconProperties>().newPos);
+                        observer.GetOperators()[op].Children[i].GetComponent<LineRenderer>().SetPosition(1, refPt);
+                        observer.GetOperators()[op].Children[i].GetComponent<LineRenderer>().SetPosition(2, observer.GetOperators()[op].Children[i].GetIcon().GetComponent<IconProperties>().newPos);
+                    }
+                }
+            }
+        }
     }
 }

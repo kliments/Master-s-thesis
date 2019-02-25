@@ -28,6 +28,8 @@ public abstract class GeneralLayoutAlgorithm : MonoBehaviour, IMenueComponentLis
 
     public abstract void StartAlgorithm();
 
+    public abstract void PreScanCalculation();
+
     public void SetTemporal()
     {
         _temporal = true;
@@ -85,5 +87,23 @@ public abstract class GeneralLayoutAlgorithm : MonoBehaviour, IMenueComponentLis
     private float NormalizeColor(float depth)
     {
         return (depth - minDepth) / (maxDepth - minDepth);
+    }
+
+    public void PlaceEdges()
+    {
+        foreach(var op in observer.GetOperators())
+        {
+            if(op.GetComponent<LineRenderer>()!=null)
+            {
+                op.GetComponent<LineRenderer>().positionCount = 2;
+                op.GetComponent<LineRenderer>().SetPosition(0, op.GetIcon().transform.position);
+                op.GetComponent<LineRenderer>().SetPosition(1, op.Parents[0].GetIcon().transform.position);
+            }
+        }
+    }
+
+    public void CloseAllMenus()
+    {
+
     }
 }

@@ -99,4 +99,18 @@ public class DefaultAlgorithm : GeneralLayoutAlgorithm {
     {
         subscriber.addListener(this);
     }
+    public override void PreScanCalculation()
+    {
+        StartAlgorithm();
+        foreach (var op in observer.GetOperators())
+        {
+            op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
+            if(op.GetComponent<LineRenderer>() != null)
+            {
+                op.GetComponent<LineRenderer>().positionCount = 2;
+                op.GetComponent<LineRenderer>().SetPosition(0, op.GetIcon().transform.position);
+                op.GetComponent<LineRenderer>().SetPosition(1, op.Parents[0].GetIcon().transform.position);
+            }
+        }
+    }
 }

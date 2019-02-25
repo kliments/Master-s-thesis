@@ -10,6 +10,7 @@ using UnityEngine;
  */
 public class TwoDimensionalProjection : MonoBehaviour {
     public GameObject camera, projectionPlane;
+    public GeneralLayoutAlgorithm current;
     public ConeTreeAlgorithm RDT;
     private Observer _observer;
     private RaycastHit _hit;
@@ -18,8 +19,9 @@ public class TwoDimensionalProjection : MonoBehaviour {
     private List<Vector3> _originalPositions;
 	// Use this for initialization
 	void Start () {
+        current = GetComponent<LayoutAlgorithm>().currentLayout;
         _observer = (Observer)FindObjectOfType(typeof(Observer));
-        _layerMask = 1 << LayerMask.NameToLayer("ProjectionPlane");
+        _layerMask = LayerMask.GetMask("ProjectionPlane");
         _averageNode = new Vector3();
     }
 	
@@ -46,17 +48,14 @@ public class TwoDimensionalProjection : MonoBehaviour {
         for(int i=0; i<_observer.GetOperators().Count; i++)
         {
             _observer.GetOperators()[i].GetIcon().transform.position = _originalPositions[i];
-            if (_observer.GetOperators()[i].GetComponent<LineRenderer>() != null)
-            {
-                _observer.GetOperators()[i].GetComponent<LineRenderer>().positionCount = 2;
-                _observer.GetOperators()[i].GetComponent<LineRenderer>().SetPosition(0, _observer.GetOperators()[i].GetIcon().transform.position);
-                _observer.GetOperators()[i].GetComponent<LineRenderer>().SetPosition(1, _observer.GetOperators()[i].Parents[0].GetIcon().transform.position);
-            }
         }
+        if (current != RDT) GetComponent<LayoutAlgorithm>().currentLayout.PlaceEdges();
+        else RDT.CalculateRDT();
     }
 
     public void ProjectTree()
     {
+        current = GetComponent<LayoutAlgorithm>().currentLayout;
         _originalPositions = new List<Vector3>();
         foreach (var op in _observer.GetOperators())
         {
@@ -68,6 +67,7 @@ public class TwoDimensionalProjection : MonoBehaviour {
                 op.GetIcon().transform.position = _hit.point;
             }
         }
-        if (RDT.RDT) RDT.CalculateRDT();
+        if (current != RDT) current.PlaceEdges();
+        else RDT.CalculateRDT();
     }
 }

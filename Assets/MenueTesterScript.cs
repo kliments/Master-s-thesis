@@ -68,4 +68,9 @@ public class MenueTesterScript : MonoBehaviour, IMenueComponentListener {
 //            }      
 //        }
     }
+    public void CloseAllMenus()
+    {
+
+    }
+
 }

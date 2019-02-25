@@ -51,10 +51,6 @@ public class IconProperties : MonoBehaviour {
         child.LookAt(myCamera.transform.position);
         if(repos)
         {
-            if(GetComponent<GenericIcon>().GetOperator().Id == 12)
-            {
-                Debug.Log("");
-            }
             transform.position = Vector3.Lerp(transform.position, newPos, Time.deltaTime*alg.currentLayout.speed);
             if (Vector3.Distance(transform.position, newPos) < 0.01f)
             {

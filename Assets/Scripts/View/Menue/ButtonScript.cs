@@ -23,4 +23,13 @@ public class ButtonScript : GenericMenueComponent {
         }
     }
 
+    public override void CloseAllMenus()
+    {
+        List<IMenueComponentListener> list = getListeners();
+        foreach(var listener in list)
+        {
+            listener.CloseAllMenus();
+        }
+    }
+
 }

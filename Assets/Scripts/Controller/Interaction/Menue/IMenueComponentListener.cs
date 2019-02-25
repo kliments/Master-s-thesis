@@ -5,7 +5,7 @@ using UnityEngine;
 public interface IMenueComponentListener{
 
     void menueChanged(GenericMenueComponent changedComponent);
-
+    void CloseAllMenus();
 
 
 }

@@ -108,18 +108,24 @@ public class ConeBurst : GeneralLayoutAlgorithm {
                 grandChild.GetComponent<IconProperties>().newPos = grandChild.position;
                 //grandChild.position = grandChild.GetComponent<IconProperties>().originalPos;
             }
-            //unparent from root's transform
-            child.GetIcon().transform.parent = defaultParent;
-            //set back position
-            child.GetIcon().transform.position = child.GetIcon().GetComponent<IconProperties>().originalPos;
             //set back rotation
             child.GetIcon().transform.rotation = Quaternion.identity;
+            //set back position
+            child.GetIcon().transform.position = child.GetIcon().GetComponent<IconProperties>().originalPos;
+            //unparent from root's transform
+            child.GetIcon().transform.parent = defaultParent;
+
+            //return grandchildren's position to original
+            foreach (Transform grandChild in child.GetIcon().transform)
+            {
+                if (grandChild.GetComponent<IconProperties>() == null) continue;
+                grandChild.position = grandChild.GetComponent<IconProperties>().originalPos;
+            }
             //unparent grandchildren from children transform
-            for(int c= child.GetIcon().transform.childCount - 1; c>=0; c--)
+            for (int c= child.GetIcon().transform.childCount - 1; c>=0; c--)
             {
                 if (child.GetIcon().transform.GetChild(c).GetComponent<IconProperties>() != null)
                 {
-                    child.GetIcon().transform.position = child.GetIcon().GetComponent<IconProperties>().originalPos;
                     child.GetIcon().transform.GetChild(c).transform.parent = defaultParent;
                 }
             }
@@ -198,5 +204,19 @@ public class ConeBurst : GeneralLayoutAlgorithm {
     void OnEnable()
     {
         subscriber.addListener(this);
+    }
+    public override void PreScanCalculation()
+    {
+        StartAlgorithm();
+        foreach(var op in observer.GetOperators())
+        {
+            op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
+            if (op.GetComponent<LineRenderer>() != null)
+            {
+                op.GetComponent<LineRenderer>().positionCount = 2;
+                op.GetComponent<LineRenderer>().SetPosition(0, op.GetIcon().transform.position);
+                op.GetComponent<LineRenderer>().SetPosition(1, op.Parents[0].GetIcon().transform.position);
+            }
+        }
     }
 }

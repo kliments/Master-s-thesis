@@ -9,7 +9,7 @@ using UnityEngine;
  */
 public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
 {
-    public bool RDT, reposition, startConeTree;
+    public bool RDT, reposition, startConeTree, test;
     public float height;
 
     private float _minRadius = 0.25f;
@@ -49,17 +49,7 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
         //set 2 lines, in case previous algorithm had changed it to 3 (ex. RDT)
         if (GetComponent<LayoutAlgorithm>().currentLayout!=this)
         {
-            foreach(var op in observer.GetOperators())
-            {
-                if (op.Parents != null)
-                {
-                    if (op.Parents.Count != 0)
-                    {
-                        op.GetComponent<LineRenderer>().positionCount = 2;
-                        op.GetComponent<LineRenderer>().SetPositions(new Vector3[] {op.Parents[0].GetIcon().transform.position, op.GetIcon().transform.position});
-                    }
-                }
-            }
+            PlaceEdges();
         }
 
         //get root and anchor of tree
@@ -200,7 +190,6 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
     public void CalculateRDT()
     {
         int x = 0;
-        GraphSpaceController gsc = (GraphSpaceController)FindObjectOfType(typeof(GraphSpaceController));
         for (int op = 0; op < observer.GetOperators().Count; op++)
         {
             if (observer.GetOperators()[op].Children != null)
@@ -266,5 +255,18 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
     void OnEnable()
     {
         subscriber.addListener(this);
+    }
+    public override void PreScanCalculation()
+    {
+        StartAlgorithm();
+        foreach(var op in observer.GetOperators())
+        {
+            op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
+            if(!RDT)
+            {
+            }
+        }
+        if(!RDT)PlaceEdges();
+        else CalculateRDT();
     }
 }

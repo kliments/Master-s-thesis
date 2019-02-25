@@ -225,6 +225,11 @@ namespace Model.Operators
         protected override void OnSelectAction()
         {
             base.OnSelectAction();
+            GenericMenueComponent[] list = FindObjectsOfType<GenericMenueComponent>();
+            for(int i=0; i<list.Length; i++)
+            {
+                list[i].CloseAllMenus();
+            }
             CreateMenueButtons();
         }
 
@@ -286,9 +291,13 @@ namespace Model.Operators
             [XmlElement("Axis")]
             public string axis;
         }
+        
+        public void CloseAllMenus()
+        {
+            OnUnselectAction();
+            setSelected(false);
+            _observer.selectedOperator = null;
+        }
     }
-
-
-
 }
 

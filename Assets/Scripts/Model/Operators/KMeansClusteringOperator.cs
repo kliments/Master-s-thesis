@@ -363,4 +363,9 @@ public class KMeansClusteringOperator : GenericOperator, IMenueComponentListener
     {
 
     }
+
+    public void CloseAllMenus()
+    {
+
+    }
 }

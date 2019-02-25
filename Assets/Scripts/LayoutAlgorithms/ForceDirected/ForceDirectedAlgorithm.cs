@@ -29,7 +29,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
     //The current temperature in the simulated annealing
     public float Temperature;
     
-    public bool calculateForceDirected, randomize, saveOriginalLocations, loadLocations;
+    public bool calculateForceDirected, randomize, saveOriginalLocations, loadLocations, test;
 
     /// The function defining the attraction force between two connected nodes.
     /// Arcs are viewed as springs that want to bring the two connected nodes together.
@@ -49,8 +49,6 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
 
     //Default algorithm used for temporal force directed
     private DefaultAlgorithm defaultAlg;
-
-    LineRenderer lr = new LineRenderer();
     // Use this for initialization
     void Start () {
         ElectricForce = (d => 1 / (d * d));
@@ -84,6 +82,11 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
                     SetFinish();
                 }
             }
+        }
+        if(test)
+        {
+            test = false;
+            PreScanCalculation();
         }
     }
 
@@ -120,7 +123,6 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
         {
             return true;
         }
-        Debug.Log(maxDistance);
         return false;
     }
 
@@ -141,20 +143,11 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
             pos = new Vector3(observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos.x, UnityEngine.Random.Range(0.5f, 1.5f), UnityEngine.Random.Range(-1.5f, 1.5f));
             pos2 = observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos;
             observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = pos;
-            pos += new Vector3(UnityEngine.Random.Range(-xRange, xRange), 0, 0);
+            pos += new Vector3(UnityEngine.Random.Range(xRange - 1, xRange), 0, 0);
             observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = pos;
             pos2 = observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos;
-            if (observer.GetOperators()[i].Parents != null)
-            {
-                if (observer.GetOperators()[i].Parents.Count != 0)
-                {
-                    observer.GetOperators()[i].GetComponent<LineRenderer>().positionCount = 2;
-                    observer.GetOperators()[i].GetComponent<LineRenderer>().SetPositions(new Vector3[] {
-                                                                                        observer.GetOperators()[i].Parents[0].GetIcon().transform.position,
-                                                                                        observer.GetOperators()[i].GetIcon().transform.position});
-                }
-            }
         }
+        PlaceEdges();
         GetComponent<TwoDimensionalProjection>().SetPlane();
     }
 
@@ -201,17 +194,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
             op.GetIcon().GetComponent<IconProperties>().repos = true;
             op.GetIcon().GetComponent<IconProperties>().acceleration = Vector3.zero;
             op.GetIcon().GetComponent<IconProperties>().oldPos = op.GetIcon().transform.position;
-            if (op.Parents != null)
-            {
-                if (op.Parents.Count != 0)
-                {
-                    if(op.GetComponent<LineRenderer>().positionCount == 3)
-                    {
-                        op.GetComponent<LineRenderer>().positionCount = 2;
-                    }
-                    op.GetComponent<LineRenderer>().SetPositions(new Vector3[] { op.Parents[0].GetIcon().transform.position, op.GetIcon().transform.position });
-                }
-            }
+            PlaceEdges();
         }
         Temperature *= DefaultTemperatureAttenuation;
     }
@@ -350,5 +333,78 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
     void OnEnable()
     {
         subscriber.addListener(this);
+    }
+
+    public override void PreScanCalculation()
+    {
+        var tempVector = new Vector3();
+        if (GetTemporal())
+        {
+            defaultAlg.StartAlgorithm();
+            foreach (var op in observer.GetOperators())
+            {
+                tempVector = op.GetIcon().transform.position;
+                op.GetIcon().GetComponent<IconProperties>().previousPosition = tempVector;
+                op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
+            }
+        }
+        GetComponent<LayoutAlgorithm>().currentLayout = this;
+        RandomizePositions();
+        foreach (var op in observer.GetOperators())
+        {
+            tempVector = op.GetIcon().transform.position;
+            op.GetIcon().GetComponent<IconProperties>().previousPosition = tempVector;
+            op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
+        }
+        calculateForceDirected = true;
+        //set flag that this algorithm has started
+        SetStart();
+        while (calculateForceDirected)
+        {
+            Calculate();
+            foreach(var op in observer.GetOperators())
+            {
+                tempVector = op.GetIcon().transform.position;
+                op.GetIcon().GetComponent<IconProperties>().previousPosition = tempVector;
+                op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
+            }
+            if (Temperature < DefaultMinimumTemperature)
+            {
+                Temperature = 0.2f;
+                GetComponent<TwoDimensionalProjection>().SetPlane();
+                Calculate();
+                foreach (var op in observer.GetOperators())
+                {
+                    tempVector = op.GetIcon().transform.position;
+                    op.GetIcon().GetComponent<IconProperties>().previousPosition = tempVector;
+                    op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
+                }
+                if (!PreScanReRun())
+                {
+                    calculateForceDirected = false;
+                    base.ColorEdges();
+
+                    PlaceEdges();
+                    //set flag that this algorithm has finished
+                    SetFinish();
+                }
+            }
+        }
+    }
+    bool PreScanReRun()
+    {
+        float maxDistance = 0;
+        foreach (var op in observer.GetOperators())
+        {
+            if (Vector3.Distance(op.GetIcon().GetComponent<IconProperties>().previousPosition, op.GetIcon().transform.position) > maxDistance)
+            {
+                maxDistance = Vector3.Distance(op.GetIcon().GetComponent<IconProperties>().previousPosition, op.GetIcon().transform.position);
+            }
+        }
+        if (maxDistance > 0.01f)
+        {
+            return true;
+        }
+        return false;
     }
 }

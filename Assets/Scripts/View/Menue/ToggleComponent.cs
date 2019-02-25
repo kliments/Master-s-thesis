@@ -27,6 +27,14 @@ public class ToggleComponent : Targetable
 
     protected override void OnLeftClickOnTargetEventAction()
     {
+        //close all opened menus
+        GenericMenueComponent[] list = FindObjectsOfType<GenericMenueComponent>();
+        for (int i = 0; i < list.Length; i++)
+        {
+            if (list[i] == transform.parent.GetComponent<GenericMenueComponent>().getListeners()[0]) continue;
+            list[i].CloseAllMenus();
+        }
+
         ToggleScript mainToggle = gameObject.GetComponentInParent<ToggleScript>();
         if(mainToggle != null)
         {
