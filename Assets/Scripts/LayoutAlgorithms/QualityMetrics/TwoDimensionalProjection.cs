@@ -9,9 +9,9 @@ using UnityEngine;
  * and angles between them
  */
 public class TwoDimensionalProjection : MonoBehaviour {
-    public GameObject camera, projectionPlane;
     public GeneralLayoutAlgorithm current;
     public ConeTreeAlgorithm RDT;
+    private Transform projectionPlane;
     private Observer _observer;
     private RaycastHit _hit;
     private Vector3 direction, _averageNode;
@@ -33,14 +33,16 @@ public class TwoDimensionalProjection : MonoBehaviour {
     // Sets the plane in the center of the tree-graph
     public void SetPlane()
     {
+        _averageNode = new Vector3();
+        projectionPlane = Camera.main.transform.GetChild(0);
         foreach (var op in _observer.GetOperators())
         {
             _averageNode += op.GetIcon().transform.position;
         }
         _averageNode /= _observer.GetOperators().Count;
-        float distance = Vector3.Distance(camera.transform.position, _averageNode);
-        Vector3 planePos = new Vector3(projectionPlane.transform.localPosition.x, projectionPlane.transform.localPosition.y, distance);
-        projectionPlane.transform.localPosition = planePos;
+        float distance = Vector3.Distance(Camera.main.transform.position, _averageNode);
+        Vector3 planePos = new Vector3(projectionPlane.localPosition.x, projectionPlane.localPosition.y, distance);
+        projectionPlane.localPosition = planePos;
     }
 
     public void RestorePositions()
@@ -60,8 +62,8 @@ public class TwoDimensionalProjection : MonoBehaviour {
         foreach (var op in _observer.GetOperators())
         {
             _originalPositions.Add(op.GetIcon().transform.position);
-            direction = op.GetIcon().transform.position - camera.transform.position;
-            if (Physics.Raycast(camera.transform.position, direction, out _hit, 50, _layerMask))
+            direction = op.GetIcon().transform.position - Camera.main.transform.position;
+            if (Physics.Raycast(Camera.main.transform.position, direction, out _hit, 50, _layerMask))
             {
                 if (op.GetComponent<LineRenderer>() != null) op.GetComponent<LineRenderer>().positionCount = 2;
                 op.GetIcon().transform.position = _hit.point;

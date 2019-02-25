@@ -9,6 +9,7 @@ public class QualityMetricSlider : MonoBehaviour
     public TextMesh value;
     public float qualityFactor;
     public bool slide;
+    public SteamVR_TrackedObject rightController;
 
     private Vector3 borderPosition, mousePos;
     private float min, max, xPos, textValue;
@@ -28,9 +29,14 @@ public class QualityMetricSlider : MonoBehaviour
     {
         if(slide)
         {
+            if (Camera.main.name == "Camera") ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            else
+            {
+                ray.direction = rightController.transform.forward;
+                ray.origin = rightController.transform.position;
+            }
             if (!move)
             {
-                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                 {
                     if (hit.transform == transform) move = true;
@@ -38,7 +44,7 @@ public class QualityMetricSlider : MonoBehaviour
             }
             if (move)
             {
-                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                 {
                     mousePos.x = hit.point.x;

@@ -22,7 +22,6 @@ public class EdgeCrossingCounter : MonoBehaviour {
 	void Start () {
         _observer = (Observer)FindObjectOfType(typeof(Observer));
         _edges = new List<List<Vector3>>();
-        _projectionPlane = GameObject.Find("ProjectionPlane").transform;
         _angles = new List<float>();
         algorithm = GetComponent<LayoutAlgorithm>().currentLayout;
 	}
@@ -49,7 +48,8 @@ public class EdgeCrossingCounter : MonoBehaviour {
         algorithm = GetComponent<LayoutAlgorithm>().currentLayout;
         _edges = new List<List<Vector3>>();
         List<Vector3> temp = new List<Vector3>();
-        foreach(var op in _observer.GetOperators())
+        _projectionPlane = Camera.main.transform.GetChild(0);
+        foreach (var op in _observer.GetOperators())
         {
             if (algorithm != RDT)
             {
@@ -89,6 +89,8 @@ public class EdgeCrossingCounter : MonoBehaviour {
         PopulateEdges();
         count = 0;
         _angles = new List<float>();
+        averageAngle = 0;
+        edgeCrossRM = 0;
         float angle = 0;
         for(int i=0; i<_edges.Count; i++)
         {

@@ -31,7 +31,6 @@ public class IconProperties : MonoBehaviour {
     public bool repos;
     public float depth;
     public float normalizedDepth;
-    public Camera myCamera;
     public Transform child;
     private Vector3 _target;
 
@@ -40,7 +39,6 @@ public class IconProperties : MonoBehaviour {
     private LayoutAlgorithm alg;
 	// Use this for initialization
 	void Start () {
-        myCamera = Camera.main;
         if(transform.GetChild(0).name != "Plane") child = transform.GetChild(0);
         else child = transform.GetChild(1);
         alg = (LayoutAlgorithm)(FindObjectOfType(typeof(LayoutAlgorithm)));
@@ -48,7 +46,7 @@ public class IconProperties : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        child.LookAt(myCamera.transform.position);
+        child.LookAt(Camera.main.transform.position);
         if(repos)
         {
             transform.position = Vector3.Lerp(transform.position, newPos, Time.deltaTime*alg.currentLayout.speed);

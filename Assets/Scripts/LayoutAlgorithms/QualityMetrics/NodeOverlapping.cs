@@ -17,11 +17,10 @@ public class NodeOverlapping : MonoBehaviour {
     private int layerMask;
     private Vector3 dir, center, currentPoint, startXY, endX, endY, tempX, tempY;
     private Observer observer;
-    private GameObject camera, currentIcon;
+    private GameObject currentIcon;
     private RaycastHit hit;
 	// Use this for initialization
 	void Start () {
-        camera = Camera.main.gameObject;
         observer = (Observer)FindObjectOfType(typeof(Observer));
         layerMask = LayerMask.GetMask("NodeOverlapping");
         sortedList = new List<GenericOperator>();
@@ -73,8 +72,8 @@ public class NodeOverlapping : MonoBehaviour {
                 for(int j=0; j<=4;j++)
                 {
                     currentPoint = Vector3.Lerp(tempX, tempY, (float)j / 4);
-                    dir = currentPoint - camera.transform.position;
-                    if(Physics.Raycast(camera.transform.position, dir, out hit, 100, layerMask))
+                    dir = currentPoint - Camera.main.transform.position;
+                    if(Physics.Raycast(Camera.main.transform.position, dir, out hit, 100, layerMask))
                     {
                         if(hit.transform.gameObject != currentIcon)
                         {
@@ -116,6 +115,6 @@ public class NodeOverlapping : MonoBehaviour {
     //Sorting nodes by distance, starting with the furthest one
     void SortListOfNodes()
     {
-        sortedList = observer.GetOperators().OrderBy(node => -Vector3.Distance(camera.transform.position, node.GetIcon().transform.position)).ToList();
+        sortedList = observer.GetOperators().OrderBy(node => -Vector3.Distance(Camera.main.transform.position, node.GetIcon().transform.position)).ToList();
     }
 }

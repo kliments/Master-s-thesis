@@ -101,7 +101,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
         {
             if (GetTemporal()) defaultAlg.StartAlgorithm();
             GetComponent<LayoutAlgorithm>().currentLayout = this;
-            RandomizePositions();
+            //RandomizePositions();
         }
         //set flag that this algorithm has started
         SetStart();
@@ -130,23 +130,26 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
     void RandomizePositions()
     {
         Vector3 pos = new Vector3();
-        Vector3 pos2 = new Vector3();
-        float xRange = 1.5f;
         if(GetTemporal())
         {
-            xRange = 0;
+            for (int i = 0; i < observer.GetOperators().Count; i++)
+            {
+                pos = new Vector3(observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos.x, UnityEngine.Random.Range(0.5f, 1.5f), UnityEngine.Random.Range(0.5f, 1.5f));
+                observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = pos;
+                pos += new Vector3(UnityEngine.Random.Range(0.5f, 1.5f), 0, 0);
+                observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = pos;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < observer.GetOperators().Count; i++)
+            {
+                pos = new Vector3(UnityEngine.Random.Range(0.5f, 1.5f), UnityEngine.Random.Range(0.5f, 1.5f), UnityEngine.Random.Range(0.5f, 1.5f));
+                observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = pos;
+            }
         }
         // reset the temperature
         Temperature = DefaultStartingTemperature;
-        for(int i=0; i<observer.GetOperators().Count; i++)
-        {
-            pos = new Vector3(observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos.x, UnityEngine.Random.Range(0.5f, 1.5f), UnityEngine.Random.Range(-1.5f, 1.5f));
-            pos2 = observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos;
-            observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = pos;
-            pos += new Vector3(UnityEngine.Random.Range(xRange - 1, xRange), 0, 0);
-            observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = pos;
-            pos2 = observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos;
-        }
         PlaceEdges();
         GetComponent<TwoDimensionalProjection>().SetPlane();
     }
@@ -349,7 +352,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
             }
         }
         GetComponent<LayoutAlgorithm>().currentLayout = this;
-        RandomizePositions();
+        //RandomizePositions();
         foreach (var op in observer.GetOperators())
         {
             tempVector = op.GetIcon().transform.position;

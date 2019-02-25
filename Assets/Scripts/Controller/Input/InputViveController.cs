@@ -60,6 +60,10 @@ public class InputViveController : InputController
                 }
 
             }
+            if(_device.GetHairTriggerUp())
+            {
+                EmitEvent(InputEventsEnum.LeftClickReleaseEvent);
+            }
         }
     }
 }

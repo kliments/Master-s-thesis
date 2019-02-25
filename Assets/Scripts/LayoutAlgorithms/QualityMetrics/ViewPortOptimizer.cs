@@ -12,7 +12,6 @@ using UnityEngine;
 public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     public Vector3 position;
     public bool globalScan, scan, switchView, switchBackView, debug;
-    public Transform cam;
     public int nrOfViews;
     public List<GeneralLayoutAlgorithm> algorithmsList;
     public ConeTreeAlgorithm RDT;
@@ -25,6 +24,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     public QualityMetricSlider edge, node, crossAngle, angRes, edgeLength;
 
     private Transform[] opIcons;
+    private Transform oldParent;
     private LayoutAlgorithm current;
     private Observer observer;
     private List<GameObject> guidanceMarkers;
@@ -63,7 +63,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
 	
 	// Update is called once per frame
 	void Update () {
-		if(scan)
+		/*if(scan)
         {
             combinedObservationList = new List<QualityMetricViewPort>();
             maxEdgeCross = 0;
@@ -73,12 +73,12 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
             //set gameobject in the center of the graph
             transform.position = FindCenterOfGraph();
             //set camera to position of the furthest node + 2 meters
-            cam.parent = transform;
-            cam.localPosition = FindFurthestNode();
-            cam.LookAt(transform);
+            Camera.main.transform.parent = transform;
+            Camera.main.transform.localPosition = FindFurthestNode();
+            Camera.main.transform.LookAt(transform);
             observationList = new List<QualityMetricViewPort>();
             ScanAndCalculate();
-            cam.parent = null;
+            Camera.main.transform.parent = null;
             globalObservationList.Add(observationList);
             //Debug.Log(MaximumEdgeCross(observationList) + " " + observationList[0].algorithm);
             if (maxEdgeCross < MaximumEdgeCross(observationList, false))
@@ -94,8 +94,8 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
             {
                 maxEdgeLength = MaximumEdgeLength(observationList);
             }
-            cam.transform.position = observationList[counter].cameraPosition;
-            cam.LookAt(transform);
+            Camera.main.transform.transform.position = observationList[counter].cameraPosition;
+            Camera.main.transform.LookAt(transform);
         }
         if(globalScan)
         {
@@ -103,7 +103,6 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
             maxEdgeCross = 0;
             maxNodeOverlap = 0;
             index = 0;
-            int listIndex = -1;
             globalScan = false;
             globalObservationList = new List<List<QualityMetricViewPort>>();
             foreach(var algorithm in algorithmsList)
@@ -111,15 +110,15 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                 algorithm.PreScanCalculation();
                 //set gameobject in the center of the graph
                 transform.position = FindCenterOfGraph();
-                cam.parent = transform;
+                Camera.main.transform.parent = transform;
                 //set camera to position of the furthest node + 2 meters
-                cam.localPosition = FindFurthestNode();
-                cam.LookAt(transform);
+                Camera.main.transform.localPosition = FindFurthestNode();
+                Camera.main.transform.LookAt(transform);
                 observationList = new List<QualityMetricViewPort>();
                 ScanAndCalculate();
-                cam.parent = null;
-                cam.position = observationList[0].cameraPosition;
-                cam.LookAt(transform);
+                Camera.main.transform.parent = null;
+                Camera.main.transform.position = observationList[0].cameraPosition;
+                Camera.main.transform.LookAt(transform);
                 globalObservationList.Add(observationList);
             }
             foreach(var list in globalObservationList)
@@ -138,13 +137,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     maxEdgeLength = MaximumEdgeLength(observationList);
                 }
             }
-            //cam.transform.position = globalObservationList[listIndex][index].cameraPosition;
-            //current.currentLayout = globalObservationList[listIndex][index].algorithm;
-            /*for (int op = 0; op<observer.GetOperators().Count; op++)
-            {
-                observer.GetOperators()[op].GetIcon().transform.position = globalObservationList[listIndex][index].listPos[op];
-                observer.GetOperators()[op].GetIcon().GetComponent<IconProperties>().newPos = globalObservationList[listIndex][index].listPos[op];
-            }*/
+
             foreach(var list in globalObservationList)
             {
                 foreach(var view in list)
@@ -165,7 +158,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                 current.currentLayout.PlaceEdges();
             }
             transform.position = FindCenterOfGraph();
-            cam.LookAt(transform);
+            Camera.main.transform.LookAt(transform);
         }
         if(switchView)
         {
@@ -186,9 +179,9 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                 if (current.currentLayout == RDT) CalculateRDT();
                 else current.currentLayout.PlaceEdges();
             }
-            cam.position = combinedObservationList[counter].cameraPosition;
+            Camera.main.transform.position = combinedObservationList[counter].cameraPosition;
             transform.position = FindCenterOfGraph();
-            cam.LookAt(transform);
+            Camera.main.transform.LookAt(transform);
             Debug.Log("Algorithm = " + combinedObservationList[counter].algorithm + " overall grade=" + combinedObservationList[counter].overallGrade + " edge cross=" + combinedObservationList[counter].nrEdgeCrossings + " edgeCrossNrmlzd=" + combinedObservationList[counter].normalizedEdgeCrossings + " node overlap=" + combinedObservationList[counter].nrNodeOverlaps + " nodeOverlapNrmzld=" + combinedObservationList[counter].normalizedNodeOverlaps + " edge cross angle=" + combinedObservationList[counter].edgeCrossAngle + " angular res angle=" + combinedObservationList[counter].angResRM + " edge length=" + combinedObservationList[counter].edgeLength + " edgeLengthNrmlzd=" + combinedObservationList[counter].normalizedEdgeLength + " index=" + combinedObservationList[counter].index);
         }
         if(switchBackView)
@@ -210,14 +203,14 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                 if (current.currentLayout == RDT) CalculateRDT();
                 else current.currentLayout.PlaceEdges();
             }
-            cam.position = combinedObservationList[counter].cameraPosition;
+            Camera.main.transform.position = combinedObservationList[counter].cameraPosition;
             transform.position = FindCenterOfGraph();
-            cam.LookAt(transform);
+            Camera.main.transform.LookAt(transform);
         }
         if(debug)
         {
             debug = false;
-        }
+        }*/
 	}
 
     /* Finds the center of the graph for rotation of the scanner object
@@ -266,11 +259,11 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                 _toBreak = false;
                 transform.eulerAngles = new Vector3(i, 0, 0);
                 transform.Rotate(Vector3.up, j);
-                cam.transform.LookAt(transform);
+                Camera.main.transform.transform.LookAt(transform);
                 // first check if current position already exists
                 foreach (var view in observationList)
                 {
-                    if (view.cameraPosition == cam.position)
+                    if (view.cameraPosition == Camera.main.transform.position)
                     {
                         _toBreak = true;
                         break;
@@ -282,7 +275,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                 //rotate icons towards camera before calculating node overlapping
                 for(int icon = 0; icon<opIcons.Length; icon++)
                 {
-                    opIcons[icon].LookAt(cam);
+                    opIcons[icon].LookAt(Camera.main.transform);
                     temp.listPos[icon] = opIcons[icon].transform.position;
                 }
                 temp.nrNodeOverlaps = GetComponent<NodeOverlapping>().CalculateNodeOverlapping();
@@ -291,7 +284,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                 temp.edgeCrossAngle = GetComponent<EdgeCrossingCounter>().edgeCrossRM;
                 temp.angResRM = GetComponent<NodeAngularResolution>().CalculateAngularResolution();
                 temp.edgeLength = GetComponent<EdgeLength>().CalculateEdgeLength();
-                temp.cameraPosition = cam.position;
+                temp.cameraPosition = Camera.main.transform.position;
                 temp.algorithm = current.currentLayout;
                 temp.index = index;
                 GetComponent<TwoDimensionalProjection>().RestorePositions();
@@ -373,19 +366,24 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         if (changedComponent == localScanListener)
         {
             LocalScan();
-
-            for (float i = 0; i < 5; i++)
-            {
-                GameObject marker = Instantiate(guidanceMarker);
-                marker.transform.position = combinedObservationList[(int)i].cameraPosition;
-                marker.transform.LookAt(transform);
-                marker.GetComponent<MeshRenderer>().material.color = new Color(1, i / 5f, i / 5f);
-                guidanceMarkers.Add(marker);
-            }
         }
         else
         {
             GlobalScan();
+        }
+        for(int i=0; i<100; i++)
+        {
+            Debug.Log(combinedObservationList[i].algorithm + " " + combinedObservationList[i].algorithm.GetTemporal() + " " + combinedObservationList[i].overallGrade);
+        }
+        for (float i = 0; i < 5; i++)
+        {
+            GameObject marker = Instantiate(guidanceMarker);
+            marker.transform.position = combinedObservationList[(int)i].cameraPosition;
+            marker.transform.LookAt(Camera.main.transform);
+            marker.GetComponent<MeshRenderer>().material.color = new Color(1, i / 5f, i / 5f);
+            marker.GetComponent<ViewportMarkerButtonComponent>().viewPort = combinedObservationList[(int)i];
+            marker.GetComponent<ViewportMarkerButtonComponent>().optimizer = this;
+            guidanceMarkers.Add(marker);
         }
     }
 
@@ -410,12 +408,13 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         //set gameobject in the center of the graph
         transform.position = FindCenterOfGraph();
         //set camera to position of the furthest node + 2 meters
-        cam.parent = transform;
-        cam.localPosition = FindFurthestNode();
-        cam.LookAt(transform);
+        oldParent = Camera.main.transform.parent;
+        Camera.main.transform.parent = transform;
+        Camera.main.transform.position = FindFurthestNode();
+        Camera.main.transform.LookAt(transform);
         observationList = new List<QualityMetricViewPort>();
         ScanAndCalculate();
-        cam.parent = null;
+        Camera.main.transform.parent = oldParent;
         globalObservationList.Add(observationList);
         //Debug.Log(MaximumEdgeCross(observationList) + " " + observationList[0].algorithm);
         if (maxEdgeCross < MaximumEdgeCross(observationList, false))
@@ -441,8 +440,8 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         }
 
         SortList(combinedObservationList);
-        cam.transform.position = combinedObservationList[counter].cameraPosition;
-        cam.LookAt(transform);
+        Camera.main.transform.transform.position = combinedObservationList[counter].cameraPosition;
+        if(Camera.main.name == "Camera") Camera.main.transform.LookAt(transform);
     }
 
     private void GlobalScan()
@@ -455,23 +454,23 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         combinedObservationList = new List<QualityMetricViewPort>();
         maxEdgeCross = 0;
         maxNodeOverlap = 0;
+        maxEdgeLength = 0;
         index = 0;
         globalScan = false;
         globalObservationList = new List<List<QualityMetricViewPort>>();
+        oldParent = Camera.main.transform.parent;
         foreach (var algorithm in algorithmsList)
         {
             algorithm.PreScanCalculation();
             //set gameobject in the center of the graph
             transform.position = FindCenterOfGraph();
-            cam.parent = transform;
+            Camera.main.transform.parent = transform;
             //set camera to position of the furthest node + 2 meters
-            cam.localPosition = FindFurthestNode();
-            cam.LookAt(transform);
+            Camera.main.transform.position = FindFurthestNode();
+            Camera.main.transform.LookAt(transform);
             observationList = new List<QualityMetricViewPort>();
             ScanAndCalculate();
-            cam.parent = null;
-            cam.position = observationList[0].cameraPosition;
-            cam.LookAt(transform);
+            Camera.main.transform.parent = oldParent;
             globalObservationList.Add(observationList);
         }
         foreach (var list in globalObservationList)
@@ -505,8 +504,9 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         else current.currentLayout.PlaceEdges();
 
         transform.position = FindCenterOfGraph();
-        cam.transform.position = combinedObservationList[counter].cameraPosition;
-        cam.LookAt(transform);
+        Camera.main.transform.transform.position = combinedObservationList[counter].cameraPosition;
+        Camera.main.transform.parent = oldParent;
+        if (Camera.main.name == "Camera") Camera.main.transform.LookAt(transform);
     }
 
     public void CloseAllMenus()
@@ -517,7 +517,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         }
     }
 
-    void CalculateRDT()
+    public void CalculateRDT()
     {
         int x = 0;
         for (int op = 0; op < observer.GetOperators().Count; op++)
