@@ -101,7 +101,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
         {
             if (GetTemporal()) defaultAlg.StartAlgorithm();
             GetComponent<LayoutAlgorithm>().currentLayout = this;
-            //RandomizePositions();
+            RandomizePositions();
         }
         //set flag that this algorithm has started
         SetStart();
@@ -352,7 +352,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
             }
         }
         GetComponent<LayoutAlgorithm>().currentLayout = this;
-        //RandomizePositions();
+        RandomizePositions();
         foreach (var op in observer.GetOperators())
         {
             tempVector = op.GetIcon().transform.position;

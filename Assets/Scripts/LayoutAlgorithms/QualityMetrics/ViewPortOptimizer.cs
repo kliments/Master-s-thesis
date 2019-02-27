@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Model;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,7 +25,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     public QualityMetricSlider edge, node, crossAngle, angRes, edgeLength;
 
     private Transform[] opIcons;
-    private Transform oldParent;
+    private Transform oldParent, projectionPlane;
     private LayoutAlgorithm current;
     private Observer observer;
     private List<GameObject> guidanceMarkers;
@@ -233,17 +234,21 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     Vector3 FindFurthestNode()
     {
         Vector3 pos = observer.GetOperators()[0].GetIcon().transform.position;
+        int offset = 0;
         foreach(var op in observer.GetOperators())
         {
             if (Vector3.Distance(transform.position, pos) < Vector3.Distance(transform.position, op.GetIcon().transform.position)) pos = op.GetIcon().transform.position;
         }
-        pos = new Vector3(Vector3.Distance(transform.position, pos) + 2, 0, 0);
+        if (current.currentLayout.Equals(typeof(DefaultAlgorithm)) || (current.currentLayout.Equals(typeof(ForceDirectedAlgorithm)) && current.currentLayout.GetTemporal())) offset = 5;
+        else offset = 2;
+        pos = new Vector3(transform.position.x + Vector3.Distance(transform.position, pos) + offset, transform.position.y, transform.position.z);
         return pos;
     }
 
     // Repositiones the camera around the graph and calculates the quality metrics
     void ScanAndCalculate()
     {
+        Vector3 transformUp = new Vector3();
         index = 0;
         opIcons = new Transform[observer.GetOperators().Count];
         for(int i=0; i<opIcons.Length; i++)
@@ -252,18 +257,19 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
             else opIcons[i] = observer.GetOperators()[i].GetIcon().transform.GetChild(1);
         }
         GetComponent<TwoDimensionalProjection>().SetPlane();
-        for(int i = 0; i<180; i+=10)
+        for(int i = 0; i<360; i+=10)
         {
-            for(int j=0; j<360; j+=10)
+            transform.eulerAngles = new Vector3(i, 0, 0);
+            transformUp = transform.up;
+            for (int j=0; j<360; j+=10)
             {
                 _toBreak = false;
-                transform.eulerAngles = new Vector3(i, 0, 0);
-                transform.Rotate(Vector3.up, j);
-                Camera.main.transform.transform.LookAt(transform);
+                transform.RotateAround(transform.position,transformUp, 10f);
+                Camera.main.transform.LookAt(transform);
                 // first check if current position already exists
                 foreach (var view in observationList)
                 {
-                    if (view.cameraPosition == Camera.main.transform.position)
+                    if (Vector3.Distance(view.cameraPosition, Camera.main.transform.position) < 0.01f)
                     {
                         _toBreak = true;
                         break;
@@ -291,6 +297,10 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                 observationList.Add(temp);
                 combinedObservationList.Add(temp);
                 index++;
+
+                GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                obj.transform.position = Camera.main.transform.position;
+                obj.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
             }
         }
         /*minNodeOverlap = MinimumNodeOverlap(observationList);
@@ -412,6 +422,8 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         Camera.main.transform.parent = transform;
         Camera.main.transform.position = FindFurthestNode();
         Camera.main.transform.LookAt(transform);
+        projectionPlane = Camera.main.transform.GetChild(0);
+        projectionPlane.gameObject.SetActive(true);
         observationList = new List<QualityMetricViewPort>();
         ScanAndCalculate();
         Camera.main.transform.parent = oldParent;
@@ -441,7 +453,8 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
 
         SortList(combinedObservationList);
         Camera.main.transform.transform.position = combinedObservationList[counter].cameraPosition;
-        if(Camera.main.name == "Camera") Camera.main.transform.LookAt(transform);
+        projectionPlane.gameObject.SetActive(false);
+        if (Camera.main.name == "Camera") Camera.main.transform.LookAt(transform);
     }
 
     private void GlobalScan()
@@ -458,6 +471,8 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         index = 0;
         globalScan = false;
         globalObservationList = new List<List<QualityMetricViewPort>>();
+        projectionPlane = Camera.main.transform.GetChild(0);
+        projectionPlane.gameObject.SetActive(true);
         oldParent = Camera.main.transform.parent;
         foreach (var algorithm in algorithmsList)
         {
@@ -506,6 +521,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         transform.position = FindCenterOfGraph();
         Camera.main.transform.transform.position = combinedObservationList[counter].cameraPosition;
         Camera.main.transform.parent = oldParent;
+        projectionPlane.gameObject.SetActive(false);
         if (Camera.main.name == "Camera") Camera.main.transform.LookAt(transform);
     }
 
