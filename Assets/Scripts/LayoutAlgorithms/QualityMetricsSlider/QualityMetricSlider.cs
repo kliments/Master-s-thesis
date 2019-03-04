@@ -11,7 +11,7 @@ public class QualityMetricSlider : MonoBehaviour
     public bool slide;
     public SteamVR_TrackedObject rightController;
 
-    private Vector3 borderPosition, mousePos;
+    private Vector3 borderPosition, mousePos, tempLocal;
     private float min, max, xPos, textValue;
     private Ray ray;
     private RaycastHit hit;
@@ -50,8 +50,13 @@ public class QualityMetricSlider : MonoBehaviour
                     mousePos.x = hit.point.x;
                     mousePos.y = transform.position.y;
                     mousePos.z = transform.position.z;
+
+                    tempLocal.y = transform.localPosition.y;
+                    tempLocal.z = transform.localPosition.z;
                 }
                 transform.position = mousePos;
+                tempLocal.x = transform.localPosition.x;
+                transform.localPosition = tempLocal;
                 //limit moving the slider to the left
                 if (transform.localPosition.x < -0.5f)
                 {

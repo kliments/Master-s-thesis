@@ -124,38 +124,35 @@ namespace Assets.Scripts.Model
 
         private void Update()
         {
-            if(Parents != null)
+            if (GetComponent<LineRenderer>()!=null)
             {
-                if(Parents.Count != 0)
+                _oldPos = _newPos;
+                _newPos = GetIcon().transform.position;
+                _oldParentPos = _newParentPos;
+                _newParentPos = Parents[0].GetIcon().transform.position;
+                if (GetComponent<LineRenderer>().positionCount == 2)
                 {
-                    _oldPos = _newPos;
-                    _newPos = GetIcon().transform.position;
-                    _oldParentPos = _newParentPos;
-                    _newParentPos = Parents[0].GetIcon().transform.position;
-                    if(GetComponent<LineRenderer>().positionCount == 2)
+                    // Update the line renderer if position of this node changes
+                    if (_oldPos != _newPos)
                     {
-                        // Update the line renderer if position of this node changes
-                        if (_oldPos != _newPos)
-                        {
-                            GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newParentPos, GetIcon().transform.position });
-                        }
-                        // Update the line renderer if position of parent changes
-                        if (_oldParentPos != _newParentPos)
-                        {
-                            GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newParentPos, GetIcon().transform.position });
-                        }
+                        GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newParentPos, GetIcon().transform.position });
                     }
-                    else if(GetComponent<LineRenderer>().positionCount == 3)
-                    {// Update the line renderer if position of this node changes
-                        if (_oldPos != _newPos)
-                        {
-                            GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newParentPos, Parents[0].GetIcon().GetComponent<IconProperties>().refPoint , GetIcon().transform.position });
-                        }
-                        // Update the line renderer if position of parent changes
-                        if (_oldParentPos != _newParentPos)
-                        {
-                            GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newParentPos, Parents[0].GetIcon().GetComponent<IconProperties>().refPoint, GetIcon().transform.position });
-                        }
+                    // Update the line renderer if position of parent changes
+                    if (_oldParentPos != _newParentPos)
+                    {
+                        GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newParentPos, GetIcon().transform.position });
+                    }
+                }
+                else if (GetComponent<LineRenderer>().positionCount == 3)
+                {// Update the line renderer if position of this node changes
+                    if (_oldPos != _newPos)
+                    {
+                        GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newParentPos, Parents[0].GetIcon().GetComponent<IconProperties>().refPoint, GetIcon().transform.position });
+                    }
+                    // Update the line renderer if position of parent changes
+                    if (_oldParentPos != _newParentPos)
+                    {
+                        GetComponent<LineRenderer>().SetPositions(new Vector3[] { _newParentPos, Parents[0].GetIcon().GetComponent<IconProperties>().refPoint, GetIcon().transform.position });
                     }
                 }
             }

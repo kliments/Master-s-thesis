@@ -298,9 +298,9 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                 combinedObservationList.Add(temp);
                 index++;
 
-                GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                /*GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 obj.transform.position = Camera.main.transform.position;
-                obj.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+                obj.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);*/
             }
         }
         /*minNodeOverlap = MinimumNodeOverlap(observationList);

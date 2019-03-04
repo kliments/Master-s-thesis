@@ -18,6 +18,7 @@ public class ModeEventListener : MonoBehaviour {
     private SteamVR_TrackedObject _trackedObj;
     private SteamVR_Controller.Device _device;
     private LayoutAlgorithm layout;
+    private ConeTreeAlgorithm alg = new ConeTreeAlgorithm();
     bool fixSelection = false;
 
     // Indicates whether the rotation of the selected object should be updated
@@ -102,9 +103,10 @@ public class ModeEventListener : MonoBehaviour {
         {
             if (menuAction == MENU_ACTION.MOVE || menuAction == MENU_ACTION.SCALE || menuAction == MENU_ACTION.ROTATE)
             {
-                if (layout.currentLayout.GetType() == typeof(ConeTreeAlgorithm) && layout.currentLayout.GetComponent<ConeTreeAlgorithm>().RDT)
+                if (layout.currentLayout.GetType() == typeof(ConeTreeAlgorithm))
                 {
-                    layout.currentLayout.GetComponent<ConeTreeAlgorithm>().CalculateRDT();
+                    alg = (ConeTreeAlgorithm)layout.currentLayout;
+                    if(alg.RDT) layout.currentLayout.GetComponent<ConeTreeAlgorithm>().CalculateRDT();
                 }
             }
         }
