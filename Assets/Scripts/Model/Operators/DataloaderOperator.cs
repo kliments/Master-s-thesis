@@ -16,7 +16,6 @@ namespace Model.Operators
 
         public override bool Process()
         {
-            Debug.Log("add dialog box here!");
             // open a dialog box
             // --- dialog box can be added to the prefab
             // list all files (csv) in the folder StreamingAssets

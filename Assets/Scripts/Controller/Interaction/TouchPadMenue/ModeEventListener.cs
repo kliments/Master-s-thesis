@@ -103,10 +103,9 @@ public class ModeEventListener : MonoBehaviour {
         {
             if (menuAction == MENU_ACTION.MOVE || menuAction == MENU_ACTION.SCALE || menuAction == MENU_ACTION.ROTATE)
             {
-                if (layout.currentLayout.GetType() == typeof(ConeTreeAlgorithm))
+                if (layout.currentLayout.GetType() == typeof(RDTAlgorithm))
                 {
-                    alg = (ConeTreeAlgorithm)layout.currentLayout;
-                    if(alg.RDT) layout.currentLayout.GetComponent<ConeTreeAlgorithm>().CalculateRDT();
+                    layout.currentLayout.GetComponent<RDTAlgorithm>().CalculateRDT();
                 }
             }
         }

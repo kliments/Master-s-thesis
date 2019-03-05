@@ -96,7 +96,7 @@ public class GraphSpaceController : MonoBehaviour {
         lr.endWidth = 0.01f;
         lr.SetPositions(new Vector3[] { parent.GetIcon().transform.position + new Vector3(0, 0, 0.001f), op.GetIcon().transform.position + new Vector3(0, 0, 0.001f) });
         if(!graphEdges.Contains(lr)) graphEdges.Add(lr);
-        lr.material = new Material(Shader.Find("Particles/Alpha Blended"));
+        lr.material = edgeMaterial;
     }
 
     public void DestroyEdge()

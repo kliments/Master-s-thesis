@@ -680,7 +680,7 @@ public class DatageneratorOperator : GenericOperator
         actualStdDv = Mathf.Sqrt(actualStdDv / sampleData.Length);
 
 
-        Debug.Log("Comparison for normal distribution... Given Values: mean " + mean + " , standard deviation: " + stddev + "\n" + "actual mean: " + actualMean + " ,actual standard deviation: " + actualStdDv);
+
 
     }
 

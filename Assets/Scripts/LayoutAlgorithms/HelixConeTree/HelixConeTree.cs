@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /*
- * Calculates the position of the nodes in Cone Tree Algorithm
- * Also implements time-dependent positioning of the nodes, by stretching the base of a cone along the Y axis
- * Also implements RDT (Reconfigurable Disk Trees) algorithm for reduction of edge crossings
+ * Implements time-dependent positioning of the nodes, by stretching the base of a cone along the Y axis
  */
-public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
+public class HelixConeTree : GeneralLayoutAlgorithm
 {
     public bool RDT, reposition, startConeTree, test;
     public float height;
@@ -19,35 +17,28 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
     private float[] _timeStamps;
     private GraphSpaceController _graphSpace;
     private bool calculationFinished;
+    private LayoutAlgorithm algorithm;
     // Use this for initialization
     void Start()
     {
         _graphSpace = GameObject.Find("GraphSpace").GetComponent<GraphSpaceController>();
+        algorithm = GetComponent<LayoutAlgorithm>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(GetComponent<LayoutAlgorithm>().currentLayout == this)
-        {
-            if (calculationFinished && RDT)
-            {
-                if (AllNodesPlaced()) calculationFinished = false;
-                CalculateRDT();
-            }
-        }
     }
 
     public override void StartAlgorithm()
     {
         //don't start if another algorithm is in process
-        if (!GetComponent<LayoutAlgorithm>().currentLayout.AlgorithmHasFinished()) return;
+        if (!algorithm.currentLayout.AlgorithmHasFinished()) return;
         //set flag that this algorithm is running
         SetStart();
-
         if (observer == null) observer = (Observer)FindObjectOfType(typeof(Observer));
         //set 2 lines, in case previous algorithm had changed it to 3 (ex. RDT)
-        if (GetComponent<LayoutAlgorithm>().currentLayout!=this)
+        if (GetComponent<LayoutAlgorithm>().currentLayout != this)
         {
             PlaceEdges();
         }
@@ -59,7 +50,7 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
         observer.NormalizeTimeStamps();
         //start Layout algorithm
         Layout(root, _anchor.x, _anchor.z);
-        //set current algorithm to ConeTree
+        //set current algorithm to HelixConeTree
         GetComponent<LayoutAlgorithm>().currentLayout = this;
         calculationFinished = true;
 
@@ -148,8 +139,7 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
     {
         IconProperties np = nodeN.GetIcon().GetComponent<IconProperties>();
         double y = 0;
-        if (GetTemporal()) y = 2 - nodeN.normalizedTimeStamp;
-        else y = 2 - np.normalizedDepth;
+        y = 2 - nodeN.normalizedTimeStamp;
         Vector3 pos = new Vector3(x, (float)y, z);
         //nodeN.GetIcon().transform.position = pos;
         np.newPos = pos;
@@ -159,7 +149,7 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
         float freeSpace = (nodeN.Children.Count == 0 ? 0 : np.f / nodeN.Children.Count);
         float previous = 0;
 
-        if(nodeN.Children.Count == 1)
+        if (nodeN.Children.Count == 1)
         {
             IconProperties cp = nodeN.Children[0].GetIcon().GetComponent<IconProperties>();
             float aa = np.c * cp.a;
@@ -220,7 +210,7 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
             }
         }
     }
-    
+
     //Normalizes depth between 0-2
     public void NormalizeDepth()
     {
@@ -245,7 +235,7 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
 
     void ResetValues()
     {
-        foreach(var op in observer.GetOperators())
+        foreach (var op in observer.GetOperators())
         {
             op.GetIcon().GetComponent<IconProperties>().Reset();
         }
@@ -259,14 +249,14 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
     public override void PreScanCalculation()
     {
         StartAlgorithm();
-        foreach(var op in observer.GetOperators())
+        foreach (var op in observer.GetOperators())
         {
             op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
-            if(!RDT)
+            if (!RDT)
             {
             }
         }
-        if(!RDT)PlaceEdges();
+        if (!RDT) PlaceEdges();
         else CalculateRDT();
     }
 }

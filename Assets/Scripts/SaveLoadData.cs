@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Xml.Serialization;
 using UnityEngine;
 
@@ -87,13 +88,20 @@ public class SaveLoadData:MonoBehaviour {
 
     private static void SaveOperators(string path, GenericOperatorContainer operators)
     {
-        XmlSerializer serializer = new XmlSerializer(typeof(GenericOperatorContainer));
+        /*XmlSerializer serializer = new XmlSerializer(typeof(GenericOperatorContainer));
         FileStream stream;
         stream = new FileStream(path, FileMode.Create);
 
         serializer.Serialize(stream, operators);
+        */
 
-        stream.Close();
+        var serializer = new XmlSerializer(typeof(GenericOperatorContainer));
+        var encoding = Encoding.GetEncoding("UTF-8");
+        using(StreamWriter stream = new StreamWriter(path, false, encoding))
+ {
+            serializer.Serialize(stream, operators);
+            stream.Close();
+        }
     }
 
     IEnumerator ReloadData(GenericOperator firstNode)

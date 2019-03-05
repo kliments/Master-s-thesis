@@ -10,7 +10,7 @@ using UnityEngine;
  */
 public class TwoDimensionalProjection : MonoBehaviour {
     public GeneralLayoutAlgorithm current;
-    public ConeTreeAlgorithm RDT;
+    public RDTAlgorithm RDT;
     private Transform projectionPlane;
     private Observer _observer;
     private RaycastHit _hit;

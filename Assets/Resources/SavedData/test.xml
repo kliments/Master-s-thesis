@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<GenericOperatorCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <GenericOperators>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>2</ID>
+      <Parent>-1</Parent>
+      <PosX>0</PosX>
+      <PosY>2.5</PosY>
+      <PosZ>0</PosZ>
+      <Hour>12</Hour>
+      <Minute>32</Minute>
+      <Second>34</Second>
+      <MilliSecond>2</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>4</ID>
+      <Parent>2</Parent>
+      <PosX>1</PosX>
+      <PosY>2.5</PosY>
+      <PosZ>0</PosZ>
+      <Hour>12</Hour>
+      <Minute>32</Minute>
+      <Second>34</Second>
+      <MilliSecond>679</MilliSecond>
+      <customData xsi:type="CustomSplitData">
+        <Threshold>0.5</Threshold>
+        <Axis>X</Axis>
+      </customData>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>5</ID>
+      <Parent>4</Parent>
+      <PosX>1.98480773</PosX>
+      <PosY>2.673648</PosY>
+      <PosZ>0</PosZ>
+      <Hour>12</Hour>
+      <Minute>32</Minute>
+      <Second>34</Second>
+      <MilliSecond>758</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>6</ID>
+      <Parent>4</Parent>
+      <PosX>1.98480773</PosX>
+      <PosY>2.326352</PosY>
+      <PosZ>0</PosZ>
+      <Hour>12</Hour>
+      <Minute>32</Minute>
+      <Second>34</Second>
+      <MilliSecond>820</MilliSecond>
+    </GenericOperator>
+  </GenericOperators>
+</GenericOperatorCollection>

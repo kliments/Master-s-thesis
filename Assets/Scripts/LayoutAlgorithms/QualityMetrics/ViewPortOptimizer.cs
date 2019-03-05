@@ -15,7 +15,6 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     public bool globalScan, scan, switchView, switchBackView, debug;
     public int nrOfViews;
     public List<GeneralLayoutAlgorithm> algorithmsList;
-    public ConeTreeAlgorithm RDT;
     public GenericMenueComponent localScanListener, globalScanListener;
     public GameObject guidanceMarker;
 
@@ -515,7 +514,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
             }
         }
         SortList(combinedObservationList);
-        if (current.currentLayout == RDT) CalculateRDT();
+        if (current.currentLayout.GetType().Equals(typeof(RDTAlgorithm))) CalculateRDT();
         else current.currentLayout.PlaceEdges();
 
         transform.position = FindCenterOfGraph();

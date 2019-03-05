@@ -8,11 +8,12 @@ public class ViewportMarkerButtonComponent : Targetable {
     public float counter;
     public QualityMetricViewPort viewPort;
     public ViewPortOptimizer optimizer;
+    public bool smoothTransition;
 
     private Observer observer;
     private LayoutAlgorithm current;
     private Vector3 distFromCameraToRig;
-    private bool smoothTransition;
+    private ViewportMarkerButtonComponent[] list;
     // Use this for initialization
     void Start () {
         if (cameraRig == null)
@@ -25,6 +26,7 @@ public class ViewportMarkerButtonComponent : Targetable {
         }
         current = ((LayoutAlgorithm)FindObjectOfType(typeof(LayoutAlgorithm)));
         observer = (Observer)FindObjectOfType(typeof(Observer));
+        list = (ViewportMarkerButtonComponent[])FindObjectsOfType(typeof(ViewportMarkerButtonComponent));
     }
 
     // Update is called once per frame
@@ -50,7 +52,7 @@ public class ViewportMarkerButtonComponent : Targetable {
                             observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = viewPort.listPos[i];
                             observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().repos = true;
                         }
-                        if (current.currentLayout == optimizer.RDT) optimizer.CalculateRDT();
+                        if (current.currentLayout.GetType().Equals(typeof(RDTAlgorithm))) optimizer.CalculateRDT();
                         else current.currentLayout.PlaceEdges();
                     }
                 }
@@ -71,7 +73,7 @@ public class ViewportMarkerButtonComponent : Targetable {
                             observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = viewPort.listPos[i];
                             observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().repos = true;
                         }
-                        if (current.currentLayout == optimizer.RDT) optimizer.CalculateRDT();
+                        if (current.currentLayout.GetType().Equals(typeof(RDTAlgorithm))) optimizer.CalculateRDT();
                         else current.currentLayout.PlaceEdges();
                     }
                 }
@@ -90,6 +92,10 @@ public class ViewportMarkerButtonComponent : Targetable {
     }
     protected override void OnLeftClickOnTargetEventAction()
     {
+        foreach(var item in list)
+        {
+            item.smoothTransition = false;
+        }
         smoothTransition = true;
     }
 }

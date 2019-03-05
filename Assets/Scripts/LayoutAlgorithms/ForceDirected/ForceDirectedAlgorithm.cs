@@ -99,7 +99,6 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
 
         if (GetComponent<LayoutAlgorithm>().currentLayout != this)
         {
-            if (GetTemporal()) defaultAlg.StartAlgorithm();
             GetComponent<LayoutAlgorithm>().currentLayout = this;
             RandomizePositions();
         }
@@ -130,23 +129,10 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
     void RandomizePositions()
     {
         Vector3 pos = new Vector3();
-        if(GetTemporal())
+        for (int i = 0; i < observer.GetOperators().Count; i++)
         {
-            for (int i = 0; i < observer.GetOperators().Count; i++)
-            {
-                pos = new Vector3(observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos.x, UnityEngine.Random.Range(0.5f, 1.5f), UnityEngine.Random.Range(0.5f, 1.5f));
-                observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = pos;
-                pos += new Vector3(UnityEngine.Random.Range(0.5f, 1.5f), 0, 0);
-                observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = pos;
-            }
-        }
-        else
-        {
-            for (int i = 0; i < observer.GetOperators().Count; i++)
-            {
-                pos = new Vector3(UnityEngine.Random.Range(0.5f, 1.5f), UnityEngine.Random.Range(0.5f, 1.5f), UnityEngine.Random.Range(0.5f, 1.5f));
-                observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = pos;
-            }
+            pos = new Vector3(UnityEngine.Random.Range(0.5f, 1.5f), UnityEngine.Random.Range(0.5f, 1.5f), UnityEngine.Random.Range(0.5f, 1.5f));
+            observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = pos;
         }
         // reset the temperature
         Temperature = DefaultStartingTemperature;
@@ -186,8 +172,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
     {
         IconProperties np = new IconProperties();
         Vector3 test = new Vector3();
-        if(GetTemporal()) ForceDirectedWithTemporalDependency();
-        else ForceDirectedWithoutTemporalDependency();
+        ForceDirectedWithoutTemporalDependency();
         //update positions
         foreach (var op in observer.GetOperators())
         {
@@ -201,70 +186,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
         }
         Temperature *= DefaultTemperatureAttenuation;
     }
-
-    /*
-     * Time-dependent force-directed algorithm
-     * Nodes affect each-other only within specific time-bins of 10 seconds
-     * Also, keeping their X position
-     */
-    private void ForceDirectedWithTemporalDependency()
-    {
-        AllocateTimeBins();
-        foreach (var list in _timeBins)
-        {
-            foreach (var node1 in list)
-            {
-                //Vector3 pos1 = node1.GetIcon().transform.position;
-                Vector3 pos1 = node1.GetIcon().GetComponent<IconProperties>().newPos;
-                double xForce = 0, yForce = 0, zForce = 0;
-
-                //attraction forces towards children
-                if (node1.Children != null)
-                {
-                    foreach (var child in node1.Children)
-                    {
-                        Vector3 pos2 = child.GetIcon().GetComponent<IconProperties>().newPos;
-                        double d = Vector3.Distance(pos1, pos2);
-                        double force = Temperature * SpringForce(d * 10);
-                        //xForce += (pos2.x - pos1.x) / d * force;
-                        yForce += (pos2.y - pos1.y) / d * force;
-                        zForce += (pos2.z - pos1.z) / d * force;
-                    }
-                }
-
-                //attraction forces towards parents
-                if (node1.Parents != null)
-                {
-                    foreach (var parent in node1.Parents)
-                    {
-                        Vector3 pos2 = parent.GetIcon().GetComponent<IconProperties>().newPos;
-                        double d = Vector3.Distance(pos1, pos2);
-                        double force = Temperature * SpringForce(d * 10);
-                        //xForce += (pos2.x - pos1.x) / d * force;
-                        yForce += (pos2.y - pos1.y) / d * force;
-                        zForce += (pos2.z - pos1.z) / d * force;
-                    }
-                }
-
-                //repulsion forces
-                foreach (var node2 in list)
-                {
-                    if (node1 == node2) continue;
-                    if (!list.Contains(node2)) continue;
-                    //Vector3 pos2 = node2.GetIcon().transform.position;
-                    Vector3 pos2 = node2.GetIcon().GetComponent<IconProperties>().newPos;
-                    double d = Vector3.Distance(pos1, pos2);
-                    double force = Temperature * ElectricForce(d);
-                    //xForce += (pos1.x - pos2.x) / d * force;
-                    yForce += (pos1.y - pos2.y) / d * force;
-                    zForce += (pos1.z - pos2.z) / d * force;
-                }
-                Vector3 finalForce = new Vector3((float)xForce, (float)yForce, (float)zForce);
-                node1.GetIcon().GetComponent<IconProperties>().ApplyForce(finalForce);
-            }
-        }
-    }
-
+    
     /*
      * Classical force-directed 3D algorithm where connected nodes attract,
      * and non-connected nodes repel eachother
@@ -341,16 +263,6 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
     public override void PreScanCalculation()
     {
         var tempVector = new Vector3();
-        if (GetTemporal())
-        {
-            defaultAlg.StartAlgorithm();
-            foreach (var op in observer.GetOperators())
-            {
-                tempVector = op.GetIcon().transform.position;
-                op.GetIcon().GetComponent<IconProperties>().previousPosition = tempVector;
-                op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
-            }
-        }
         GetComponent<LayoutAlgorithm>().currentLayout = this;
         RandomizePositions();
         foreach (var op in observer.GetOperators())
