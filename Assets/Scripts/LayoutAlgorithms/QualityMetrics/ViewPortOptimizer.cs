@@ -498,9 +498,9 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
             {
                 maxNodeOverlap = MaximumNodeOverlap(list);
             }
-            if (maxEdgeLength < MaximumEdgeLength(observationList))
+            if (maxEdgeLength < MaximumEdgeLength(list))
             {
-                maxEdgeLength = MaximumEdgeLength(observationList);
+                maxEdgeLength = MaximumEdgeLength(list);
             }
         }
         foreach (var list in globalObservationList)
