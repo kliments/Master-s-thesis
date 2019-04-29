@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 /*
  * Rotates a gameObject around the tree-graph
@@ -12,8 +13,8 @@ using UnityEngine;
 
 public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     public Vector3 position;
-    public bool globalScan, scan, switchView, switchBackView, debug;
-    public int nrOfViews;
+    public bool globalScan, takeScreenshots, printPositions;
+    public int nrOfViews, screenshotCounter, offset;
     public List<GeneralLayoutAlgorithm> algorithmsList;
     public GenericMenueComponent localScanListener, globalScanListener;
     public GameObject guidanceMarker;
@@ -22,31 +23,22 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     public List<QualityMetricViewPort> observationList, combinedObservationList;
     public QualityMetricViewPort temp;
     public QualityMetricSlider edge, node, crossAngle, angRes, edgeLength;
+    public CreatePreviewButtons previewButtons;
 
     private Transform[] opIcons;
     private Transform oldParent, projectionPlane;
     private LayoutAlgorithm current;
     private Observer observer;
     private List<GameObject> guidanceMarkers;
+    private List<string> imagesPaths;
     private int index = 0;
-    private int maxCrossIndex = 0;
+    private Vector3 furthestNodePos;
     // Lists of all metrics for calculating Mean and STD values
     private List<float> _edgeLengths, _angRes, _edgeCrossAngle;
     private List<float> _nodeOverlaps, _edgeCrossings;
-    /* Mean and Standard Deviation values of 
-     * quality metrics for calculating z score
-     */
-    /*private float _nodeOverlapMean, _nodeOverlapSTD;
-    private float _edgeCrossMean, _edgeCrossSTD;
-    private float _edgeCrossAngleMean, _edgeCrossAngleSTD;
-    private float _angResMean, _angResSTD;
-    private float _edgeLengthMean, _edgeLengthSTD;*/
-
 
     private float minEdgeCross, maxEdgeCross, minNodeOverlap, maxNodeOverlap, maxEdgeLength, minEdgeLength;
     GeneralLayoutAlgorithm edgeAlg, nodeAlg;
-    // Z scores of quality metrics
-    //private float _ZnodeOverlap, _ZedgeCross, _ZedgeCrossAngle, _ZangRes, _ZedgeLength;
 
     // counter for switching views
     private int counter = 0;
@@ -59,158 +51,100 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         observationList = new List<QualityMetricViewPort>();
         current = GetComponent<LayoutAlgorithm>();
         guidanceMarkers = new List<GameObject>();
-	}
+        imagesPaths = new List<string>();
+    }
 	
 	// Update is called once per frame
-	void Update () {
-		/*if(scan)
+	void LateUpdate () {
+		if(takeScreenshots)
         {
-            combinedObservationList = new List<QualityMetricViewPort>();
-            maxEdgeCross = 0;
-            maxNodeOverlap = 0;
-            maxEdgeLength = 0;
-            scan = false;
-            //set gameobject in the center of the graph
-            transform.position = FindCenterOfGraph();
-            //set camera to position of the furthest node + 2 meters
-            Camera.main.transform.parent = transform;
-            Camera.main.transform.localPosition = FindFurthestNode();
-            Camera.main.transform.LookAt(transform);
-            observationList = new List<QualityMetricViewPort>();
-            ScanAndCalculate();
-            Camera.main.transform.parent = null;
-            globalObservationList.Add(observationList);
-            //Debug.Log(MaximumEdgeCross(observationList) + " " + observationList[0].algorithm);
-            if (maxEdgeCross < MaximumEdgeCross(observationList, false))
+            int random;
+            switch (screenshotCounter)
             {
-                maxEdgeCross = MaximumEdgeCross(observationList, false);
-                //listIndex++;
-            }
-            if (maxNodeOverlap < MaximumNodeOverlap(observationList))
-            {
-                maxNodeOverlap = MaximumNodeOverlap(observationList);
-            }
-            if (maxEdgeLength < MaximumEdgeLength(observationList))
-            {
-                maxEdgeLength = MaximumEdgeLength(observationList);
-            }
-            Camera.main.transform.transform.position = observationList[counter].cameraPosition;
-            Camera.main.transform.LookAt(transform);
-        }
-        if(globalScan)
-        {
-            combinedObservationList = new List<QualityMetricViewPort>();
-            maxEdgeCross = 0;
-            maxNodeOverlap = 0;
-            index = 0;
-            globalScan = false;
-            globalObservationList = new List<List<QualityMetricViewPort>>();
-            foreach(var algorithm in algorithmsList)
-            {
-                algorithm.PreScanCalculation();
-                //set gameobject in the center of the graph
-                transform.position = FindCenterOfGraph();
-                Camera.main.transform.parent = transform;
-                //set camera to position of the furthest node + 2 meters
-                Camera.main.transform.localPosition = FindFurthestNode();
-                Camera.main.transform.LookAt(transform);
-                observationList = new List<QualityMetricViewPort>();
-                ScanAndCalculate();
-                Camera.main.transform.parent = null;
-                Camera.main.transform.position = observationList[0].cameraPosition;
-                Camera.main.transform.LookAt(transform);
-                globalObservationList.Add(observationList);
-            }
-            foreach(var list in globalObservationList)
-            {
-                if (maxEdgeCross < MaximumEdgeCross(list, false))
-                {
-                    maxEdgeCross = MaximumEdgeCross(list, false);
-                    //listIndex++;
-                }
-                if(maxNodeOverlap < MaximumNodeOverlap(list))
-                {
-                    maxNodeOverlap = MaximumNodeOverlap(list);
-                }
-                if (maxEdgeLength < MaximumEdgeLength(observationList))
-                {
-                    maxEdgeLength = MaximumEdgeLength(observationList);
-                }
-            }
+                case 0:                    
+                    random = UnityEngine.Random.Range(0, 10);
+                    Camera.main.transform.position = combinedObservationList[random].cameraPosition;
+                    if (Camera.main.name == "Camera")
+                    {
+                        Camera.main.transform.LookAt(transform);
+                        CentralizeCamera();
+                    }
 
-            foreach(var list in globalObservationList)
-            {
-                foreach(var view in list)
-                {
-                    view.normalizedEdgeCrossings = NormalizedEdgeCrossings(view.nrEdgeCrossings);
-                    view.normalizedNodeOverlaps = NormalizedNodeOverlaps(view.nrNodeOverlaps);
-                    view.normalizedEdgeLength = NormalizedEdgeLengths(view.edgeLength);
-                    view.overallGrade = ((crossAngle.qualityFactor*view.edgeCrossAngle) + (angRes.qualityFactor * view.angResRM) + (edgeLength.qualityFactor*view.normalizedEdgeLength) + (node.qualityFactor * view.normalizedNodeOverlaps) + (edge.qualityFactor * view.normalizedEdgeCrossings)) / (crossAngle.qualityFactor + edge.qualityFactor + node.qualityFactor + angRes.qualityFactor + edgeLength.qualityFactor);
-                }
+                    foreach (var icon in opIcons)
+                    {
+                        icon.transform.LookAt(Camera.main.transform);
+                    }
+                    
+                    previewButtons.textures[screenshotCounter] = ScreenCapture.CaptureScreenshotAsTexture(1);
+                    previewButtons.views[screenshotCounter] = combinedObservationList[random];
+                    imagesPaths.Add("Screenshots/viewNr" + random.ToString());
+                    screenshotCounter++;
+
+                    Debug.Log("viewNr " + random + " EdgeCrossAngle: " + combinedObservationList[random].edgeCrossAngle + " AngResRM: " + combinedObservationList[random].angResRM
+                        + " normalizedEdgeLength: " + combinedObservationList[random].normalizedEdgeLength + " normalizedNodeOverlaps: " + combinedObservationList[random].normalizedNodeOverlaps
+                        + " normalizedEdgeCrossings: " + combinedObservationList[random].normalizedEdgeCrossings);
+                    break;
+                case 1:
+                    random = UnityEngine.Random.Range(10, 50);
+                    Camera.main.transform.position = combinedObservationList[random].cameraPosition;
+                    if (Camera.main.name == "Camera")
+                    {
+                        Camera.main.transform.LookAt(transform);
+                        CentralizeCamera();
+                    }
+
+                    foreach (var icon in opIcons)
+                    {
+                        icon.transform.LookAt(Camera.main.transform);
+                    }
+
+                    previewButtons.textures[screenshotCounter] = ScreenCapture.CaptureScreenshotAsTexture(1);
+                    previewButtons.views[screenshotCounter] = combinedObservationList[random];
+                    imagesPaths.Add("Screenshots/viewNr" + random.ToString());
+                    screenshotCounter++;
+                    
+                    Debug.Log("viewNr " + random + " EdgeCrossAngle: " + combinedObservationList[random].edgeCrossAngle + " AngResRM: " + combinedObservationList[random].angResRM
+                        + " normalizedEdgeLength: " + combinedObservationList[random].normalizedEdgeLength + " normalizedNodeOverlaps: " + combinedObservationList[random].normalizedNodeOverlaps
+                        + " normalizedEdgeCrossings: " + combinedObservationList[random].normalizedEdgeCrossings);
+                    break;
+                case 2:
+                    random = UnityEngine.Random.Range(50, 145);
+                    Camera.main.transform.position = combinedObservationList[random].cameraPosition;
+                    if (Camera.main.name == "Camera")
+                    {
+                        Camera.main.transform.LookAt(transform);
+                        CentralizeCamera();
+                    }
+
+                    foreach (var icon in opIcons)
+                    {
+                        icon.transform.LookAt(Camera.main.transform);
+                    }
+                    
+                    previewButtons.textures[screenshotCounter] = ScreenCapture.CaptureScreenshotAsTexture(1);
+                    previewButtons.views[screenshotCounter] = combinedObservationList[random];
+                    imagesPaths.Add("Screenshots/viewNr" + random.ToString());
+                    screenshotCounter++;
+                    takeScreenshots = false;
+
+                    //once all the images are generated, create buttons with the images
+                    previewButtons.CallForCreatingButtons(imagesPaths);
+
+                    Debug.Log("viewNr " + random + " EdgeCrossAngle: " + combinedObservationList[random].edgeCrossAngle + " AngResRM: " + combinedObservationList[random].angResRM
+                        + " normalizedEdgeLength: " + combinedObservationList[random].normalizedEdgeLength + " normalizedNodeOverlaps: " + combinedObservationList[random].normalizedNodeOverlaps
+                        + " normalizedEdgeCrossings: " + combinedObservationList[random].normalizedEdgeCrossings);
+
+                    Debug.Log("MinEdgeCross: " + minEdgeCross + " minNodeOverlap: " + minNodeOverlap + " minEdgeLength: " + minEdgeLength);
+                    Debug.Log("MaxEdgeCross: " + maxEdgeCross + " MaxNodeOverlap: " + maxNodeOverlap + " maxEdgeLength: " + maxEdgeLength);
+                    break;
             }
-            SortList(combinedObservationList);
-            if (current.currentLayout == RDT)
-            {
-                RDT.CalculateRDT();
-            }
-            else
-            {
-                current.currentLayout.PlaceEdges();
-            }
-            transform.position = FindCenterOfGraph();
-            Camera.main.transform.LookAt(transform);
         }
-        if(switchView)
+        if(printPositions)
         {
-            switchView = false;
-            counter++;
-            if (counter == combinedObservationList.Count)
-            {
-                counter = combinedObservationList.Count - 1;
-            }
-            if(current.currentLayout != combinedObservationList[counter].algorithm)
-            {
-                current.currentLayout = combinedObservationList[counter].algorithm;
-                for(int i=0; i<observer.GetOperators().Count; i++)
-                {
-                    observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = combinedObservationList[counter].listPos[i];
-                    observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().repos = true;
-                }
-                if (current.currentLayout == RDT) CalculateRDT();
-                else current.currentLayout.PlaceEdges();
-            }
-            Camera.main.transform.position = combinedObservationList[counter].cameraPosition;
-            transform.position = FindCenterOfGraph();
-            Camera.main.transform.LookAt(transform);
-            Debug.Log("Algorithm = " + combinedObservationList[counter].algorithm + " overall grade=" + combinedObservationList[counter].overallGrade + " edge cross=" + combinedObservationList[counter].nrEdgeCrossings + " edgeCrossNrmlzd=" + combinedObservationList[counter].normalizedEdgeCrossings + " node overlap=" + combinedObservationList[counter].nrNodeOverlaps + " nodeOverlapNrmzld=" + combinedObservationList[counter].normalizedNodeOverlaps + " edge cross angle=" + combinedObservationList[counter].edgeCrossAngle + " angular res angle=" + combinedObservationList[counter].angResRM + " edge length=" + combinedObservationList[counter].edgeLength + " edgeLengthNrmlzd=" + combinedObservationList[counter].normalizedEdgeLength + " index=" + combinedObservationList[counter].index);
+            printPositions = false;
+            CentralizeCamera();
+            //Debug.Log(Camera.main.pixelWidth + "    " + Camera.main.pixelHeight);
         }
-        if(switchBackView)
-        {
-            switchBackView = false;
-            counter--;
-            if(counter < 0)
-            {
-                counter = 0;
-            }
-            if (current.currentLayout != combinedObservationList[counter].algorithm)
-            {
-                current.currentLayout = combinedObservationList[counter].algorithm;
-                for (int i = 0; i < observer.GetOperators().Count; i++)
-                {
-                    observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = combinedObservationList[counter].listPos[i];
-                    observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().repos = true;
-                }
-                if (current.currentLayout == RDT) CalculateRDT();
-                else current.currentLayout.PlaceEdges();
-            }
-            Camera.main.transform.position = combinedObservationList[counter].cameraPosition;
-            transform.position = FindCenterOfGraph();
-            Camera.main.transform.LookAt(transform);
-        }
-        if(debug)
-        {
-            debug = false;
-        }*/
 	}
 
     /* Finds the center of the graph for rotation of the scanner object
@@ -227,21 +161,74 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         return pos;
     }
 
+    /* Centers the camera  in the center of the graph
+     * depending on gameobjects' position on screen
+     */
+     public void CentralizeCamera()
+    {
+        Vector3 pos = new Vector3();
+
+        float minX = 500;
+        float maxX = 0;
+        float minY = 500;
+        float maxY = 0;
+        foreach (var icon in opIcons)
+        {
+            if (minX > Camera.main.WorldToScreenPoint(icon.position).x) minX = Camera.main.WorldToScreenPoint(icon.position).x;
+            if (maxX < Camera.main.WorldToScreenPoint(icon.position).x) maxX = Camera.main.WorldToScreenPoint(icon.position).x;
+            if (minY > Camera.main.WorldToScreenPoint(icon.position).y) minY = Camera.main.WorldToScreenPoint(icon.position).y;
+            if (maxY < Camera.main.WorldToScreenPoint(icon.position).y) maxY = Camera.main.WorldToScreenPoint(icon.position).y;
+        }
+        pos.x = (minX + maxX) / 2;
+        pos.y = (minY + maxY) / 2;
+        pos.z = 1;
+        Camera.main.transform.LookAt(Camera.main.ScreenToWorldPoint(pos));
+    }
+
     /* Finds the position of the furthest node and adds +1 meter 
      * in that direction for seeing the whole graph
      */
     Vector3 FindFurthestNode()
     {
+        int localOffset;
         Vector3 pos = observer.GetOperators()[0].GetIcon().transform.position;
-        int offset = 0;
         foreach(var op in observer.GetOperators())
         {
             if (Vector3.Distance(transform.position, pos) < Vector3.Distance(transform.position, op.GetIcon().transform.position)) pos = op.GetIcon().transform.position;
         }
-        if (current.currentLayout.Equals(typeof(DefaultAlgorithm)) || (current.currentLayout.Equals(typeof(ForceDirectedAlgorithm)) && current.currentLayout.GetTemporal())) offset = 5;
-        else offset = 2;
-        pos = new Vector3(transform.position.x + Vector3.Distance(transform.position, pos) + offset, transform.position.y, transform.position.z);
+        //localOffset = FindOffset(offset);
+        //Debug.Log(localOffset);
+        //pos = new Vector3(transform.position.x + Vector3.Distance(transform.position, pos) + localOffset, transform.position.y, transform.position.z);
+        pos = new Vector3(transform.position.x + Vector3.Distance(transform.position, pos), transform.position.y, transform.position.z);
         return pos;
+    }
+
+    int FindOffset(int offset)
+    {
+        Vector3 transformUp = new Vector3();
+        Camera.main.transform.position = new Vector3(furthestNodePos.x + offset, transform.position.y, transform.position.z);
+        for (int i = 0; i < 360; i += 20)
+        {
+            transform.eulerAngles = new Vector3(i, 0, 0);
+            transformUp = transform.up;
+            for (int j = 0; j < 360; j += 20)
+            {
+                transform.RotateAround(transform.position, transformUp, 20f);
+                Camera.main.transform.LookAt(transform);
+
+                foreach (var icon in opIcons)
+                {
+                    if (Camera.main.WorldToViewportPoint(icon.position).x < 0 || Camera.main.WorldToViewportPoint(icon.position).x > 1
+                     || Camera.main.WorldToViewportPoint(icon.position).y < 0 || Camera.main.WorldToViewportPoint(icon.position).y > 1)
+                    {
+                        offset++;
+                        offset = FindOffset(offset);
+                        return offset;
+                    }
+                }
+            }
+        }
+        return offset;
     }
 
     // Repositiones the camera around the graph and calculates the quality metrics
@@ -249,21 +236,15 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     {
         Vector3 transformUp = new Vector3();
         index = 0;
-        opIcons = new Transform[observer.GetOperators().Count];
-        for(int i=0; i<opIcons.Length; i++)
-        {
-            if (observer.GetOperators()[i].GetIcon().transform.GetChild(0).name != "Plane") opIcons[i] = observer.GetOperators()[i].GetIcon().transform.GetChild(0);
-            else opIcons[i] = observer.GetOperators()[i].GetIcon().transform.GetChild(1);
-        }
         GetComponent<TwoDimensionalProjection>().SetPlane();
-        for(int i = 0; i<360; i+=10)
+        for(int i = 0; i<360; i+=20)
         {
             transform.eulerAngles = new Vector3(i, 0, 0);
             transformUp = transform.up;
-            for (int j=0; j<360; j+=10)
+            for (int j=0; j<360; j+=20)
             {
                 _toBreak = false;
-                transform.RotateAround(transform.position,transformUp, 10f);
+                transform.RotateAround(transform.position,transformUp, 20f);
                 Camera.main.transform.LookAt(transform);
                 // first check if current position already exists
                 foreach (var view in observationList)
@@ -296,20 +277,20 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                 observationList.Add(temp);
                 combinedObservationList.Add(temp);
                 index++;
-
-                /*GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                obj.transform.position = Camera.main.transform.position;
-                obj.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);*/
             }
         }
-        /*minNodeOverlap = MinimumNodeOverlap(observationList);
-        maxNodeOverlap = MaximumNodeOverlap(observationList);
-        minEdgeCross = MinimumEdgeCross(observationList);
-        maxEdgeCross = MaximumEdgeCross(observationList);*/
-        
         nrOfViews = observationList.Count;
     }
 
+    void GetIcons()
+    {
+        opIcons = new Transform[observer.GetOperators().Count];
+        for (int i = 0; i < opIcons.Length; i++)
+        {
+            if (observer.GetOperators()[i].GetIcon().transform.GetChild(0).name != "Plane") opIcons[i] = observer.GetOperators()[i].GetIcon().transform.GetChild(0);
+            else opIcons[i] = observer.GetOperators()[i].GetIcon().transform.GetChild(1);
+        }
+    }
     private List<QualityMetricViewPort> SortList(List<QualityMetricViewPort> list)
     {
         list.Sort((b, a) => a.overallGrade.CompareTo(b.overallGrade));
@@ -349,6 +330,37 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         }
         return max;
     }
+
+    private float MinimumEdgeCross(List<QualityMetricViewPort> list)
+    {
+        float min = maxEdgeCross;
+        foreach (var item in list)
+        {
+            if (min > item.nrEdgeCrossings) min = item.nrEdgeCrossings;
+        }
+        return min;
+    }
+
+    private float MinimumNodeOverlap(List<QualityMetricViewPort> list)
+    {
+        float min = maxNodeOverlap;
+        foreach (var item in list)
+        {
+            if (min > item.nrNodeOverlaps) min = item.nrNodeOverlaps;
+        }
+        return min;
+    }
+    
+    private float MinimumEdgeLength(List<QualityMetricViewPort> list)
+    {
+        float min = maxEdgeLength;
+        foreach (var item in list)
+        {
+            if (min > item.edgeLength) min = item.edgeLength;
+        }
+        return min;
+    }
+
     private float NormalizedEdgeCrossings(float edgeCross)
     {
         float cubeRoot = 1f / 3f;
@@ -380,10 +392,10 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         {
             GlobalScan();
         }
-        for(int i=0; i<100; i++)
+        /*for(int i=0; i<5; i++)
         {
-            Debug.Log(combinedObservationList[i].algorithm + " " + combinedObservationList[i].algorithm.GetTemporal() + " " + combinedObservationList[i].overallGrade);
-        }
+            Debug.Log(combinedObservationList[i].algorithm + " overal grade: " + combinedObservationList[i].overallGrade + " nodeOverlaps :" + combinedObservationList[i].normalizedNodeOverlaps + " edgeCross :" + combinedObservationList[i].normalizedEdgeCrossings + " edgeLength :" + combinedObservationList[i].normalizedEdgeLength + " angularRes :" + combinedObservationList[i].angResRM + " edgeCrossRes :" + combinedObservationList[i].edgeCrossAngle);
+        }*/
         for (float i = 0; i < 5; i++)
         {
             GameObject marker = Instantiate(guidanceMarker);
@@ -402,14 +414,32 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         globalScanListener.addListener(this);
     }
 
+    void OnDisable()
+    {
+        //delete screenshots if exist
+        DirectoryInfo dir = new DirectoryInfo("C:/Kliment/Master's Project/VRVis/Assets/Resources/Screenshots/");
+        FileInfo[] files = dir.GetFiles("*.*");
+        if (files.Length != 0)
+        {
+            foreach(FileInfo file in files)
+            {
+                file.Delete();
+            }
+        }
+    }
+
     private void LocalScan()
     {
+        globalScan = false;
+        screenshotCounter = 0;
+        imagesPaths = new List<string>();
         for (int i = guidanceMarkers.Count - 1; i >= 0; i--)
         {
             Destroy(guidanceMarkers[i]);
         }
         guidanceMarkers = new List<GameObject>();
 
+        GetIcons();
         combinedObservationList = new List<QualityMetricViewPort>();
         maxEdgeCross = 0;
         maxNodeOverlap = 0;
@@ -419,7 +449,11 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         //set camera to position of the furthest node + 2 meters
         oldParent = Camera.main.transform.parent;
         Camera.main.transform.parent = transform;
-        Camera.main.transform.position = FindFurthestNode();
+        furthestNodePos = FindFurthestNode();
+        offset = FindOffset(3);
+        //Camera.main.transform.position = FindFurthestNode();
+        transform.eulerAngles = new Vector3(0, 0, 0);
+        Camera.main.transform.position = new Vector3(furthestNodePos.x + offset, transform.position.y, transform.position.z);
         Camera.main.transform.LookAt(transform);
         projectionPlane = Camera.main.transform.GetChild(0);
         projectionPlane.gameObject.SetActive(true);
@@ -427,11 +461,9 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         ScanAndCalculate();
         Camera.main.transform.parent = oldParent;
         globalObservationList.Add(observationList);
-        //Debug.Log(MaximumEdgeCross(observationList) + " " + observationList[0].algorithm);
         if (maxEdgeCross < MaximumEdgeCross(observationList, false))
         {
             maxEdgeCross = MaximumEdgeCross(observationList, false);
-            //listIndex++;
         }
         if (maxNodeOverlap < MaximumNodeOverlap(observationList))
         {
@@ -442,16 +474,23 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
             maxEdgeLength = MaximumEdgeLength(observationList);
         }
 
+        minEdgeCross = MinimumEdgeCross(observationList);
+        minNodeOverlap = MinimumNodeOverlap(observationList);
+        minEdgeLength = MinimumEdgeLength(observationList);
+
         foreach (var view in observationList)
         {
             view.normalizedEdgeCrossings = NormalizedEdgeCrossings(view.nrEdgeCrossings);
             view.normalizedNodeOverlaps = NormalizedNodeOverlaps(view.nrNodeOverlaps);
             view.normalizedEdgeLength = NormalizedEdgeLengths(view.edgeLength);
-            view.overallGrade = ((crossAngle.qualityFactor * view.edgeCrossAngle) + (angRes.qualityFactor * view.angResRM) + (edgeLength.qualityFactor * view.normalizedEdgeLength) + (node.qualityFactor * view.normalizedNodeOverlaps) + (edge.qualityFactor * view.normalizedEdgeCrossings)) / (crossAngle.qualityFactor + edge.qualityFactor + node.qualityFactor + angRes.qualityFactor + edgeLength.qualityFactor);
+            view.overallGrade = ((crossAngle.qualityFactor * view.edgeCrossAngle) + (angRes.qualityFactor * view.angResRM) + (edgeLength.qualityFactor * view.normalizedEdgeLength)
+                + (node.qualityFactor * view.normalizedNodeOverlaps) + (edge.qualityFactor * view.normalizedEdgeCrossings))
+                / (crossAngle.qualityFactor + edge.qualityFactor + node.qualityFactor + angRes.qualityFactor + edgeLength.qualityFactor);
         }
 
         SortList(combinedObservationList);
-        Camera.main.transform.transform.position = combinedObservationList[counter].cameraPosition;
+
+        StartCoroutine(Screenshot());
         projectionPlane.gameObject.SetActive(false);
         if (Camera.main.name == "Camera") Camera.main.transform.LookAt(transform);
     }
@@ -463,12 +502,13 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
             Destroy(guidanceMarkers[i]);
         }
         guidanceMarkers = new List<GameObject>();
+        GetIcons();
         combinedObservationList = new List<QualityMetricViewPort>();
         maxEdgeCross = 0;
         maxNodeOverlap = 0;
         maxEdgeLength = 0;
         index = 0;
-        globalScan = false;
+        globalScan = true;
         globalObservationList = new List<List<QualityMetricViewPort>>();
         projectionPlane = Camera.main.transform.GetChild(0);
         projectionPlane.gameObject.SetActive(true);
@@ -518,7 +558,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         else current.currentLayout.PlaceEdges();
 
         transform.position = FindCenterOfGraph();
-        Camera.main.transform.transform.position = combinedObservationList[counter].cameraPosition;
+        Camera.main.transform.position = combinedObservationList[counter].cameraPosition;
         Camera.main.transform.parent = oldParent;
         projectionPlane.gameObject.SetActive(false);
         if (Camera.main.name == "Camera") Camera.main.transform.LookAt(transform);
@@ -564,5 +604,13 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                 }
             }
         }
+    }
+
+    IEnumerator Screenshot()
+    {
+        yield return 0;
+        takeScreenshots = true;
+        previewButtons.textures = new Texture2D[3];
+        previewButtons.views = new QualityMetricViewPort[3];
     }
 }

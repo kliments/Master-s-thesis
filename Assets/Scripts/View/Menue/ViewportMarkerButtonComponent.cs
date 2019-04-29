@@ -78,6 +78,7 @@ public class ViewportMarkerButtonComponent : Targetable {
                     }
                 }
                 Camera.main.transform.LookAt(optimizer.transform);
+                optimizer.CentralizeCamera();
             }
         }
 

@@ -20,32 +20,38 @@ namespace Model.Operators
 
         public override bool Process()
         {
+            #region CommentedScript
+            /*following script is commented for faster loading of operators
+             * However, for functionality of operators
+             * uncomment the code in the region
             // Create Visualization
             Visualization.GetComponent<GenericVisualization>().CreateVisualization();
             // Enable Interaction Script
 
             SetOutputData(GetRawInputData()); // Visualization does not change data
+            */
+            #endregion
             return true; 
         }
 
-        public override void StoreData()
-        {
-            data.name = gameObject.name.Replace("(Clone)", "");
-            data.ID = Id;
-            if (Parents == null || Parents.Count == 0) data.parent = -1;
-            else data.parent = Parents[0].Id;
-            data.posX = GetIcon().transform.position.x;
-            data.posY = GetIcon().transform.position.y;
-            data.posZ = GetIcon().transform.position.z;
-            data.hour = hour;
-            data.minute = minute;
-            data.second = second;
-            data.ms = millisecond;
-        }
+public override void StoreData()
+{
+data.name = gameObject.name.Replace("(Clone)", "");
+data.ID = Id;
+if (Parents == null || Parents.Count == 0) data.parent = -1;
+else data.parent = Parents[0].Id;
+data.posX = GetIcon().transform.position.x;
+data.posY = GetIcon().transform.position.y;
+data.posZ = GetIcon().transform.position.z;
+data.hour = hour;
+data.minute = minute;
+data.second = second;
+data.ms = millisecond;
+}
 
-        public override void LoadSpecificData(OperatorData data)
-        {
+public override void LoadSpecificData(OperatorData data)
+{
 
-        }
-    }
+}
+}
 }

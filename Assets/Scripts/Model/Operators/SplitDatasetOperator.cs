@@ -45,6 +45,8 @@ namespace Model.Operators
 
         public override bool Process()
         {
+            //Some parts are commented due to faster loading of operators
+            //Uncomment them for functionality / search for commented script coment
             if (GetRawInputData()!=null)
             {
                 _dataItems = _rawInputData.GetDataItems();
@@ -57,16 +59,18 @@ namespace Model.Operators
                     {
                         StartCoroutine(CreateOperators(_simpleDataModels[i]));
                     }
-                    SetOutputData(GetRawInputData());
+                    //Commented script
+                    //SetOutputData(GetRawInputData());
                 }
                 else
                 {
-                    for (int i = 0; i < Children.Count; i++)
+                    //Commented script
+                    /*for (int i = 0; i < Children.Count; i++)
                     {
                         Children[i].SetRawInputData(null);
                         Children[i].SetRawInputData(_simpleDataModels[i]);
                         Children[i].ReProcess(_simpleDataModels[i]);
-                    }
+                    }*/
                 }
             }
             return true;
@@ -143,7 +147,8 @@ namespace Model.Operators
             yield return 0;
 
             GameObject obj = _observer.CreateOperator(_observer.GetOperatorPrefabs()[_parentIndex], _parents);
-            obj.GetComponent<GenericOperator>().SetRawInputData(data);
+            //Commented script
+            //obj.GetComponent<GenericOperator>().SetRawInputData(data);
             StartCoroutine(SetPosition());
         }
 

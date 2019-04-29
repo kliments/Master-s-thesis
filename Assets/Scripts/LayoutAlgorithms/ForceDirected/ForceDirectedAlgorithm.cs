@@ -51,7 +51,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
     private DefaultAlgorithm defaultAlg;
     // Use this for initialization
     void Start () {
-        ElectricForce = (d => 1 / (d * d));
+        ElectricForce = (d => 1 / (2 * d * d));
         SpringForce = (d => 2 * Math.Log(d));
 
         // reset the temperature

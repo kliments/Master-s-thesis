@@ -32,6 +32,7 @@ public class IconProperties : MonoBehaviour {
     public float depth;
     public float normalizedDepth;
     public Transform child;
+
     private Vector3 _target;
 
     private Vector3 lookPos;

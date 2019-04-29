@@ -38,6 +38,13 @@ public class SaveLoadData:MonoBehaviour {
         SaveOperators(path, operators);
         ClearOperators();
     }
+    public static void SaveRandomData(string path, GenericOperatorContainer operators)
+    {
+        Debug.Log("press save");
+        if (genericOperatorContainer.operators.Count > 0) ClearOperators();
+        SaveOperators(path, operators);
+        ClearOperators();
+    }
 
     public static void LoadData(string path)
     {

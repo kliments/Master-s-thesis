@@ -92,8 +92,8 @@ public class GraphSpaceController : MonoBehaviour {
         if (parent == null) return;
         if (op.gameObject.GetComponent<LineRenderer>() != null) lr = op.gameObject.GetComponent<LineRenderer>();
         else lr = op.gameObject.AddComponent<LineRenderer>();
-        lr.startWidth = 0.01f;
-        lr.endWidth = 0.01f;
+        lr.startWidth = 0.05f;
+        lr.endWidth = 0.05f;
         lr.SetPositions(new Vector3[] { parent.GetIcon().transform.position + new Vector3(0, 0, 0.001f), op.GetIcon().transform.position + new Vector3(0, 0, 0.001f) });
         if(!graphEdges.Contains(lr)) graphEdges.Add(lr);
         lr.material = edgeMaterial;

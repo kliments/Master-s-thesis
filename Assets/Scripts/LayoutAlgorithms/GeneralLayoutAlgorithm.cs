@@ -78,10 +78,11 @@ public abstract class GeneralLayoutAlgorithm : MonoBehaviour, IMenueComponentLis
         foreach (var op in observer.GetOperators())
         {
             if (op.Parents == null || op.Parents.Count == 0) continue;
-            depth = op.GetIcon().GetComponent<IconProperties>().depth;
+            /*depth = op.GetIcon().GetComponent<IconProperties>().depth;
             op.GetComponent<LineRenderer>().startColor = new Color(NormalizeColor(depth - 1), NormalizeColor(depth - 1), 1);
-            op.GetComponent<LineRenderer>().endColor = new Color(NormalizeColor(depth - 1), NormalizeColor(depth - 1), 1);
-            //op.GetComponent<LineRenderer>().endColor = new Color(NormalizeColor(depth), NormalizeColor(depth), 1);
+            op.GetComponent<LineRenderer>().endColor = new Color(NormalizeColor(depth - 1), NormalizeColor(depth - 1), 1);*/
+            op.GetComponent<LineRenderer>().startColor = new Color(0, 0, 1);
+            op.GetComponent<LineRenderer>().endColor = new Color(0, 0, 1);
         }
     }
     private float NormalizeColor(float depth)

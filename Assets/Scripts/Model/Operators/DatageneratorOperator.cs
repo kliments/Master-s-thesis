@@ -14,10 +14,16 @@ public class DatageneratorOperator : GenericOperator
 
     public override bool Process()
     {
+        #region Commented script
+        /*following script is commented for faster loading of operators
+         * However, for functionality of operators
+         * uncomment the code in the region
+         * 
         float[][]  data = generateData();
         var dataModel = new SimpleDatamodel(); // ReadCsv().MergeDatamodels(_rawInputData);
         dataModel.addFloatMatrixColwise(data);
-        SetOutputData(dataModel);
+        SetOutputData(dataModel);*/
+        #endregion
 
         // Transform data into dataModel here.
 
