@@ -64,11 +64,9 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                 case 0:                    
                     random = UnityEngine.Random.Range(0, 10);
                     Camera.main.transform.position = combinedObservationList[random].cameraPosition;
-                    if (Camera.main.name == "Camera")
-                    {
-                        Camera.main.transform.LookAt(transform);
-                        CentralizeCamera();
-                    }
+                    Vector3 rotation = Camera.main.transform.eulerAngles;
+                    Camera.main.transform.LookAt(transform);
+                    CentralizeCamera();
 
                     foreach (var icon in opIcons)
                     {
@@ -85,15 +83,14 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     Debug.Log("viewNr " + random + " EdgeCrossAngle: " + combinedObservationList[random].edgeCrossAngle + " AngResRM: " + combinedObservationList[random].angResRM
                         + " normalizedEdgeLength: " + combinedObservationList[random].normalizedEdgeLength + " normalizedNodeOverlaps: " + combinedObservationList[random].normalizedNodeOverlaps
                         + " normalizedEdgeCrossings: " + combinedObservationList[random].normalizedEdgeCrossings);
+                    Camera.main.transform.eulerAngles = rotation;
                     break;
                 case 1:
                     random = UnityEngine.Random.Range(10, 50);
                     Camera.main.transform.position = combinedObservationList[random].cameraPosition;
-                    if (Camera.main.name == "Camera")
-                    {
-                        Camera.main.transform.LookAt(transform);
-                        CentralizeCamera();
-                    }
+                    rotation = Camera.main.transform.eulerAngles;
+                    Camera.main.transform.LookAt(transform);
+                    CentralizeCamera();
 
                     foreach (var icon in opIcons)
                     {
@@ -110,15 +107,14 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     Debug.Log("viewNr " + random + " EdgeCrossAngle: " + combinedObservationList[random].edgeCrossAngle + " AngResRM: " + combinedObservationList[random].angResRM
                         + " normalizedEdgeLength: " + combinedObservationList[random].normalizedEdgeLength + " normalizedNodeOverlaps: " + combinedObservationList[random].normalizedNodeOverlaps
                         + " normalizedEdgeCrossings: " + combinedObservationList[random].normalizedEdgeCrossings);
+                    Camera.main.transform.eulerAngles = rotation;
                     break;
                 case 2:
                     random = UnityEngine.Random.Range(50, 145);
                     Camera.main.transform.position = combinedObservationList[random].cameraPosition;
-                    if (Camera.main.name == "Camera")
-                    {
-                        Camera.main.transform.LookAt(transform);
-                        CentralizeCamera();
-                    }
+                    rotation = Camera.main.transform.eulerAngles;
+                    Camera.main.transform.LookAt(transform);
+                    CentralizeCamera();
 
                     foreach (var icon in opIcons)
                     {
@@ -142,6 +138,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
 
                     Debug.Log("MinEdgeCross: " + minEdgeCross + " minNodeOverlap: " + minNodeOverlap + " minEdgeLength: " + minEdgeLength);
                     Debug.Log("MaxEdgeCross: " + maxEdgeCross + " MaxNodeOverlap: " + maxNodeOverlap + " maxEdgeLength: " + maxEdgeLength);
+                    Camera.main.transform.eulerAngles = rotation;
                     break;
             }
         }
