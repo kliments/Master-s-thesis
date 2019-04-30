@@ -74,8 +74,10 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     {
                         icon.transform.LookAt(Camera.main.transform);
                     }
-                    
-                    previewButtons.textures[screenshotCounter] = ScreenCapture.CaptureScreenshotAsTexture(1);
+
+                    //previewButtons.textures[screenshotCounter] = ScreenCapture.CaptureScreenshotAsTexture(1);
+                    previewButtons.textures[screenshotCounter] = new Texture2D(2560, 1440);
+                    previewButtons.textures[screenshotCounter].LoadImage(TakeScreenshot());
                     previewButtons.views[screenshotCounter] = combinedObservationList[random];
                     imagesPaths.Add("Screenshots/viewNr" + random.ToString());
                     screenshotCounter++;
@@ -98,7 +100,9 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                         icon.transform.LookAt(Camera.main.transform);
                     }
 
-                    previewButtons.textures[screenshotCounter] = ScreenCapture.CaptureScreenshotAsTexture(1);
+                    //previewButtons.textures[screenshotCounter] = ScreenCapture.CaptureScreenshotAsTexture(1);
+                    previewButtons.textures[screenshotCounter] = new Texture2D(2560, 1440);
+                    previewButtons.textures[screenshotCounter].LoadImage(TakeScreenshot());
                     previewButtons.views[screenshotCounter] = combinedObservationList[random];
                     imagesPaths.Add("Screenshots/viewNr" + random.ToString());
                     screenshotCounter++;
@@ -120,8 +124,10 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     {
                         icon.transform.LookAt(Camera.main.transform);
                     }
-                    
-                    previewButtons.textures[screenshotCounter] = ScreenCapture.CaptureScreenshotAsTexture(1);
+
+                    //previewButtons.textures[screenshotCounter] = ScreenCapture.CaptureScreenshotAsTexture(1);
+                    previewButtons.textures[screenshotCounter] = new Texture2D(2560, 1440);
+                    previewButtons.textures[screenshotCounter].LoadImage(TakeScreenshot());
                     previewButtons.views[screenshotCounter] = combinedObservationList[random];
                     imagesPaths.Add("Screenshots/viewNr" + random.ToString());
                     screenshotCounter++;
@@ -612,5 +618,40 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         takeScreenshots = true;
         previewButtons.textures = new Texture2D[3];
         previewButtons.views = new QualityMetricViewPort[3];
+    }
+
+    Byte[] TakeScreenshot()
+    {
+        int resWidthN = 2560;
+        int resHeightN = 1440;
+        RenderTexture rt = new RenderTexture(resWidthN, resHeightN, 24);
+        Camera.main.targetTexture = rt;
+        
+
+        Texture2D screenShot = new Texture2D(resWidthN, resHeightN, TextureFormat.RGB24, false);
+        Camera.main.Render();
+        RenderTexture.active = rt;
+        screenShot.ReadPixels(new Rect(0, 0, resWidthN, resHeightN), 0, 0);
+        screenShot.Apply();
+        Camera.main.targetTexture = null;
+        RenderTexture.active = null;
+
+        byte[] bytes = screenShot.EncodeToPNG();
+        /*string filename = ScreenShotName(resWidthN, resHeightN, name);
+
+        System.IO.File.WriteAllBytes(filename, bytes);
+        Debug.Log(string.Format("Took screenshot to: {0}", filename));*/
+        return bytes;
+    }
+    public string ScreenShotName(int width, int height, string name)
+    {
+
+        string strPath = "";
+        string path = "C:/Kliment/Master's Project/VRVis/Assets/Resources";
+        strPath = string.Format("{0}/screen_{1}x{2}_{3}.png",
+                             path,
+                             width, height,name);
+
+        return strPath;
     }
 }

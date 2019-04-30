@@ -30,7 +30,6 @@ public class CreatePreviewButtons : MonoBehaviour {
         int i = 0;
         foreach (Transform button in child)
         {
-            //Texture2D texture = Resources.Load<Texture2D>(list[i]);
             button.GetComponent<RawImage>().texture = textures[i];
             i++;
         }
