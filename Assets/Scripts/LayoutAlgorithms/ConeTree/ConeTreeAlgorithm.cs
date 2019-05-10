@@ -121,7 +121,8 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
     private void SetRadius(IconProperties np)
     {
         //normalization of radius length
-        np.r = (Mathf.Max(np.d, _minRadius) + np.d);
+        //np.r = (Mathf.Max(np.d, _minRadius) + np.d);
+        np.r = 1.5f;
     }
 
     // Computation of the absolute x, y and z coordinates for each node
@@ -129,7 +130,7 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
     {
         IconProperties np = nodeN.GetIcon().GetComponent<IconProperties>();
         double y = 0;
-        y = 2 - np.normalizedDepth;
+        y = _maxDepth - np.normalizedDepth;
         Vector3 pos = new Vector3(x, (float)y, z);
         //nodeN.GetIcon().transform.position = pos;
         np.newPos = pos;
@@ -181,7 +182,7 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
         foreach (var op in observer.GetOperators())
         {
             depth = op.GetIcon().GetComponent<IconProperties>().depth;
-            op.GetIcon().GetComponent<IconProperties>().normalizedDepth = 2 * ((depth - _minDepth) / (_maxDepth - _minDepth));
+            op.GetIcon().GetComponent<IconProperties>().normalizedDepth = _maxDepth * ((depth - _minDepth) / (_maxDepth - _minDepth));
             i++;
         }
     }

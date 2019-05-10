@@ -228,7 +228,7 @@ public class HelixConeTree : GeneralLayoutAlgorithm
         foreach (var op in observer.GetOperators())
         {
             depth = op.GetIcon().GetComponent<IconProperties>().depth;
-            op.GetIcon().GetComponent<IconProperties>().normalizedDepth = 2 * ((depth - _minDepth) / (_maxDepth - _minDepth));
+            op.GetIcon().GetComponent<IconProperties>().normalizedDepth = _maxDepth * ((depth - _minDepth) / (_maxDepth - _minDepth));
             i++;
         }
     }

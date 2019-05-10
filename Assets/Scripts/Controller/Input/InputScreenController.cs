@@ -14,9 +14,7 @@ namespace Controller.Input
 
         private void Update()
         {
-
             positionLeft = UnityEngine.Input.mousePosition;
-
             if (UnityEngine.Input.GetMouseButtonDown(0))
             {
                 EmitEvent(InputEventsEnum.LeftClickEvent);

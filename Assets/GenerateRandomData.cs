@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GenerateRandomData : MonoBehaviour {
-    public int nodes;
+    public int nodes, dataName;
     public bool generate;
     public List<string> list;
 
@@ -16,14 +16,14 @@ public class GenerateRandomData : MonoBehaviour {
     private List<OperatorData> _operatorsData;
     private OperatorData _opData, _splitParentData;
     private Model.Operators.SplitDatasetOperator.CustomSplitData _customSplitData;
-    private string _dataPath;
+    private string _dataPath, _randomName;
     private string[] _axes;
 	// Use this for initialization
 	void Start () {
         _prefabs = Resources.LoadAll<GameObject>("Operators");
         list = new List<string>();
         _operatorsData = new List<OperatorData>();
-        _dataPath = "C:/Kliment/Master's Project/VRVis/Assets/Resources/SavedData/newRandomOperators.xml";
+        _dataPath = "C:/Kliment/Master's Project/VRVis/Assets/Resources/SavedData/";
         _axes = new string[3] { "X", "Y", "Z" };
     }
 	
@@ -134,6 +134,7 @@ public class GenerateRandomData : MonoBehaviour {
                 i += 2;
             }
         }
-        SaveLoadData.SaveRandomData(_dataPath, _container);
+        _randomName = "RandomData" + dataName.ToString() + ".xml";
+        SaveLoadData.SaveRandomData(_dataPath + _randomName, _container);
     }
 }

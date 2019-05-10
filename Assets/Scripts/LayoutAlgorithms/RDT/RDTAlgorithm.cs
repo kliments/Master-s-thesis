@@ -132,7 +132,7 @@ public class RDTAlgorithm : GeneralLayoutAlgorithm
     {
         IconProperties np = nodeN.GetIcon().GetComponent<IconProperties>();
         double y = 0;
-        y = 2 - np.normalizedDepth;
+        y = _maxDepth - np.normalizedDepth;
         Vector3 pos = new Vector3(x, (float)y, z);
         //nodeN.GetIcon().transform.position = pos;
         np.newPos = pos;
@@ -221,7 +221,7 @@ public class RDTAlgorithm : GeneralLayoutAlgorithm
         foreach (var op in observer.GetOperators())
         {
             depth = op.GetIcon().GetComponent<IconProperties>().depth;
-            op.GetIcon().GetComponent<IconProperties>().normalizedDepth = 2 * ((depth - _minDepth) / (_maxDepth - _minDepth));
+            op.GetIcon().GetComponent<IconProperties>().normalizedDepth = _maxDepth * ((depth - _minDepth) / (_maxDepth - _minDepth));
             i++;
         }
     }

@@ -8,7 +8,7 @@ public class QualityMetricSlider : MonoBehaviour
 {
     public TextMesh value;
     public float qualityFactor;
-    public bool slide;
+    public bool slide, repos;
     public SteamVR_TrackedObject rightController;
 
     private Vector3 borderPosition, mousePos, tempLocal;
@@ -85,12 +85,25 @@ public class QualityMetricSlider : MonoBehaviour
         {
             if (move) move = false;
         }
-        
+        if(repos)
+        {
+            repos = false;
+            MoveSlideFromValue(qualityFactor);
+        }
     }
 
     public float NormalizedSliderValue()
     {
         return ((transform.localPosition.x - min) / max - min) - 0.5f;
+    }
+
+    public void MoveSlideFromValue(float weight)
+    {
+        weight = (float)(Math.Round(weight, 1));
+        Vector3 newPos = transform.localPosition;
+        newPos.x = weight/2 + min;
+        transform.localPosition = newPos;
+        value.text = weight.ToString();
     }
 }
 
