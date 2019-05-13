@@ -145,6 +145,7 @@ public class MultiDimensionalKMeansClustering : MonoBehaviour {
         //choose viewpoints that are closest to the centroids
         for(int i=0; i<3; i++)
         {
+            Debug.Log("Cluster nr " + i.ToString());
             float dist = 0;
             QualityMetricViewPort temp = new QualityMetricViewPort();
             dist = Distance5D(clusters[i][0], centroids[i]);
@@ -155,6 +156,9 @@ public class MultiDimensionalKMeansClustering : MonoBehaviour {
                     dist = Distance5D(point, centroids[i]);
                     temp = CopyOf(point);
                 }
+                Debug.Log(" overallGrade " + point.overallGrade + " EdgeCrossAngle: " + point.edgeCrossAngle + " AngResRM: " + point.angResRM
+                        + " normalizedEdgeLength: " + point.normalizedEdgeLength + " normalizedNodeOverlaps: " + point.normalizedNodeOverlaps
+                        + " normalizedEdgeCrossings: " + point.normalizedEdgeCrossings);
             }
             chosenViewpoints.Add(temp);
         }

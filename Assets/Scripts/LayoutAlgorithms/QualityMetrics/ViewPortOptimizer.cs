@@ -126,7 +126,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     //once all the images are generated, create buttons with the images
                     previewButtons.CallForCreatingButtons(imagesPaths, delta);
                     //reduce delta factor
-                    delta = (delta * 2) / 3;
+                    delta = (delta * 9) / 10;
 
                     Debug.Log("viewNr " + chosenViewpoints[screenshotCounter].index + " overallGrade " + chosenViewpoints[screenshotCounter].overallGrade + " EdgeCrossAngle: " + chosenViewpoints[screenshotCounter].edgeCrossAngle + " AngResRM: " + chosenViewpoints[screenshotCounter].angResRM
                         + " normalizedEdgeLength: " + chosenViewpoints[screenshotCounter].normalizedEdgeLength + " normalizedNodeOverlaps: " + chosenViewpoints[screenshotCounter].normalizedNodeOverlaps
