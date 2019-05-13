@@ -7,6 +7,7 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
     public bool readjust;
     public GenericMenueComponent listener;
     public float delta;
+    public Transform rightController;
 
     private QualityMetricViewPort qualityMetricsValues;
     private ViewPortOptimizer viewport;
@@ -14,7 +15,7 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
     private RaycastHit _hit;
     private Ray ray;
     private Camera mainCamera;
-    private Vector3 smallSize, bigSize, backPos, frontPos;
+    private Vector3 smallSize, bigSize, vrSize, backPos, frontPos;
     // Use this for initialization
     void Start () {
         viewport = (ViewPortOptimizer)FindObjectOfType(typeof(ViewPortOptimizer));
@@ -29,6 +30,7 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         max = 2;
         smallSize = new Vector3(0.08f, 0.08f, 0.08f);
         bigSize = new Vector3(0.16f, 0.16f, 0.16f);
+        vrSize = new Vector3(0.64f, 0.64f, 0.64f);
         backPos = transform.localPosition;
         frontPos = backPos + new Vector3(0, 0, -50);
     }
@@ -55,6 +57,31 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
             else
             {
                 if(transform.localScale == bigSize)
+                {
+                    transform.localScale = smallSize;
+                    transform.localPosition = backPos;
+                }
+            }
+        }
+        else if(mainCamera.name == "Camera (eye)")
+        {
+            ray = new Ray(rightController.position, rightController.forward);
+            if (Physics.Raycast(ray, out _hit, 100))
+            {
+                if (_hit.collider.gameObject == transform.GetChild(0).gameObject && transform.localScale != vrSize)
+                {
+                    transform.localScale = vrSize;
+                    transform.localPosition = frontPos;
+                }
+                else if (_hit.collider.gameObject != transform.GetChild(0).gameObject && transform.localScale == vrSize)
+                {
+                    transform.localScale = smallSize;
+                    transform.localPosition = backPos;
+                }
+            }
+            else
+            {
+                if (transform.localScale == vrSize)
                 {
                     transform.localScale = smallSize;
                     transform.localPosition = backPos;

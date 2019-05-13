@@ -2762,6 +2762,7 @@ MonoBehaviour:
     type: 2}
   observationList: []
   combinedObservationList: []
+  chosenViewpoints: []
   edge: {fileID: 425428961}
   node: {fileID: 481080621}
   edgeCrossRes: {fileID: 1150214622}
@@ -2945,6 +2946,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e914a6c99529a9247a6dbf5492139154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  calculatee: 0
   calculate: 0
 --- !u!1 &367106820
 GameObject:
@@ -3793,6 +3795,7 @@ MonoBehaviour:
   readjust: 0
   listener: {fileID: 492981117}
   delta: 0
+  rightController: {fileID: 777596325}
 --- !u!114 &492981117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4571,6 +4574,7 @@ MonoBehaviour:
   readjust: 0
   listener: {fileID: 620225321}
   delta: 0
+  rightController: {fileID: 777596325}
 --- !u!114 &620225321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6126,6 +6130,7 @@ MonoBehaviour:
   readjust: 0
   listener: {fileID: 785030739}
   delta: 0
+  rightController: {fileID: 777596325}
 --- !u!114 &785030739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7330,7 +7335,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1031145540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17278,7 +17283,7 @@ Prefab:
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 1223
+      value: 1354
       objectReference: {fileID: 0}
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}

@@ -453,7 +453,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     void OnDisable()
     {
         //delete screenshots if exist
-        DirectoryInfo dir = new DirectoryInfo("C:/Kliment/Master's Project/VRVis/Assets/Resources/Screenshots/");
+        /*DirectoryInfo dir = new DirectoryInfo("C:/Kliment/Master's Project/VRVis/Assets/Resources/Screenshots/");
         FileInfo[] files = dir.GetFiles("*.*");
         if (files.Length != 0)
         {
@@ -461,7 +461,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
             {
                 file.Delete();
             }
-        }
+        }*/
     }
 
     public void LocalScan()
