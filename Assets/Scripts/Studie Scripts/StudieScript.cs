@@ -32,7 +32,7 @@ public class StudieScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if(scan)
+        /*if(scan)
         {
             scan = false;
             ScanGraph();
@@ -41,9 +41,9 @@ public class StudieScript : MonoBehaviour {
         if(layout)
         {
             layout = false;
-            LayoutGraph(algorithm);
+            LayoutGraph();
             scan = true;
-        }
+        }*/
         if (start)
         {
             start = false;
@@ -55,7 +55,8 @@ public class StudieScript : MonoBehaviour {
             algorithm = row[0];
             task = row[1];
             task = task.Replace("\r", "");
-            layout = true;
+
+            Invoke("LayoutGraph", 2);
         }
 	}
 
@@ -72,7 +73,7 @@ public class StudieScript : MonoBehaviour {
     }
 
     //Layout algorithm
-    void LayoutGraph(string algorithm)
+    void LayoutGraph()
     {
         foreach(var alg in algorithms)
         {
@@ -82,6 +83,7 @@ public class StudieScript : MonoBehaviour {
                 break;
             }
         }
+        Invoke("ScanGraph", 5);
     }
 
     //Scan and compute viewpoints

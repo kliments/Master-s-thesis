@@ -18,6 +18,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     public List<GeneralLayoutAlgorithm> algorithmsList;
     public GenericMenueComponent localScanListener, globalScanListener;
     public GameObject guidanceMarker;
+    public GameObject cameraRig;
 
     public List<List<QualityMetricViewPort>> globalObservationList;
     public List<QualityMetricViewPort> observationList, combinedObservationList, chosenViewpoints;
@@ -450,20 +451,6 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         globalScanListener.addListener(this);
     }
 
-    void OnDisable()
-    {
-        //delete screenshots if exist
-        /*DirectoryInfo dir = new DirectoryInfo("C:/Kliment/Master's Project/VRVis/Assets/Resources/Screenshots/");
-        FileInfo[] files = dir.GetFiles("*.*");
-        if (files.Length != 0)
-        {
-            foreach(FileInfo file in files)
-            {
-                file.Delete();
-            }
-        }*/
-    }
-
     public void LocalScan()
     {
         globalScan = false;
@@ -532,6 +519,11 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         StartCoroutine(Screenshot());
         projectionPlane.gameObject.SetActive(false);
         if (Camera.main.name == "Camera") Camera.main.transform.LookAt(transform);
+        else
+        {
+            cameraRig.transform.position = combinedObservationList[0].cameraPosition;
+            cameraRig.transform.LookAt(transform);
+        }
     }
 
     private void GlobalScan()

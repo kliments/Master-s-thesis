@@ -23,7 +23,8 @@ public class GenerateRandomData : MonoBehaviour {
         _prefabs = Resources.LoadAll<GameObject>("Operators");
         list = new List<string>();
         _operatorsData = new List<OperatorData>();
-        _dataPath = "C:/Kliment/Master's Project/VRVis/Assets/Resources/SavedData/";
+        //_dataPath = "C:/Kliment/Master's Project/VRVis/Assets/Resources/SavedData/";
+        _dataPath = Application.dataPath + "/Resources/SavedData/";
         _axes = new string[3] { "X", "Y", "Z" };
     }
 	
@@ -32,6 +33,7 @@ public class GenerateRandomData : MonoBehaviour {
 		if(generate)
         {
             generate = false;
+            Debug.Log(Application.dataPath);
             //GenerateData();
         }
 	}

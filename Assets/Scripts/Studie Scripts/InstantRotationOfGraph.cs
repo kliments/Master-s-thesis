@@ -6,7 +6,6 @@ using UnityEngine;
 public class InstantRotationOfGraph : MonoBehaviour {
     public List<Vector3> positions;
     public Transform graph;
-    public Transform viewPortPos;
     public bool set;
 
     private Observer observer;
@@ -19,14 +18,9 @@ public class InstantRotationOfGraph : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(set)
-        {
-            set = false;
-            cameraRotation();
-        }
 	}
 
-    public void cameraRotation()
+    public void GraphRotation(Vector3 viewPortPos)
     {
         SetBackToZero();
         SetCenter();

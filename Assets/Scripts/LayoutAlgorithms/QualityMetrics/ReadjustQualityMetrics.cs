@@ -9,18 +9,25 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
     public float delta;
     public Transform rightController;
 
-    private QualityMetricViewPort qualityMetricsValues;
-    private ViewPortOptimizer viewport;
+    private SteamVR_TrackedObject _trackedObj;
+    private SteamVR_Controller.Device _device;
+    private QualityMetricViewPort _qualityMetricsValues;
+    private ViewPortOptimizer _viewport;
+    private InstantRotationOfGraph _rotate;
     private float edgeCrossingWeight, nodeOverlapWeight, edgeLenWeight, angResWeight, edgeCrossResWeight, min, max, sum, sumNoDelta, edgeCrossNoDelta, nodeOverlapNoDelta, edgeLenNoDelta, angResNoDelta, edgeCrossAngNoDelta;
     private RaycastHit _hit;
     private Ray ray;
     private Camera mainCamera;
     private Vector3 smallSize, bigSize, vrSize, backPos, frontPos;
     // Use this for initialization
-    void Start () {
-        viewport = (ViewPortOptimizer)FindObjectOfType(typeof(ViewPortOptimizer));
+    void Start ()
+    {
+        _trackedObj = rightController.GetComponent<SteamVR_TrackedObject>();
+        _device = SteamVR_Controller.Input((int)_trackedObj.index);
+        _viewport = (ViewPortOptimizer)FindObjectOfType(typeof(ViewPortOptimizer));
+        _rotate = (InstantRotationOfGraph)FindObjectOfType(typeof(InstantRotationOfGraph));
         other = new List<GameObject>();
-        qualityMetricsValues = GetComponent<QualityMetricViewPort>();
+        _qualityMetricsValues = GetComponent<QualityMetricViewPort>();
         foreach (Transform child in transform.parent)
         {
             if (child == transform) continue;
@@ -68,23 +75,9 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
             ray = new Ray(rightController.position, rightController.forward);
             if (Physics.Raycast(ray, out _hit, 100))
             {
-                if (_hit.collider.gameObject == transform.GetChild(0).gameObject && transform.localScale != vrSize)
+                if (_hit.collider.gameObject == transform.GetChild(0).gameObject && _device.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
                 {
-                    transform.localScale = vrSize;
-                    transform.localPosition = frontPos;
-                }
-                else if (_hit.collider.gameObject != transform.GetChild(0).gameObject && transform.localScale == vrSize)
-                {
-                    transform.localScale = smallSize;
-                    transform.localPosition = backPos;
-                }
-            }
-            else
-            {
-                if (transform.localScale == vrSize)
-                {
-                    transform.localScale = smallSize;
-                    transform.localPosition = backPos;
+                    _rotate.GraphRotation(GetComponent<QualityMetricViewPort>().cameraPosition);
                 }
             }
         }
@@ -102,20 +95,20 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         foreach(var obj in other)
         {
             temp = obj.GetComponent<QualityMetricViewPort>();
-            edgeCrossingWeight += (qualityMetricsValues.normalizedEdgeCrossings - temp.normalizedEdgeCrossings) * delta;
-            edgeCrossNoDelta += (qualityMetricsValues.normalizedEdgeCrossings - temp.normalizedEdgeCrossings);
+            edgeCrossingWeight += (_qualityMetricsValues.normalizedEdgeCrossings - temp.normalizedEdgeCrossings) * delta;
+            edgeCrossNoDelta += (_qualityMetricsValues.normalizedEdgeCrossings - temp.normalizedEdgeCrossings);
 
-            nodeOverlapWeight += (qualityMetricsValues.normalizedNodeOverlaps - temp.normalizedNodeOverlaps) * delta;
-            nodeOverlapNoDelta += (qualityMetricsValues.normalizedNodeOverlaps - temp.normalizedNodeOverlaps);
+            nodeOverlapWeight += (_qualityMetricsValues.normalizedNodeOverlaps - temp.normalizedNodeOverlaps) * delta;
+            nodeOverlapNoDelta += (_qualityMetricsValues.normalizedNodeOverlaps - temp.normalizedNodeOverlaps);
 
-            edgeLenWeight += (qualityMetricsValues.normalizedEdgeLength - temp.normalizedEdgeLength) * delta;
-            edgeLenNoDelta += (qualityMetricsValues.normalizedEdgeLength - temp.normalizedEdgeLength);
+            edgeLenWeight += (_qualityMetricsValues.normalizedEdgeLength - temp.normalizedEdgeLength) * delta;
+            edgeLenNoDelta += (_qualityMetricsValues.normalizedEdgeLength - temp.normalizedEdgeLength);
 
-            angResWeight += (qualityMetricsValues.angResRM - temp.angResRM) * delta;
-            angResNoDelta += (qualityMetricsValues.angResRM - temp.angResRM);
+            angResWeight += (_qualityMetricsValues.angResRM - temp.angResRM) * delta;
+            angResNoDelta += (_qualityMetricsValues.angResRM - temp.angResRM);
 
-            edgeCrossResWeight += (qualityMetricsValues.edgeCrossAngle - temp.edgeCrossAngle) * delta;
-            edgeCrossAngNoDelta += (qualityMetricsValues.edgeCrossAngle - temp.edgeCrossAngle);
+            edgeCrossResWeight += (_qualityMetricsValues.edgeCrossAngle - temp.edgeCrossAngle) * delta;
+            edgeCrossAngNoDelta += (_qualityMetricsValues.edgeCrossAngle - temp.edgeCrossAngle);
         }
 
         //normalize on scale between 0-2
@@ -135,20 +128,20 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         edgeCrossAngNoDelta = Normalize(edgeCrossAngNoDelta);
 
         //multiply to current values of quality metric weights
-        edgeCrossingWeight = edgeCrossingWeight * viewport.edge.qualityFactor;
-        edgeCrossNoDelta = edgeCrossNoDelta * viewport.edge.qualityFactor;
+        edgeCrossingWeight = edgeCrossingWeight * _viewport.edge.qualityFactor;
+        edgeCrossNoDelta = edgeCrossNoDelta * _viewport.edge.qualityFactor;
 
-        nodeOverlapWeight = nodeOverlapWeight * viewport.node.qualityFactor;
-        nodeOverlapNoDelta = nodeOverlapNoDelta * viewport.node.qualityFactor;
+        nodeOverlapWeight = nodeOverlapWeight * _viewport.node.qualityFactor;
+        nodeOverlapNoDelta = nodeOverlapNoDelta * _viewport.node.qualityFactor;
 
-        edgeLenWeight = edgeLenWeight * viewport.edgeLength.qualityFactor;
-        edgeLenNoDelta = edgeLenNoDelta * viewport.edgeLength.qualityFactor;
+        edgeLenWeight = edgeLenWeight * _viewport.edgeLength.qualityFactor;
+        edgeLenNoDelta = edgeLenNoDelta * _viewport.edgeLength.qualityFactor;
 
-        angResWeight = angResWeight * viewport.angRes.qualityFactor;
-        angResNoDelta = angResNoDelta * viewport.angRes.qualityFactor;
+        angResWeight = angResWeight * _viewport.angRes.qualityFactor;
+        angResNoDelta = angResNoDelta * _viewport.angRes.qualityFactor;
 
-        edgeCrossResWeight = edgeCrossResWeight * viewport.edgeCrossRes.qualityFactor;
-        edgeCrossAngNoDelta = edgeCrossAngNoDelta * viewport.edgeCrossRes.qualityFactor;
+        edgeCrossResWeight = edgeCrossResWeight * _viewport.edgeCrossRes.qualityFactor;
+        edgeCrossAngNoDelta = edgeCrossAngNoDelta * _viewport.edgeCrossRes.qualityFactor;
 
         //normalize new values so their sum is 5
         sum = edgeCrossingWeight + nodeOverlapWeight + edgeLenWeight + angResWeight + edgeCrossResWeight;
@@ -172,21 +165,21 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         edgeCrossResWeight *= sum;
         edgeCrossAngNoDelta *= sum;
         //update current values
-        viewport.edge.qualityFactor = edgeCrossingWeight;
-        viewport.node.qualityFactor = nodeOverlapWeight;
-        viewport.edgeLength.qualityFactor = edgeLenWeight;
-        viewport.angRes.qualityFactor = angResWeight;
-        viewport.edgeCrossRes.qualityFactor = edgeCrossResWeight;
+        _viewport.edge.qualityFactor = edgeCrossingWeight;
+        _viewport.node.qualityFactor = nodeOverlapWeight;
+        _viewport.edgeLength.qualityFactor = edgeLenWeight;
+        _viewport.angRes.qualityFactor = angResWeight;
+        _viewport.edgeCrossRes.qualityFactor = edgeCrossResWeight;
 
         //update sliders
-        viewport.edge.MoveSlideFromValue(edgeCrossingWeight);
-        viewport.node.MoveSlideFromValue(nodeOverlapWeight);
-        viewport.edgeLength.MoveSlideFromValue(edgeLenWeight);
-        viewport.angRes.MoveSlideFromValue(angResWeight);
-        viewport.edgeCrossRes.MoveSlideFromValue(edgeCrossResWeight);
+        _viewport.edge.MoveSlideFromValue(edgeCrossingWeight);
+        _viewport.node.MoveSlideFromValue(nodeOverlapWeight);
+        _viewport.edgeLength.MoveSlideFromValue(edgeLenWeight);
+        _viewport.angRes.MoveSlideFromValue(angResWeight);
+        _viewport.edgeCrossRes.MoveSlideFromValue(edgeCrossResWeight);
 
         //Rescan tree again
-        viewport.LocalScan();
+        _viewport.LocalScan();
     }
 
     float Normalize(float value)
