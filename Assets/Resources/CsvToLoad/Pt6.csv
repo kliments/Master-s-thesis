@@ -1,4 +1,4 @@
-Cone-burst, Task1,
-Force-directed, Task1,
-Force-directed, Task2,
-Cone-burst, Task2,
+ConeBurst, Task1
+ForceDirectedAlgorithm, Task1
+ForceDirectedAlgorithm, Task2
+ConeBurst, Task2

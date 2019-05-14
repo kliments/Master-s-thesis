@@ -32,11 +32,11 @@ public class GenerateRandomData : MonoBehaviour {
 		if(generate)
         {
             generate = false;
-            GenerateData();
+            //GenerateData();
         }
 	}
 
-    private void GenerateData()
+    public string GenerateData(string dataID)
     {
         list = new List<string>();
         _operatorsData = new List<OperatorData>();
@@ -134,7 +134,8 @@ public class GenerateRandomData : MonoBehaviour {
                 i += 2;
             }
         }
-        _randomName = "RandomData" + dataName.ToString() + ".xml";
+        _randomName = "RandomData" + dataID.ToString() + ".xml";
         SaveLoadData.SaveRandomData(_dataPath + _randomName, _container);
+        return (_dataPath + _randomName);
     }
 }
