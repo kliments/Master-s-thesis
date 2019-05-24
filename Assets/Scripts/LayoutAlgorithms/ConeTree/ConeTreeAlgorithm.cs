@@ -32,8 +32,11 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
 
     public override void StartAlgorithm()
     {
-        //don't start if another algorithm is in process
-        if (!algorithm.currentLayout.AlgorithmHasFinished()) return;
+        //stop previous algorithm
+        if (!algorithm.currentLayout.Equals(this))
+        {
+            algorithm.currentLayout.SetFinish();
+        }
         //set flag that this algorithm is running
         SetStart();
         if (observer == null) observer = (Observer)FindObjectOfType(typeof(Observer));
@@ -99,7 +102,6 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
         //if(node.Children.Count > 0) s -= (s / node.Children.Count);
         AdjustChildren(np, s);
         SetRadius(np);
-        //SetRadius(node, np);
     }
 
     // Adjusting the radii of the halfsectors of the children
@@ -132,9 +134,8 @@ public class ConeTreeAlgorithm : GeneralLayoutAlgorithm
         double y = 0;
         y = _maxDepth - np.normalizedDepth;
         Vector3 pos = new Vector3(x, (float)y, z);
-        //nodeN.GetIcon().transform.position = pos;
         np.newPos = pos;
-        np.repos = true;
+        //np.repos = true;
         float dd = l * np.d;
         float p = t + Mathf.PI;
         float freeSpace = (nodeN.Children.Count == 0 ? 0 : np.f / nodeN.Children.Count);

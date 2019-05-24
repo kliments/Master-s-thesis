@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Model;
 using Model.Operators;
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,8 +24,7 @@ public class GenerateRandomData : MonoBehaviour {
         _prefabs = Resources.LoadAll<GameObject>("Operators");
         list = new List<string>();
         _operatorsData = new List<OperatorData>();
-        //_dataPath = "C:/Kliment/Master's Project/VRVis/Assets/Resources/SavedData/";
-        _dataPath = Application.dataPath + "/Resources/SavedData/";
+        _dataPath = Application.dataPath + "/Resources/LoggedData/";
         _axes = new string[3] { "X", "Y", "Z" };
     }
 	
@@ -137,7 +137,8 @@ public class GenerateRandomData : MonoBehaviour {
             }
         }
         _randomName = "RandomData" + dataID.ToString() + ".xml";
-        SaveLoadData.SaveRandomData(_dataPath + _randomName, _container);
-        return (_dataPath + _randomName);
+        var dir = Directory.CreateDirectory(_dataPath + "Participant" + dataID);
+        SaveLoadData.SaveRandomData(dir.FullName.ToString() + "\\" + _randomName, _container);
+        return (dir.FullName.ToString() + "\\" + _randomName);
     }
 }

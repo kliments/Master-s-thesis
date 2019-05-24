@@ -49,6 +49,9 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
 
     //Default algorithm used for temporal force directed
     private DefaultAlgorithm defaultAlg;
+
+    //
+    private LayoutAlgorithm algorithm;
     // Use this for initialization
     void Start () {
         ElectricForce = (d => 1 / (2 * d * d));
@@ -62,12 +65,56 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
         _timeBins = new List<List<GenericOperator>>();
 
         defaultAlg = (DefaultAlgorithm)FindObjectOfType(typeof(DefaultAlgorithm));
+
+        algorithm = GetComponent<LayoutAlgorithm>();
     }
 	
 	// Update is called once per frame
 	void Update () {
         
-        if (calculateForceDirected)
+        /*if (calculateForceDirected)
+        {
+            Calculate();
+            if (Temperature < DefaultMinimumTemperature)
+            {
+                Temperature = 0.2f;
+                GetComponent<TwoDimensionalProjection>().SetPlane();
+                if (!ReRunAlgorithm())
+                {
+                    calculateForceDirected = false;
+                    base.ColorEdges();
+                    //set flag that this algorithm has finished
+                    SetFinish();
+                }
+            }
+        }*/
+        if(test)
+        {
+            test = false;
+            PreScanCalculation();
+        }
+    }
+
+    public override void StartAlgorithm()
+    {
+        //stop previous algorithm
+        if (!algorithm.currentLayout.Equals(this))
+        {
+            algorithm.currentLayout.SetFinish();
+        }
+
+        if (observer == null) observer = (Observer)FindObjectOfType(typeof(Observer));
+
+        if (GetComponent<LayoutAlgorithm>().currentLayout != this)
+        {
+            GetComponent<LayoutAlgorithm>().currentLayout = this;
+            RandomizePositions();
+        }
+        //set flag that this algorithm has started
+        SetStart();
+        //Algorithm is called in Update function
+        calculateForceDirected = true;
+        while(calculateForceDirected)
         {
             Calculate();
             if (Temperature < DefaultMinimumTemperature)
@@ -83,29 +130,6 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
                 }
             }
         }
-        if(test)
-        {
-            test = false;
-            PreScanCalculation();
-        }
-    }
-
-    public override void StartAlgorithm()
-    {
-        //check if another algorithm is running
-        if (!GetComponent<LayoutAlgorithm>().currentLayout.AlgorithmHasFinished()) return;
-
-        if (observer == null) observer = (Observer)FindObjectOfType(typeof(Observer));
-
-        if (GetComponent<LayoutAlgorithm>().currentLayout != this)
-        {
-            GetComponent<LayoutAlgorithm>().currentLayout = this;
-            RandomizePositions();
-        }
-        //set flag that this algorithm has started
-        SetStart();
-        //Algorithm is called in Update function
-        calculateForceDirected = true;
     }
 
     bool ReRunAlgorithm()
@@ -113,9 +137,13 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
         float maxDistance = 0;
         foreach(var op in observer.GetOperators())
         {
-            if (Vector3.Distance(op.GetIcon().GetComponent<IconProperties>().previousPosition, op.GetIcon().GetComponent<IconProperties>().newPos) > maxDistance)
+            /*if (Vector3.Distance(op.GetIcon().GetComponent<IconProperties>().previousPosition, op.GetIcon().GetComponent<IconProperties>().newPos) > maxDistance)
             {
                 maxDistance = Vector3.Distance(op.GetIcon().GetComponent<IconProperties>().previousPosition, op.GetIcon().GetComponent<IconProperties>().newPos);
+            }*/
+            if (Vector3.Distance(op.GetIcon().GetComponent<IconProperties>().previousPosition, op.GetIcon().GetComponent<IconProperties>().transform.position) > maxDistance)
+            {
+                maxDistance = Vector3.Distance(op.GetIcon().GetComponent<IconProperties>().previousPosition, op.GetIcon().GetComponent<IconProperties>().transform.position);
             }
         }
         if(maxDistance > 0.01f)
@@ -132,7 +160,8 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
         for (int i = 0; i < observer.GetOperators().Count; i++)
         {
             pos = new Vector3(UnityEngine.Random.Range(0.5f, 1.5f), UnityEngine.Random.Range(0.5f, 1.5f), UnityEngine.Random.Range(0.5f, 1.5f));
-            observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = pos;
+            //observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().newPos = pos;
+            observer.GetOperators()[i].GetIcon().GetComponent<IconProperties>().transform.position = pos;
         }
         // reset the temperature
         Temperature = DefaultStartingTemperature;
@@ -178,8 +207,10 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
         {
             test = op.GetIcon().GetComponent<IconProperties>().acceleration / 2;
             np = op.GetIcon().GetComponent<IconProperties>();
-            op.GetIcon().GetComponent<IconProperties>().newPos += op.GetIcon().GetComponent<IconProperties>().acceleration / 2;
-            op.GetIcon().GetComponent<IconProperties>().repos = true;
+            //op.GetIcon().GetComponent<IconProperties>().newPos += op.GetIcon().GetComponent<IconProperties>().acceleration / 2;
+            op.GetIcon().GetComponent<IconProperties>().previousPosition = op.GetIcon().GetComponent<IconProperties>().transform.position;
+            op.GetIcon().GetComponent<IconProperties>().transform.position += op.GetIcon().GetComponent<IconProperties>().acceleration / 2;
+            //op.GetIcon().GetComponent<IconProperties>().repos = true;
             op.GetIcon().GetComponent<IconProperties>().acceleration = Vector3.zero;
             op.GetIcon().GetComponent<IconProperties>().oldPos = op.GetIcon().transform.position;
             PlaceEdges();
@@ -195,8 +226,8 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
     {
         foreach (var op1 in observer.GetOperators())
         {
-            //Vector3 pos1 = op1.GetIcon().transform.position;
-            Vector3 pos1 = op1.GetIcon().GetComponent<IconProperties>().newPos;
+            Vector3 pos1 = op1.GetIcon().transform.position;
+            //Vector3 pos1 = op1.GetIcon().GetComponent<IconProperties>().newPos;
             double xForce = 0, yForce = 0, zForce = 0;
 
             //attraction forces towards children
@@ -204,8 +235,8 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
             {
                 foreach (var child in op1.Children)
                 {
-                    //Vector3 pos2 = child.GetIcon().transform.position;
-                    Vector3 pos2 = child.GetIcon().GetComponent<IconProperties>().newPos;
+                    Vector3 pos2 = child.GetIcon().transform.position;
+                    //Vector3 pos2 = child.GetIcon().GetComponent<IconProperties>().newPos;
                     double d = Vector3.Distance(pos1, pos2);
                     double force = Temperature * SpringForce(d * 10);
                     xForce += (pos2.x - pos1.x) / d * force;
@@ -219,8 +250,8 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
             {
                 foreach (var parent in op1.Parents)
                 {
-                    //Vector3 pos2 = parent.GetIcon().transform.position;
-                    Vector3 pos2 = parent.GetIcon().GetComponent<IconProperties>().newPos;
+                    Vector3 pos2 = parent.GetIcon().transform.position;
+                    //Vector3 pos2 = parent.GetIcon().GetComponent<IconProperties>().newPos;
                     double d = Vector3.Distance(pos1, pos2);
                     double force = Temperature * SpringForce(d * 10);
                     xForce += (pos2.x - pos1.x) / d * force;
@@ -233,8 +264,8 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
             foreach (var op2 in observer.GetOperators())
             {
                 if (op1 == op2) continue;
-                //Vector3 pos2 = op2.GetIcon().transform.position;
-                Vector3 pos2 = op2.GetIcon().GetComponent<IconProperties>().newPos;
+                Vector3 pos2 = op2.GetIcon().transform.position;
+                //Vector3 pos2 = op2.GetIcon().GetComponent<IconProperties>().newPos;
                 double d = Vector3.Distance(pos1, pos2);
                 double force = Temperature * ElectricForce(d);
                 xForce += (pos1.x - pos2.x) / d * force;
@@ -269,7 +300,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
         {
             tempVector = op.GetIcon().transform.position;
             op.GetIcon().GetComponent<IconProperties>().previousPosition = tempVector;
-            op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
+            //op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
         }
         calculateForceDirected = true;
         //set flag that this algorithm has started
@@ -281,7 +312,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
             {
                 tempVector = op.GetIcon().transform.position;
                 op.GetIcon().GetComponent<IconProperties>().previousPosition = tempVector;
-                op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
+                //op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
             }
             if (Temperature < DefaultMinimumTemperature)
             {
@@ -292,7 +323,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
                 {
                     tempVector = op.GetIcon().transform.position;
                     op.GetIcon().GetComponent<IconProperties>().previousPosition = tempVector;
-                    op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
+                    //op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
                 }
                 if (!PreScanReRun())
                 {

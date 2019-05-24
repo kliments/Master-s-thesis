@@ -9,6 +9,9 @@ public abstract class GeneralLayoutAlgorithm : MonoBehaviour, IMenueComponentLis
     //subscriber button
     public GenericMenueComponent subscriber;
 
+    public delegate void AlgorithmFinished(bool finish);
+    public event AlgorithmFinished BoolSet;
+
     //speed of animation
     public int speed;
 
@@ -19,6 +22,7 @@ public abstract class GeneralLayoutAlgorithm : MonoBehaviour, IMenueComponentLis
     private float minDepth = 1;
     // Use this for initialization
     void Start () {
+
 	}
 	
 	// Update is called once per frame
@@ -58,6 +62,12 @@ public abstract class GeneralLayoutAlgorithm : MonoBehaviour, IMenueComponentLis
     public void SetFinish()
     {
         _finished = true;
+        //set values of icons to their final position
+        foreach(var op in observer.GetOperators())
+        {
+            op.GetIcon().GetComponent<IconProperties>().repos = false;
+            //op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
+        }
     }
 
     public void SetStart()

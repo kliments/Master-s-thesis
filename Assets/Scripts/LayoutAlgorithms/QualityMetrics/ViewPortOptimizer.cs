@@ -157,7 +157,8 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         Vector3 pos = new Vector3();
         foreach(var op in observer.GetOperators())
         {
-            pos += op.GetIcon().GetComponent<IconProperties>().newPos;
+            //pos += op.GetIcon().GetComponent<IconProperties>().newPos;
+            pos += op.GetIcon().GetComponent<IconProperties>().transform.position;
         }
         pos /= observer.GetOperators().Count;
         return pos;

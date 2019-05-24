@@ -22,8 +22,12 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
     // Use this for initialization
     void Start ()
     {
-        _trackedObj = rightController.GetComponent<SteamVR_TrackedObject>();
-        _device = SteamVR_Controller.Input((int)_trackedObj.index);
+        mainCamera = Camera.main;
+        if (mainCamera.name == "Camera (eye)")
+        {
+            _trackedObj = rightController.GetComponent<SteamVR_TrackedObject>();
+            _device = SteamVR_Controller.Input((int)_trackedObj.index);
+        }
         _viewport = (ViewPortOptimizer)FindObjectOfType(typeof(ViewPortOptimizer));
         _rotate = (InstantRotationOfGraph)FindObjectOfType(typeof(InstantRotationOfGraph));
         other = new List<GameObject>();
@@ -44,7 +48,6 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
 	
 	// Update is called once per frame
 	void Update () {
-        mainCamera = Camera.main;
         if(mainCamera.name == "Camera")
         {
             ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -59,6 +62,11 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
                 {
                     transform.localScale = smallSize;
                     transform.localPosition = backPos;
+                }
+
+                if(_hit.collider.gameObject == transform.GetChild(0).gameObject && Input.GetMouseButtonDown(1))
+                {
+                    _rotate.GraphRotation(GetComponent<QualityMetricViewPort>().cameraPosition);
                 }
             }
             else

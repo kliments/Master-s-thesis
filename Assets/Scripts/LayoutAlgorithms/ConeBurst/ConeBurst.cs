@@ -9,20 +9,30 @@ public class ConeBurst : GeneralLayoutAlgorithm {
     private ConeTreeAlgorithm coneTreeAlg;
     private GenericOperator _root;
     private Vector3 _anchor;
-	// Use this for initialization
-	void Start () {
+    private LayoutAlgorithm algorithm;
+    // Use this for initialization
+    void Start () {
         coneTreeAlg = (ConeTreeAlgorithm)FindObjectOfType(typeof(ConeTreeAlgorithm));
         observer = (Observer)FindObjectOfType(typeof(Observer));
-	}
+        algorithm = GetComponent<LayoutAlgorithm>();
+    }
 	
 	// Update is called once per frame
 	void Update () {
+        if(start)
+        {
+            start = false;
+            StartAlgorithm();
+        }
     }
 
     public override void StartAlgorithm()
     {
-        //don't start if another algorithm is in process
-        if (!GetComponent<LayoutAlgorithm>().currentLayout.AlgorithmHasFinished()) return;
+        //stop previous algorithm
+        if (!algorithm.currentLayout.Equals(this))
+        {
+            algorithm.currentLayout.SetFinish();
+        }
         //set flag that this algorithm is running
         SetStart();
 
@@ -89,12 +99,12 @@ public class ConeBurst : GeneralLayoutAlgorithm {
         //put back root to its old position
         _root.GetIcon().transform.position = _anchor;
         _root.GetIcon().GetComponent<IconProperties>().newPos = _anchor;
+        _root.GetIcon().transform.position = _anchor;
 
         //rotate root's children in direction of root to child, save root's children's children location and rotate back
         foreach (var child in _root.Children)
         {
             child.GetIcon().GetComponent<IconProperties>().newPos = child.GetIcon().transform.position;
-            //child.GetIcon().GetComponent<IconProperties>().repos = true;
 
             var oldRot = child.GetIcon().transform.rotation;
             var dir = _anchor - child.GetIcon().transform.position;
@@ -106,7 +116,6 @@ public class ConeBurst : GeneralLayoutAlgorithm {
             {
                 if (grandChild.GetComponent<IconProperties>() == null) continue;
                 grandChild.GetComponent<IconProperties>().newPos = grandChild.position;
-                //grandChild.position = grandChild.GetComponent<IconProperties>().originalPos;
             }
             //set back rotation
             child.GetIcon().transform.rotation = Quaternion.identity;
@@ -132,8 +141,7 @@ public class ConeBurst : GeneralLayoutAlgorithm {
         }
         foreach (var op in observer.GetOperators())
         {
-            op.GetIcon().GetComponent<IconProperties>().repos = true;
-            op.GetIcon().GetComponent<IconProperties>().originalPos = op.GetIcon().GetComponent<IconProperties>().newPos;
+            op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
         }
 
         GetComponent<TwoDimensionalProjection>().SetPlane();

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class StudieScript : MonoBehaviour {
-    public bool start, layout, scan;
+    public bool start, layout, scan, log;
 
     //Config files for participants
     public TextAsset[] configFiles;
@@ -13,6 +13,9 @@ public class StudieScript : MonoBehaviour {
 
     //Participant ID
     public int ptID;
+    
+    //Trial number
+    public int trialNR;
 
     //Participant's config file
     private TextAsset configFile;
@@ -32,18 +35,6 @@ public class StudieScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        /*if(scan)
-        {
-            scan = false;
-            ScanGraph();
-            rowCounter++;
-        }
-        if(layout)
-        {
-            layout = false;
-            LayoutGraph();
-            scan = true;
-        }*/
         if (start)
         {
             start = false;
@@ -51,12 +42,22 @@ public class StudieScript : MonoBehaviour {
             {
                 LoadDataset(GenerateDataset());
             }
+            if (rowCounter > 3) return;
             row = lines[rowCounter].Split(',');
             algorithm = row[0];
             task = row[1];
             task = task.Replace("\r", "");
 
-            Invoke("LayoutGraph", 2);
+            Invoke("LayoutGraph", 1);
+            rowCounter++;
+            trialNR = rowCounter;
+
+            log = true;
+        }
+
+        if(log)
+        {
+
         }
 	}
 
@@ -83,7 +84,7 @@ public class StudieScript : MonoBehaviour {
                 break;
             }
         }
-        Invoke("ScanGraph", 5);
+        Invoke("ScanGraph", 1);
     }
 
     //Scan and compute viewpoints
