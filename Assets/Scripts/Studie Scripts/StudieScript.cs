@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class StudieScript : MonoBehaviour {
@@ -17,19 +18,26 @@ public class StudieScript : MonoBehaviour {
     //Trial number
     public int trialNR;
 
+    // Current algorithm and task
+    public string algorithm, task;
+
     //Participant's config file
     private TextAsset configFile;
 
+    //Main directory address for current participant
+    public string directory, studyTrialDirectory;
+
     //Row counter for config file
-    private int rowCounter = 0;
-    private string algorithm, task;
-    private string[] lines, row;
+    private int _rowCounter = 0, _studyCounter = 0;
+    private string _dataPath;
+    private string[] _lines, _row;
 
     private GeneralLayoutAlgorithm[] algorithms;
     // Use this for initialization
     void Start () {
         configFile = configFiles[ptID];
-        lines = configFile.text.Split('\n');
+        _lines = configFile.text.Split('\n');
+        _dataPath = Application.dataPath + "/Resources/LoggedData/";
         algorithms = controller.GetComponents<GeneralLayoutAlgorithm>();
     }
 	
@@ -38,33 +46,31 @@ public class StudieScript : MonoBehaviour {
         if (start)
         {
             start = false;
-            if (rowCounter == 0)
+            if (_rowCounter == 0)
             {
+                CreateParticipantDirectory();
                 LoadDataset(GenerateDataset());
             }
-            if (rowCounter > 3) return;
-            row = lines[rowCounter].Split(',');
-            algorithm = row[0];
-            task = row[1];
+            if (_rowCounter > 3) return;
+
+            CreateStudyTrialDirectory();
+            _row = _lines[_rowCounter].Split(',');
+            algorithm = _row[0];
+            task = _row[1];
             task = task.Replace("\r", "");
 
             Invoke("LayoutGraph", 1);
-            rowCounter++;
-            trialNR = rowCounter;
+            _rowCounter++;
+            trialNR = _rowCounter;
 
             log = true;
-        }
-
-        if(log)
-        {
-
         }
 	}
 
     //Random dataset generator
     string GenerateDataset()
     {
-        return GetComponent<GenerateRandomData>().GenerateData(ptID.ToString());
+        return GetComponent<GenerateRandomData>().GenerateData(directory,ptID.ToString());
     }
 
     //Dataset loader
@@ -91,5 +97,24 @@ public class StudieScript : MonoBehaviour {
     void ScanGraph()
     {
         controller.GetComponent<ViewPortOptimizer>().LocalScan();
+    }
+
+    //Each participant's directory
+    void CreateParticipantDirectory()
+    {
+        directory = Directory.CreateDirectory(_dataPath.ToString() + "Participant" + ptID.ToString()).FullName.ToString();
+    }
+
+    //Each trial's directory - in case of crash of the application, generate new directory
+    private void CreateStudyTrialDirectory()
+    {
+        studyTrialDirectory = directory + "\\Study" + _studyCounter.ToString();
+        //Directory for study trial (in case of crash of app, create new directory)
+        while (Directory.Exists(studyTrialDirectory))
+        {
+            _studyCounter++;
+            studyTrialDirectory = directory + "\\Study" + _studyCounter.ToString();
+        }
+        studyTrialDirectory = Directory.CreateDirectory(studyTrialDirectory).FullName;
     }
 }

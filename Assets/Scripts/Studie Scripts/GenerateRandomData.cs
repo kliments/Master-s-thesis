@@ -9,6 +9,7 @@ using UnityEngine;
 public class GenerateRandomData : MonoBehaviour {
     public int nodes, dataName;
     public bool generate;
+    public string directory;
     public List<string> list;
 
     private GameObject[] _prefabs;
@@ -38,8 +39,12 @@ public class GenerateRandomData : MonoBehaviour {
         }
 	}
 
-    public string GenerateData(string dataID)
+    public string GenerateData(string dir,string dataID)
     {
+        _randomName = "RandomData" + dataID.ToString() + ".xml";
+        //return data if already exists
+        if (File.Exists(dir.ToString() + "\\" + _randomName)) return dir.ToString() + "\\" + _randomName;
+
         list = new List<string>();
         _operatorsData = new List<OperatorData>();
         _container.operators = new List<OperatorData>();
@@ -136,9 +141,7 @@ public class GenerateRandomData : MonoBehaviour {
                 i += 2;
             }
         }
-        _randomName = "RandomData" + dataID.ToString() + ".xml";
-        var dir = Directory.CreateDirectory(_dataPath + "Participant" + dataID);
-        SaveLoadData.SaveRandomData(dir.FullName.ToString() + "\\" + _randomName, _container);
-        return (dir.FullName.ToString() + "\\" + _randomName);
+        SaveLoadData.SaveRandomData(dir.ToString() + "\\" + _randomName, _container);
+        return (dir.ToString() + "\\" + _randomName);
     }
 }

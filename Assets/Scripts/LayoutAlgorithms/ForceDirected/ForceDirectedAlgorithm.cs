@@ -210,6 +210,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
             //op.GetIcon().GetComponent<IconProperties>().newPos += op.GetIcon().GetComponent<IconProperties>().acceleration / 2;
             op.GetIcon().GetComponent<IconProperties>().previousPosition = op.GetIcon().GetComponent<IconProperties>().transform.position;
             op.GetIcon().GetComponent<IconProperties>().transform.position += op.GetIcon().GetComponent<IconProperties>().acceleration / 2;
+            op.GetIcon().GetComponent<IconProperties>().newPos = op.GetIcon().GetComponent<IconProperties>().transform.position;
             //op.GetIcon().GetComponent<IconProperties>().repos = true;
             op.GetIcon().GetComponent<IconProperties>().acceleration = Vector3.zero;
             op.GetIcon().GetComponent<IconProperties>().oldPos = op.GetIcon().transform.position;

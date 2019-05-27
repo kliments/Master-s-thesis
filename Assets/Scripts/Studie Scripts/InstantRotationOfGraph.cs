@@ -63,7 +63,8 @@ public class InstantRotationOfGraph : MonoBehaviour {
         }
     }
 
-    void SetBackToZero()
+    //Return position and rotation back to starting point
+    public void SetBackToZero()
     {
         graph.position = new Vector3(0, 2.5f, 0);
         graph.rotation = Quaternion.identity;

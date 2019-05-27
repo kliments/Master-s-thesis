@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CreatePreviewButtons : MonoBehaviour {
+public class PreviewButtonsController : MonoBehaviour {
     public Transform child;
     public Texture2D[] textures;
     public QualityMetricViewPort[] views;
     public int[] order;
+    public int trialNr;
 	// Use this for initialization
 	void Start () {
         textures = new Texture2D[3];
@@ -34,7 +35,6 @@ public class CreatePreviewButtons : MonoBehaviour {
             button.GetComponent<RawImage>().texture = textures[i];
             button.GetComponent<QualityMetricViewPort>().AssignValues(views[i]);
             button.GetComponent<ReadjustQualityMetrics>().delta = delta;
-            Debug.Log("pictures order " + i);
             i++;
         }
     }

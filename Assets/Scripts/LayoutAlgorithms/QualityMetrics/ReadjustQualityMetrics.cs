@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
     public List<GameObject> other;
@@ -14,11 +16,15 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
     private QualityMetricViewPort _qualityMetricsValues;
     private ViewPortOptimizer _viewport;
     private InstantRotationOfGraph _rotate;
-    private float edgeCrossingWeight, nodeOverlapWeight, edgeLenWeight, angResWeight, edgeCrossResWeight, min, max, sum, sumNoDelta, edgeCrossNoDelta, nodeOverlapNoDelta, edgeLenNoDelta, angResNoDelta, edgeCrossAngNoDelta;
+    private StudieScript _studyScript;
+    private PreviewButtonsController _buttonsController;
     private RaycastHit _hit;
     private Ray ray;
     private Camera mainCamera;
     private Vector3 smallSize, bigSize, vrSize, backPos, frontPos;
+    private string _dataPath, _studyStepDirectory, _file;
+    private float edgeCrossingWeight, nodeOverlapWeight, edgeLenWeight, angResWeight, edgeCrossResWeight, min, max, sum, sumNoDelta, edgeCrossNoDelta, nodeOverlapNoDelta, edgeLenNoDelta, angResNoDelta, edgeCrossAngNoDelta;
+    private int _studyCounter;
     // Use this for initialization
     void Start ()
     {
@@ -30,6 +36,9 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         }
         _viewport = (ViewPortOptimizer)FindObjectOfType(typeof(ViewPortOptimizer));
         _rotate = (InstantRotationOfGraph)FindObjectOfType(typeof(InstantRotationOfGraph));
+        _studyScript = (StudieScript)FindObjectOfType(typeof(StudieScript));
+        _buttonsController = (PreviewButtonsController)FindObjectOfType(typeof(PreviewButtonsController));
+
         other = new List<GameObject>();
         _qualityMetricsValues = GetComponent<QualityMetricViewPort>();
         foreach (Transform child in transform.parent)
@@ -44,6 +53,7 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         vrSize = new Vector3(0.64f, 0.64f, 0.64f);
         backPos = transform.localPosition;
         frontPos = backPos + new Vector3(0, 0, -50);
+        
     }
 	
 	// Update is called once per frame
@@ -197,7 +207,82 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
 
     public void menueChanged(GenericMenueComponent changedComponent)
     {
+        //Set rotation of graph back to 0
+        _rotate.SetBackToZero();
+
         ReadjustMetrics();
+        AddLogDataToFile();
+    }
+    //All The logging is done here!
+    void AddLogDataToFile()
+    {
+        //Study step directory - each step create new directory where logged data and screenshots are saved
+        _studyStepDirectory = _studyScript.studyTrialDirectory + "\\StudyStep" + _buttonsController.trialNr.ToString();
+        _studyStepDirectory = Directory.CreateDirectory(_studyStepDirectory).FullName;
+
+        //log data in file
+        _file = _studyStepDirectory + "\\StudyData" + _buttonsController.trialNr.ToString() + ".txt";
+        using (StreamWriter sw = File.CreateText(_file))
+        {
+            sw.WriteLine("Step number " + _buttonsController.trialNr.ToString());
+            sw.WriteLine("Current algorithm: " + _studyScript.algorithm);
+            sw.WriteLine("Current task: " + _studyScript.task);
+            sw.WriteLine("");
+            //For each option log its parameters
+            for (int i=0; i<transform.parent.childCount; i++)
+            {
+                //Chosen option
+                if(transform.parent.GetChild(i) == transform)
+                {
+                    sw.WriteLine("Chosen option");
+                    sw.WriteLine("");
+                    sw.WriteLine("Edge crossings current weight: " + _viewport.edge.qualityFactor.ToString());
+                    sw.WriteLine("Node overlapping current weight: " + _viewport.node.qualityFactor.ToString());
+                    sw.WriteLine("Edge crossings angle current weight: " + _viewport.edgeCrossRes.qualityFactor.ToString());
+                    sw.WriteLine("Angular resolution current weight: " + _viewport.angRes.qualityFactor.ToString());
+                    sw.WriteLine("Edge length current weight: " + _viewport.edgeLength.qualityFactor.ToString());
+                    sw.WriteLine("");
+                    sw.WriteLine("Overall grade: " + _qualityMetricsValues.overallGrade.ToString());
+                    sw.WriteLine("Edge crossings grade: " + _qualityMetricsValues.normalizedEdgeCrossings);
+                    sw.WriteLine("Node overlapping grade: " + _qualityMetricsValues.normalizedNodeOverlaps);
+                    sw.WriteLine("Edge crossing angle grade: " + _qualityMetricsValues.edgeCrossAngle);
+                    sw.WriteLine("Angular resolution grade: " + _qualityMetricsValues.angResRM);
+                    sw.WriteLine("Edge length grade: " + _qualityMetricsValues.normalizedEdgeLength);
+                    sw.WriteLine("");
+                }
+                //Other alternatives
+                else
+                {
+                    sw.WriteLine("Other alternative");
+                    sw.WriteLine("");
+                    sw.WriteLine("Overall grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().overallGrade.ToString());
+                    sw.WriteLine("Edge crossings grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedEdgeCrossings);
+                    sw.WriteLine("Node overlapping grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedNodeOverlaps);
+                    sw.WriteLine("Edge crossing angle grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().edgeCrossAngle);
+                    sw.WriteLine("Angular resolution grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().angResRM);
+                    sw.WriteLine("Edge length grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedEdgeLength);
+                }
+                sw.WriteLine("");
+                sw.WriteLine("");
+                sw.WriteLine("");
+            }
+            sw.WriteLine("Camera offset " + _viewport.offset.ToString());
+        }
+        // Save screenshots
+        for(int i=0; i<transform.parent.childCount; i++)
+        {
+            //Chosen option
+            if(transform.parent.GetChild(i) == transform)
+            {
+                SaveTextureToFile((Texture2D)GetComponent<RawImage>().texture, _studyStepDirectory + "\\ChosenOption.png");
+            }
+            //Alternative option
+            else
+            {
+                SaveTextureToFile((Texture2D)transform.parent.GetChild(i).gameObject.GetComponent<RawImage>().texture, _studyStepDirectory + "\\Alternative" + i.ToString() + ".png");
+            }
+        }
+        _buttonsController.trialNr++;
     }
 
     public void CloseAllMenus()
@@ -207,5 +292,11 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
     void OnEnable()
     {
         if(!listener.getListeners().Contains(this)) listener.addListener(this);
+    }
+
+    void SaveTextureToFile(Texture2D texture, string path)
+    {
+        byte[] bytes = texture.EncodeToPNG();
+        File.WriteAllBytes(path, bytes);
     }
 }

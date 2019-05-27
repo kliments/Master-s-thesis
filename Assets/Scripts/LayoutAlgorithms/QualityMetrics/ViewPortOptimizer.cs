@@ -24,7 +24,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     public List<QualityMetricViewPort> observationList, combinedObservationList, chosenViewpoints;
     //public QualityMetricViewPort temp;
     public QualityMetricSlider edge, node, edgeCrossRes, angRes, edgeLength;
-    public CreatePreviewButtons previewButtons;
+    public PreviewButtonsController previewButtons;
 
     private MultiDimensionalKMeansClustering multiDimKMeans;
     private Transform[] opIcons;
@@ -55,6 +55,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         guidanceMarkers = new List<GameObject>();
         imagesPaths = new List<string>();
         multiDimKMeans = GetComponent<MultiDimensionalKMeansClustering>();
+        delta = 1;
     }
 	
 	// Update is called once per frame
@@ -80,9 +81,9 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     previewButtons.views[screenshotCounter] = chosenViewpoints[screenshotCounter];
                     imagesPaths.Add("Screenshots/viewNr" + chosenViewpoints[screenshotCounter].index.ToString());
 
-                    Debug.Log("viewNr " + chosenViewpoints[screenshotCounter].index + " overallGrade " + chosenViewpoints[screenshotCounter].overallGrade + " EdgeCrossAngle: " + chosenViewpoints[screenshotCounter].edgeCrossAngle + " AngResRM: " + chosenViewpoints[screenshotCounter].angResRM
+                    /*Debug.Log("viewNr " + chosenViewpoints[screenshotCounter].index + " overallGrade " + chosenViewpoints[screenshotCounter].overallGrade + " EdgeCrossAngle: " + chosenViewpoints[screenshotCounter].edgeCrossAngle + " AngResRM: " + chosenViewpoints[screenshotCounter].angResRM
                         + " normalizedEdgeLength: " + chosenViewpoints[screenshotCounter].normalizedEdgeLength + " normalizedNodeOverlaps: " + chosenViewpoints[screenshotCounter].normalizedNodeOverlaps
-                        + " normalizedEdgeCrossings: " + chosenViewpoints[screenshotCounter].normalizedEdgeCrossings);
+                        + " normalizedEdgeCrossings: " + chosenViewpoints[screenshotCounter].normalizedEdgeCrossings);*/
                     Camera.main.transform.eulerAngles = rotation;
                     screenshotCounter++;
                     break;
@@ -102,9 +103,9 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     previewButtons.views[screenshotCounter] = chosenViewpoints[screenshotCounter];
                     imagesPaths.Add("Screenshots/viewNr" + chosenViewpoints[screenshotCounter].index.ToString());
 
-                    Debug.Log("viewNr " + chosenViewpoints[screenshotCounter].index + " overallGrade " + chosenViewpoints[screenshotCounter].overallGrade + " EdgeCrossAngle: " + chosenViewpoints[screenshotCounter].edgeCrossAngle + " AngResRM: " + chosenViewpoints[screenshotCounter].angResRM
+                    /*Debug.Log("viewNr " + chosenViewpoints[screenshotCounter].index + " overallGrade " + chosenViewpoints[screenshotCounter].overallGrade + " EdgeCrossAngle: " + chosenViewpoints[screenshotCounter].edgeCrossAngle + " AngResRM: " + chosenViewpoints[screenshotCounter].angResRM
                         + " normalizedEdgeLength: " + chosenViewpoints[screenshotCounter].normalizedEdgeLength + " normalizedNodeOverlaps: " + chosenViewpoints[screenshotCounter].normalizedNodeOverlaps
-                        + " normalizedEdgeCrossings: " + chosenViewpoints[screenshotCounter].normalizedEdgeCrossings);
+                        + " normalizedEdgeCrossings: " + chosenViewpoints[screenshotCounter].normalizedEdgeCrossings);*/
                     Camera.main.transform.eulerAngles = rotation;
                     screenshotCounter++;
                     break;
@@ -129,16 +130,25 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     //reduce delta factor
                     delta = (delta * 9) / 10;
 
-                    Debug.Log("viewNr " + chosenViewpoints[screenshotCounter].index + " overallGrade " + chosenViewpoints[screenshotCounter].overallGrade + " EdgeCrossAngle: " + chosenViewpoints[screenshotCounter].edgeCrossAngle + " AngResRM: " + chosenViewpoints[screenshotCounter].angResRM
+                    /*Debug.Log("viewNr " + chosenViewpoints[screenshotCounter].index + " overallGrade " + chosenViewpoints[screenshotCounter].overallGrade + " EdgeCrossAngle: " + chosenViewpoints[screenshotCounter].edgeCrossAngle + " AngResRM: " + chosenViewpoints[screenshotCounter].angResRM
                         + " normalizedEdgeLength: " + chosenViewpoints[screenshotCounter].normalizedEdgeLength + " normalizedNodeOverlaps: " + chosenViewpoints[screenshotCounter].normalizedNodeOverlaps
                         + " normalizedEdgeCrossings: " + chosenViewpoints[screenshotCounter].normalizedEdgeCrossings);
 
                     Debug.Log("MinEdgeCross: " + minEdgeCross + " minNodeOverlap: " + minNodeOverlap + " minEdgeLength: " + minEdgeLength);
-                    Debug.Log("MaxEdgeCross: " + maxEdgeCross + " MaxNodeOverlap: " + maxNodeOverlap + " maxEdgeLength: " + maxEdgeLength);
-                    Camera.main.transform.eulerAngles = rotation;
+                    Debug.Log("MaxEdgeCross: " + maxEdgeCross + " MaxNodeOverlap: " + maxNodeOverlap + " maxEdgeLength: " + maxEdgeLength);*/
                     
                     screenshotCounter++;
                     takeScreenshots = false;
+
+                    if (Camera.main.name == "Camera")
+                    {
+                        Camera.main.transform.LookAt(transform);
+                    }
+                    else
+                    {
+                        cameraRig.transform.position = combinedObservationList[0].cameraPosition;
+                        cameraRig.transform.LookAt(transform);
+                    }
                     break;
             }
         }
@@ -519,12 +529,6 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         chosenViewpoints = multiDimKMeans.Clusters(combinedObservationList);
         StartCoroutine(Screenshot());
         projectionPlane.gameObject.SetActive(false);
-        if (Camera.main.name == "Camera") Camera.main.transform.LookAt(transform);
-        else
-        {
-            cameraRig.transform.position = combinedObservationList[0].cameraPosition;
-            cameraRig.transform.LookAt(transform);
-        }
     }
 
     private void GlobalScan()
