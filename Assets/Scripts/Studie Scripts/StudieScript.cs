@@ -50,7 +50,7 @@ public class StudieScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (start)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             if(ptID > 7)
             {
@@ -77,11 +77,6 @@ public class StudieScript : MonoBehaviour {
             trialNR = _rowCounter;
 
             log = true;
-        }
-        if(scan)
-        {
-            scan = false;
-            ScanGraph();
         }
 	}
 

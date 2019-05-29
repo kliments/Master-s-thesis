@@ -17,13 +17,13 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     public int nrOfViews, screenshotCounter, offset;
     public List<GeneralLayoutAlgorithm> algorithmsList;
     public GenericMenueComponent localScanListener, globalScanListener;
-    public GameObject guidanceMarker;
+    public GameObject guidanceMarker, inputFieldWrapper, screenshotsContainer;
     public GameObject cameraRig;
 
     public List<List<QualityMetricViewPort>> globalObservationList;
     public List<QualityMetricViewPort> observationList, combinedObservationList, chosenViewpoints;
     //public QualityMetricViewPort temp;
-    public QualityMetricSlider edge, node, edgeCrossRes, angRes, edgeLength;
+    public QualityMetricSlider edgeCrossSlider, nodeOverlapSlider, edgeCrossAngSlider, angResSlider, edgeLengthSlider;
     public PreviewButtonsController previewButtons;
 
     private MultiDimensionalKMeansClustering multiDimKMeans;
@@ -137,7 +137,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     Debug.Log("MinEdgeCross: " + minEdgeCross + " minNodeOverlap: " + minNodeOverlap + " minEdgeLength: " + minEdgeLength);
                     Debug.Log("MaxEdgeCross: " + maxEdgeCross + " MaxNodeOverlap: " + maxNodeOverlap + " maxEdgeLength: " + maxEdgeLength);*/
                     
-                    screenshotCounter++;
+                    screenshotCounter=0;
                     takeScreenshots = false;
 
                     if (Camera.main.name == "Camera")
@@ -278,11 +278,19 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                 GetComponent<TwoDimensionalProjection>().ProjectTree();
                 temp.nrEdgeCrossings = GetComponent<EdgeCrossingCounter>().CountEdgeCrossings();
                 temp.edgeCrossAngle = GetComponent<EdgeCrossingCounter>().edgeCrossRM;
-                temp.angResRM = GetComponent<NodeAngularResolution>().CalculateAngularResolution();
+                temp.angRes = GetComponent<NodeAngularResolution>().CalculateAngularResolution();
                 temp.edgeLength = GetComponent<EdgeLength>().CalculateEdgeLength();
                 temp.cameraPosition = Camera.main.transform.position;
                 temp.algorithm = current.currentLayout;
                 temp.index = index;
+
+                //set initial values
+                temp.initialNodeOverlaps = temp.nrNodeOverlaps;
+                temp.initialEdgeCrossings = temp.nrEdgeCrossings;
+                temp.initialEdgeCrossAngle = temp.edgeCrossAngle;
+                temp.initialAngRes = temp.angRes;
+                temp.initialEdgeLength = temp.edgeLength;
+
                 GetComponent<TwoDimensionalProjection>().RestorePositions();
                 observationList.Add(temp);
                 combinedObservationList.Add(temp);
@@ -327,7 +335,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     {
         List<QualityMetricViewPort> returnList = new List<QualityMetricViewPort>();
         foreach (var obj in list) returnList.Add(obj);
-        returnList.Sort((b, a) => a.angResRM.CompareTo(b.angResRM));
+        returnList.Sort((b, a) => a.angRes.CompareTo(b.angRes));
         return returnList;
     }
 
@@ -513,22 +521,45 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         minNodeOverlap = MinimumNodeOverlap(observationList);
         minEdgeLength = MinimumEdgeLength(observationList);
 
+        ReadjustQualityMetricValues();
+
+        GenerateClustersAndCreateScreenshots();
+
+        projectionPlane.gameObject.SetActive(false);
+    }
+
+    //Readjust quality metric values with updated weights
+    public void ReadjustQualityMetricValues()
+    {
         foreach (var view in observationList)
         {
-            view.normalizedEdgeCrossings = NormalizedEdgeCrossings(view.nrEdgeCrossings);
-            view.normalizedNodeOverlaps = NormalizedNodeOverlaps(view.nrNodeOverlaps);
-            view.normalizedEdgeLength = NormalizedEdgeLengths(view.edgeLength);
-            view.overallGrade = ((edgeCrossRes.qualityFactor * view.edgeCrossAngle) + (angRes.qualityFactor * view.angResRM) + (edgeLength.qualityFactor * view.normalizedEdgeLength)
-                + (node.qualityFactor * view.normalizedNodeOverlaps) + (edge.qualityFactor * view.normalizedEdgeCrossings))
-                / (edgeCrossRes.qualityFactor + edge.qualityFactor + node.qualityFactor + angRes.qualityFactor + edgeLength.qualityFactor);
+            view.normalizedEdgeCrossings = NormalizedEdgeCrossings(view.initialEdgeCrossings);
+            view.normalizedNodeOverlaps = NormalizedNodeOverlaps(view.initialNodeOverlaps);
+            view.edgeCrossAngle = view.initialEdgeCrossAngle;
+            view.angRes = view.initialAngRes;
+            view.normalizedEdgeLength = NormalizedEdgeLengths(view.initialEdgeLength);
+            //multiply values by their weights
+            view.normalizedNodeOverlaps *= nodeOverlapSlider.qualityFactor;
+            view.normalizedEdgeCrossings *= edgeCrossSlider.qualityFactor;
+            view.edgeCrossAngle *= edgeCrossAngSlider.qualityFactor;
+            view.angRes *= angResSlider.qualityFactor;
+            view.normalizedEdgeLength *= edgeLengthSlider.qualityFactor;
+            /*view.overallGrade = ((edgeCrossAngSlider.qualityFactor * view.edgeCrossAngle) + (angResSlider.qualityFactor * view.angRes) + (edgeLengthSlider.qualityFactor * view.normalizedEdgeLength)
+                + (nodeOverlapSlider.qualityFactor * view.normalizedNodeOverlaps) + (edgeCrossSlider.qualityFactor * view.normalizedEdgeCrossings))
+                / (edgeCrossAngSlider.qualityFactor + edgeCrossSlider.qualityFactor + nodeOverlapSlider.qualityFactor + angResSlider.qualityFactor + edgeLengthSlider.qualityFactor);*/
+            view.overallGrade = (view.normalizedEdgeCrossings + view.normalizedEdgeLength + view.normalizedNodeOverlaps + view.edgeCrossAngle + view.angRes)
+                / (edgeCrossAngSlider.qualityFactor + edgeCrossSlider.qualityFactor + nodeOverlapSlider.qualityFactor + angResSlider.qualityFactor + edgeLengthSlider.qualityFactor);
         }
+    }
 
-        //SortList(combinedObservationList);
-
+    public void GenerateClustersAndCreateScreenshots()
+    {
         //Cluster views using KMeans algorithm dependent on quality metrics
-        chosenViewpoints = multiDimKMeans.Clusters(combinedObservationList);
+        chosenViewpoints = multiDimKMeans.Clusters(observationList);
         StartCoroutine(Screenshot());
-        projectionPlane.gameObject.SetActive(false);
+        //input field wrapper set false, screenshots set true
+        inputFieldWrapper.SetActive(false);
+        screenshotsContainer.SetActive(true);
     }
 
     private void GlobalScan()
@@ -588,7 +619,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                 view.normalizedEdgeCrossings = NormalizedEdgeCrossings(view.nrEdgeCrossings);
                 view.normalizedNodeOverlaps = NormalizedNodeOverlaps(view.nrNodeOverlaps);
                 view.normalizedEdgeLength = NormalizedEdgeLengths(view.edgeLength);
-                view.overallGrade = ((edgeCrossRes.qualityFactor * view.edgeCrossAngle) + (angRes.qualityFactor * view.angResRM) + (edgeLength.qualityFactor * view.normalizedEdgeLength) + (node.qualityFactor * view.normalizedNodeOverlaps) + (edge.qualityFactor * view.normalizedEdgeCrossings)) / (edgeCrossRes.qualityFactor + edge.qualityFactor + node.qualityFactor + angRes.qualityFactor + edgeLength.qualityFactor);
+                view.overallGrade = ((edgeCrossAngSlider.qualityFactor * view.edgeCrossAngle) + (angResSlider.qualityFactor * view.angRes) + (edgeLengthSlider.qualityFactor * view.normalizedEdgeLength) + (nodeOverlapSlider.qualityFactor * view.normalizedNodeOverlaps) + (edgeCrossSlider.qualityFactor * view.normalizedEdgeCrossings)) / (edgeCrossAngSlider.qualityFactor + edgeCrossSlider.qualityFactor + nodeOverlapSlider.qualityFactor + angResSlider.qualityFactor + edgeLengthSlider.qualityFactor);
             }
         }
         SortList(combinedObservationList);
@@ -647,9 +678,11 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     IEnumerator Screenshot()
     {
         yield return 0;
-        takeScreenshots = true;
+        screenshotCounter = 0;
+        imagesPaths = new List<string>();
         previewButtons.textures = new Texture2D[3];
         previewButtons.views = new QualityMetricViewPort[3];
+        takeScreenshots = true;
     }
 
     Byte[] TakeScreenshot()
@@ -757,13 +790,13 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     QualityMetricViewPort SortDisparityByAngularResolution(List<Vector2> disparityList)
     {
         QualityMetricViewPort angResMaxDisparity = combinedObservationList[0];
-        float angRes = combinedObservationList[(int)disparityList[0].y].angResRM;
+        float angRes = combinedObservationList[(int)disparityList[0].y].angRes;
         int index = 0;
         for (int i = 0; i < disparityList.Count / 2; i++)
         {
-            if (angRes < combinedObservationList[(int)disparityList[i].y].angResRM)
+            if (angRes < combinedObservationList[(int)disparityList[i].y].angRes)
             {
-                angRes = combinedObservationList[(int)disparityList[i].y].angResRM;
+                angRes = combinedObservationList[(int)disparityList[i].y].angRes;
                 index = (int)disparityList[i].y;
                 angResMaxDisparity = combinedObservationList[(int)disparityList[i].y];
             }
@@ -792,14 +825,14 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         float disparity = 0;
         disparity += Mathf.Abs(view.normalizedEdgeCrossings - view.normalizedNodeOverlaps);
         disparity += Mathf.Abs(view.normalizedEdgeCrossings - view.normalizedEdgeLength);
-        disparity += Mathf.Abs(view.normalizedEdgeCrossings - view.angResRM);
+        disparity += Mathf.Abs(view.normalizedEdgeCrossings - view.angRes);
         disparity += Mathf.Abs(view.normalizedEdgeCrossings - view.edgeCrossAngle);
         disparity += Mathf.Abs(view.normalizedNodeOverlaps - view.normalizedEdgeLength);
-        disparity += Mathf.Abs(view.normalizedNodeOverlaps - view.angResRM);
+        disparity += Mathf.Abs(view.normalizedNodeOverlaps - view.angRes);
         disparity += Mathf.Abs(view.normalizedNodeOverlaps - view.edgeCrossAngle);
-        disparity += Mathf.Abs(view.normalizedEdgeLength - view.angResRM);
+        disparity += Mathf.Abs(view.normalizedEdgeLength - view.angRes);
         disparity += Mathf.Abs(view.normalizedEdgeLength - view.edgeCrossAngle);
-        disparity += Mathf.Abs(view.angResRM - view.edgeCrossAngle);
+        disparity += Mathf.Abs(view.angRes - view.edgeCrossAngle);
         return disparity;
     }
 }

@@ -23,7 +23,7 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
     private Camera mainCamera;
     private Vector3 smallSize, bigSize, vrSize, backPos, frontPos;
     private string _dataPath, _studyStepDirectory, _file;
-    private float edgeCrossingWeight, nodeOverlapWeight, edgeLenWeight, angResWeight, edgeCrossResWeight, min, max, sum, sumNoDelta, edgeCrossNoDelta, nodeOverlapNoDelta, edgeLenNoDelta, angResNoDelta, edgeCrossAngNoDelta;
+    private float edgeCrossingWeight, nodeOverlapWeight, edgeLenWeight, angResWeight, edgeCrossResWeight, min, max, sum;
     private int _studyCounter;
     // Use this for initialization
     void Start ()
@@ -114,90 +114,70 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         {
             temp = obj.GetComponent<QualityMetricViewPort>();
             edgeCrossingWeight += (_qualityMetricsValues.normalizedEdgeCrossings - temp.normalizedEdgeCrossings) * delta;
-            edgeCrossNoDelta += (_qualityMetricsValues.normalizedEdgeCrossings - temp.normalizedEdgeCrossings);
 
             nodeOverlapWeight += (_qualityMetricsValues.normalizedNodeOverlaps - temp.normalizedNodeOverlaps) * delta;
-            nodeOverlapNoDelta += (_qualityMetricsValues.normalizedNodeOverlaps - temp.normalizedNodeOverlaps);
 
             edgeLenWeight += (_qualityMetricsValues.normalizedEdgeLength - temp.normalizedEdgeLength) * delta;
-            edgeLenNoDelta += (_qualityMetricsValues.normalizedEdgeLength - temp.normalizedEdgeLength);
 
-            angResWeight += (_qualityMetricsValues.angResRM - temp.angResRM) * delta;
-            angResNoDelta += (_qualityMetricsValues.angResRM - temp.angResRM);
+            angResWeight += (_qualityMetricsValues.angRes - temp.angRes) * delta;
 
             edgeCrossResWeight += (_qualityMetricsValues.edgeCrossAngle - temp.edgeCrossAngle) * delta;
-            edgeCrossAngNoDelta += (_qualityMetricsValues.edgeCrossAngle - temp.edgeCrossAngle);
         }
 
         //normalize on scale between 0-2
         edgeCrossingWeight = Normalize(edgeCrossingWeight);
-        edgeCrossNoDelta = Normalize(edgeCrossNoDelta);
 
         nodeOverlapWeight = Normalize(nodeOverlapWeight);
-        nodeOverlapNoDelta = Normalize(nodeOverlapNoDelta);
 
         edgeLenWeight = Normalize(edgeLenWeight);
-        edgeLenNoDelta = Normalize(edgeLenNoDelta);
 
         angResWeight = Normalize(angResWeight);
-        angResNoDelta = Normalize(angResNoDelta);
 
         edgeCrossResWeight = Normalize(edgeCrossResWeight);
-        edgeCrossAngNoDelta = Normalize(edgeCrossAngNoDelta);
 
         //multiply to current values of quality metric weights
-        edgeCrossingWeight = edgeCrossingWeight * _viewport.edge.qualityFactor;
-        edgeCrossNoDelta = edgeCrossNoDelta * _viewport.edge.qualityFactor;
+        edgeCrossingWeight = edgeCrossingWeight * _viewport.edgeCrossSlider.qualityFactor;
 
-        nodeOverlapWeight = nodeOverlapWeight * _viewport.node.qualityFactor;
-        nodeOverlapNoDelta = nodeOverlapNoDelta * _viewport.node.qualityFactor;
+        nodeOverlapWeight = nodeOverlapWeight * _viewport.nodeOverlapSlider.qualityFactor;
 
-        edgeLenWeight = edgeLenWeight * _viewport.edgeLength.qualityFactor;
-        edgeLenNoDelta = edgeLenNoDelta * _viewport.edgeLength.qualityFactor;
+        edgeLenWeight = edgeLenWeight * _viewport.edgeLengthSlider.qualityFactor;
 
-        angResWeight = angResWeight * _viewport.angRes.qualityFactor;
-        angResNoDelta = angResNoDelta * _viewport.angRes.qualityFactor;
+        angResWeight = angResWeight * _viewport.angResSlider.qualityFactor;
 
-        edgeCrossResWeight = edgeCrossResWeight * _viewport.edgeCrossRes.qualityFactor;
-        edgeCrossAngNoDelta = edgeCrossAngNoDelta * _viewport.edgeCrossRes.qualityFactor;
+        edgeCrossResWeight = edgeCrossResWeight * _viewport.edgeCrossAngSlider.qualityFactor;
 
         //normalize new values so their sum is 5
         sum = edgeCrossingWeight + nodeOverlapWeight + edgeLenWeight + angResWeight + edgeCrossResWeight;
-        sumNoDelta = edgeCrossNoDelta + nodeOverlapNoDelta + edgeLenNoDelta + angResNoDelta + edgeCrossAngNoDelta;
 
         sum = 5 / sum;
-        sumNoDelta = 5 / sumNoDelta;
 
         edgeCrossingWeight *= sum;
-        edgeCrossNoDelta *= sum;
 
         nodeOverlapWeight *= sum;
-        nodeOverlapNoDelta *= sum;
 
         edgeLenWeight *= sum;
-        edgeLenNoDelta *= sum;
 
         angResWeight *= sum;
-        angResNoDelta *= sum;
 
         edgeCrossResWeight *= sum;
-        edgeCrossAngNoDelta *= sum;
         //update current values
-        _viewport.edge.qualityFactor = edgeCrossingWeight;
-        _viewport.node.qualityFactor = nodeOverlapWeight;
-        _viewport.edgeLength.qualityFactor = edgeLenWeight;
-        _viewport.angRes.qualityFactor = angResWeight;
-        _viewport.edgeCrossRes.qualityFactor = edgeCrossResWeight;
+        _viewport.edgeCrossSlider.qualityFactor = edgeCrossingWeight;
+        _viewport.nodeOverlapSlider.qualityFactor = nodeOverlapWeight;
+        _viewport.edgeLengthSlider.qualityFactor = edgeLenWeight;
+        _viewport.angResSlider.qualityFactor = angResWeight;
+        _viewport.edgeCrossAngSlider.qualityFactor = edgeCrossResWeight;
 
         //update sliders
-        _viewport.edge.MoveSlideFromValue(edgeCrossingWeight);
-        _viewport.node.MoveSlideFromValue(nodeOverlapWeight);
-        _viewport.edgeLength.MoveSlideFromValue(edgeLenWeight);
-        _viewport.angRes.MoveSlideFromValue(angResWeight);
-        _viewport.edgeCrossRes.MoveSlideFromValue(edgeCrossResWeight);
+        _viewport.edgeCrossSlider.MoveSlideFromValue(edgeCrossingWeight);
+        _viewport.nodeOverlapSlider.MoveSlideFromValue(nodeOverlapWeight);
+        _viewport.edgeLengthSlider.MoveSlideFromValue(edgeLenWeight);
+        _viewport.angResSlider.MoveSlideFromValue(angResWeight);
+        _viewport.edgeCrossAngSlider.MoveSlideFromValue(edgeCrossResWeight);
 
-        //Rescan tree again
-        _viewport.LocalScan();
+        //Update values of quality metrics from their weights in each view
+        _viewport.ReadjustQualityMetricValues();
+        //Create new screenshots from new clusters
+        _viewport.GenerateClustersAndCreateScreenshots();
     }
 
     float Normalize(float value)
@@ -228,11 +208,11 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
             sw.WriteLine("Current algorithm: " + _studyScript.algorithm);
             sw.WriteLine("Current task: " + _studyScript.task);
             sw.WriteLine("");
-            sw.WriteLine("Edge crossings current weight: " + _viewport.edge.qualityFactor.ToString());
-            sw.WriteLine("Node overlapping current weight: " + _viewport.node.qualityFactor.ToString());
-            sw.WriteLine("Edge crossings angle current weight: " + _viewport.edgeCrossRes.qualityFactor.ToString());
-            sw.WriteLine("Angular resolution current weight: " + _viewport.angRes.qualityFactor.ToString());
-            sw.WriteLine("Edge length current weight: " + _viewport.edgeLength.qualityFactor.ToString());
+            sw.WriteLine("Edge crossings current weight: " + _viewport.edgeCrossSlider.qualityFactor.ToString());
+            sw.WriteLine("Node overlapping current weight: " + _viewport.nodeOverlapSlider.qualityFactor.ToString());
+            sw.WriteLine("Edge crossings angle current weight: " + _viewport.edgeCrossAngSlider.qualityFactor.ToString());
+            sw.WriteLine("Angular resolution current weight: " + _viewport.angResSlider.qualityFactor.ToString());
+            sw.WriteLine("Edge length current weight: " + _viewport.edgeLengthSlider.qualityFactor.ToString());
             sw.WriteLine("");
             sw.WriteLine("Camera offset " + _viewport.offset.ToString());
 
@@ -247,7 +227,7 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
             sw.WriteLine("Edge crossings grade: " + _qualityMetricsValues.normalizedEdgeCrossings);
             sw.WriteLine("Node overlapping grade: " + _qualityMetricsValues.normalizedNodeOverlaps);
             sw.WriteLine("Edge crossing angle grade: " + _qualityMetricsValues.edgeCrossAngle);
-            sw.WriteLine("Angular resolution grade: " + _qualityMetricsValues.angResRM);
+            sw.WriteLine("Angular resolution grade: " + _qualityMetricsValues.angRes);
             sw.WriteLine("Edge length grade: " + _qualityMetricsValues.normalizedEdgeLength);
             
             for(int i=0; i<transform.parent.childCount; i++)
@@ -264,7 +244,7 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
                     sw.WriteLine("Edge crossings grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedEdgeCrossings);
                     sw.WriteLine("Node overlapping grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedNodeOverlaps);
                     sw.WriteLine("Edge crossing angle grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().edgeCrossAngle);
-                    sw.WriteLine("Angular resolution grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().angResRM);
+                    sw.WriteLine("Angular resolution grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().angRes);
                     sw.WriteLine("Edge length grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedEdgeLength);
                 }
             }

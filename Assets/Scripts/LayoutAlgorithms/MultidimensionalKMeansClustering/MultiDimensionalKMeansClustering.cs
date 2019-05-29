@@ -96,7 +96,7 @@ public class MultiDimensionalKMeansClustering : MonoBehaviour {
             //if old position is different than new position of centroid, re-run algorithm
             for(int i=0; i<3; i++)
             {
-                if((oldCentroidValues[i].angResRM != centroids[i].angResRM || oldCentroidValues[i].edgeCrossAngle != centroids[i].edgeCrossAngle ||
+                if((oldCentroidValues[i].angRes != centroids[i].angRes || oldCentroidValues[i].edgeCrossAngle != centroids[i].edgeCrossAngle ||
                    oldCentroidValues[i].normalizedEdgeCrossings != centroids[i].normalizedEdgeCrossings || oldCentroidValues[i].normalizedNodeOverlaps != centroids[i].normalizedNodeOverlaps
                    || oldCentroidValues[i].normalizedEdgeLength != centroids[i].normalizedEdgeLength) || counter == 0)
                 {
@@ -116,14 +116,14 @@ public class MultiDimensionalKMeansClustering : MonoBehaviour {
                 QualityMetricViewPort temp = new QualityMetricViewPort();
                 foreach(var indexView in clusterCounters[i])
                 {
-                    temp.angResRM += viewpointList[indexView].angResRM;
+                    temp.angRes += viewpointList[indexView].angRes;
                     temp.edgeCrossAngle += viewpointList[indexView].edgeCrossAngle;
                     temp.normalizedEdgeCrossings += viewpointList[indexView].normalizedEdgeCrossings;
                     temp.normalizedEdgeLength += viewpointList[indexView].normalizedEdgeLength;
                     temp.normalizedNodeOverlaps += viewpointList[indexView].normalizedNodeOverlaps;
                 }
                 
-                temp.angResRM /= clusterCounters[i].Count;
+                temp.angRes /= clusterCounters[i].Count;
                 temp.edgeCrossAngle /= clusterCounters[i].Count;
                 temp.normalizedEdgeCrossings /= clusterCounters[i].Count;
                 temp.normalizedEdgeLength /= clusterCounters[i].Count;
@@ -168,13 +168,13 @@ public class MultiDimensionalKMeansClustering : MonoBehaviour {
     float Distance5D(QualityMetricViewPort centroid, QualityMetricViewPort point)
     {
         return Mathf.Sqrt(Mathf.Pow(centroid.normalizedEdgeCrossings - point.normalizedEdgeCrossings, 2) + Mathf.Pow(centroid.normalizedNodeOverlaps - point.normalizedNodeOverlaps, 2) +
-            Mathf.Pow(centroid.normalizedEdgeLength - point.normalizedEdgeLength, 2) + Mathf.Pow(centroid.angResRM - point.angResRM, 2) + Mathf.Pow(centroid.edgeCrossAngle - point.edgeCrossAngle, 2));
+            Mathf.Pow(centroid.normalizedEdgeLength - point.normalizedEdgeLength, 2) + Mathf.Pow(centroid.angRes - point.angRes, 2) + Mathf.Pow(centroid.edgeCrossAngle - point.edgeCrossAngle, 2));
     }
 
     QualityMetricViewPort CopyOf(QualityMetricViewPort point)
     {
         QualityMetricViewPort temp = new QualityMetricViewPort();
-        temp.angResRM = point.angResRM;
+        temp.angRes = point.angRes;
         temp.edgeCrossAngle = point.edgeCrossAngle;
         temp.normalizedEdgeCrossings = point.normalizedEdgeCrossings;
         temp.normalizedEdgeLength = point.normalizedEdgeLength;

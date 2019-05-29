@@ -358,6 +358,10 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1297530071723350, guid: fe6c4ce458632da41a0b4b85ca273d3d, type: 2}
+      propertyPath: m_Name
+      value: EdgeCross
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe6c4ce458632da41a0b4b85ca273d3d, type: 2}
   m_IsPrefabAsset: 0
@@ -2604,15 +2608,17 @@ MonoBehaviour:
   globalScanListener: {fileID: 1670312158}
   guidanceMarker: {fileID: 1372129072949666, guid: 0320830bab079de45a11a277b3aa4ef7,
     type: 2}
+  inputFieldWrapper: {fileID: 248758179}
+  screenshotsContainer: {fileID: 754394267}
   cameraRig: {fileID: 556153576}
   observationList: []
   combinedObservationList: []
   chosenViewpoints: []
-  edge: {fileID: 425428961}
-  node: {fileID: 481080621}
-  edgeCrossRes: {fileID: 1150214622}
-  angRes: {fileID: 440643451}
-  edgeLength: {fileID: 1310883645}
+  edgeCrossSlider: {fileID: 425428961}
+  nodeOverlapSlider: {fileID: 481080621}
+  edgeCrossAngSlider: {fileID: 1150214622}
+  angResSlider: {fileID: 440643451}
+  edgeLengthSlider: {fileID: 1310883645}
   previewButtons: {fileID: 1907867969}
 --- !u!114 &360191229
 MonoBehaviour:
@@ -3202,6 +3208,10 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1297530071723350, guid: fe6c4ce458632da41a0b4b85ca273d3d, type: 2}
+      propertyPath: m_Name
+      value: AngRes
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe6c4ce458632da41a0b4b85ca273d3d, type: 2}
   m_IsPrefabAsset: 0
@@ -3365,6 +3375,10 @@ Prefab:
     - target: {fileID: 1153087646176460, guid: fe6c4ce458632da41a0b4b85ca273d3d, type: 2}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1297530071723350, guid: fe6c4ce458632da41a0b4b85ca273d3d, type: 2}
+      propertyPath: m_Name
+      value: NodeOverlap
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe6c4ce458632da41a0b4b85ca273d3d, type: 2}
@@ -3587,12 +3601,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nrNodeOverlaps: 0
   nrEdgeCrossings: 0
+  initialNodeOverlaps: 0
+  initialEdgeCrossings: 0
+  initialEdgeLength: 0
+  initialEdgeCrossAngle: 0
+  initialAngRes: 0
   normalizedNodeOverlaps: 0
   normalizedEdgeCrossings: 0
   normalizedEdgeLength: 0
   edgeLength: 0
   edgeCrossAngle: 0
-  angResRM: 0
+  angRes: 0
   overallGrade: 0
   cameraPosition: {x: 0, y: 0, z: 0}
   algorithm: {fileID: 0}
@@ -4366,12 +4385,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nrNodeOverlaps: 0
   nrEdgeCrossings: 0
+  initialNodeOverlaps: 0
+  initialEdgeCrossings: 0
+  initialEdgeLength: 0
+  initialEdgeCrossAngle: 0
+  initialAngRes: 0
   normalizedNodeOverlaps: 0
   normalizedEdgeCrossings: 0
   normalizedEdgeLength: 0
   edgeLength: 0
   edgeCrossAngle: 0
-  angResRM: 0
+  angRes: 0
   overallGrade: 0
   cameraPosition: {x: 0, y: 0, z: 0}
   algorithm: {fileID: 0}
@@ -5889,12 +5913,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nrNodeOverlaps: 0
   nrEdgeCrossings: 0
+  initialNodeOverlaps: 0
+  initialEdgeCrossings: 0
+  initialEdgeLength: 0
+  initialEdgeCrossAngle: 0
+  initialAngRes: 0
   normalizedNodeOverlaps: 0
   normalizedEdgeCrossings: 0
   normalizedEdgeLength: 0
   edgeLength: 0
   edgeCrossAngle: 0
-  angResRM: 0
+  angRes: 0
   overallGrade: 0
   cameraPosition: {x: 0, y: 0, z: 0}
   algorithm: {fileID: 0}
@@ -7126,7 +7155,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1031145540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8553,6 +8582,10 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1297530071723350, guid: fe6c4ce458632da41a0b4b85ca273d3d, type: 2}
+      propertyPath: m_Name
+      value: CrossAngle
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe6c4ce458632da41a0b4b85ca273d3d, type: 2}
   m_IsPrefabAsset: 0
@@ -9820,6 +9853,10 @@ Prefab:
     - target: {fileID: 1153087646176460, guid: fe6c4ce458632da41a0b4b85ca273d3d, type: 2}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1297530071723350, guid: fe6c4ce458632da41a0b4b85ca273d3d, type: 2}
+      propertyPath: m_Name
+      value: EdgeLength
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fe6c4ce458632da41a0b4b85ca273d3d, type: 2}
@@ -11642,22 +11679,6 @@ MonoBehaviour:
   - {fileID: 4900000, guid: 156179c3b0c18a04dbe9065e598329ab, type: 3}
   - {fileID: 4900000, guid: 4813a731dfe2af14ea87ba1ada617eba, type: 3}
   - {fileID: 4900000, guid: 15aadc153d8fc384287281e2cfd493a0, type: 3}
-  - {fileID: 4900000, guid: e3b98fe484f36d8468a0e3487786db4c, type: 3}
-  - {fileID: 4900000, guid: bf440cf3a8acbc0439074ac305d5a5d0, type: 3}
-  - {fileID: 4900000, guid: 2e14aac89666e4741893942300eab2b0, type: 3}
-  - {fileID: 4900000, guid: 8d6ebf325f068d646bb36d656a3c2cc8, type: 3}
-  - {fileID: 4900000, guid: 3d9747129967fe943afae49c3cafb0ff, type: 3}
-  - {fileID: 4900000, guid: a269d09d96ae7ba4c81320245b30621d, type: 3}
-  - {fileID: 4900000, guid: 6c08a729f1dbe9f4ba5aaf37b3d1dd79, type: 3}
-  - {fileID: 4900000, guid: 6027cf5379240b645a937f222eb7b5f0, type: 3}
-  - {fileID: 4900000, guid: e6b1bad2a545f2249acdb2e6925d3a5f, type: 3}
-  - {fileID: 4900000, guid: 35520d7a804c51d48a0753ea56a3e6ff, type: 3}
-  - {fileID: 4900000, guid: f4c00dce192e9534394c909428c35945, type: 3}
-  - {fileID: 4900000, guid: b2b85fcb47548834aa691027c42ae9e9, type: 3}
-  - {fileID: 4900000, guid: 7030cf888752a9d418411bf02b447c86, type: 3}
-  - {fileID: 4900000, guid: b5e1efd8721b2ef45ad571ea89e2638c, type: 3}
-  - {fileID: 4900000, guid: dea2ec0207497a44bb941d974aa95e2e, type: 3}
-  - {fileID: 4900000, guid: e6a5e651e736cf2429983f773bfc59d6, type: 3}
   sliders:
   - {fileID: 425428961}
   - {fileID: 481080621}
@@ -11666,7 +11687,7 @@ MonoBehaviour:
   - {fileID: 1310883645}
   controller: {fileID: 360191221}
   graphParent: {fileID: 113367144}
-  ptID: 3
+  ptID: 4
   trialNR: 0
   algorithm: 
   task: 
@@ -17285,7 +17306,7 @@ Prefab:
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 1290
+      value: 1197
       objectReference: {fileID: 0}
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}

@@ -9,7 +9,8 @@ using UnityEngine;
  */
 public class QualityMetricViewPort : MonoBehaviour {
     public float nrNodeOverlaps, nrEdgeCrossings;
-    public float normalizedNodeOverlaps, normalizedEdgeCrossings, normalizedEdgeLength, edgeLength, edgeCrossAngle, angResRM, overallGrade;
+    public float initialNodeOverlaps, initialEdgeCrossings, initialEdgeLength, initialEdgeCrossAngle, initialAngRes;
+    public float normalizedNodeOverlaps, normalizedEdgeCrossings, normalizedEdgeLength, edgeLength, edgeCrossAngle, angRes, overallGrade;
     public Vector3 cameraPosition;
     public GeneralLayoutAlgorithm algorithm;
     public Vector3[] listPos;
@@ -25,7 +26,7 @@ public class QualityMetricViewPort : MonoBehaviour {
         normalizedNodeOverlaps = values.normalizedNodeOverlaps;
         edgeLength = values.edgeLength;
         edgeCrossAngle = values.edgeCrossAngle;
-        angResRM = values.angResRM;
+        angRes = values.angRes;
         overallGrade = values.overallGrade;
         cameraPosition = values.cameraPosition;
         algorithm = values.algorithm;
