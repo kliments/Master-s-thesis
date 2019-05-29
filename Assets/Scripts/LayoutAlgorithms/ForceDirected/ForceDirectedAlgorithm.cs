@@ -97,11 +97,10 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
 
     public override void StartAlgorithm()
     {
+        //same algorithm was run on the previous step
+        if (algorithm.currentLayout.Equals(this)) return;
         //stop previous algorithm
-        if (!algorithm.currentLayout.Equals(this))
-        {
-            algorithm.currentLayout.SetFinish();
-        }
+        else algorithm.currentLayout.SetFinish();
 
         if (observer == null) observer = (Observer)FindObjectOfType(typeof(Observer));
 

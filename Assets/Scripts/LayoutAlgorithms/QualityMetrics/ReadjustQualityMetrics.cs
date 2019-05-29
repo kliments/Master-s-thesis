@@ -228,32 +228,37 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
             sw.WriteLine("Current algorithm: " + _studyScript.algorithm);
             sw.WriteLine("Current task: " + _studyScript.task);
             sw.WriteLine("");
+            sw.WriteLine("Edge crossings current weight: " + _viewport.edge.qualityFactor.ToString());
+            sw.WriteLine("Node overlapping current weight: " + _viewport.node.qualityFactor.ToString());
+            sw.WriteLine("Edge crossings angle current weight: " + _viewport.edgeCrossRes.qualityFactor.ToString());
+            sw.WriteLine("Angular resolution current weight: " + _viewport.angRes.qualityFactor.ToString());
+            sw.WriteLine("Edge length current weight: " + _viewport.edgeLength.qualityFactor.ToString());
+            sw.WriteLine("");
+            sw.WriteLine("Camera offset " + _viewport.offset.ToString());
+
             //For each option log its parameters
-            for (int i=0; i<transform.parent.childCount; i++)
+            //First save chosen option
+            sw.WriteLine("");
+            sw.WriteLine("");
+            sw.WriteLine("");
+            sw.WriteLine("CHOSEN OPTION");
+            sw.WriteLine("");
+            sw.WriteLine("Overall grade: " + _qualityMetricsValues.overallGrade.ToString());
+            sw.WriteLine("Edge crossings grade: " + _qualityMetricsValues.normalizedEdgeCrossings);
+            sw.WriteLine("Node overlapping grade: " + _qualityMetricsValues.normalizedNodeOverlaps);
+            sw.WriteLine("Edge crossing angle grade: " + _qualityMetricsValues.edgeCrossAngle);
+            sw.WriteLine("Angular resolution grade: " + _qualityMetricsValues.angResRM);
+            sw.WriteLine("Edge length grade: " + _qualityMetricsValues.normalizedEdgeLength);
+            
+            for(int i=0; i<transform.parent.childCount; i++)
             {
-                //Chosen option
-                if(transform.parent.GetChild(i) == transform)
+                if(transform.parent.GetChild(i) != transform)
                 {
-                    sw.WriteLine("Chosen option");
+                    //Other alternatives
                     sw.WriteLine("");
-                    sw.WriteLine("Edge crossings current weight: " + _viewport.edge.qualityFactor.ToString());
-                    sw.WriteLine("Node overlapping current weight: " + _viewport.node.qualityFactor.ToString());
-                    sw.WriteLine("Edge crossings angle current weight: " + _viewport.edgeCrossRes.qualityFactor.ToString());
-                    sw.WriteLine("Angular resolution current weight: " + _viewport.angRes.qualityFactor.ToString());
-                    sw.WriteLine("Edge length current weight: " + _viewport.edgeLength.qualityFactor.ToString());
                     sw.WriteLine("");
-                    sw.WriteLine("Overall grade: " + _qualityMetricsValues.overallGrade.ToString());
-                    sw.WriteLine("Edge crossings grade: " + _qualityMetricsValues.normalizedEdgeCrossings);
-                    sw.WriteLine("Node overlapping grade: " + _qualityMetricsValues.normalizedNodeOverlaps);
-                    sw.WriteLine("Edge crossing angle grade: " + _qualityMetricsValues.edgeCrossAngle);
-                    sw.WriteLine("Angular resolution grade: " + _qualityMetricsValues.angResRM);
-                    sw.WriteLine("Edge length grade: " + _qualityMetricsValues.normalizedEdgeLength);
                     sw.WriteLine("");
-                }
-                //Other alternatives
-                else
-                {
-                    sw.WriteLine("Other alternative");
+                    sw.WriteLine("OTHER ALTERNATIVE");
                     sw.WriteLine("");
                     sw.WriteLine("Overall grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().overallGrade.ToString());
                     sw.WriteLine("Edge crossings grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedEdgeCrossings);
@@ -262,11 +267,7 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
                     sw.WriteLine("Angular resolution grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().angResRM);
                     sw.WriteLine("Edge length grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedEdgeLength);
                 }
-                sw.WriteLine("");
-                sw.WriteLine("");
-                sw.WriteLine("");
             }
-            sw.WriteLine("Camera offset " + _viewport.offset.ToString());
         }
         // Save screenshots
         for(int i=0; i<transform.parent.childCount; i++)

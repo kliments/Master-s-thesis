@@ -11634,6 +11634,7 @@ MonoBehaviour:
   scan: 0
   log: 0
   configFiles:
+  - {fileID: 4900000, guid: f4f3eae5521c3004a91519e7da5c73b0, type: 3}
   - {fileID: 4900000, guid: c991bceabfdc8d340b9f442b7b21c15c, type: 3}
   - {fileID: 4900000, guid: dd0b5529cd6999d4c9c76020ef0d22ab, type: 3}
   - {fileID: 4900000, guid: 43d7c74d0ec50a244bc2ac4e1dc86e7e, type: 3}
@@ -11657,10 +11658,18 @@ MonoBehaviour:
   - {fileID: 4900000, guid: b5e1efd8721b2ef45ad571ea89e2638c, type: 3}
   - {fileID: 4900000, guid: dea2ec0207497a44bb941d974aa95e2e, type: 3}
   - {fileID: 4900000, guid: e6a5e651e736cf2429983f773bfc59d6, type: 3}
-  - {fileID: 4900000, guid: 8ad5e52f37358684b83c32745460c70d, type: 3}
+  sliders:
+  - {fileID: 425428961}
+  - {fileID: 481080621}
+  - {fileID: 1150214622}
+  - {fileID: 440643451}
+  - {fileID: 1310883645}
   controller: {fileID: 360191221}
-  ptID: 12
+  graphParent: {fileID: 113367144}
+  ptID: 3
   trialNR: 0
+  algorithm: 
+  task: 
   directory: 
   studyTrialDirectory: 
 --- !u!1 &1447772035

@@ -28,11 +28,11 @@ public class ConeBurst : GeneralLayoutAlgorithm {
 
     public override void StartAlgorithm()
     {
+        //same algorithm was run on the previous step
+        if (algorithm.currentLayout.Equals(this)) return;
         //stop previous algorithm
-        if (!algorithm.currentLayout.Equals(this))
-        {
-            algorithm.currentLayout.SetFinish();
-        }
+        else algorithm.currentLayout.SetFinish();
+
         //set flag that this algorithm is running
         SetStart();
 
@@ -142,6 +142,7 @@ public class ConeBurst : GeneralLayoutAlgorithm {
         foreach (var op in observer.GetOperators())
         {
             op.GetIcon().transform.position = op.GetIcon().GetComponent<IconProperties>().newPos;
+            op.GetIcon().transform.localRotation = Quaternion.identity;
         }
 
         GetComponent<TwoDimensionalProjection>().SetPlane();

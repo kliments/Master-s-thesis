@@ -9,8 +9,11 @@ public class StudieScript : MonoBehaviour {
     //Config files for participants
     public TextAsset[] configFiles;
 
+    //Quality metric sliders
+    public QualityMetricSlider[] sliders;
+
     //Game object that contains all the layout algorithms, and viewport optimizer scripts
-    public GameObject controller;
+    public GameObject controller, graphParent;
 
     //Participant ID
     public int ptID;
@@ -23,6 +26,9 @@ public class StudieScript : MonoBehaviour {
 
     //Participant's config file
     private TextAsset configFile;
+
+    //buttons controller that keeps track of step
+    private PreviewButtonsController _buttonsController;
 
     //Main directory address for current participant
     public string directory, studyTrialDirectory;
@@ -39,13 +45,20 @@ public class StudieScript : MonoBehaviour {
         _lines = configFile.text.Split('\n');
         _dataPath = Application.dataPath + "/Resources/LoggedData/";
         algorithms = controller.GetComponents<GeneralLayoutAlgorithm>();
+        _buttonsController = (PreviewButtonsController)FindObjectOfType(typeof(PreviewButtonsController));
     }
 	
 	// Update is called once per frame
 	void Update () {
         if (start)
         {
-            start = false;
+            if(ptID > 7)
+            {
+                start = false;
+                return;
+            }
+            ResetValues();
+
             if (_rowCounter == 0)
             {
                 CreateParticipantDirectory();
@@ -65,7 +78,31 @@ public class StudieScript : MonoBehaviour {
 
             log = true;
         }
+        if(scan)
+        {
+            scan = false;
+            ScanGraph();
+        }
 	}
+
+    //Reseting values
+    void ResetValues()
+    {
+        start = false;
+
+        //reset weights back to 0
+        foreach (var slider in sliders)
+        {
+            slider.qualityFactor = 1;
+        }
+
+        //reset study step
+        _buttonsController.trialNr = 0;
+
+        //reset graph rotation
+        graphParent.transform.rotation = Quaternion.identity;
+        graphParent.transform.localPosition = new Vector3(0, 2.5f, 0);
+    }
 
     //Random dataset generator
     string GenerateDataset()
