@@ -1,0 +1,44 @@
+Step number 2
+Current algorithm: ConeBurst
+Current task:  Task1
+
+Edge crossings current weight: 1.018645
+Node overlapping current weight: 0.9968994
+Edge crossings angle current weight: 0.7355191
+Angular resolution current weight: 0.4811619
+Edge length current weight: 1.767774
+
+Camera offset 11
+
+
+
+CHOSEN OPTION
+
+Overall grade: 0.6124063
+Edge crossings grade: 0.6379484
+Node overlapping grade: 0.5366183
+Edge crossing angle grade: 0.6066981
+Angular resolution grade: 0.2621371
+Edge length grade: 1.01863
+
+
+
+OTHER ALTERNATIVE
+
+Overall grade: 0.5057318
+Edge crossings grade: 0.6379484
+Node overlapping grade: 0.5535452
+Edge crossing angle grade: 0.5272385
+Angular resolution grade: 0.3088908
+Edge length grade: 0.5010357
+
+
+
+OTHER ALTERNATIVE
+
+Overall grade: 0.4068487
+Edge crossings grade: 0.3601538
+Node overlapping grade: 0.3248517
+Edge crossing angle grade: 0.5906623
+Angular resolution grade: 0.2738067
+Edge length grade: 0.484769

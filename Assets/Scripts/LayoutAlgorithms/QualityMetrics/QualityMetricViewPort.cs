@@ -17,6 +17,9 @@ public class QualityMetricViewPort : MonoBehaviour {
     public int index;
     public int clusterID;
 
+    //distance for kMeans clustering
+    public float totalDistance;
+
     public void AssignValues(QualityMetricViewPort values)
     {
         nrEdgeCrossings = values.nrEdgeCrossings;

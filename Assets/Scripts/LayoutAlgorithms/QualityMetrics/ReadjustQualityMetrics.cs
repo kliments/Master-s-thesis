@@ -10,9 +10,10 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
     public GenericMenueComponent listener;
     public float delta;
     public Transform rightController;
+    public Transform leftController;
 
-    private SteamVR_TrackedObject _trackedObj;
-    private SteamVR_Controller.Device _device;
+    private SteamVR_TrackedObject _rightTrackedObj, _leftTrackedObject;
+    private SteamVR_Controller.Device _rightDevice, _leftDevice;
     private QualityMetricViewPort _qualityMetricsValues;
     private ViewPortOptimizer _viewport;
     private InstantRotationOfGraph _rotate;
@@ -31,8 +32,10 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         mainCamera = Camera.main;
         if (mainCamera.name == "Camera (eye)")
         {
-            _trackedObj = rightController.GetComponent<SteamVR_TrackedObject>();
-            _device = SteamVR_Controller.Input((int)_trackedObj.index);
+            _rightTrackedObj = rightController.GetComponent<SteamVR_TrackedObject>();
+            _rightDevice = SteamVR_Controller.Input((int)_rightTrackedObj.index);
+            _leftTrackedObject = leftController.GetComponent<SteamVR_TrackedObject>();
+            _leftDevice = SteamVR_Controller.Input((int)_leftTrackedObject.index);
         }
         _viewport = (ViewPortOptimizer)FindObjectOfType(typeof(ViewPortOptimizer));
         _rotate = (InstantRotationOfGraph)FindObjectOfType(typeof(InstantRotationOfGraph));
@@ -63,28 +66,9 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
             ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out _hit, 100))
             {
-                if(_hit.collider.gameObject == transform.GetChild(0).gameObject && transform.localScale != bigSize)
-                {
-                    transform.localScale = bigSize;
-                    transform.localPosition = frontPos;
-                }
-                else if(_hit.collider.gameObject != transform.GetChild(0).gameObject && transform.localScale == bigSize)
-                {
-                    transform.localScale = smallSize;
-                    transform.localPosition = backPos;
-                }
-
                 if(_hit.collider.gameObject == transform.GetChild(0).gameObject && Input.GetMouseButtonDown(1))
                 {
                     _rotate.GraphRotation(GetComponent<QualityMetricViewPort>().cameraPosition);
-                }
-            }
-            else
-            {
-                if(transform.localScale == bigSize)
-                {
-                    transform.localScale = smallSize;
-                    transform.localPosition = backPos;
                 }
             }
         }
@@ -93,7 +77,7 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
             ray = new Ray(rightController.position, rightController.forward);
             if (Physics.Raycast(ray, out _hit, 100))
             {
-                if (_hit.collider.gameObject == transform.GetChild(0).gameObject && _device.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
+                if (_hit.collider.gameObject == transform.GetChild(0).gameObject && _rightDevice.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
                 {
                     _rotate.GraphRotation(GetComponent<QualityMetricViewPort>().cameraPosition);
                 }
@@ -114,52 +98,38 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         {
             temp = obj.GetComponent<QualityMetricViewPort>();
             edgeCrossingWeight += (_qualityMetricsValues.normalizedEdgeCrossings - temp.normalizedEdgeCrossings) * delta;
-
             nodeOverlapWeight += (_qualityMetricsValues.normalizedNodeOverlaps - temp.normalizedNodeOverlaps) * delta;
-
             edgeLenWeight += (_qualityMetricsValues.normalizedEdgeLength - temp.normalizedEdgeLength) * delta;
-
             angResWeight += (_qualityMetricsValues.angRes - temp.angRes) * delta;
-
             edgeCrossResWeight += (_qualityMetricsValues.edgeCrossAngle - temp.edgeCrossAngle) * delta;
         }
 
         //normalize on scale between 0-2
         edgeCrossingWeight = Normalize(edgeCrossingWeight);
-
         nodeOverlapWeight = Normalize(nodeOverlapWeight);
-
         edgeLenWeight = Normalize(edgeLenWeight);
-
         angResWeight = Normalize(angResWeight);
-
         edgeCrossResWeight = Normalize(edgeCrossResWeight);
 
         //multiply to current values of quality metric weights
         edgeCrossingWeight = edgeCrossingWeight * _viewport.edgeCrossSlider.qualityFactor;
-
         nodeOverlapWeight = nodeOverlapWeight * _viewport.nodeOverlapSlider.qualityFactor;
-
         edgeLenWeight = edgeLenWeight * _viewport.edgeLengthSlider.qualityFactor;
-
         angResWeight = angResWeight * _viewport.angResSlider.qualityFactor;
-
         edgeCrossResWeight = edgeCrossResWeight * _viewport.edgeCrossAngSlider.qualityFactor;
 
         //normalize new values so their sum is 5
         sum = edgeCrossingWeight + nodeOverlapWeight + edgeLenWeight + angResWeight + edgeCrossResWeight;
-
         sum = 5 / sum;
-
         edgeCrossingWeight *= sum;
-
         nodeOverlapWeight *= sum;
-
         edgeLenWeight *= sum;
-
         angResWeight *= sum;
-
         edgeCrossResWeight *= sum;
+
+        //check if any of the values are higher than 2 and re-normalize back
+        CheckAndRenormalize();
+
         //update current values
         _viewport.edgeCrossSlider.qualityFactor = edgeCrossingWeight;
         _viewport.nodeOverlapSlider.qualityFactor = nodeOverlapWeight;
@@ -187,6 +157,12 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
 
     public void menueChanged(GenericMenueComponent changedComponent)
     {
+        if(_buttonsController.trialNr >= 10)
+        {
+            Debug.Log("Reached limit of 10 steps");
+            Debug.Log("Please proceed with next step of the study!");
+            return;
+        }
         //Set rotation of graph back to 0
         _rotate.SetBackToZero();
 
@@ -279,5 +255,21 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
     {
         byte[] bytes = texture.EncodeToPNG();
         File.WriteAllBytes(path, bytes);
+    }
+
+    void CheckAndRenormalize()
+    {
+        float maxValue = 2;
+        if (edgeCrossingWeight > maxValue) maxValue = edgeCrossingWeight;
+        if (nodeOverlapWeight > maxValue) maxValue = nodeOverlapWeight;
+        if (edgeLenWeight > maxValue) maxValue = edgeLenWeight;
+        if (angResWeight > maxValue) maxValue = angResWeight;
+        if (edgeCrossResWeight > maxValue) maxValue = edgeCrossResWeight;
+
+        edgeCrossingWeight *= 2 / maxValue;
+        nodeOverlapWeight *= 2 / maxValue;
+        edgeLenWeight *= 2 / maxValue;
+        angResWeight *= 2 / maxValue;
+        edgeCrossResWeight *= 2 / maxValue;
     }
 }

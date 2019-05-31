@@ -13,12 +13,15 @@ public class MultiDimensionalKMeansClustering : MonoBehaviour {
 
     private ViewPortOptimizer viewportOpt;
     private List<QualityMetricViewPort> centroids;
+    private List<int> _choicesHistory;
     private int[] oldSizeOfClusters;
     private QualityMetricViewPort[] oldCentroidValues;
 	// Use this for initialization
 	void Start () {
         viewportOpt = GetComponent<ViewPortOptimizer>();
-	}
+        _choicesHistory = new List<int>();
+        
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -147,17 +150,27 @@ public class MultiDimensionalKMeansClustering : MonoBehaviour {
         {
             float dist = 0;
             QualityMetricViewPort temp = new QualityMetricViewPort();
+            List<QualityMetricViewPort> currentList = new List<QualityMetricViewPort>();
             dist = Distance5D(clusters[i][0], centroids[i]);
             foreach (var point in clusters[i])
             {
-                if(dist > Distance5D(point, centroids[i]))
+                point.totalDistance = Distance5D(point, centroids[i]);
+                currentList.Add(point);
+                /*if (dist > point.totalDistance)
                 {
-                    dist = Distance5D(point, centroids[i]);
+                    dist = point.totalDistance;
                     temp = CopyOf(point);
+                }*/
+            }
+            currentList.Sort((a, b) => a.totalDistance.CompareTo(b.totalDistance));
+            foreach(var point in currentList)
+            {
+                if(!_choicesHistory.Contains(point.index))
+                {
+                    _choicesHistory.Add(point.index);
+                    temp = CopyOf(point);
+                    break;
                 }
-                /*Debug.Log(" overallGrade " + point.overallGrade + " EdgeCrossAngle: " + point.edgeCrossAngle + " AngResRM: " + point.angResRM
-                        + " normalizedEdgeLength: " + point.normalizedEdgeLength + " normalizedNodeOverlaps: " + point.normalizedNodeOverlaps
-                        + " normalizedEdgeCrossings: " + point.normalizedEdgeCrossings);*/
             }
             chosenViewpoints.Add(temp);
         }
@@ -186,5 +199,10 @@ public class MultiDimensionalKMeansClustering : MonoBehaviour {
         temp.listPos = point.listPos;
         temp.overallGrade = point.overallGrade;
         return temp;
+    }
+
+    public void ResetValues()
+    {
+        _choicesHistory = new List<int>();
     }
 }

@@ -65,7 +65,14 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
             switch (screenshotCounter)
             {
                 case 0:
-
+                    //disable controller game objects for not rendering
+                    foreach(Transform child in cameraRig.transform)
+                    {
+                        if(child.gameObject.name.Contains("Controller"))
+                        {
+                            child.gameObject.SetActive(false);
+                        }
+                    }
                     Camera.main.transform.position = chosenViewpoints[screenshotCounter].cameraPosition;
                     Vector3 rotation = Camera.main.transform.eulerAngles;
                     Camera.main.transform.LookAt(transform);
@@ -149,6 +156,15 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                         cameraRig.transform.position = combinedObservationList[0].cameraPosition;
                         cameraRig.transform.LookAt(transform);
                     }
+
+                    //enable back controller game objects
+                    foreach (Transform child in cameraRig.transform)
+                    {
+                        if (child.gameObject.name.Contains("Controller"))
+                        {
+                            child.gameObject.SetActive(true);
+                        }
+                    }
                     break;
             }
         }
@@ -216,13 +232,13 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     {
         Vector3 transformUp = new Vector3();
         Camera.main.transform.position = new Vector3(furthestNodePos.x + offset, transform.position.y, transform.position.z);
-        for (int i = 0; i < 360; i += 20)
+        for (int i = 0; i < 360; i += 10)
         {
             transform.eulerAngles = new Vector3(i, 0, 0);
             transformUp = transform.up;
-            for (int j = 0; j < 360; j += 20)
+            for (int j = 0; j < 360; j += 10)
             {
-                transform.RotateAround(transform.position, transformUp, 20f);
+                transform.RotateAround(transform.position, transformUp, 10f);
                 Camera.main.transform.LookAt(transform);
 
                 foreach (var icon in opIcons)
@@ -246,14 +262,14 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         Vector3 transformUp = new Vector3();
         index = 0;
         GetComponent<TwoDimensionalProjection>().SetPlane();
-        for(int i = 0; i<360; i+=20)
+        for(int i = 0; i<360; i+=10)
         {
             transform.eulerAngles = new Vector3(i, 0, 0);
             transformUp = transform.up;
-            for (int j=0; j<360; j+=20)
+            for (int j=0; j<360; j+=10)
             {
                 _toBreak = false;
-                transform.RotateAround(transform.position,transformUp, 20f);
+                transform.RotateAround(transform.position,transformUp, 10f);
                 Camera.main.transform.LookAt(transform);
                 // first check if current position already exists
                 foreach (var view in observationList)
@@ -494,7 +510,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         Camera.main.transform.parent = transform;
         furthestNodePos = FindFurthestNode();
         offset = FindOffset(3);
-        //Camera.main.transform.position = FindFurthestNode();
+
         transform.eulerAngles = new Vector3(0, 0, 0);
         Camera.main.transform.position = new Vector3(furthestNodePos.x + offset, transform.position.y, transform.position.z);
         Camera.main.transform.LookAt(transform);
@@ -531,6 +547,19 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     //Readjust quality metric values with updated weights
     public void ReadjustQualityMetricValues()
     {
+        if (maxEdgeCross < MaximumEdgeCross(observationList, false))
+        {
+            maxEdgeCross = MaximumEdgeCross(observationList, false);
+        }
+        if (maxNodeOverlap < MaximumNodeOverlap(observationList))
+        {
+            maxNodeOverlap = MaximumNodeOverlap(observationList);
+        }
+        if (maxEdgeLength < MaximumEdgeLength(observationList))
+        {
+            maxEdgeLength = MaximumEdgeLength(observationList);
+        }
+
         foreach (var view in observationList)
         {
             view.normalizedEdgeCrossings = NormalizedEdgeCrossings(view.initialEdgeCrossings);

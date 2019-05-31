@@ -24,18 +24,21 @@ public class StudieScript : MonoBehaviour {
     // Current algorithm and task
     public string algorithm, task;
 
+    //Main directory address for current participant
+    public string directory, studyTrialDirectory;
+    public string dataPath;
+
     //Participant's config file
     private TextAsset configFile;
 
     //buttons controller that keeps track of step
     private PreviewButtonsController _buttonsController;
 
-    //Main directory address for current participant
-    public string directory, studyTrialDirectory;
+    //Multidimensional kMeans clustering algorithm
+    private MultiDimensionalKMeansClustering _kMeans;
 
     //Row counter for config file
     private int _rowCounter = 0, _studyCounter = 0;
-    private string _dataPath;
     private string[] _lines, _row;
 
     private GeneralLayoutAlgorithm[] algorithms;
@@ -43,9 +46,9 @@ public class StudieScript : MonoBehaviour {
     void Start () {
         configFile = configFiles[ptID];
         _lines = configFile.text.Split('\n');
-        _dataPath = Application.dataPath + "/Resources/LoggedData/";
         algorithms = controller.GetComponents<GeneralLayoutAlgorithm>();
         _buttonsController = (PreviewButtonsController)FindObjectOfType(typeof(PreviewButtonsController));
+        _kMeans = (MultiDimensionalKMeansClustering)FindObjectOfType(typeof(MultiDimensionalKMeansClustering));
     }
 	
 	// Update is called once per frame
@@ -58,6 +61,7 @@ public class StudieScript : MonoBehaviour {
                 return;
             }
             ResetValues();
+            _kMeans.ResetValues();
 
             if (_rowCounter == 0)
             {
@@ -134,7 +138,7 @@ public class StudieScript : MonoBehaviour {
     //Each participant's directory
     void CreateParticipantDirectory()
     {
-        directory = Directory.CreateDirectory(_dataPath.ToString() + "Participant" + ptID.ToString()).FullName.ToString();
+        directory = Directory.CreateDirectory(dataPath.ToString() + "Participant" + ptID.ToString()).FullName.ToString();
     }
 
     //Each trial's directory - in case of crash of the application, generate new directory

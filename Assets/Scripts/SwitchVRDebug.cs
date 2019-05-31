@@ -10,6 +10,7 @@ public class SwitchVRDebug : MonoBehaviour
 	public GameObject NormalCamera;
     public Transform Menue;
     public Transform controller;
+    public Texture2D texture;
 
     private Vector3 controllerPos = new Vector3(0, 0.047f, 0.2f);
     private Vector3 outsidePos = new Vector3(0, 2.308f, 0.951f);
