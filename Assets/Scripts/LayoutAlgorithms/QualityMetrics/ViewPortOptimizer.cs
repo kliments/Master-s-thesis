@@ -18,7 +18,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     public List<GeneralLayoutAlgorithm> algorithmsList;
     public GenericMenueComponent localScanListener, globalScanListener;
     public GameObject guidanceMarker, inputFieldWrapper, screenshotsContainer;
-    public GameObject cameraRig;
+    public GameObject cameraRig, leftController, rightController;
 
     public List<List<QualityMetricViewPort>> globalObservationList;
     public List<QualityMetricViewPort> observationList, combinedObservationList, chosenViewpoints;
@@ -56,6 +56,18 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         imagesPaths = new List<string>();
         multiDimKMeans = GetComponent<MultiDimensionalKMeansClustering>();
         delta = 1;
+
+        foreach (Transform child in cameraRig.transform)
+        {
+            if (child.gameObject.name.Contains("left"))
+            {
+                leftController = child.gameObject;
+            }
+            else if (child.gameObject.name.Contains("right"))
+            {
+                rightController = child.gameObject;
+            }
+        }
     }
 	
 	// Update is called once per frame
@@ -66,13 +78,9 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
             {
                 case 0:
                     //disable controller game objects for not rendering
-                    foreach(Transform child in cameraRig.transform)
-                    {
-                        if(child.gameObject.name.Contains("Controller"))
-                        {
-                            child.gameObject.SetActive(false);
-                        }
-                    }
+                    leftController.SetActive(false);
+                    rightController.SetActive(false);
+
                     Camera.main.transform.position = chosenViewpoints[screenshotCounter].cameraPosition;
                     Vector3 rotation = Camera.main.transform.eulerAngles;
                     Camera.main.transform.LookAt(transform);
@@ -132,6 +140,10 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     previewButtons.views[screenshotCounter] = chosenViewpoints[screenshotCounter];
                     imagesPaths.Add("Screenshots/viewNr" + chosenViewpoints[screenshotCounter].index.ToString());
 
+                    //enable back controller game objects
+                    leftController.SetActive(true);
+                    rightController.SetActive(true);
+
                     //once all the images are generated, create buttons with the images
                     previewButtons.CallForCreatingButtons(imagesPaths, delta);
                     //reduce delta factor
@@ -155,15 +167,6 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     {
                         cameraRig.transform.position = combinedObservationList[0].cameraPosition;
                         cameraRig.transform.LookAt(transform);
-                    }
-
-                    //enable back controller game objects
-                    foreach (Transform child in cameraRig.transform)
-                    {
-                        if (child.gameObject.name.Contains("Controller"))
-                        {
-                            child.gameObject.SetActive(true);
-                        }
                     }
                     break;
             }

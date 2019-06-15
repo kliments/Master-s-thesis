@@ -77,15 +77,16 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
             ray = new Ray(rightController.position, rightController.forward);
             if (Physics.Raycast(ray, out _hit, 100))
             {
-                if (_hit.collider.gameObject == transform.GetChild(0).gameObject && _rightDevice.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
+                if (_hit.collider.gameObject == transform.GetChild(0).gameObject && _rightDevice.GetPressDown(SteamVR_Controller.ButtonMask.Trigger))
                 {
                     _rotate.GraphRotation(GetComponent<QualityMetricViewPort>().cameraPosition);
+                    _buttonsController.currentView = GetComponent<QualityMetricViewPort>();
                 }
             }
         }
     }
 
-    void ReadjustMetrics()
+    public void ReadjustMetrics()
     {
         QualityMetricViewPort temp = new QualityMetricViewPort();
         edgeCrossingWeight = 0;
@@ -157,21 +158,13 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
 
     public void menueChanged(GenericMenueComponent changedComponent)
     {
-        if(_buttonsController.trialNr >= 10)
-        {
-            Debug.Log("Reached limit of 10 steps");
-            Debug.Log("Please proceed with next step of the study!");
-            return;
-        }
-        //Set rotation of graph back to 0
-        _rotate.SetBackToZero();
-
-        ReadjustMetrics();
-        AddLogDataToFile();
+        
     }
     //All The logging is done here!
-    void AddLogDataToFile()
+    public void AddLogDataToFile()
     {
+        _buttonsController.trialNr++;
+        if (_studyScript.isTraining) return;
         //Study step directory - each step create new directory where logged data and screenshots are saved
         _studyStepDirectory = _studyScript.studyTrialDirectory + "\\StudyStep" + _buttonsController.trialNr.ToString();
         _studyStepDirectory = Directory.CreateDirectory(_studyStepDirectory).FullName;
@@ -239,7 +232,6 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
                 SaveTextureToFile((Texture2D)transform.parent.GetChild(i).gameObject.GetComponent<RawImage>().texture, _studyStepDirectory + "\\Alternative" + i.ToString() + ".png");
             }
         }
-        _buttonsController.trialNr++;
     }
 
     public void CloseAllMenus()
@@ -272,4 +264,6 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         angResWeight *= 2 / maxValue;
         edgeCrossResWeight *= 2 / maxValue;
     }
+
+    
 }

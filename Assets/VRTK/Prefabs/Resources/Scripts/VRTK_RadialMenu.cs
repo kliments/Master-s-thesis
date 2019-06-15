@@ -142,6 +142,9 @@ namespace VRTK
         /// </summary>
         public virtual void ShowMenu()
         {
+            //Remove next line for showing the menu when touchng the touchpad
+            return;
+
             if (!isShown)
             {
                 isShown = true;
@@ -310,6 +313,8 @@ namespace VRTK
             }
             if (evt == ButtonEvent.click) //Click button if click, and keep track of current press (executes button action)
             {
+                //Remove comment below for executing any action on touchpadpress
+                return;
                 ExecuteEvents.Execute(menuButtons[buttonID], pointer, ExecuteEvents.pointerDownHandler);
                 currentPress = buttonID;
                 if (!executeOnUnclick)
@@ -320,6 +325,8 @@ namespace VRTK
             }
             else if (evt == ButtonEvent.unclick) //Clear press id to stop invoking OnHold method (hide menu)
             {
+                //Remove comment below for executing any action on touchpadpress
+                return;
                 ExecuteEvents.Execute(menuButtons[buttonID], pointer, ExecuteEvents.pointerUpHandler);
                 currentPress = -1;
 
@@ -331,6 +338,8 @@ namespace VRTK
             }
             else if (evt == ButtonEvent.hoverOn && currentHover != buttonID) // Show hover UI event (darken button etc). Show menu
             {
+                //Remove comment below for executing any action on touchpadpress
+                return;
                 ExecuteEvents.Execute(menuButtons[buttonID], pointer, ExecuteEvents.pointerEnterHandler);
                 buttons[buttonID].OnHoverEnter.Invoke();
                 AttempHapticPulse(baseHapticStrength);

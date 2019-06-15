@@ -235,12 +235,16 @@ namespace Model.Operators
             {
                 list[i].CloseAllMenus();
             }
+            //Remove next line for creating buttons
+            return;
             CreateMenueButtons();
         }
 
         protected override void OnUnselectAction()
         {
             base.OnUnselectAction();
+            //Remove next line for removing buttons
+            return;
             _menu.RemoveAllComponents();
         }
 

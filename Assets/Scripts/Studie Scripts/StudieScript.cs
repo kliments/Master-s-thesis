@@ -4,7 +4,10 @@ using System.IO;
 using UnityEngine;
 
 public class StudieScript : MonoBehaviour {
-    public bool start, layout, scan, log;
+    public bool start, layout, scan;
+
+    //value that determines whether is training session or logging
+    public bool isTraining;
 
     //Config files for participants
     public TextAsset[] configFiles;
@@ -13,7 +16,7 @@ public class StudieScript : MonoBehaviour {
     public QualityMetricSlider[] sliders;
 
     //Game object that contains all the layout algorithms, and viewport optimizer scripts
-    public GameObject controller, graphParent;
+    public GameObject controller, graphParent, trainingText;
 
     //Participant ID
     public int ptID;
@@ -28,26 +31,25 @@ public class StudieScript : MonoBehaviour {
     public string directory, studyTrialDirectory;
     public string dataPath;
 
+    //buttons controller that keeps track of step
+    public PreviewButtonsController _buttonsController;
+
     //Participant's config file
     private TextAsset configFile;
-
-    //buttons controller that keeps track of step
-    private PreviewButtonsController _buttonsController;
-
+    
     //Multidimensional kMeans clustering algorithm
     private MultiDimensionalKMeansClustering _kMeans;
 
     //Row counter for config file
     private int _rowCounter = 0, _studyCounter = 0;
     private string[] _lines, _row;
-
+    private string testData, studyData;
     private GeneralLayoutAlgorithm[] algorithms;
     // Use this for initialization
     void Start () {
         configFile = configFiles[ptID];
         _lines = configFile.text.Split('\n');
         algorithms = controller.GetComponents<GeneralLayoutAlgorithm>();
-        _buttonsController = (PreviewButtonsController)FindObjectOfType(typeof(PreviewButtonsController));
         _kMeans = (MultiDimensionalKMeansClustering)FindObjectOfType(typeof(MultiDimensionalKMeansClustering));
     }
 	
@@ -55,32 +57,67 @@ public class StudieScript : MonoBehaviour {
 	void Update () {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if(ptID > 7)
+            if (!_buttonsController.gameObject.activeSelf) _buttonsController.gameObject.SetActive(true);
+            if (isTraining)
             {
-                start = false;
-                return;
-            }
-            ResetValues();
-            _kMeans.ResetValues();
+                trainingText.SetActive(true);
+                if (ptID > 7)
+                {
+                    start = false;
+                    return;
+                }
+                ResetValues();
+                _kMeans.ResetValues();
+                if (_rowCounter == 0)
+                {
+                    CreateParticipantDirectory();
+                    testData = GenerateDataset();
+                }
+                LoadDataset(testData);
+                if (_rowCounter > 3) return;
 
-            if (_rowCounter == 0)
+                _row = _lines[_rowCounter].Split(',');
+                algorithm = _row[0];
+                task = _row[1];
+                task = task.Replace("\r", "");
+
+                Invoke("LayoutGraph", 1);
+                trialNR = _rowCounter;
+            }
+            else
             {
-                CreateParticipantDirectory();
-                LoadDataset(GenerateDataset());
+                trainingText.SetActive(false);
+                if (ptID > 7)
+                {
+                    start = false;
+                    return;
+                }
+                ResetValues();
+                _kMeans.ResetValues();
+
+                if (_rowCounter == 0)
+                {
+                    CreateParticipantDirectory();
+                    studyData = GenerateDataset();
+                }
+                LoadDataset(studyData);
+                if (_rowCounter > 3)
+                {
+                    Debug.Log("STUDY HAS FINISHED!!");
+                    return;
+                }
+
+                CreateStudyTrialDirectory();
+                _row = _lines[_rowCounter].Split(',');
+                algorithm = _row[0];
+                task = _row[1];
+                task = task.Replace("\r", "");
+
+                Invoke("LayoutGraph", 1);
+                _rowCounter++;
+                trialNR = _rowCounter;
+                
             }
-            if (_rowCounter > 3) return;
-
-            CreateStudyTrialDirectory();
-            _row = _lines[_rowCounter].Split(',');
-            algorithm = _row[0];
-            task = _row[1];
-            task = task.Replace("\r", "");
-
-            Invoke("LayoutGraph", 1);
-            _rowCounter++;
-            trialNR = _rowCounter;
-
-            log = true;
         }
 	}
 
@@ -152,5 +189,16 @@ public class StudieScript : MonoBehaviour {
             studyTrialDirectory = directory + "\\Study" + _studyCounter.ToString();
         }
         studyTrialDirectory = Directory.CreateDirectory(studyTrialDirectory).FullName;
+    }
+    public void ToggleTrainingSession()
+    {
+        if (isTraining)
+        {
+            isTraining = false;
+        }
+        else
+        {
+            isTraining = true;
+        }
     }
 }

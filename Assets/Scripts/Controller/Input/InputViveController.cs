@@ -51,6 +51,9 @@ public class InputViveController : InputController
                     _lastTarget = target;
                     if (_device.GetPressDown(SteamVR_Controller.ButtonMask.Trigger) && mode.menuAction == MENU_ACTION.SELECT)
                     {
+                        //Remove next line for interaction with icons
+                        if (target.tag == "NodeIcon") return;
+
                         EmitEvent(InputEventsEnum.LeftClickOnTargetEvent, target);
                     }
                 }
