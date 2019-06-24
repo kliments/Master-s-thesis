@@ -8,7 +8,7 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
     public List<GameObject> other;
     public bool readjust;
     public GenericMenueComponent listener;
-    public float delta;
+    public float delta, timePassedOnView;
     public Transform rightController;
     public Transform leftController;
 
@@ -56,7 +56,6 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         vrSize = new Vector3(0.64f, 0.64f, 0.64f);
         backPos = transform.localPosition;
         frontPos = backPos + new Vector3(0, 0, -50);
-        
     }
 	
 	// Update is called once per frame
@@ -69,6 +68,7 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
                 if(_hit.collider.gameObject == transform.GetChild(0).gameObject && Input.GetMouseButtonDown(1))
                 {
                     _rotate.GraphRotation(GetComponent<QualityMetricViewPort>().cameraPosition);
+                    _buttonsController.currentView = GetComponent<QualityMetricViewPort>();
                 }
             }
         }
@@ -84,6 +84,10 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
                 }
             }
         }
+        if(_buttonsController.currentView == GetComponent<QualityMetricViewPort>())
+        {
+            timePassedOnView += Time.deltaTime;
+        }
     }
 
     public void ReadjustMetrics()
@@ -98,26 +102,38 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         foreach(var obj in other)
         {
             temp = obj.GetComponent<QualityMetricViewPort>();
-            edgeCrossingWeight += (_qualityMetricsValues.normalizedEdgeCrossings - temp.normalizedEdgeCrossings) * delta;
-            nodeOverlapWeight += (_qualityMetricsValues.normalizedNodeOverlaps - temp.normalizedNodeOverlaps) * delta;
-            edgeLenWeight += (_qualityMetricsValues.normalizedEdgeLength - temp.normalizedEdgeLength) * delta;
-            angResWeight += (_qualityMetricsValues.angRes - temp.angRes) * delta;
-            edgeCrossResWeight += (_qualityMetricsValues.edgeCrossAngle - temp.edgeCrossAngle) * delta;
+            edgeCrossingWeight += (_qualityMetricsValues.normalizedEdgeCrossings - temp.normalizedEdgeCrossings);
+            nodeOverlapWeight += (_qualityMetricsValues.normalizedNodeOverlaps - temp.normalizedNodeOverlaps);
+            edgeLenWeight += (_qualityMetricsValues.normalizedEdgeLength - temp.normalizedEdgeLength);
+            angResWeight += (_qualityMetricsValues.angRes - temp.angRes);
+            edgeCrossResWeight += (_qualityMetricsValues.edgeCrossAngle - temp.edgeCrossAngle);
         }
 
-        //normalize on scale between 0-2
+        //normalize on scale between (-2,2)
         edgeCrossingWeight = Normalize(edgeCrossingWeight);
         nodeOverlapWeight = Normalize(nodeOverlapWeight);
         edgeLenWeight = Normalize(edgeLenWeight);
         angResWeight = Normalize(angResWeight);
         edgeCrossResWeight = Normalize(edgeCrossResWeight);
 
+        //multiply by delta factor
+        edgeCrossingWeight *= delta;
+        nodeOverlapWeight *= delta;
+        edgeLenWeight *= delta;
+        angResWeight *= delta;
+        edgeCrossResWeight *= delta;
+
         //multiply to current values of quality metric weights
-        edgeCrossingWeight = edgeCrossingWeight * _viewport.edgeCrossSlider.qualityFactor;
+        /*edgeCrossingWeight = edgeCrossingWeight * _viewport.edgeCrossSlider.qualityFactor;
         nodeOverlapWeight = nodeOverlapWeight * _viewport.nodeOverlapSlider.qualityFactor;
         edgeLenWeight = edgeLenWeight * _viewport.edgeLengthSlider.qualityFactor;
         angResWeight = angResWeight * _viewport.angResSlider.qualityFactor;
-        edgeCrossResWeight = edgeCrossResWeight * _viewport.edgeCrossAngSlider.qualityFactor;
+        edgeCrossResWeight = edgeCrossResWeight * _viewport.edgeCrossAngSlider.qualityFactor;*/
+        edgeCrossingWeight = (_viewport.edgeCrossSlider.qualityFactor + edgeCrossingWeight) / (1 + delta);
+        nodeOverlapWeight = (_viewport.nodeOverlapSlider.qualityFactor + nodeOverlapWeight) / (1 + delta);
+        edgeLenWeight = (_viewport.edgeLengthSlider.qualityFactor + edgeLenWeight) / (1 + delta);
+        angResWeight = (_viewport.angResSlider.qualityFactor + angResWeight) / (1 + delta);
+        edgeCrossResWeight = (_viewport.edgeCrossAngSlider.qualityFactor + edgeCrossResWeight) / (1 + delta);
 
         //normalize new values so their sum is 5
         sum = edgeCrossingWeight + nodeOverlapWeight + edgeLenWeight + angResWeight + edgeCrossResWeight;
@@ -164,60 +180,78 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
     public void AddLogDataToFile()
     {
         _buttonsController.trialNr++;
+        //Do not log if it is training session
         if (_studyScript.isTraining) return;
         //Study step directory - each step create new directory where logged data and screenshots are saved
         _studyStepDirectory = _studyScript.studyTrialDirectory + "\\StudyStep" + _buttonsController.trialNr.ToString();
         _studyStepDirectory = Directory.CreateDirectory(_studyStepDirectory).FullName;
 
-        //log data in file
-        _file = _studyStepDirectory + "\\StudyData" + _buttonsController.trialNr.ToString() + ".txt";
-        using (StreamWriter sw = File.CreateText(_file))
-        {
-            sw.WriteLine("Step number " + _buttonsController.trialNr.ToString());
-            sw.WriteLine("Current algorithm: " + _studyScript.algorithm);
-            sw.WriteLine("Current task: " + _studyScript.task);
-            sw.WriteLine("");
-            sw.WriteLine("Edge crossings current weight: " + _viewport.edgeCrossSlider.qualityFactor.ToString());
-            sw.WriteLine("Node overlapping current weight: " + _viewport.nodeOverlapSlider.qualityFactor.ToString());
-            sw.WriteLine("Edge crossings angle current weight: " + _viewport.edgeCrossAngSlider.qualityFactor.ToString());
-            sw.WriteLine("Angular resolution current weight: " + _viewport.angResSlider.qualityFactor.ToString());
-            sw.WriteLine("Edge length current weight: " + _viewport.edgeLengthSlider.qualityFactor.ToString());
-            sw.WriteLine("");
-            sw.WriteLine("Camera offset " + _viewport.offset.ToString());
+        //General data for current step
+        Header header = new Header() {
+            stepNumber = _buttonsController.trialNr,
+            algorithm = _studyScript.algorithm,
+            task = _studyScript.task,
+            edgeCrWeight = _viewport.edgeCrossSlider.qualityFactor,
+            nodeOvWeight = _viewport.nodeOverlapSlider.qualityFactor,
+            edgeCrAngWeight = _viewport.edgeCrossAngSlider.qualityFactor,
+            angResWeight = _viewport.angResSlider.qualityFactor,
+            edgeLenWeight = _viewport.edgeLengthSlider.qualityFactor,
+            cameraOffset = _viewport.offset
+        };
+        string headerStr = JsonUtility.ToJson(header);
+        
+        //Save general data to file
+        _file = _studyStepDirectory + "\\GeneralData" + _buttonsController.trialNr.ToString() + ".json";
+        File.WriteAllText(_file, headerStr);
 
-            //For each option log its parameters
-            //First save chosen option
-            sw.WriteLine("");
-            sw.WriteLine("");
-            sw.WriteLine("");
-            sw.WriteLine("CHOSEN OPTION");
-            sw.WriteLine("");
-            sw.WriteLine("Overall grade: " + _qualityMetricsValues.overallGrade.ToString());
-            sw.WriteLine("Edge crossings grade: " + _qualityMetricsValues.normalizedEdgeCrossings);
-            sw.WriteLine("Node overlapping grade: " + _qualityMetricsValues.normalizedNodeOverlaps);
-            sw.WriteLine("Edge crossing angle grade: " + _qualityMetricsValues.edgeCrossAngle);
-            sw.WriteLine("Angular resolution grade: " + _qualityMetricsValues.angRes);
-            sw.WriteLine("Edge length grade: " + _qualityMetricsValues.normalizedEdgeLength);
-            
-            for(int i=0; i<transform.parent.childCount; i++)
+        Option chosenOpt = new Option()
+        {
+            option = "chosenOption",
+            overallGrade = _qualityMetricsValues.overallGrade,
+            edgeCrossGrade = _qualityMetricsValues.normalizedEdgeCrossings,
+            nodeOverlapGrade = _qualityMetricsValues.normalizedNodeOverlaps,
+            edgeCrossAngGrade = _qualityMetricsValues.edgeCrossAngle,
+            angResGrade = _qualityMetricsValues.angRes,
+            edgeLengthGrade = _qualityMetricsValues.normalizedEdgeLength,
+            passedTime = timePassedOnView
+        };
+        string chosenOptStr = JsonUtility.ToJson(chosenOpt);
+        
+        //Save chosen choice to file
+        _file = _studyStepDirectory + "\\ChosenChoice" + _buttonsController.trialNr.ToString() + ".json";
+        File.WriteAllText(_file, chosenOptStr);
+
+        //reset passed time to 0
+        timePassedOnView = 0;
+        int counter = 0;
+        for (int i = 0; i < transform.parent.childCount; i++)
+        {
+            if (transform.parent.GetChild(i) != transform)
             {
-                if(transform.parent.GetChild(i) != transform)
+                counter++;
+                //Other alternatives
+                Option alternative = new Option()
                 {
-                    //Other alternatives
-                    sw.WriteLine("");
-                    sw.WriteLine("");
-                    sw.WriteLine("");
-                    sw.WriteLine("OTHER ALTERNATIVE");
-                    sw.WriteLine("");
-                    sw.WriteLine("Overall grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().overallGrade.ToString());
-                    sw.WriteLine("Edge crossings grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedEdgeCrossings);
-                    sw.WriteLine("Node overlapping grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedNodeOverlaps);
-                    sw.WriteLine("Edge crossing angle grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().edgeCrossAngle);
-                    sw.WriteLine("Angular resolution grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().angRes);
-                    sw.WriteLine("Edge length grade: " + transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedEdgeLength);
-                }
+                    option = "alt" + counter.ToString(),
+                    overallGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().overallGrade,
+                    edgeCrossGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedEdgeCrossings,
+                    nodeOverlapGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedNodeOverlaps,
+                    edgeCrossAngGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().edgeCrossAngle,
+                    angResGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().angRes,
+                    edgeLengthGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedEdgeLength,
+                    passedTime = transform.parent.GetChild(i).GetComponent<ReadjustQualityMetrics>().timePassedOnView
+                };
+                string altStr = JsonUtility.ToJson(alternative);
+
+                //Save alternative choice to file
+                _file = _studyStepDirectory + "\\Alternative" + counter.ToString() + "Step" + _buttonsController.trialNr.ToString() + ".json";
+                File.WriteAllText(_file, altStr);
+
+                //reset timePassed value
+                transform.parent.GetChild(i).GetComponent<ReadjustQualityMetrics>().timePassedOnView = 0;
             }
         }
+
         // Save screenshots
         for(int i=0; i<transform.parent.childCount; i++)
         {
@@ -265,5 +299,29 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         edgeCrossResWeight *= 2 / maxValue;
     }
 
+    [System.Serializable]
+    private class Header
+    {
+        public int stepNumber;
+        public string algorithm;
+        public string task;
+        public float edgeCrWeight;
+        public float nodeOvWeight;
+        public float edgeCrAngWeight;
+        public float angResWeight;
+        public float edgeLenWeight;
+        public int cameraOffset;
+    }
+    private class Option
+    {
+        public string option;
+        public float overallGrade;
+        public float edgeCrossGrade;
+        public float nodeOverlapGrade;
+        public float edgeCrossAngGrade;
+        public float angResGrade;
+        public float edgeLengthGrade;
+        public float passedTime;
+    }
     
 }

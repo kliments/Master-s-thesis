@@ -2774,7 +2774,7 @@ MonoBehaviour:
   speed: 1
   _finished: 1
   observer: {fileID: 0}
-  start: 0
+  test: 0
   defaultParent: {fileID: 113367145}
 --- !u!114 &360191234
 MonoBehaviour:
@@ -3718,6 +3718,7 @@ MonoBehaviour:
   readjust: 0
   listener: {fileID: 492981117}
   delta: 0
+  timePassedOnView: 0
   rightController: {fileID: 777596325}
   leftController: {fileID: 87412754}
 --- !u!114 &492981117
@@ -4585,6 +4586,7 @@ MonoBehaviour:
   readjust: 0
   listener: {fileID: 620225321}
   delta: 0
+  timePassedOnView: 0
   rightController: {fileID: 777596325}
   leftController: {fileID: 87412754}
 --- !u!114 &620225321
@@ -6121,6 +6123,7 @@ MonoBehaviour:
   readjust: 0
   listener: {fileID: 785030739}
   delta: 0
+  timePassedOnView: 0
   rightController: {fileID: 777596325}
   leftController: {fileID: 87412754}
 --- !u!114 &785030739
@@ -7580,7 +7583,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1031145540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12382,8 +12385,9 @@ MonoBehaviour:
   start: 0
   layout: 0
   scan: 0
-  log: 0
-  isTraining: 1
+  generateData: 0
+  dontProceed: 0
+  isTraining: 0
   configFiles:
   - {fileID: 4900000, guid: f4f3eae5521c3004a91519e7da5c73b0, type: 3}
   - {fileID: 4900000, guid: c991bceabfdc8d340b9f442b7b21c15c, type: 3}
@@ -12402,7 +12406,9 @@ MonoBehaviour:
   controller: {fileID: 360191221}
   graphParent: {fileID: 113367144}
   trainingText: {fileID: 1972049707}
+  viewportOptimizer: {fileID: 0}
   ptID: 0
+  testID: 0
   trialNR: 0
   algorithm: 
   task: 
@@ -18642,7 +18648,7 @@ Prefab:
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 1035
+      value: 1121
       objectReference: {fileID: 0}
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}

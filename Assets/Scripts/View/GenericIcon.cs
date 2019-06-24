@@ -24,6 +24,26 @@ public abstract class GenericIcon : MonoBehaviour {
         return Op;
     }
 
+    public void SelectThisIcon()
+    {
+        GameObject selectedIcon = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        Vector3 scale = transform.lossyScale;
+        scale.z = 0.01f;
+        foreach(Transform child in transform)
+        {
+            if(child.gameObject.activeSelf)
+            {
+                selectedIcon.transform.parent = child;
+                break;
+            }
+        }
+        selectedIcon.transform.localScale = new Vector3(1,1,1.1f);
+        selectedIcon.transform.localPosition = new Vector3(0, 0, 0);
+        selectedIcon.transform.localEulerAngles = new Vector3(0, 0, 0);
+        selectedIcon.tag = "SelectedIcon";
+        selectedIcon.GetComponent<MeshRenderer>().material.color = Color.red;
+    }
+
 //    private void Update()
 //    {
 //        GenericIconInteractionController interactionController = transform.GetComponentInChildren<GenericIconInteractionController>();

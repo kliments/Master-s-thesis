@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ConeBurst : GeneralLayoutAlgorithm {
-    public bool start;
+    public bool test;
     public Transform defaultParent;
     private ConeTreeAlgorithm coneTreeAlg;
     private GenericOperator _root;
@@ -19,9 +19,9 @@ public class ConeBurst : GeneralLayoutAlgorithm {
 	
 	// Update is called once per frame
 	void Update () {
-        if(start)
+        if(test)
         {
-            start = false;
+            test = false;
             StartAlgorithm();
         }
     }

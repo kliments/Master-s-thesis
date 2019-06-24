@@ -37,9 +37,11 @@ public class PreviewButtonsController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        //When grip was pressed
-        if(_rightDevice.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
+        //When grip was pressed, choose the selected view
+        if((_rightDevice != null && _rightDevice.GetPressDown(SteamVR_Controller.ButtonMask.Grip)) || Input.GetMouseButtonDown(0))
         {
+            //boolean value that sets true when number of trials has exceeded
+            if (studieScript.dontProceed) return;
             //only if the current view is one of the 3 options
             if(currentView != null)
             {
@@ -47,31 +49,50 @@ public class PreviewButtonsController : MonoBehaviour {
                 {
                     if (view.GetComponent<QualityMetricViewPort>() == currentView)
                     {
-                        if(studieScript.isTraining && trialNr >= 4)
+                        if(studieScript.isTraining && trialNr > 4)
                         {
-                            Debug.Log("Reached limit of 10 steps");
+                            Debug.Log("Training limit of 5 trials reached!!");
                             Debug.Log("Please proceed with next step of the study!");
 
                             studieScript.ToggleTrainingSession();
                             trialNr = 0;
+                            studieScript.dontProceed = true;
                             return;
                         }
-                        else if (!studieScript.isTraining && trialNr >= 9)
+                        else if (!studieScript.isTraining && trialNr > 9)
                         {
-                            Debug.Log("Reached limit of 10 steps");
+                            Debug.Log("Training limit of 10 trials reached!!");
                             Debug.Log("Please proceed with next step of the study!");
 
                             studieScript.ToggleTrainingSession();
                             trialNr = 0;
+                            studieScript.dontProceed = true;
                             return;
                         }
 
+                        //remove old highlighted nodes and create new ones if there are previous (only in training mode)
+                        if (studieScript.isTraining)
+                        {
+                            //destroy previously created highlighted nodes
+                            GameObject[] highlightedIcons = GameObject.FindGameObjectsWithTag("SelectedIcon");
+                            if (highlightedIcons != null)
+                            {
+                                for (int i = highlightedIcons.Length - 1; i >= 0; i--)
+                                {
+                                    Destroy(highlightedIcons[i]);
+                                }
+                            }
+
+                            //Create new highlighted nodes
+                            studieScript.SelectRandomlyTwoNodes();
+                        }
                         //Set rotation of graph back to 0
                         _rotate.SetBackToZero();
 
                         view.GetComponent<ReadjustQualityMetrics>().ReadjustMetrics();
                         view.GetComponent<ReadjustQualityMetrics>().AddLogDataToFile();
                         currentView = null;
+                        break;
                     }
                 }
             }

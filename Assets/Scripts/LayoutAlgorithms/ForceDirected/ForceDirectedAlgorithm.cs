@@ -91,7 +91,7 @@ public class ForceDirectedAlgorithm : GeneralLayoutAlgorithm {
         if(test)
         {
             test = false;
-            PreScanCalculation();
+            StartAlgorithm();
         }
     }
 

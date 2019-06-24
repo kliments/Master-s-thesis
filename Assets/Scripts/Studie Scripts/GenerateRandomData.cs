@@ -39,9 +39,16 @@ public class GenerateRandomData : MonoBehaviour {
         }
 	}
 
-    public string GenerateData(string dir,string dataID)
+    public string GenerateData(string dir,string dataID, string task, bool isTraining)
     {
-        _randomName = "RandomData" + dataID.ToString() + ".xml";
+        if(isTraining)
+        {
+            _randomName = "TrainingData" + dataID.ToString() + ".xml";
+        }
+        else
+        {
+            _randomName = "RandomData"  + dataID.ToString() + task + ".xml";
+        }
         //return data if already exists
         if (File.Exists(dir.ToString() + "\\" + _randomName)) return dir.ToString() + "\\" + _randomName;
 
