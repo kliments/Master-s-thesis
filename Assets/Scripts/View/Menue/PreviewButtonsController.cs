@@ -50,7 +50,7 @@ public class PreviewButtonsController : MonoBehaviour {
                 {
                     if (view.GetComponent<QualityMetricViewPort>() == currentView)
                     {
-                        //remove old highlighted nodes and create new ones if there are previous (only in training mode)
+                        /*//remove old highlighted nodes and create new ones if there are previous (only in training mode)
                         if (studieScript.isTraining)
                         {
                             //destroy previously created highlighted nodes
@@ -65,14 +65,14 @@ public class PreviewButtonsController : MonoBehaviour {
                             if (studieScript.task == " Task1")
                             {
                                 //Create two new highlighted nodes
-                                studieScript.SelectRandomlyTwoNodes(40, 73);
+                                studieScript.SelectRandomlyTwoNodes(28, 86);
                             }
                             else if(studieScript.task == " Task2")
                             {
                                 //Select all nodes of particular type
                                 studieScript.SelectAllOperators((typeof(DataloaderOperator)));
                             }
-                        }
+                        }*/
                         //Set rotation of graph back to 0
                         _rotate.SetBackToZero();
 
@@ -80,7 +80,7 @@ public class PreviewButtonsController : MonoBehaviour {
                         view.GetComponent<ReadjustQualityMetrics>().AddLogDataToFile();
                         currentView = null;
 
-                        if (studieScript.isTraining && trialNr > 4)
+                        if (studieScript.isTraining && trialNr > 9)
                         {
                             Debug.Log("TRAINING LIMIT OF 5 TRIALS REACHED!!");
                             Debug.Log("PLEASE PROCEEDWITH NEXT STEP OF THE STUDY!");
@@ -90,7 +90,7 @@ public class PreviewButtonsController : MonoBehaviour {
                             studieScript.dontProceed = true;
                             return;
                         }
-                        else if (!studieScript.isTraining && trialNr > 9)
+                        else if (!studieScript.isTraining && trialNr > 19)
                         {
                             Debug.Log("STUDY LIMIT OF 10 TRIALS REACHED!!");
                             Debug.Log("PLEASE PROCEED WITH NEXT STEP OF THE STUDY!");

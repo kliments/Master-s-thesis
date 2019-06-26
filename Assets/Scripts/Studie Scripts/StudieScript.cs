@@ -139,6 +139,11 @@ public class StudieScript : MonoBehaviour {
             LoadDataset(studyData);
             StartCoroutine(LayoutGraph(false, 1));
         }
+        if(scan)
+        {
+            scan = false;
+            ScanGraph();
+        }
 	}
 
     //Reseting values
@@ -191,7 +196,7 @@ public class StudieScript : MonoBehaviour {
     void ScanGraph()
     {
         viewportOptimizer.LocalScan();
-        if (task == " Task1" && isTraining) SelectRandomlyTwoNodes(40, 73);
+        if (task == " Task1" && isTraining) SelectRandomlyTwoNodes(28, 86);
         else if (task == " Task2" && isTraining) SelectAllOperators(typeof(DataloaderOperator));
     }
 
