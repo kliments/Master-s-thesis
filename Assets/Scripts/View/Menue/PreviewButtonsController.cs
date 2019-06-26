@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Model.Operators;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -49,27 +50,6 @@ public class PreviewButtonsController : MonoBehaviour {
                 {
                     if (view.GetComponent<QualityMetricViewPort>() == currentView)
                     {
-                        if(studieScript.isTraining && trialNr > 4)
-                        {
-                            Debug.Log("Training limit of 5 trials reached!!");
-                            Debug.Log("Please proceed with next step of the study!");
-
-                            studieScript.ToggleTrainingSession();
-                            trialNr = 0;
-                            studieScript.dontProceed = true;
-                            return;
-                        }
-                        else if (!studieScript.isTraining && trialNr > 9)
-                        {
-                            Debug.Log("Training limit of 10 trials reached!!");
-                            Debug.Log("Please proceed with next step of the study!");
-
-                            studieScript.ToggleTrainingSession();
-                            trialNr = 0;
-                            studieScript.dontProceed = true;
-                            return;
-                        }
-
                         //remove old highlighted nodes and create new ones if there are previous (only in training mode)
                         if (studieScript.isTraining)
                         {
@@ -82,9 +62,16 @@ public class PreviewButtonsController : MonoBehaviour {
                                     Destroy(highlightedIcons[i]);
                                 }
                             }
-
-                            //Create new highlighted nodes
-                            studieScript.SelectRandomlyTwoNodes();
+                            if (studieScript.task == " Task1")
+                            {
+                                //Create two new highlighted nodes
+                                studieScript.SelectRandomlyTwoNodes();
+                            }
+                            else if(studieScript.task == " Task2")
+                            {
+                                //Select all nodes of particular type
+                                studieScript.SelectAllOperators((typeof(DataloaderOperator)));
+                            }
                         }
                         //Set rotation of graph back to 0
                         _rotate.SetBackToZero();
@@ -92,6 +79,27 @@ public class PreviewButtonsController : MonoBehaviour {
                         view.GetComponent<ReadjustQualityMetrics>().ReadjustMetrics();
                         view.GetComponent<ReadjustQualityMetrics>().AddLogDataToFile();
                         currentView = null;
+
+                        if (studieScript.isTraining && trialNr > 4)
+                        {
+                            Debug.Log("Training limit of 5 trials reached!!");
+                            Debug.Log("Please proceed with next step of the study!");
+
+                            studieScript.ToggleTrainingSession();
+                            trialNr = 0;
+                            studieScript.dontProceed = true;
+                            return;
+                        }
+                        else if (!studieScript.isTraining && trialNr > 5)
+                        {
+                            Debug.Log("Training limit of 10 trials reached!!");
+                            Debug.Log("Please proceed with next step of the study!");
+
+                            studieScript.ToggleTrainingSession();
+                            trialNr = 0;
+                            studieScript.dontProceed = true;
+                            return;
+                        }
                         break;
                     }
                 }

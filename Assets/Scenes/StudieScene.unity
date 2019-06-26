@@ -12406,6 +12406,8 @@ MonoBehaviour:
   controller: {fileID: 360191221}
   graphParent: {fileID: 113367144}
   trainingText: {fileID: 1972049707}
+  selectedOperator: {fileID: 1636412993770294, guid: d8f4e5e681789a9499ed18eeca253843,
+    type: 2}
   viewportOptimizer: {fileID: 0}
   ptID: 0
   testID: 0

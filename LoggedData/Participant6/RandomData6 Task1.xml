@@ -1,0 +1,1157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<GenericOperatorCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <GenericOperators>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>0</ID>
+      <Parent>0</Parent>
+      <PosX>0</PosX>
+      <PosY>2.5</PosY>
+      <PosZ>0</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>0</Second>
+      <MilliSecond>0</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>1</ID>
+      <Parent>0</Parent>
+      <PosX>0.597896338</PosX>
+      <PosY>2.16065931</PosY>
+      <PosZ>-0.9909525</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>12</Second>
+      <MilliSecond>444</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>2</ID>
+      <Parent>0</Parent>
+      <PosX>0.978708</PosX>
+      <PosY>2.0203557</PosY>
+      <PosZ>0.0514079332</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>430</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>3</ID>
+      <Parent>0</Parent>
+      <PosX>0.274366349</PosX>
+      <PosY>3.02401328</PosY>
+      <PosZ>-0.7320368</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>22</Second>
+      <MilliSecond>352</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>4</ID>
+      <Parent>1</Parent>
+      <PosX>0.536591649</PosX>
+      <PosY>2.59242225</PosY>
+      <PosZ>-0.762385964</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>47</Second>
+      <MilliSecond>634</MilliSecond>
+      <customData xsi:type="CustomSplitData">
+        <Threshold>0.639519334</Threshold>
+        <Axis>Y</Axis>
+      </customData>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>5</ID>
+      <Parent>4</Parent>
+      <PosX>0.127750874</PosX>
+      <PosY>2.36668944</PosY>
+      <PosZ>-0.529164553</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>57</Second>
+      <MilliSecond>890</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>6</ID>
+      <Parent>4</Parent>
+      <PosX>0.5866895</PosX>
+      <PosY>3.538193</PosY>
+      <PosZ>-0.6562748</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>55</Second>
+      <MilliSecond>987</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>7</ID>
+      <Parent>3</Parent>
+      <PosX>-0.5377724</PosX>
+      <PosY>2.88620186</PosY>
+      <PosZ>-0.873598933</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>23</Second>
+      <MilliSecond>988</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>8</ID>
+      <Parent>2</Parent>
+      <PosX>1.075221</PosX>
+      <PosY>1.2727077</PosY>
+      <PosZ>0.6353212</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>746</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>9</ID>
+      <Parent>2</Parent>
+      <PosX>1.38680553</PosX>
+      <PosY>1.47057533</PosY>
+      <PosZ>0.355910152</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>610</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>10</ID>
+      <Parent>5</Parent>
+      <PosX>-0.371514678</PosX>
+      <PosY>3.12649775</PosY>
+      <PosZ>-0.44430697</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>905</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>11</ID>
+      <Parent>10</Parent>
+      <PosX>-0.89410603</PosX>
+      <PosY>2.77692366</PosY>
+      <PosZ>-0.6184945</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>981</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>12</ID>
+      <Parent>1</Parent>
+      <PosX>1.48066068</PosX>
+      <PosY>3.0406425</PosY>
+      <PosZ>-0.3719061</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>19</Second>
+      <MilliSecond>831</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>13</ID>
+      <Parent>5</Parent>
+      <PosX>0.468044966</PosX>
+      <PosY>1.55689788</PosY>
+      <PosZ>-0.452466339</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>57</Second>
+      <MilliSecond>947</MilliSecond>
+      <customData xsi:type="CustomSplitData">
+        <Threshold>0.08635914</Threshold>
+        <Axis>Y</Axis>
+      </customData>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>14</ID>
+      <Parent>13</Parent>
+      <PosX>0.885825336</PosX>
+      <PosY>2.50113535</PosY>
+      <PosZ>-1.18657863</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>57</Second>
+      <MilliSecond>980</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>15</ID>
+      <Parent>13</Parent>
+      <PosX>0.152476668</PosX>
+      <PosY>0.90283227</PosY>
+      <PosZ>-0.076931864</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>996</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>16</ID>
+      <Parent>14</Parent>
+      <PosX>0.221697778</PosX>
+      <PosY>1.71639419</PosY>
+      <PosZ>-0.8203311</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>57</Second>
+      <MilliSecond>993</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>17</ID>
+      <Parent>5</Parent>
+      <PosX>-0.813661337</PosX>
+      <PosY>3.17103982</PosY>
+      <PosZ>0.200430125</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>57</Second>
+      <MilliSecond>979</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>18</ID>
+      <Parent>3</Parent>
+      <PosX>0.589317</PosX>
+      <PosY>3.964331</PosY>
+      <PosZ>-0.7959608</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>47</Second>
+      <MilliSecond>448</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>19</ID>
+      <Parent>16</Parent>
+      <PosX>0.5594752</PosX>
+      <PosY>1.15912151</PosY>
+      <PosZ>-0.6539675</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>994</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>20</ID>
+      <Parent>11</Parent>
+      <PosX>-1.4983207</PosX>
+      <PosY>3.0340023</PosY>
+      <PosZ>0.0149383247</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>994</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>21</ID>
+      <Parent>2</Parent>
+      <PosX>1.89722681</PosX>
+      <PosY>1.43955469</PosY>
+      <PosZ>0.872660756</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>532</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>22</ID>
+      <Parent>11</Parent>
+      <PosX>-0.7087002</PosX>
+      <PosY>2.14762425</PosY>
+      <PosZ>0.20264338</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>991</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>23</ID>
+      <Parent>22</Parent>
+      <PosX>-0.5688516</PosX>
+      <PosY>3.066559</PosY>
+      <PosZ>0.0356127024</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>991</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>24</ID>
+      <Parent>23</Parent>
+      <PosX>-0.4867103</PosX>
+      <PosY>3.546932</PosY>
+      <PosZ>0.2752507</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>992</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>25</ID>
+      <Parent>8</Parent>
+      <PosX>1.78040624</PosX>
+      <PosY>0.626948833</PosY>
+      <PosZ>-0.0920884162</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>750</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>26</ID>
+      <Parent>6</Parent>
+      <PosX>0.8487003</PosX>
+      <PosY>3.581753</PosY>
+      <PosZ>-1.4734652</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>989</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>27</ID>
+      <Parent>8</Parent>
+      <PosX>1.09015918</PosX>
+      <PosY>1.44886243</PosY>
+      <PosZ>0.126957476</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>901</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>28</ID>
+      <Parent>20</Parent>
+      <PosX>-2.00724745</PosX>
+      <PosY>3.73115635</PosY>
+      <PosZ>-0.83981514</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>995</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>29</ID>
+      <Parent>17</Parent>
+      <PosX>-1.58458233</PosX>
+      <PosY>2.447616</PosY>
+      <PosZ>-0.03927672</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>987</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>30</ID>
+      <Parent>12</Parent>
+      <PosX>2.05577</PosX>
+      <PosY>2.273472</PosY>
+      <PosZ>-1.12362</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>46</Second>
+      <MilliSecond>875</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>31</ID>
+      <Parent>28</Parent>
+      <PosX>-2.10698175</PosX>
+      <PosY>2.88345838</PosY>
+      <PosZ>-0.04082325</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>998</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>32</ID>
+      <Parent>10</Parent>
+      <PosX>-0.285898715</PosX>
+      <PosY>2.815362</PosY>
+      <PosZ>-0.137805849</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>975</MilliSecond>
+      <customData xsi:type="CustomSplitData">
+        <Threshold>0.408351123</Threshold>
+        <Axis>Z</Axis>
+      </customData>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>33</ID>
+      <Parent>32</Parent>
+      <PosX>-0.17452082</PosX>
+      <PosY>3.16515684</PosY>
+      <PosZ>-0.0999334157</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>997</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>34</ID>
+      <Parent>32</Parent>
+      <PosX>0.0548186</PosX>
+      <PosY>1.9356432</PosY>
+      <PosZ>-0.9017183</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>985</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>35</ID>
+      <Parent>0</Parent>
+      <PosX>-0.07420051</PosX>
+      <PosY>3.355108</PosY>
+      <PosZ>0.88182807</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>8</Second>
+      <MilliSecond>536</MilliSecond>
+      <customData xsi:type="CustomSplitData">
+        <Threshold>0.630794048</Threshold>
+        <Axis>Y</Axis>
+      </customData>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>36</ID>
+      <Parent>35</Parent>
+      <PosX>0.5336019</PosX>
+      <PosY>2.90113163</PosY>
+      <PosZ>0.477600217</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>21</Second>
+      <MilliSecond>911</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>37</ID>
+      <Parent>35</Parent>
+      <PosX>0.3733841</PosX>
+      <PosY>3.07256985</PosY>
+      <PosZ>0.2873962</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>17</Second>
+      <MilliSecond>892</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>38</ID>
+      <Parent>16</Parent>
+      <PosX>0.352022767</PosX>
+      <PosY>0.941081762</PosY>
+      <PosZ>-0.3852821</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>995</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>39</ID>
+      <Parent>22</Parent>
+      <PosX>-1.03880584</PosX>
+      <PosY>1.15185833</PosY>
+      <PosZ>0.6684387</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>995</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>40</ID>
+      <Parent>2</Parent>
+      <PosX>0.8380078</PosX>
+      <PosY>1.33722568</PosY>
+      <PosZ>0.31883797</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>771</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>41</ID>
+      <Parent>7</Parent>
+      <PosX>-0.7909459</PosX>
+      <PosY>2.7917943</PosY>
+      <PosZ>-1.4789449</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>56</Second>
+      <MilliSecond>992</MilliSecond>
+      <customData xsi:type="CustomSplitData">
+        <Threshold>0.0312130451</Threshold>
+        <Axis>Z</Axis>
+      </customData>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>42</ID>
+      <Parent>41</Parent>
+      <PosX>-0.1327075</PosX>
+      <PosY>2.39243746</PosY>
+      <PosZ>-1.58488071</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>57</Second>
+      <MilliSecond>994</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>43</ID>
+      <Parent>41</Parent>
+      <PosX>-1.21218538</PosX>
+      <PosY>2.33741522</PosY>
+      <PosZ>-2.12808</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>57</Second>
+      <MilliSecond>996</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>44</ID>
+      <Parent>29</Parent>
+      <PosX>-0.8534932</PosX>
+      <PosY>3.28514647</PosY>
+      <PosZ>-0.407850772</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>997</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>45</ID>
+      <Parent>31</Parent>
+      <PosX>-2.13374329</PosX>
+      <PosY>2.337617</PosY>
+      <PosZ>0.682273567</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>998</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>46</ID>
+      <Parent>38</Parent>
+      <PosX>0.333875656</PosX>
+      <PosY>0.984597743</PosY>
+      <PosZ>-0.83361876</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>995</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>47</ID>
+      <Parent>2</Parent>
+      <PosX>1.22775733</PosX>
+      <PosY>1.77612329</PosY>
+      <PosZ>-0.598219752</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>698</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>48</ID>
+      <Parent>9</Parent>
+      <PosX>2.06438947</PosX>
+      <PosY>2.2776742</PosY>
+      <PosZ>-0.589157462</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>894</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>49</ID>
+      <Parent>0</Parent>
+      <PosX>-0.294898629</PosX>
+      <PosY>3.46667743</PosY>
+      <PosZ>-0.4643892</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>39</Second>
+      <MilliSecond>386</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>50</ID>
+      <Parent>33</Parent>
+      <PosX>-0.9976448</PosX>
+      <PosY>4.0914</PosY>
+      <PosZ>-0.832954645</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>997</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>51</ID>
+      <Parent>23</Parent>
+      <PosX>-1.475222</PosX>
+      <PosY>2.94362068</PosY>
+      <PosZ>-0.6491586</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>995</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>52</ID>
+      <Parent>27</Parent>
+      <PosX>0.245729208</PosX>
+      <PosY>1.44890606</PosY>
+      <PosZ>-0.402985066</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>934</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>53</ID>
+      <Parent>3</Parent>
+      <PosX>-0.26918292</PosX>
+      <PosY>3.90909529</PosY>
+      <PosZ>-1.71574283</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>53</Second>
+      <MilliSecond>718</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>54</ID>
+      <Parent>2</Parent>
+      <PosX>1.31095529</PosX>
+      <PosY>2.83895826</PosY>
+      <PosZ>0.710415244</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>931</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>55</ID>
+      <Parent>46</Parent>
+      <PosX>0.242800117</PosX>
+      <PosY>0.143905446</PosY>
+      <PosZ>-1.5271455</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>998</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>56</ID>
+      <Parent>34</Parent>
+      <PosX>-0.607025146</PosX>
+      <PosY>2.66977286</PosY>
+      <PosZ>-1.62493682</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>987</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>57</ID>
+      <Parent>28</Parent>
+      <PosX>-1.27695966</PosX>
+      <PosY>3.94434977</PosY>
+      <PosZ>-0.56298095</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>998</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>58</ID>
+      <Parent>23</Parent>
+      <PosX>-0.828905344</PosX>
+      <PosY>3.886041</PosY>
+      <PosZ>-0.846485</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>997</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>59</ID>
+      <Parent>40</Parent>
+      <PosX>0.34304</PosX>
+      <PosY>1.29087818</PosY>
+      <PosZ>0.6949337</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>884</MilliSecond>
+      <customData xsi:type="CustomSplitData">
+        <Threshold>0.0132437944</Threshold>
+        <Axis>Z</Axis>
+      </customData>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>60</ID>
+      <Parent>59</Parent>
+      <PosX>0.415938973</PosX>
+      <PosY>1.96440268</PosY>
+      <PosZ>1.467963</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>962</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>61</ID>
+      <Parent>59</Parent>
+      <PosX>1.07379866</PosX>
+      <PosY>1.03403163</PosY>
+      <PosZ>1.596169</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>957</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>62</ID>
+      <Parent>2</Parent>
+      <PosX>1.62074351</PosX>
+      <PosY>2.97748423</PosY>
+      <PosZ>-0.00581690669</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>430</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>63</ID>
+      <Parent>24</Parent>
+      <PosX>-0.389674276</PosX>
+      <PosY>4.4688735</PosY>
+      <PosZ>0.0548602343</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>992</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>64</ID>
+      <Parent>9</Parent>
+      <PosX>1.11154807</PosX>
+      <PosY>2.40874839</PosY>
+      <PosZ>-0.417934537</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>764</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>65</ID>
+      <Parent>18</Parent>
+      <PosX>0.531188369</PosX>
+      <PosY>4.028323</PosY>
+      <PosZ>-0.368404329</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>52</Second>
+      <MilliSecond>848</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>66</ID>
+      <Parent>2</Parent>
+      <PosX>0.424431562</PosX>
+      <PosY>1.90201581</PosY>
+      <PosZ>0.108342141</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>824</MilliSecond>
+      <customData xsi:type="CustomSplitData">
+        <Threshold>0.9009985</Threshold>
+        <Axis>X</Axis>
+      </customData>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>67</ID>
+      <Parent>66</Parent>
+      <PosX>1.28894854</PosX>
+      <PosY>0.992650867</PosY>
+      <PosZ>-0.834362745</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>857</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>68</ID>
+      <Parent>66</Parent>
+      <PosX>-0.336263925</PosX>
+      <PosY>2.595088</PosY>
+      <PosZ>-0.0197547376</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>901</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>69</ID>
+      <Parent>7</Parent>
+      <PosX>-1.16129589</PosX>
+      <PosY>3.44496512</PosY>
+      <PosZ>-0.0286938176</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>51</Second>
+      <MilliSecond>992</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>70</ID>
+      <Parent>14</Parent>
+      <PosX>1.23364735</PosX>
+      <PosY>2.296432</PosY>
+      <PosZ>-1.33906639</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>992</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>71</ID>
+      <Parent>9</Parent>
+      <PosX>0.457493544</PosX>
+      <PosY>1.04982674</PosY>
+      <PosZ>0.301699162</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>741</MilliSecond>
+      <customData xsi:type="CustomSplitData">
+        <Threshold>0.6723372</Threshold>
+        <Axis>X</Axis>
+      </customData>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>72</ID>
+      <Parent>71</Parent>
+      <PosX>0.7506108</PosX>
+      <PosY>1.64775681</PosY>
+      <PosZ>0.643461</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>835</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>73</ID>
+      <Parent>71</Parent>
+      <PosX>0.392107844</PosX>
+      <PosY>0.4114903</PosY>
+      <PosZ>0.7479124</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>780</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>74</ID>
+      <Parent>61</Parent>
+      <PosX>1.73085928</PosX>
+      <PosY>1.48733091</PosY>
+      <PosZ>0.9130726</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>969</MilliSecond>
+      <customData xsi:type="CustomSplitData">
+        <Threshold>0.286516964</Threshold>
+        <Axis>Z</Axis>
+      </customData>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>75</ID>
+      <Parent>74</Parent>
+      <PosX>1.30363739</PosX>
+      <PosY>2.26783872</PosY>
+      <PosZ>0.212771654</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>981</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>76</ID>
+      <Parent>74</Parent>
+      <PosX>1.12158012</PosX>
+      <PosY>0.846232653</PosY>
+      <PosZ>-0.0547692776</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>996</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>77</ID>
+      <Parent>34</Parent>
+      <PosX>0.290545851</PosX>
+      <PosY>2.25280261</PosY>
+      <PosZ>-0.600743353</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>989</MilliSecond>
+      <customData xsi:type="CustomSplitData">
+        <Threshold>0.768916965</Threshold>
+        <Axis>Z</Axis>
+      </customData>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>78</ID>
+      <Parent>77</Parent>
+      <PosX>0.389121979</PosX>
+      <PosY>3.22613883</PosY>
+      <PosZ>-0.961610258</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>998</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>79</ID>
+      <Parent>77</Parent>
+      <PosX>1.02586973</PosX>
+      <PosY>2.69207835</PosY>
+      <PosZ>-1.47429061</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>996</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>80</ID>
+      <Parent>16</Parent>
+      <PosX>1.21699047</PosX>
+      <PosY>1.19049549</PosY>
+      <PosZ>-0.863681436</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>994</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>81</ID>
+      <Parent>62</Parent>
+      <PosX>1.72948778</PosX>
+      <PosY>2.34117818</PosY>
+      <PosZ>0.92563653</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>944</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>82</ID>
+      <Parent>48</Parent>
+      <PosX>2.3984828</PosX>
+      <PosY>2.90990448</PosY>
+      <PosZ>-0.47972846</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>948</MilliSecond>
+      <customData xsi:type="CustomSplitData">
+        <Threshold>0.005378723</Threshold>
+        <Axis>Z</Axis>
+      </customData>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>83</ID>
+      <Parent>82</Parent>
+      <PosX>1.41329646</PosX>
+      <PosY>2.27193451</PosY>
+      <PosZ>-0.8384957</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>967</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>84</ID>
+      <Parent>82</Parent>
+      <PosX>3.04558039</PosX>
+      <PosY>2.22690058</PosY>
+      <PosZ>0.434826136</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>989</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>85</ID>
+      <Parent>49</Parent>
+      <PosX>-0.331068277</PosX>
+      <PosY>3.49169779</PosY>
+      <PosZ>-1.10466349</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>713</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>86</ID>
+      <Parent>63</Parent>
+      <PosX>-0.931977868</PosX>
+      <PosY>3.93742132</PosY>
+      <PosZ>0.205491036</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>998</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>87</ID>
+      <Parent>36</Parent>
+      <PosX>0.693222761</PosX>
+      <PosY>1.94368315</PosY>
+      <PosZ>-0.4322585</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>42</Second>
+      <MilliSecond>998</MilliSecond>
+      <customData xsi:type="CustomSplitData">
+        <Threshold>0.865594</Threshold>
+        <Axis>X</Axis>
+      </customData>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>88</ID>
+      <Parent>87</Parent>
+      <PosX>1.50543118</PosX>
+      <PosY>2.47360134</PosY>
+      <PosZ>0.447965235</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>42</Second>
+      <MilliSecond>998</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>89</ID>
+      <Parent>87</Parent>
+      <PosX>1.42241073</PosX>
+      <PosY>2.19145417</PosY>
+      <PosZ>-0.0258485377</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>51</Second>
+      <MilliSecond>998</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>90</ID>
+      <Parent>19</Parent>
+      <PosX>-0.0245814323</PosX>
+      <PosY>1.82078159</PosY>
+      <PosZ>0.0289240777</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>998</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>91</ID>
+      <Parent>48</Parent>
+      <PosX>1.53973246</PosX>
+      <PosY>3.07102823</PosY>
+      <PosZ>-1.05570984</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>929</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="SplitOperator">
+      <ID>92</ID>
+      <Parent>60</Parent>
+      <PosX>1.16804016</PosX>
+      <PosY>1.25636768</PosY>
+      <PosZ>1.48642051</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>992</MilliSecond>
+      <customData xsi:type="CustomSplitData">
+        <Threshold>0.6734718</Threshold>
+        <Axis>X</Axis>
+      </customData>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>93</ID>
+      <Parent>92</Parent>
+      <PosX>0.286068559</PosX>
+      <PosY>0.683913231</PosY>
+      <PosZ>1.05751371</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>997</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>94</ID>
+      <Parent>92</Parent>
+      <PosX>1.34734654</PosX>
+      <PosY>0.2651949</PosY>
+      <PosZ>2.08186555</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>998</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DatageneratorOperator">
+      <ID>95</ID>
+      <Parent>47</Parent>
+      <PosX>0.483446479</PosX>
+      <PosY>1.15988684</PosY>
+      <PosZ>-0.2552988</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>776</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="ScatterplotOperator">
+      <ID>96</ID>
+      <Parent>50</Parent>
+      <PosX>-1.33867717</PosX>
+      <PosY>4.18614769</PosY>
+      <PosZ>-1.20867479</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>997</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>97</ID>
+      <Parent>91</Parent>
+      <PosX>0.7334969</PosX>
+      <PosY>3.520333</PosY>
+      <PosZ>-0.259027749</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>992</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>98</ID>
+      <Parent>5</Parent>
+      <PosX>-0.250173658</PosX>
+      <PosY>1.53193927</PosY>
+      <PosZ>0.411290377</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>57</Second>
+      <MilliSecond>921</MilliSecond>
+    </GenericOperator>
+    <GenericOperator Name="DataloaderOperator">
+      <ID>99</ID>
+      <Parent>33</Parent>
+      <PosX>-0.5896783</PosX>
+      <PosY>3.878302</PosY>
+      <PosZ>0.5469036</PosZ>
+      <Hour>16</Hour>
+      <Minute>0</Minute>
+      <Second>58</Second>
+      <MilliSecond>998</MilliSecond>
+    </GenericOperator>
+  </GenericOperators>
+</GenericOperatorCollection>

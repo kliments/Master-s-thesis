@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Model;
+using Model.Operators;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -20,7 +21,7 @@ public class StudieScript : MonoBehaviour {
     public QualityMetricSlider[] sliders;
 
     //Game object that contains all the layout algorithms
-    public GameObject controller, graphParent, trainingText;
+    public GameObject controller, graphParent, trainingText, selectedOperator;
 
     //Viewport optimizer
     public ViewPortOptimizer viewportOptimizer;
@@ -90,7 +91,7 @@ public class StudieScript : MonoBehaviour {
                 algorithm = _row[0];
                 task = _row[1];
                 task = task.Replace("\r", "");
-
+                
                 Invoke("LayoutGraph", 1);
                 trialNR = _rowCounter;
                 dontProceed = false;
@@ -125,7 +126,7 @@ public class StudieScript : MonoBehaviour {
 
                 CreateStudyTrialDirectory();
 
-                Invoke("LayoutGraph", 1);
+                StartCoroutine(LayoutGraph(true, 1));
                 _rowCounter++;
                 trialNR = _rowCounter;
                 dontProceed = false;
@@ -136,6 +137,7 @@ public class StudieScript : MonoBehaviour {
             generateData = false;
             studyData = GetComponent<GenerateRandomData>().GenerateData(directory, testID.ToString(), task, isTraining);
             LoadDataset(studyData);
+            StartCoroutine(LayoutGraph(false, 1));
         }
 	}
 
@@ -171,8 +173,9 @@ public class StudieScript : MonoBehaviour {
     }
 
     //Layout algorithm
-    void LayoutGraph()
+    IEnumerator LayoutGraph(bool toScan, float delay)
     {
+        yield return new WaitForSeconds(delay);
         foreach(var alg in algorithms)
         {
             if(alg.GetType().Name == algorithm)
@@ -181,15 +184,15 @@ public class StudieScript : MonoBehaviour {
                 break;
             }
         }
-        Invoke("ScanGraph", 1);
+        if(toScan) Invoke("ScanGraph", 1);
     }
 
     //Scan and compute viewpoints
     void ScanGraph()
     {
         viewportOptimizer.LocalScan();
-        if (task == "Task1" && isTraining) SelectRandomlyTwoNodes();
-        //else if (task == "Task2" && isTraining) SelectRandomlyParticularOperator();
+        if (task == " Task1" && isTraining) SelectRandomlyTwoNodes();
+        else if (task == " Task2" && isTraining) SelectAllOperators(typeof(DataloaderOperator));
     }
 
     //Each participant's directory
@@ -218,7 +221,10 @@ public class StudieScript : MonoBehaviour {
         }
         else
         {
-            isTraining = true;
+            if(_rowCounter % 2 == 0)
+            {
+                isTraining = true;
+            }
         }
     }
 
@@ -281,6 +287,28 @@ public class StudieScript : MonoBehaviour {
         rn2.GetComponent<GenericIcon>().SelectThisIcon();
     }
 
+    public void SelectAllOperators(System.Type go)
+    {
+        foreach(var op in observer.GetOperators())
+        {
+            if(op.GetType() == go)
+            {
+                //Highlight the icon of the operator
+                HighlightOperator(op);
+            }
+        }
+    }
+
+    void HighlightOperator(GenericOperator op)
+    {
+        Transform icon = op.GetIcon().transform;
+        Transform child;
+        if (icon.GetChild(0).name != "Plane") child = icon.GetChild(0);
+        else child = icon.GetChild(1);
+        GameObject selectedOp = Instantiate(selectedOperator, icon.position, new Quaternion(0,0,0,1), child);
+        selectedOp.transform.localScale = new Vector3(1, 1, 100);
+        selectedOp.tag = "SelectedIcon";
+    }
     float NodeOverlappingCoef(GameObject currentIcon, Vector3 cameraPos)
     {
         int layerMask = LayerMask.GetMask("NodeOverlapping");
