@@ -65,7 +65,7 @@ public class PreviewButtonsController : MonoBehaviour {
                             if (studieScript.task == " Task1")
                             {
                                 //Create two new highlighted nodes
-                                studieScript.SelectRandomlyTwoNodes();
+                                studieScript.SelectRandomlyTwoNodes(40, 73);
                             }
                             else if(studieScript.task == " Task2")
                             {
@@ -82,18 +82,18 @@ public class PreviewButtonsController : MonoBehaviour {
 
                         if (studieScript.isTraining && trialNr > 4)
                         {
-                            Debug.Log("Training limit of 5 trials reached!!");
-                            Debug.Log("Please proceed with next step of the study!");
+                            Debug.Log("TRAINING LIMIT OF 5 TRIALS REACHED!!");
+                            Debug.Log("PLEASE PROCEEDWITH NEXT STEP OF THE STUDY!");
 
                             studieScript.ToggleTrainingSession();
                             trialNr = 0;
                             studieScript.dontProceed = true;
                             return;
                         }
-                        else if (!studieScript.isTraining && trialNr > 5)
+                        else if (!studieScript.isTraining && trialNr > 9)
                         {
-                            Debug.Log("Training limit of 10 trials reached!!");
-                            Debug.Log("Please proceed with next step of the study!");
+                            Debug.Log("STUDY LIMIT OF 10 TRIALS REACHED!!");
+                            Debug.Log("PLEASE PROCEED WITH NEXT STEP OF THE STUDY!");
 
                             studieScript.ToggleTrainingSession();
                             trialNr = 0;

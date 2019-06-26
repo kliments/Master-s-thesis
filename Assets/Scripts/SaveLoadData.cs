@@ -40,7 +40,6 @@ public class SaveLoadData:MonoBehaviour {
     }
     public static void SaveRandomData(string path, GenericOperatorContainer operators)
     {
-        Debug.Log("press save");
         if (genericOperatorContainer.operators.Count > 0) ClearOperators();
         SaveOperators(path, operators);
         ClearOperators();
@@ -48,7 +47,6 @@ public class SaveLoadData:MonoBehaviour {
 
     public static void LoadData(string path)
     {
-        Debug.Log("press load");
         ClearOperators();
         //destroy any current nodes in observer
         if (observer.GetOperators()!=null)

@@ -91,8 +91,8 @@ public class StudieScript : MonoBehaviour {
                 algorithm = _row[0];
                 task = _row[1];
                 task = task.Replace("\r", "");
-                
-                Invoke("LayoutGraph", 1);
+
+                StartCoroutine(LayoutGraph(true, 1));
                 trialNR = _rowCounter;
                 dontProceed = false;
             }
@@ -191,7 +191,7 @@ public class StudieScript : MonoBehaviour {
     void ScanGraph()
     {
         viewportOptimizer.LocalScan();
-        if (task == " Task1" && isTraining) SelectRandomlyTwoNodes();
+        if (task == " Task1" && isTraining) SelectRandomlyTwoNodes(40, 73);
         else if (task == " Task2" && isTraining) SelectAllOperators(typeof(DataloaderOperator));
     }
 
@@ -228,9 +228,9 @@ public class StudieScript : MonoBehaviour {
         }
     }
 
-    public void SelectRandomlyTwoNodes()
+    public void SelectRandomlyTwoNodes(int random1, int random2)
     {
-        int random1, random2;
+        /*int random1, random2;
         IconProperties rn1, rn2;
         GameObject icon = new GameObject();
         bool toBreak = false;
@@ -284,7 +284,14 @@ public class StudieScript : MonoBehaviour {
 
         }
         rn1.GetComponent<GenericIcon>().SelectThisIcon();
-        rn2.GetComponent<GenericIcon>().SelectThisIcon();
+        rn2.GetComponent<GenericIcon>().SelectThisIcon();*/
+
+        GenericOperator op1 = observer.getOperatorByID(random1);
+        GenericOperator op2 = observer.getOperatorByID(random2);
+        GenericIcon rn1 = op1.GetIcon().GetComponent<GenericIcon>();
+        GenericIcon rn2 = op2.GetIcon().GetComponent<GenericIcon>();
+        rn1.SelectThisIcon();
+        rn2.SelectThisIcon();
     }
 
     public void SelectAllOperators(System.Type go)

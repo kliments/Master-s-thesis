@@ -7583,7 +7583,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1031145540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12387,7 +12387,7 @@ MonoBehaviour:
   scan: 0
   generateData: 0
   dontProceed: 0
-  isTraining: 0
+  isTraining: 1
   configFiles:
   - {fileID: 4900000, guid: f4f3eae5521c3004a91519e7da5c73b0, type: 3}
   - {fileID: 4900000, guid: c991bceabfdc8d340b9f442b7b21c15c, type: 3}
@@ -18650,7 +18650,7 @@ Prefab:
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 1121
+      value: 1035
       objectReference: {fileID: 0}
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
