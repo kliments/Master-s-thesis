@@ -1,0 +1,3 @@
+stepNumber,algorithm,task,edgeCrossingWeight,nodeOverlappingWeight,edgeCrossingAngleWeight,angularResolutionWeight,edgeLengthWeight,cameraOffset
+1,ForceDirectedAlgorithm, Task2,1.004972,1.003764,0.9988842,0.9952576,0.9971225,10
+

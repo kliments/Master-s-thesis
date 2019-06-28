@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Text;
+using System.IO;
 
 public class PreviewButtonsController : MonoBehaviour {
     public Transform child;
@@ -12,6 +14,10 @@ public class PreviewButtonsController : MonoBehaviour {
     public int[] order;
     public int trialNr;
     public List<GameObject> viewObjects;
+    public List<string[]> rowHeaderData = new List<string[]>();
+    public List<string[]> rowChosenViewData = new List<string[]>();
+    public List<string[]> rowAlt1Data = new List<string[]>();
+    public List<string[]> rowAlt2Data = new List<string[]>();
 
     public Transform rightController;
     public Transform leftController;
@@ -34,6 +40,12 @@ public class PreviewButtonsController : MonoBehaviour {
         }
         studieScript = (StudieScript)FindObjectOfType(typeof(StudieScript));
         _rotate = (InstantRotationOfGraph)FindObjectOfType(typeof(InstantRotationOfGraph));
+
+        //Create first row of csv files
+        rowHeaderData.Add(CreateHeaderDataTemp());
+        rowChosenViewData.Add(CreateOptionDataTemp());
+        rowAlt1Data.Add(CreateOptionDataTemp());
+        rowAlt2Data.Add(CreateOptionDataTemp());
     }
 	
 	// Update is called once per frame
@@ -98,6 +110,7 @@ public class PreviewButtonsController : MonoBehaviour {
                             studieScript.ToggleTrainingSession();
                             trialNr = 0;
                             studieScript.dontProceed = true;
+                            ResetDataStrings();
                             return;
                         }
                         break;
@@ -139,5 +152,46 @@ public class PreviewButtonsController : MonoBehaviour {
             order[i] = order[j];
             order[j] = temp;
         }
+    }
+
+    string[] CreateHeaderDataTemp()
+    {
+        string[] headerDataTemp = new string[9];
+        headerDataTemp[0] = "stepNumber";
+        headerDataTemp[1] = "algorithm";
+        headerDataTemp[2] = "task";
+        headerDataTemp[3] = "edgeCrossingWeight";
+        headerDataTemp[4] = "nodeOverlappingWeight";
+        headerDataTemp[5] = "edgeCrossingAngleWeight";
+        headerDataTemp[6] = "angularResolutionWeight";
+        headerDataTemp[7] = "edgeLengthWeight";
+        headerDataTemp[8] = "cameraOffset";
+        return headerDataTemp;
+    }
+
+    string[] CreateOptionDataTemp()
+    {
+        string[] option = new string[8];
+        option[0] = "option";
+        option[1] = "overallGrade";
+        option[2] = "edgeCrossGrade";
+        option[3] = "nodeOverlapGrade";
+        option[4] = "edgeCrossAngleGrade";
+        option[5] = "angularResolutionGrade";
+        option[6] = "edgeLengthGrade";
+        option[7] = "passedTime";
+        return option;
+    }
+
+    void ResetDataStrings()
+    {
+        rowHeaderData = new List<string[]>();
+        rowChosenViewData = new List<string[]>();
+        rowAlt1Data = new List<string[]>();
+        rowAlt2Data = new List<string[]>();
+        rowHeaderData.Add(CreateHeaderDataTemp());
+        rowChosenViewData.Add(CreateOptionDataTemp());
+        rowAlt1Data.Add(CreateOptionDataTemp());
+        rowAlt2Data.Add(CreateOptionDataTemp());
     }
 }
