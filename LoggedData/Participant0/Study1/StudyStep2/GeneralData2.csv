@@ -1,0 +1,4 @@
+stepNumber,algorithm,task,edgeCrossingWeight,nodeOverlappingWeight,edgeCrossingAngleWeight,angularResolutionWeight,edgeLengthWeight,cameraOffset
+1,ConeBurst, Task1,1.048171,1.008779,0.9898619,1.004843,0.9483452,11
+2,ConeBurst, Task1,1.109084,1.017206,0.956826,1.009611,0.9072726,11
+

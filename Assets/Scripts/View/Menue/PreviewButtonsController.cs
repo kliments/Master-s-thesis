@@ -62,29 +62,35 @@ public class PreviewButtonsController : MonoBehaviour {
                 {
                     if (view.GetComponent<QualityMetricViewPort>() == currentView)
                     {
-                        /*//remove old highlighted nodes and create new ones if there are previous (only in training mode)
+                        //remove old highlighted nodes and create new ones if there are previous (only in training mode)
                         if (studieScript.isTraining)
                         {
-                            //destroy previously created highlighted nodes
-                            GameObject[] highlightedIcons = GameObject.FindGameObjectsWithTag("SelectedIcon");
-                            if (highlightedIcons != null)
+                            if(trialNr == 2)
                             {
-                                for (int i = highlightedIcons.Length - 1; i >= 0; i--)
+                                //destroy previously created highlighted nodes
+                                GameObject[] highlightedIcons = GameObject.FindGameObjectsWithTag("SelectedIcon");
+                                if (highlightedIcons != null)
                                 {
-                                    Destroy(highlightedIcons[i]);
+                                    for (int i = highlightedIcons.Length - 1; i >= 0; i--)
+                                    {
+                                        Destroy(highlightedIcons[i]);
+                                    }
                                 }
                             }
-                            if (studieScript.task == " Task1")
+                            else if(trialNr == 3)
                             {
-                                //Create two new highlighted nodes
-                                studieScript.SelectRandomlyTwoNodes(28, 86);
+                                if (studieScript.task == " Task1")
+                                {
+                                    //Create two new highlighted nodes
+                                    studieScript.SelectRandomlyTwoNodes(28, 86);
+                                }
+                                else if (studieScript.task == " Task2")
+                                {
+                                    //Select all nodes of particular type
+                                    studieScript.SelectAllOperators((typeof(DataloaderOperator)));
+                                }
                             }
-                            else if(studieScript.task == " Task2")
-                            {
-                                //Select all nodes of particular type
-                                studieScript.SelectAllOperators((typeof(DataloaderOperator)));
-                            }
-                        }*/
+                        }
                         //Set rotation of graph back to 0
                         _rotate.SetBackToZero();
 
@@ -92,10 +98,9 @@ public class PreviewButtonsController : MonoBehaviour {
                         view.GetComponent<ReadjustQualityMetrics>().AddLogDataToFile();
                         currentView = null;
 
-                        if (studieScript.isTraining && trialNr > 9)
+                        if (studieScript.isTraining && trialNr > 4)
                         {
-                            Debug.Log("TRAINING LIMIT OF 5 TRIALS REACHED!!");
-                            Debug.Log("PLEASE PROCEEDWITH NEXT STEP OF THE STUDY!");
+                            Debug.Log("TRAINING LIMIT OF 5 TRIALS REACHED!! PLEASE PROCEED WITH NEXT STEP OF THE STUDY!");
 
                             studieScript.ToggleTrainingSession();
                             trialNr = 0;
@@ -104,8 +109,7 @@ public class PreviewButtonsController : MonoBehaviour {
                         }
                         else if (!studieScript.isTraining && trialNr > 19)
                         {
-                            Debug.Log("STUDY LIMIT OF 10 TRIALS REACHED!!");
-                            Debug.Log("PLEASE PROCEED WITH NEXT STEP OF THE STUDY!");
+                            Debug.Log("STUDY LIMIT OF 20 TRIALS REACHED!! PLEASE PROCEED WITH NEXT STEP OF THE STUDY!");
 
                             studieScript.ToggleTrainingSession();
                             trialNr = 0;

@@ -7583,7 +7583,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1031145540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12409,7 +12409,7 @@ MonoBehaviour:
   selectedOperator: {fileID: 1636412993770294, guid: d8f4e5e681789a9499ed18eeca253843,
     type: 2}
   viewportOptimizer: {fileID: 0}
-  ptID: 7
+  ptID: 0
   testID: 0
   trialNR: 0
   algorithm: 

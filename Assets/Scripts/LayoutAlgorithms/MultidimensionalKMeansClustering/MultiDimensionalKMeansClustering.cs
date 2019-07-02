@@ -16,8 +16,10 @@ public class MultiDimensionalKMeansClustering : MonoBehaviour {
     private List<int> _choicesHistory;
     private int[] oldSizeOfClusters;
     private QualityMetricViewPort[] oldCentroidValues;
-	// Use this for initialization
-	void Start () {
+    //counter for reseting current list of chosen viewpoints every 5 steps
+    private int stepCounter = 0;
+    // Use this for initialization
+    void Start () {
         viewportOpt = GetComponent<ViewPortOptimizer>();
         _choicesHistory = new List<int>();
         
@@ -39,8 +41,14 @@ public class MultiDimensionalKMeansClustering : MonoBehaviour {
         float distance;
         oldSizeOfClusters = new int[3];
         oldCentroidValues = new QualityMetricViewPort[3];
+        
+        if (stepCounter == 5)
+        {
+            stepCounter = 0;
+            _choicesHistory = new List<int>();
+        }
 
-        for(int i=0; i<3; i++)
+        for (int i=0; i<3; i++)
         {
             clusters.Add(new List<QualityMetricViewPort>());
             clusterCounters.Add(new List<int>());
@@ -144,9 +152,8 @@ public class MultiDimensionalKMeansClustering : MonoBehaviour {
                 clusters[i].Add(viewpointList[viewIndex]);
             }
         }
-
         //choose viewpoints that are closest to the centroids
-        for(int i=0; i<3; i++)
+        for (int i=0; i<3; i++)
         {
             float dist = 0;
             QualityMetricViewPort temp = new QualityMetricViewPort();
@@ -175,6 +182,7 @@ public class MultiDimensionalKMeansClustering : MonoBehaviour {
             chosenViewpoints.Add(temp);
         }
 
+        stepCounter++;
         return chosenViewpoints;
     }
 

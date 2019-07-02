@@ -110,7 +110,7 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
             edgeCrossResWeight += (_qualityMetricsValues.edgeCrossAngle - temp.edgeCrossAngle);
         }
 
-        //normalize on scale between (-2,2)
+        //normalize on scale between (0,2)
         edgeCrossingWeight = Normalize(edgeCrossingWeight);
         nodeOverlapWeight = Normalize(nodeOverlapWeight);
         edgeLenWeight = Normalize(edgeLenWeight);
@@ -130,23 +130,23 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         edgeLenWeight *= _viewport.edgeLengthSlider.qualityFactor;
         angResWeight *= _viewport.angResSlider.qualityFactor;
         edgeCrossResWeight *= _viewport.edgeCrossAngSlider.qualityFactor;
-        edgeCrossingWeight = (_viewport.edgeCrossSlider.qualityFactor + edgeCrossingWeight) / (1 + delta);
+        /*edgeCrossingWeight = (_viewport.edgeCrossSlider.qualityFactor + edgeCrossingWeight) / (1 + delta);
         nodeOverlapWeight = (_viewport.nodeOverlapSlider.qualityFactor + nodeOverlapWeight) / (1 + delta);
         edgeLenWeight = (_viewport.edgeLengthSlider.qualityFactor + edgeLenWeight) / (1 + delta);
         angResWeight = (_viewport.angResSlider.qualityFactor + angResWeight) / (1 + delta);
-        edgeCrossResWeight = (_viewport.edgeCrossAngSlider.qualityFactor + edgeCrossResWeight) / (1 + delta);
+        edgeCrossResWeight = (_viewport.edgeCrossAngSlider.qualityFactor + edgeCrossResWeight) / (1 + delta);*/
 
-        //normalize new values so their sum is 5
-        /*sum = edgeCrossingWeight + nodeOverlapWeight + edgeLenWeight + angResWeight + edgeCrossResWeight;
+        //renormalize new values so their sum is 5
+        sum = edgeCrossingWeight + nodeOverlapWeight + edgeLenWeight + angResWeight + edgeCrossResWeight;
         sum = 5 / sum;
         edgeCrossingWeight *= sum;
         nodeOverlapWeight *= sum;
         edgeLenWeight *= sum;
         angResWeight *= sum;
-        edgeCrossResWeight *= sum;*/
+        edgeCrossResWeight *= sum;
         
-        //check if the difference with the previous values is more than 0.1 and normalize
-        //CheckAndRenormalize();
+        //check if the difference with the previous values is more than 0.05 and normalize
+        CheckAndRenormalize();
 
         //update current values
         _viewport.edgeCrossSlider.qualityFactor = edgeCrossingWeight;
@@ -387,22 +387,65 @@ File.WriteAllText(_file, allText);*/
     void CheckAndRenormalize()
     {
         float maxValue = 0;
-        float dif1 = Mathf.Abs(edgeCrossingWeight - _viewport.edgeCrossSlider.qualityFactor);
-        float dif2 = Mathf.Abs(nodeOverlapWeight - _viewport.nodeOverlapSlider.qualityFactor);
-        float dif3 = Mathf.Abs(edgeLenWeight - _viewport.edgeLengthSlider.qualityFactor);
-        float dif4 = Mathf.Abs(angResWeight - _viewport.angResSlider.qualityFactor);
-        float dif5 = Mathf.Abs(edgeCrossResWeight - _viewport.edgeCrossAngSlider.qualityFactor);
-        if (dif1> 0.05f || dif2 > 0.05f || dif3 > 0.05f || dif4 > 0.05f || dif5 > 0.05f)
+        float minValue = 1;
+        float dif1 = edgeCrossingWeight - _viewport.edgeCrossSlider.qualityFactor;
+        float dif2 = nodeOverlapWeight - _viewport.nodeOverlapSlider.qualityFactor;
+        float dif3 = edgeLenWeight - _viewport.edgeLengthSlider.qualityFactor;
+        float dif4 = angResWeight - _viewport.angResSlider.qualityFactor;
+        float dif5 = edgeCrossResWeight - _viewport.edgeCrossAngSlider.qualityFactor;
+        if (dif1> 0.05f || dif2 > 0.05f || dif3 > 0.05f || dif4 > 0.05f || dif5 > 0.05f ||
+            dif1 < 0.05f || dif2 < 0.05f || dif3 < 0.05f || dif4 < 0.05f || dif5 < 0.05f)
         {
             if (maxValue < dif1) maxValue = dif1;
             if (maxValue < dif2) maxValue = dif2;
             if (maxValue < dif3) maxValue = dif3;
             if (maxValue < dif4) maxValue = dif4;
             if (maxValue < dif5) maxValue = dif5;
+
+            if (minValue > dif1) minValue = dif1;
+            if (minValue > dif2) minValue = dif2;
+            if (minValue > dif3) minValue = dif3;
+            if (minValue > dif4) minValue = dif4;
+            if (minValue > dif5) minValue = dif5;
+
+            //normalize on scale between 0-0.05
+            edgeCrossingWeight = _viewport.edgeCrossSlider.qualityFactor + ((0.1f) * ((dif1 - minValue) / (maxValue - minValue)) - 0.05f);
+            nodeOverlapWeight = _viewport.nodeOverlapSlider.qualityFactor + ((0.1f) * ((dif2 - minValue) / (maxValue - minValue)) - 0.05f);
+            edgeLenWeight = _viewport.edgeLengthSlider.qualityFactor + ((0.1f) * ((dif3 - minValue) / (maxValue - minValue)) - 0.05f);
+            angResWeight = _viewport.angResSlider.qualityFactor + ((0.1f) * ((dif4 - minValue) / (maxValue - minValue)) - 0.05f);
+            edgeCrossResWeight = _viewport.edgeCrossAngSlider.qualityFactor + ((0.1f) * ((dif5 - minValue) / (maxValue - minValue)) - 0.05f);
+
+            //renormalize new values so their sum is 5
+            sum = edgeCrossingWeight + nodeOverlapWeight + edgeLenWeight + angResWeight + edgeCrossResWeight;
+            sum = 5 / sum;
+            edgeCrossingWeight *= sum;
+            nodeOverlapWeight *= sum;
+            edgeLenWeight *= sum;
+            angResWeight *= sum;
+            edgeCrossResWeight *= sum;
+        }
+    }
+
+    void SaveDataToFile(List<string[]> rowData, string path)
+    {
+        string[][] output = new string[rowData.Count][];
+
+        for (int i = 0; i < output.Length; i++)
+        {
+            output[i] = rowData[i];
         }
 
-        //normalize on scale between 0-0.05
+        int length = output.GetLength(0);
+        string delimiter = ",";
 
+        StringBuilder sb = new StringBuilder();
+
+        for (int index = 0; index < length; index++)
+            sb.AppendLine(string.Join(delimiter, output[index]));
+
+        StreamWriter outStream = File.CreateText(path);
+        outStream.WriteLine(sb);
+        outStream.Close();
     }
 
     [System.Serializable]
@@ -437,25 +480,4 @@ File.WriteAllText(_file, allText);*/
         public float passedTime;
     }
     
-    void SaveDataToFile(List<string[]> rowData, string path)
-    {
-        string[][] output = new string[rowData.Count][];
-
-        for (int i = 0; i < output.Length; i++)
-        {
-            output[i] = rowData[i];
-        }
-
-        int length = output.GetLength(0);
-        string delimiter = ",";
-
-        StringBuilder sb = new StringBuilder();
-
-        for (int index = 0; index < length; index++)
-            sb.AppendLine(string.Join(delimiter, output[index]));
-        
-        StreamWriter outStream = File.CreateText(path);
-        outStream.WriteLine(sb);
-        outStream.Close();
-    }
 }
