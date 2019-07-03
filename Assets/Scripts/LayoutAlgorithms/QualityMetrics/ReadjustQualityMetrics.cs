@@ -130,11 +130,6 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         edgeLenWeight *= _viewport.edgeLengthSlider.qualityFactor;
         angResWeight *= _viewport.angResSlider.qualityFactor;
         edgeCrossResWeight *= _viewport.edgeCrossAngSlider.qualityFactor;
-        /*edgeCrossingWeight = (_viewport.edgeCrossSlider.qualityFactor + edgeCrossingWeight) / (1 + delta);
-        nodeOverlapWeight = (_viewport.nodeOverlapSlider.qualityFactor + nodeOverlapWeight) / (1 + delta);
-        edgeLenWeight = (_viewport.edgeLengthSlider.qualityFactor + edgeLenWeight) / (1 + delta);
-        angResWeight = (_viewport.angResSlider.qualityFactor + angResWeight) / (1 + delta);
-        edgeCrossResWeight = (_viewport.edgeCrossAngSlider.qualityFactor + edgeCrossResWeight) / (1 + delta);*/
 
         //renormalize new values so their sum is 5
         sum = edgeCrossingWeight + nodeOverlapWeight + edgeLenWeight + angResWeight + edgeCrossResWeight;
@@ -187,102 +182,8 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         //Study step directory - each step create new directory where logged data and screenshots are saved
         _studyStepDirectory = _studyScript.studyTrialDirectory + "\\StudyStep" + _buttonsController.trialNr.ToString();
         _studyStepDirectory = Directory.CreateDirectory(_studyStepDirectory).FullName;
-        /*AllData wholeData = new AllData();
-        //General data for current step
-        Header header = new Header() {
-            stepNumber = _buttonsController.trialNr,
-            algorithm = _studyScript.algorithm,
-            task = _studyScript.task,
-            edgeCrWeight = _viewport.edgeCrossSlider.qualityFactor,
-            nodeOvWeight = _viewport.nodeOverlapSlider.qualityFactor,
-            edgeCrAngWeight = _viewport.edgeCrossAngSlider.qualityFactor,
-            angResWeight = _viewport.angResSlider.qualityFactor,
-            edgeLenWeight = _viewport.edgeLengthSlider.qualityFactor,
-            cameraOffset = _viewport.offset
-        };
-        string headerStr = JsonUtility.ToJson(header);
-        allData += headerStr;
-        allData += System.Environment.NewLine;
-        //Save general data to file
-        /*_file = _studyStepDirectory + "\\GeneralData" + _buttonsController.trialNr.ToString() + ".json";
-        File.WriteAllText(_file, headerStr);
-        wholeData.headerData = header;
-        Option chosenOpt = new Option()
-        {
-            option = "chosenOption",
-            overallGrade = _qualityMetricsValues.overallGrade,
-            edgeCrossGrade = _qualityMetricsValues.normalizedEdgeCrossings,
-            nodeOverlapGrade = _qualityMetricsValues.normalizedNodeOverlaps,
-            edgeCrossAngGrade = _qualityMetricsValues.edgeCrossAngle,
-            angResGrade = _qualityMetricsValues.angRes,
-            edgeLengthGrade = _qualityMetricsValues.normalizedEdgeLength,
-            passedTime = timePassedOnView
-        };
-        wholeData.chosen = chosenOpt;
-        string chosenOptStr = JsonUtility.ToJson(chosenOpt);
-        allData += chosenOptStr;
-        allData += System.Environment.NewLine;
-        //Save chosen choice to file
-        /*_file = _studyStepDirectory + "\\ChosenChoice" + _buttonsController.trialNr.ToString() + ".json";
-        File.WriteAllText(_file, chosenOptStr);
-        Option alt1 = new Option();
-        Option alt2 = new Option();
-        //reset passed time to 0
-        timePassedOnView = 0;
-        int counter = 0;
-        for (int i = 0; i < transform.parent.childCount; i++)
-        {
-            if (transform.parent.GetChild(i) != transform)
-            {
-                counter++;
-                if (counter == 1)
-                {
-                    alt1 = new Option()
-                    {
-                        option = "alt" + counter.ToString(),
-                        overallGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().overallGrade,
-                        edgeCrossGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedEdgeCrossings,
-                        nodeOverlapGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedNodeOverlaps,
-                        edgeCrossAngGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().edgeCrossAngle,
-                        angResGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().angRes,
-                        edgeLengthGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedEdgeLength,
-                        passedTime = transform.parent.GetChild(i).GetComponent<ReadjustQualityMetrics>().timePassedOnView
-                    };
-                }
-                else
-                {
-                    alt2 = new Option()
-                    {
-                        option = "alt" + counter.ToString(),
-                        overallGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().overallGrade,
-                        edgeCrossGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedEdgeCrossings,
-                        nodeOverlapGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedNodeOverlaps,
-                        edgeCrossAngGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().edgeCrossAngle,
-                        angResGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().angRes,
-                        edgeLengthGrade = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedEdgeLength,
-                        passedTime = transform.parent.GetChild(i).GetComponent<ReadjustQualityMetrics>().timePassedOnView
-                    };
-                }
-                //Other alternatives
-                /*Option alternative 
-                string altStr = JsonUtility.ToJson(alternative);
-                allData += altStr;
-                allData += System.Environment.NewLine;*/
-        //Save alternative choice to file
-        /*_file = _studyStepDirectory + "\\Alternative" + counter.ToString() + "Step" + _buttonsController.trialNr.ToString() + ".json";
-        File.WriteAllText(_file, altStr);
 
-        //reset timePassed value
-        transform.parent.GetChild(i).GetComponent<ReadjustQualityMetrics>().timePassedOnView = 0;
-    }
-}
-/*_file = _studyStepDirectory + "\\AllData" + counter.ToString() + "Step" + _buttonsController.trialNr.ToString() + ".json";
-File.WriteAllText(_file, allData);
-string allText = JsonUtility.ToJson(wholeData);
-_file = _studyStepDirectory + "\\AllData" + counter.ToString() + "Step" + _buttonsController.trialNr.ToString() + ".json";
-File.WriteAllText(_file, allText);*/
-
-// Save screenshots
+        // Save screenshots
         for (int i=0; i<transform.parent.childCount; i++)
         {
             //Chosen option
@@ -297,16 +198,17 @@ File.WriteAllText(_file, allText);*/
             }
         }
         //adds header data to list
-        string[] headerData = new string[9];
-        headerData[0] = _buttonsController.trialNr.ToString();
-        headerData[1] = _studyScript.algorithm;
-        headerData[2] = _studyScript.task;
-        headerData[3] = _viewport.edgeCrossSlider.qualityFactor.ToString();
-        headerData[4] = _viewport.nodeOverlapSlider.qualityFactor.ToString();
-        headerData[5] = _viewport.edgeCrossAngSlider.qualityFactor.ToString();
-        headerData[6] = _viewport.angResSlider.qualityFactor.ToString();
-        headerData[7] = _viewport.edgeLengthSlider.qualityFactor.ToString();
-        headerData[8] = _viewport.offset.ToString();
+        string[] headerData = new string[10];
+        headerData[0] = _studyScript.ptID.ToString();
+        headerData[1] = _buttonsController.trialNr.ToString();
+        headerData[2] = _studyScript.algorithm;
+        headerData[3] = _studyScript.task;
+        headerData[4] = _viewport.edgeCrossSlider.qualityFactor.ToString();
+        headerData[5] = _viewport.nodeOverlapSlider.qualityFactor.ToString();
+        headerData[6] = _viewport.edgeCrossAngSlider.qualityFactor.ToString();
+        headerData[7] = _viewport.angResSlider.qualityFactor.ToString();
+        headerData[8] = _viewport.edgeLengthSlider.qualityFactor.ToString();
+        headerData[9] = _viewport.offset.ToString();
         _buttonsController.rowHeaderData.Add(headerData);
 
         //adds chosen option data to list
@@ -458,6 +360,7 @@ File.WriteAllText(_file, allText);*/
     }
     private class Header
     {
+        public int userID;
         public int stepNumber;
         public string algorithm;
         public string task;

@@ -95,10 +95,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     previewButtons.textures[screenshotCounter].LoadImage(TakeScreenshot());
                     previewButtons.views[screenshotCounter] = chosenViewpoints[screenshotCounter];
                     imagesPaths.Add("Screenshots/viewNr" + chosenViewpoints[screenshotCounter].index.ToString());
-
-                    /*Debug.Log("viewNr " + chosenViewpoints[screenshotCounter].index + " overallGrade " + chosenViewpoints[screenshotCounter].overallGrade + " EdgeCrossAngle: " + chosenViewpoints[screenshotCounter].edgeCrossAngle + " AngResRM: " + chosenViewpoints[screenshotCounter].angResRM
-                        + " normalizedEdgeLength: " + chosenViewpoints[screenshotCounter].normalizedEdgeLength + " normalizedNodeOverlaps: " + chosenViewpoints[screenshotCounter].normalizedNodeOverlaps
-                        + " normalizedEdgeCrossings: " + chosenViewpoints[screenshotCounter].normalizedEdgeCrossings);*/
+                    
                     Camera.main.transform.eulerAngles = rotation;
                     screenshotCounter++;
                     break;
@@ -117,10 +114,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     previewButtons.textures[screenshotCounter].LoadImage(TakeScreenshot());
                     previewButtons.views[screenshotCounter] = chosenViewpoints[screenshotCounter];
                     imagesPaths.Add("Screenshots/viewNr" + chosenViewpoints[screenshotCounter].index.ToString());
-
-                    /*Debug.Log("viewNr " + chosenViewpoints[screenshotCounter].index + " overallGrade " + chosenViewpoints[screenshotCounter].overallGrade + " EdgeCrossAngle: " + chosenViewpoints[screenshotCounter].edgeCrossAngle + " AngResRM: " + chosenViewpoints[screenshotCounter].angResRM
-                        + " normalizedEdgeLength: " + chosenViewpoints[screenshotCounter].normalizedEdgeLength + " normalizedNodeOverlaps: " + chosenViewpoints[screenshotCounter].normalizedNodeOverlaps
-                        + " normalizedEdgeCrossings: " + chosenViewpoints[screenshotCounter].normalizedEdgeCrossings);*/
+                    
                     Camera.main.transform.eulerAngles = rotation;
                     screenshotCounter++;
                     break;
@@ -149,23 +143,17 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     //reduce delta factor
                     delta = (delta * 9) / 10;
 
-                    /*Debug.Log("viewNr " + chosenViewpoints[screenshotCounter].index + " overallGrade " + chosenViewpoints[screenshotCounter].overallGrade + " EdgeCrossAngle: " + chosenViewpoints[screenshotCounter].edgeCrossAngle + " AngResRM: " + chosenViewpoints[screenshotCounter].angResRM
-                        + " normalizedEdgeLength: " + chosenViewpoints[screenshotCounter].normalizedEdgeLength + " normalizedNodeOverlaps: " + chosenViewpoints[screenshotCounter].normalizedNodeOverlaps
-                        + " normalizedEdgeCrossings: " + chosenViewpoints[screenshotCounter].normalizedEdgeCrossings);
-
-                    Debug.Log("MinEdgeCross: " + minEdgeCross + " minNodeOverlap: " + minNodeOverlap + " minEdgeLength: " + minEdgeLength);
-                    Debug.Log("MaxEdgeCross: " + maxEdgeCross + " MaxNodeOverlap: " + maxNodeOverlap + " maxEdgeLength: " + maxEdgeLength);*/
-                    
                     screenshotCounter=0;
                     takeScreenshots = false;
 
                     if (Camera.main.name == "Camera")
                     {
+                        Camera.main.transform.position = chosenViewpoints[0].cameraPosition;
                         Camera.main.transform.LookAt(transform);
                     }
                     else
                     {
-                        cameraRig.transform.position = combinedObservationList[0].cameraPosition;
+                        cameraRig.transform.position = chosenViewpoints[0].cameraPosition;
                         cameraRig.transform.LookAt(transform);
                     }
                     break;
@@ -576,9 +564,6 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
             view.edgeCrossAngle *= edgeCrossAngSlider.qualityFactor;
             view.angRes *= angResSlider.qualityFactor;
             view.normalizedEdgeLength *= edgeLengthSlider.qualityFactor;
-            /*view.overallGrade = ((edgeCrossAngSlider.qualityFactor * view.edgeCrossAngle) + (angResSlider.qualityFactor * view.angRes) + (edgeLengthSlider.qualityFactor * view.normalizedEdgeLength)
-                + (nodeOverlapSlider.qualityFactor * view.normalizedNodeOverlaps) + (edgeCrossSlider.qualityFactor * view.normalizedEdgeCrossings))
-                / (edgeCrossAngSlider.qualityFactor + edgeCrossSlider.qualityFactor + nodeOverlapSlider.qualityFactor + angResSlider.qualityFactor + edgeLengthSlider.qualityFactor);*/
             view.overallGrade = (view.normalizedEdgeCrossings + view.normalizedEdgeLength + view.normalizedNodeOverlaps + view.edgeCrossAngle + view.angRes)
                 / (edgeCrossAngSlider.qualityFactor + edgeCrossSlider.qualityFactor + nodeOverlapSlider.qualityFactor + angResSlider.qualityFactor + edgeLengthSlider.qualityFactor);
         }

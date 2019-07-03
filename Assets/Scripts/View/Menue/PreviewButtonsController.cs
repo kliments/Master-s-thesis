@@ -77,6 +77,7 @@ public class PreviewButtonsController : MonoBehaviour {
                                     }
                                 }
                             }
+                            /*
                             else if(trialNr == 3)
                             {
                                 if (studieScript.task == " Task1")
@@ -89,7 +90,7 @@ public class PreviewButtonsController : MonoBehaviour {
                                     //Select all nodes of particular type
                                     studieScript.SelectAllOperators((typeof(DataloaderOperator)));
                                 }
-                            }
+                            }*/
                         }
                         //Set rotation of graph back to 0
                         _rotate.SetBackToZero();
@@ -160,16 +161,17 @@ public class PreviewButtonsController : MonoBehaviour {
 
     string[] CreateHeaderDataTemp()
     {
-        string[] headerDataTemp = new string[9];
-        headerDataTemp[0] = "stepNumber";
-        headerDataTemp[1] = "algorithm";
-        headerDataTemp[2] = "task";
-        headerDataTemp[3] = "edgeCrossingWeight";
-        headerDataTemp[4] = "nodeOverlappingWeight";
-        headerDataTemp[5] = "edgeCrossingAngleWeight";
-        headerDataTemp[6] = "angularResolutionWeight";
-        headerDataTemp[7] = "edgeLengthWeight";
-        headerDataTemp[8] = "cameraOffset";
+        string[] headerDataTemp = new string[10];
+        headerDataTemp[0] = "userID";
+        headerDataTemp[1] = "stepNumber";
+        headerDataTemp[2] = "algorithm";
+        headerDataTemp[3] = "task";
+        headerDataTemp[4] = "edgeCrossingWeight";
+        headerDataTemp[5] = "nodeOverlappingWeight";
+        headerDataTemp[6] = "edgeCrossingAngleWeight";
+        headerDataTemp[7] = "angularResolutionWeight";
+        headerDataTemp[8] = "edgeLengthWeight";
+        headerDataTemp[9] = "cameraOffset";
         return headerDataTemp;
     }
 

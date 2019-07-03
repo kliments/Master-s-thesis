@@ -41,6 +41,9 @@ public class StudieScript : MonoBehaviour {
     //buttons controller that keeps track of step
     public PreviewButtonsController _buttonsController;
 
+    //Sprite renderer for tasks' notifications
+    public SpriteRenderer sprite;
+    public Sprite task1Sprite, task2Sprite;
     //Participant's config file
     private TextAsset configFile;
     
@@ -196,8 +199,16 @@ public class StudieScript : MonoBehaviour {
     void ScanGraph()
     {
         viewportOptimizer.LocalScan();
-        if (task == " Task1" && isTraining) SelectRandomlyTwoNodes(28, 86);
-        else if (task == " Task2" && isTraining) SelectAllOperators(typeof(DataloaderOperator));
+        if (task == " Task1")
+        {
+            sprite.sprite = task1Sprite;
+            if (isTraining) SelectRandomlyTwoNodes(28, 86);
+        }
+        else if (task == " Task2")
+        {
+            sprite.sprite = task2Sprite;
+            if(isTraining) SelectAllOperators(typeof(DataloaderOperator));
+        }
     }
 
     //Each participant's directory
