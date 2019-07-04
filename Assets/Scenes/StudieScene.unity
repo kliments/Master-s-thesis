@@ -7663,7 +7663,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1031145540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12489,7 +12489,7 @@ MonoBehaviour:
   selectedOperator: {fileID: 1636412993770294, guid: d8f4e5e681789a9499ed18eeca253843,
     type: 2}
   viewportOptimizer: {fileID: 0}
-  ptID: 0
+  ptID: 2
   testID: 0
   trialNR: 0
   algorithm: 
@@ -18734,7 +18734,7 @@ Prefab:
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 1005
+      value: 1181
       objectReference: {fileID: 0}
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}

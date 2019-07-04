@@ -223,6 +223,8 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         optionData[7] = timePassedOnView.ToString();
         _buttonsController.rowChosenViewData.Add(optionData);
 
+        timePassedOnView = 0;
+
         int counter = 0;
         for (int i = 0; i < transform.parent.childCount; i++)
         {
@@ -241,6 +243,7 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
                     optionData[6] = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedEdgeLength.ToString();
                     optionData[7] = transform.parent.GetChild(i).GetComponent<ReadjustQualityMetrics>().timePassedOnView.ToString();
                     _buttonsController.rowAlt1Data.Add(optionData);
+                    transform.parent.GetChild(i).GetComponent<ReadjustQualityMetrics>().timePassedOnView = 0;
                 }
                 else
                 {
@@ -254,6 +257,8 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
                     optionData[6] = transform.parent.GetChild(i).GetComponent<QualityMetricViewPort>().normalizedEdgeLength.ToString();
                     optionData[7] = transform.parent.GetChild(i).GetComponent<ReadjustQualityMetrics>().timePassedOnView.ToString();
                     _buttonsController.rowAlt2Data.Add(optionData);
+
+                    transform.parent.GetChild(i).GetComponent<ReadjustQualityMetrics>().timePassedOnView = 0;
                 }
             }
         }
