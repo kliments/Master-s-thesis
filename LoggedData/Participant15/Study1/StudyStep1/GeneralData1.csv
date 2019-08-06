@@ -1,0 +1,3 @@
+userID,stepNumber,algorithm,task,edgeCrossingWeight,nodeOverlappingWeight,edgeCrossingAngleWeight,angularResolutionWeight,edgeLengthWeight,cameraOffset
+15,1,ForceDirectedAlgorithm, Task1,1.039806,1.023018,0.993345,1.003054,0.9407774,9
+

@@ -1,0 +1,22 @@
+userID,stepNumber,algorithm,task,edgeCrossingWeight,nodeOverlappingWeight,edgeCrossingAngleWeight,angularResolutionWeight,edgeLengthWeight,cameraOffset
+7,1,ForceDirectedAlgorithm, Task1,1.003759,0.9984152,0.9667652,0.9647539,1.066307,3
+7,2,ForceDirectedAlgorithm, Task1,1.03171,1.024565,0.9761221,0.9725624,0.9950415,3
+7,3,ForceDirectedAlgorithm, Task1,1.07541,1.049634,0.9374278,0.9171897,1.020339,3
+7,4,ForceDirectedAlgorithm, Task1,1.047659,1.030466,0.9786854,0.9700158,0.9731742,3
+7,5,ForceDirectedAlgorithm, Task1,1.025572,1.009172,0.9701188,0.9446108,1.050527,3
+7,6,ForceDirectedAlgorithm, Task1,1.067643,1.032479,0.9725608,0.9341652,0.9931518,3
+7,7,ForceDirectedAlgorithm, Task1,1.106449,1.064863,0.9797691,0.9152139,0.9337052,3
+7,8,ForceDirectedAlgorithm, Task1,1.090486,1.044486,0.9506634,0.9085535,1.005812,3
+7,9,ForceDirectedAlgorithm, Task1,1.066075,1.025939,0.9451592,0.881049,1.081778,3
+7,10,ForceDirectedAlgorithm, Task1,1.106916,1.050062,0.9504558,0.8692558,1.02331,3
+7,11,ForceDirectedAlgorithm, Task1,1.145008,1.07631,0.9578986,0.8574916,0.9632919,3
+7,12,ForceDirectedAlgorithm, Task1,1.109305,1.045773,0.9578766,0.8605229,1.026522,3
+7,13,ForceDirectedAlgorithm, Task1,1.069684,1.027684,0.997324,0.9193347,0.9859729,3
+7,14,ForceDirectedAlgorithm, Task1,1.115604,1.049183,1.000214,0.9024371,0.9325626,3
+7,15,ForceDirectedAlgorithm, Task1,1.107992,1.025251,0.9695397,0.8946708,1.002546,3
+7,16,ForceDirectedAlgorithm, Task1,1.161329,1.052458,0.9495575,0.8471051,0.9895499,3
+7,17,ForceDirectedAlgorithm, Task1,1.143295,1.038517,0.9195724,0.835936,1.06268,3
+7,18,ForceDirectedAlgorithm, Task1,1.125308,1.018827,0.8942608,0.8173343,1.14427,3
+7,19,ForceDirectedAlgorithm, Task1,1.11136,0.9947543,0.8673403,0.8003142,1.226231,3
+7,20,ForceDirectedAlgorithm, Task1,1.174609,1.006697,0.8660172,0.763027,1.18965,3
+

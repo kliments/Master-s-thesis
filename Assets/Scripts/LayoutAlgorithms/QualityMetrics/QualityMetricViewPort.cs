@@ -9,8 +9,8 @@ using UnityEngine;
  */
 public class QualityMetricViewPort : MonoBehaviour {
     public float nrNodeOverlaps, nrEdgeCrossings;
-    public float initialNodeOverlaps, initialEdgeCrossings, initialEdgeLength, initialEdgeCrossAngle, initialAngRes;
-    public float normalizedNodeOverlaps, normalizedEdgeCrossings, normalizedEdgeLength, edgeLength, edgeCrossAngle, angRes, overallGrade;
+    public float initialNodeOverlaps, initialEdgeCrossings, initialEdgeLength, initialEdgeCrossAngle, initialAngRes, initialTotalEdgeLength, initialDistinctAngles, initialTotalArea;
+    public float normalizedNodeOverlaps, normalizedEdgeCrossings, normalizedEdgeLength, normalizedTotalEdgeLength, normalizedDistinctAngles, normalizedTotalArea, edgeLength, edgeCrossAngle, angRes, totalEdgeLength, distinctAngles, overallGrade, maximizeAngleRM, totalArea;
     public Vector3 cameraPosition;
     public GeneralLayoutAlgorithm algorithm;
     public Vector3[] listPos;
@@ -27,7 +27,15 @@ public class QualityMetricViewPort : MonoBehaviour {
         normalizedEdgeCrossings = values.normalizedEdgeCrossings;
         normalizedEdgeLength = values.normalizedEdgeLength;
         normalizedNodeOverlaps = values.normalizedNodeOverlaps;
+        normalizedTotalEdgeLength = values.normalizedTotalEdgeLength;
+        normalizedDistinctAngles = values.normalizedDistinctAngles;
+        normalizedTotalArea = values.normalizedTotalArea;
+
         edgeLength = values.edgeLength;
+        totalEdgeLength = values.totalEdgeLength;
+        distinctAngles = values.distinctAngles;
+        maximizeAngleRM = values.maximizeAngleRM;
+        totalArea = values.totalArea;
         edgeCrossAngle = values.edgeCrossAngle;
         angRes = values.angRes;
         overallGrade = values.overallGrade;

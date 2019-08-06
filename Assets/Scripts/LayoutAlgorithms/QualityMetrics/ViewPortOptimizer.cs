@@ -25,6 +25,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     //public QualityMetricViewPort temp;
     public QualityMetricSlider edgeCrossSlider, nodeOverlapSlider, edgeCrossAngSlider, angResSlider, edgeLengthSlider;
     public PreviewButtonsController previewButtons;
+    public float delta;
 
     private MultiDimensionalKMeansClustering multiDimKMeans;
     private Transform[] opIcons;
@@ -39,7 +40,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     private List<float> _edgeLengths, _angRes, _edgeCrossAngle;
     private List<float> _nodeOverlaps, _edgeCrossings;
 
-    private float minEdgeCross, maxEdgeCross, minNodeOverlap, maxNodeOverlap, maxEdgeLength, minEdgeLength, delta;
+    private float minEdgeCross, maxEdgeCross, minNodeOverlap, maxNodeOverlap, maxEdgeLength, minEdgeLength, maxTotalEdgeLength, minTotalEdgeLength, minDistinctAngles, maxDistinctAngles, minTotalArea, maxTotalArea;
     GeneralLayoutAlgorithm edgeAlg, nodeAlg;
 
     // counter for switching views
@@ -141,7 +142,8 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     //once all the images are generated, create buttons with the images
                     previewButtons.CallForCreatingButtons(imagesPaths, delta);
                     //reduce delta factor
-                    delta = (delta * 9) / 10;
+                    delta = (delta * 4) / 5;
+                    if (delta == 0) delta = 0.05f;
 
                     screenshotCounter=0;
                     takeScreenshots = false;
@@ -282,21 +284,33 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                     temp.listPos[icon] = opIcons[icon].transform.position;
                 }
                 temp.nrNodeOverlaps = GetComponent<NodeOverlapping>().CalculateNodeOverlapping();
+                temp.totalArea = GetComponent<NodeOverlapping>().totalArea;
+
                 GetComponent<TwoDimensionalProjection>().ProjectTree();
+
                 temp.nrEdgeCrossings = GetComponent<EdgeCrossingCounter>().CountEdgeCrossings();
                 temp.edgeCrossAngle = GetComponent<EdgeCrossingCounter>().edgeCrossRM;
+                temp.distinctAngles = GetComponent<EdgeCrossingCounter>().distinctAngles;
+                temp.maximizeAngleRM = GetComponent<EdgeCrossingCounter>().maximizeAngleRM;
+
                 temp.angRes = GetComponent<NodeAngularResolution>().CalculateAngularResolution();
+
                 temp.edgeLength = GetComponent<EdgeLength>().CalculateEdgeLength();
+                temp.totalEdgeLength = GetComponent<EdgeLength>().totalEdgeLength;
+
                 temp.cameraPosition = Camera.main.transform.position;
                 temp.algorithm = current.currentLayout;
                 temp.index = index;
 
                 //set initial values
                 temp.initialNodeOverlaps = temp.nrNodeOverlaps;
+                temp.initialTotalArea = temp.totalArea;
                 temp.initialEdgeCrossings = temp.nrEdgeCrossings;
                 temp.initialEdgeCrossAngle = temp.edgeCrossAngle;
                 temp.initialAngRes = temp.angRes;
                 temp.initialEdgeLength = temp.edgeLength;
+                temp.initialTotalEdgeLength = temp.totalEdgeLength;
+                temp.initialDistinctAngles = temp.distinctAngles;
 
                 GetComponent<TwoDimensionalProjection>().RestorePositions();
                 observationList.Add(temp);
@@ -396,6 +410,36 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         return max;
     }
 
+    private float MaximumTotalEdgeLength(List<QualityMetricViewPort> list)
+    {
+        float max = 0;
+        foreach(var item in list)
+        {
+            if (max < item.totalEdgeLength) max = item.totalEdgeLength;
+        }
+        return max;
+    }
+
+    private float MaximumDistinctAngles(List<QualityMetricViewPort> list)
+    {
+        float max = 0;
+        foreach(var item in list)
+        {
+            if (max < item.distinctAngles) max = item.distinctAngles;
+        }
+        return max;
+    }
+
+    private float MaximumTotalArea(List<QualityMetricViewPort> list)
+    {
+        float max = 0;
+        foreach (var item in list)
+        {
+            if (max < item.totalArea) max = item.totalArea;
+        }
+        return max;
+    }
+
     private float MinimumEdgeCross(List<QualityMetricViewPort> list)
     {
         float min = maxEdgeCross;
@@ -426,6 +470,36 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         return min;
     }
 
+    private float MinimumTotalEdgeLength(List<QualityMetricViewPort> list)
+    {
+        float min = maxTotalEdgeLength;
+        foreach (var item in list)
+        {
+            if (min > item.totalEdgeLength) min = item.totalEdgeLength;
+        }
+        return min;
+    }
+
+    private float MinimumDistinctAngles(List<QualityMetricViewPort> list)
+    {
+        float min = maxDistinctAngles;
+        foreach(var item in list)
+        {
+            if (min > item.distinctAngles) min = item.distinctAngles;
+        }
+        return min;
+    }
+
+    private float MinimumTotalArea(List<QualityMetricViewPort> list)
+    {
+        float min = maxTotalArea;
+        foreach (var item in list)
+        {
+            if (min > item.totalArea) min = item.totalArea;
+        }
+        return min;
+    }
+
     private float NormalizedEdgeCrossings(float edgeCross)
     {
         float cubeRoot = 1f / 3f;
@@ -444,6 +518,30 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         float cubeRoot = 1f / 3f;
         if (minEdgeLength == maxEdgeLength) return 1;
         float result = ((Mathf.Pow(edgeLengths, cubeRoot) - Mathf.Pow(minEdgeLength, cubeRoot)) / (Mathf.Pow(maxEdgeLength, cubeRoot) - Mathf.Pow(minEdgeLength, cubeRoot)));
+        return 1 - result;
+    }
+
+    private float NormalizedTotalEdgeLengths(float totalEdgeLengths)
+    {
+        float cubeRoot = 1f / 3f;
+        if (minTotalEdgeLength == maxTotalEdgeLength) return 1;
+        float result = ((Mathf.Pow(totalEdgeLengths, cubeRoot) - Mathf.Pow(minTotalEdgeLength, cubeRoot)) / (Mathf.Pow(maxTotalEdgeLength, cubeRoot) - Mathf.Pow(minTotalEdgeLength, cubeRoot)));
+        return 1 - result;
+    }
+
+    private float NormalizedDistinctAngles(float distinctAngles)
+    {
+        float cubeRoot = 1f / 3f;
+        if (minDistinctAngles == maxDistinctAngles) return 1;
+        float result = ((Mathf.Pow(distinctAngles, cubeRoot) - Mathf.Pow(minDistinctAngles, cubeRoot)) / (Mathf.Pow(maxDistinctAngles, cubeRoot) - Mathf.Pow(minDistinctAngles, cubeRoot)));
+        return 1 - result;
+    }
+
+    private float NormalizedTotalArea(float totalArea)
+    {
+        float cubeRoot = 1f / 3f;
+        if (minTotalArea == maxTotalArea) return 1;
+        float result = ((Mathf.Pow(totalArea, cubeRoot) - Mathf.Pow(minTotalArea, cubeRoot)) / (Mathf.Pow(maxTotalArea, cubeRoot) - Mathf.Pow(minTotalArea, cubeRoot)));
         return 1 - result;
     }
 
@@ -494,6 +592,7 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         maxEdgeCross = 0;
         maxNodeOverlap = 0;
         maxEdgeLength = 0;
+        maxTotalEdgeLength = 0;
         //set gameobject in the center of the graph
         transform.position = FindCenterOfGraph();
         //set camera to position of the furthest node + 2 meters
@@ -511,25 +610,22 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         ScanAndCalculate();
         Camera.main.transform.parent = oldParent;
         globalObservationList.Add(observationList);
-        if (maxEdgeCross < MaximumEdgeCross(observationList, false))
-        {
-            maxEdgeCross = MaximumEdgeCross(observationList, false);
-        }
-        if (maxNodeOverlap < MaximumNodeOverlap(observationList))
-        {
-            maxNodeOverlap = MaximumNodeOverlap(observationList);
-        }
-        if (maxEdgeLength < MaximumEdgeLength(observationList))
-        {
-            maxEdgeLength = MaximumEdgeLength(observationList);
-        }
+        maxEdgeCross = MaximumEdgeCross(observationList, false);
+        maxNodeOverlap = MaximumNodeOverlap(observationList);
+        maxEdgeLength = MaximumEdgeLength(observationList);
+        maxTotalEdgeLength = MaximumTotalEdgeLength(observationList);
+        maxDistinctAngles = MaximumDistinctAngles(observationList);
+        maxTotalArea = MaximumTotalArea(observationList);
 
         minEdgeCross = MinimumEdgeCross(observationList);
         minNodeOverlap = MinimumNodeOverlap(observationList);
         minEdgeLength = MinimumEdgeLength(observationList);
+        minTotalEdgeLength = MinimumTotalEdgeLength(observationList);
+        minDistinctAngles = MinimumDistinctAngles(observationList);
+        minTotalArea = MinimumTotalArea(observationList);
 
         ReadjustQualityMetricValues();
-
+        //SortList(combinedObservationList);
         GenerateClustersAndCreateScreenshots();
 
         projectionPlane.gameObject.SetActive(false);
@@ -538,18 +634,12 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
     //Readjust quality metric values with updated weights
     public void ReadjustQualityMetricValues()
     {
-        if (maxEdgeCross < MaximumEdgeCross(observationList, false))
-        {
-            maxEdgeCross = MaximumEdgeCross(observationList, false);
-        }
-        if (maxNodeOverlap < MaximumNodeOverlap(observationList))
-        {
-            maxNodeOverlap = MaximumNodeOverlap(observationList);
-        }
-        if (maxEdgeLength < MaximumEdgeLength(observationList))
-        {
-            maxEdgeLength = MaximumEdgeLength(observationList);
-        }
+        maxEdgeCross = MaximumEdgeCross(observationList, false);
+        maxNodeOverlap = MaximumNodeOverlap(observationList);
+        maxEdgeLength = MaximumEdgeLength(observationList);
+        maxTotalEdgeLength = MaximumTotalEdgeLength(observationList);
+        maxDistinctAngles = MaximumDistinctAngles(observationList);
+        maxTotalArea = MaximumTotalArea(observationList);
 
         foreach (var view in observationList)
         {
@@ -558,6 +648,10 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
             view.edgeCrossAngle = view.initialEdgeCrossAngle;
             view.angRes = view.initialAngRes;
             view.normalizedEdgeLength = NormalizedEdgeLengths(view.initialEdgeLength);
+            view.normalizedTotalEdgeLength = NormalizedTotalEdgeLengths(view.initialTotalEdgeLength);
+            view.normalizedDistinctAngles = NormalizedDistinctAngles(view.initialDistinctAngles);
+            view.normalizedTotalArea = NormalizedTotalArea(view.initialTotalArea);
+
             //multiply values by their weights
             view.normalizedNodeOverlaps *= nodeOverlapSlider.qualityFactor;
             view.normalizedEdgeCrossings *= edgeCrossSlider.qualityFactor;
@@ -615,19 +709,12 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
         }
         foreach (var list in globalObservationList)
         {
-            if (maxEdgeCross < MaximumEdgeCross(list, false))
-            {
-                maxEdgeCross = MaximumEdgeCross(list, false);
-                //listIndex++;
-            }
-            if (maxNodeOverlap < MaximumNodeOverlap(list))
-            {
-                maxNodeOverlap = MaximumNodeOverlap(list);
-            }
-            if (maxEdgeLength < MaximumEdgeLength(list))
-            {
-                maxEdgeLength = MaximumEdgeLength(list);
-            }
+            maxEdgeCross = MaximumEdgeCross(list, false);
+            maxNodeOverlap = MaximumNodeOverlap(list);
+            maxEdgeLength = MaximumEdgeLength(list);
+            maxTotalEdgeLength = MaximumTotalEdgeLength(list);
+            maxDistinctAngles = MaximumDistinctAngles(list);
+            maxTotalArea = MaximumTotalArea(list);
         }
         foreach (var list in globalObservationList)
         {
@@ -636,6 +723,9 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
                 view.normalizedEdgeCrossings = NormalizedEdgeCrossings(view.nrEdgeCrossings);
                 view.normalizedNodeOverlaps = NormalizedNodeOverlaps(view.nrNodeOverlaps);
                 view.normalizedEdgeLength = NormalizedEdgeLengths(view.edgeLength);
+                view.normalizedTotalEdgeLength = NormalizedTotalEdgeLengths(view.totalEdgeLength);
+                view.distinctAngles = NormalizedDistinctAngles(view.distinctAngles);
+                view.totalArea = NormalizedTotalArea(view.totalArea);
                 view.overallGrade = ((edgeCrossAngSlider.qualityFactor * view.edgeCrossAngle) + (angResSlider.qualityFactor * view.angRes) + (edgeLengthSlider.qualityFactor * view.normalizedEdgeLength) + (nodeOverlapSlider.qualityFactor * view.normalizedNodeOverlaps) + (edgeCrossSlider.qualityFactor * view.normalizedEdgeCrossings)) / (edgeCrossAngSlider.qualityFactor + edgeCrossSlider.qualityFactor + nodeOverlapSlider.qualityFactor + angResSlider.qualityFactor + edgeLengthSlider.qualityFactor);
             }
         }
@@ -736,120 +826,5 @@ public class ViewPortOptimizer : MonoBehaviour, IMenueComponentListener {
 
         return strPath;
     }
-    List<Vector2> FindDisparityVectors(List<QualityMetricViewPort> list)
-    {
-        List<Vector2> disparityList = new List<Vector2>();
-        foreach(var view in list)
-        {
-            Vector2 disparity = new Vector2();
-            disparity.x = CalculateDisparity(view);
-            disparity.y = view.index;
-            disparityList.Add(disparity);
-        }
-        return SortByDisparity(disparityList);
-    }
-
-    List<Vector2> SortByDisparity(List<Vector2> disparityList)
-    {
-        disparityList.Sort((b, a) => a.x.CompareTo(b.x));
-        return disparityList;
-    }
-
-    QualityMetricViewPort SortDisparityByEdgeCrossing(List<Vector2> disparityList)
-    {
-        QualityMetricViewPort edgeCrossMaxDisparity = combinedObservationList[0];
-        float edgeCross = combinedObservationList[(int)disparityList[0].y].normalizedEdgeCrossings;
-        int index = 0;
-        for(int i=0; i<disparityList.Count/2; i++)
-        {
-            if (edgeCross < combinedObservationList[(int)disparityList[i].y].normalizedEdgeCrossings)
-            {
-                edgeCross = combinedObservationList[(int)disparityList[i].y].normalizedEdgeCrossings;
-                index = (int)disparityList[i].y;
-                edgeCrossMaxDisparity = combinedObservationList[(int)disparityList[i].y];
-            }
-        }
-        return edgeCrossMaxDisparity;
-    }
-
-    QualityMetricViewPort SortDisparityByNodeOverlaps(List<Vector2> disparityList)
-    {
-        QualityMetricViewPort nodeOverlapsMaxDisparity = combinedObservationList[0];
-        float nodeOverlaps = combinedObservationList[(int)disparityList[0].y].normalizedNodeOverlaps;
-        int index = 0;
-        for (int i = 0; i < disparityList.Count / 2; i++)
-        {
-            if (nodeOverlaps < combinedObservationList[(int)disparityList[i].y].normalizedNodeOverlaps)
-            {
-                nodeOverlaps = combinedObservationList[(int)disparityList[i].y].normalizedNodeOverlaps;
-                index = (int)disparityList[i].y;
-                nodeOverlapsMaxDisparity = combinedObservationList[(int)disparityList[i].y];
-            }
-        }
-        return nodeOverlapsMaxDisparity;
-    }
-    QualityMetricViewPort SortDisparityByEdgeLength(List<Vector2> disparityList)
-    {
-        QualityMetricViewPort edgeLengthMaxDisparity = combinedObservationList[0];
-        float edgeLength = combinedObservationList[(int)disparityList[0].y].normalizedEdgeLength;
-        int index = 0;
-        for (int i = 0; i < disparityList.Count / 2; i++)
-        {
-            if (edgeLength < combinedObservationList[(int)disparityList[i].y].normalizedEdgeLength)
-            {
-                edgeLength = combinedObservationList[(int)disparityList[i].y].normalizedEdgeLength;
-                index = (int)disparityList[i].y;
-                edgeLengthMaxDisparity = combinedObservationList[(int)disparityList[i].y];
-            }
-        }
-        return edgeLengthMaxDisparity;
-    }
-    QualityMetricViewPort SortDisparityByAngularResolution(List<Vector2> disparityList)
-    {
-        QualityMetricViewPort angResMaxDisparity = combinedObservationList[0];
-        float angRes = combinedObservationList[(int)disparityList[0].y].angRes;
-        int index = 0;
-        for (int i = 0; i < disparityList.Count / 2; i++)
-        {
-            if (angRes < combinedObservationList[(int)disparityList[i].y].angRes)
-            {
-                angRes = combinedObservationList[(int)disparityList[i].y].angRes;
-                index = (int)disparityList[i].y;
-                angResMaxDisparity = combinedObservationList[(int)disparityList[i].y];
-            }
-        }
-        return angResMaxDisparity;
-    }
-    QualityMetricViewPort SortDisparityByEdgeCrossAngle(List<Vector2> disparityList)
-    {
-        QualityMetricViewPort edgeCrossAngleMaxDisparity = combinedObservationList[0];
-        float edgeCrossAngle = combinedObservationList[(int)disparityList[0].y].edgeCrossAngle;
-        int index = 0;
-        for (int i = 0; i < disparityList.Count / 2; i++)
-        {
-            if (edgeCrossAngle < combinedObservationList[(int)disparityList[i].y].edgeCrossAngle)
-            {
-                edgeCrossAngle = combinedObservationList[(int)disparityList[i].y].edgeCrossAngle;
-                index = (int)disparityList[i].y;
-                edgeCrossAngleMaxDisparity = combinedObservationList[(int)disparityList[i].y];
-            }
-        }
-        return edgeCrossAngleMaxDisparity;
-    }
-
-    float CalculateDisparity(QualityMetricViewPort view)
-    {
-        float disparity = 0;
-        disparity += Mathf.Abs(view.normalizedEdgeCrossings - view.normalizedNodeOverlaps);
-        disparity += Mathf.Abs(view.normalizedEdgeCrossings - view.normalizedEdgeLength);
-        disparity += Mathf.Abs(view.normalizedEdgeCrossings - view.angRes);
-        disparity += Mathf.Abs(view.normalizedEdgeCrossings - view.edgeCrossAngle);
-        disparity += Mathf.Abs(view.normalizedNodeOverlaps - view.normalizedEdgeLength);
-        disparity += Mathf.Abs(view.normalizedNodeOverlaps - view.angRes);
-        disparity += Mathf.Abs(view.normalizedNodeOverlaps - view.edgeCrossAngle);
-        disparity += Mathf.Abs(view.normalizedEdgeLength - view.angRes);
-        disparity += Mathf.Abs(view.normalizedEdgeLength - view.edgeCrossAngle);
-        disparity += Mathf.Abs(view.angRes - view.edgeCrossAngle);
-        return disparity;
-    }
+    
 }

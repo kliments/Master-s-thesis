@@ -9,7 +9,7 @@ public class EdgeCrossingCounter : MonoBehaviour {
     public bool countEdgeCrossings;
     public int count;
     public float averageAngle;
-    public float edgeCrossRM;
+    public float edgeCrossRM, distinctAngles, maximizeAngleRM;
     public List<float> _angles;
     public GeneralLayoutAlgorithm algorithm;
     public ConeTreeAlgorithm RDT;
@@ -18,6 +18,7 @@ public class EdgeCrossingCounter : MonoBehaviour {
     private Observer _observer;
     private Transform _projectionPlane;
     private LineRenderer lr;
+    private int[] angleBins;
 	// Use this for initialization
 	void Start () {
         _observer = (Observer)FindObjectOfType(typeof(Observer));
@@ -113,10 +114,13 @@ public class EdgeCrossingCounter : MonoBehaviour {
         {
             averageAngle = AverageAngle(_angles);
             edgeCrossRM = CrossingAngleReadabilityMetric(_angles);
+            distinctAngles = DistinctAnglesDistribution(_angles);
+            maximizeAngleRM = MaximizeAngleRM(_angles);
         }
         else
         {
             edgeCrossRM = 1;
+            distinctAngles = 1;
         }
         return count;
     }
@@ -207,6 +211,43 @@ public class EdgeCrossingCounter : MonoBehaviour {
         if (point == line[0] || point == line[1]) return false;
         else if (Vector3.Distance(point, line[0]) + Vector3.Distance(point, line[1]) == Vector3.Distance(line[0], line[1])) return true;
         return false;
+    }
+
+    private float DistinctAnglesDistribution(List<float> angles)
+    {
+        angleBins = new int[18];
+        int index = 0;
+        int totalBins = 0;
+        for(int i=0; i<angleBins.Length; i++)
+        {
+            angleBins[i] = 0;
+        }
+        foreach(var angle in angles)
+        {
+            index = (int )(angle / 5);
+            if (index == 18) index = 17;
+            angleBins[index]++;
+        }
+        for(int i=0; i<angleBins.Length; i++)
+        {
+            if (angleBins[i] > 0) totalBins++;
+        }
+        return totalBins;
+    }
+
+    private float MaximizeAngleRM(List<float> angles)
+    {
+        float rm = 0;
+        int index = 0;
+        foreach(var angle in angles)
+        {
+            index = (int)(angle / 5);
+            if (index == 18) index = 17;
+            //multiply value of angle with total number of angles in that bin
+            rm += (angle * angleBins[index]);
+        }
+        //divide by total number of angles multiplied by maximum angle
+        return rm/(angles.Count * 85);
     }
 
 }

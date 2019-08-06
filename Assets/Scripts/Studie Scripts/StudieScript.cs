@@ -166,6 +166,7 @@ public class StudieScript : MonoBehaviour {
         //reset graph rotation
         graphParent.transform.rotation = Quaternion.identity;
         graphParent.transform.localPosition = new Vector3(0, 2.5f, 0);
+        viewportOptimizer.delta = 1;
     }
 
     //Random dataset generator

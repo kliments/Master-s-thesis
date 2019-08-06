@@ -2700,6 +2700,7 @@ MonoBehaviour:
   angResSlider: {fileID: 440643451}
   edgeLengthSlider: {fileID: 1310883645}
   previewButtons: {fileID: 1907867969}
+  delta: 0
 --- !u!114 &360191229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7663,7 +7664,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1031145540
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12400,7 +12401,10 @@ GameObject:
   - component: {fileID: 1445120547}
   - component: {fileID: 1445120546}
   - component: {fileID: 1445120548}
+  - component: {fileID: 1445120552}
   - component: {fileID: 1445120549}
+  - component: {fileID: 1445120550}
+  - component: {fileID: 1445120551}
   m_Layer: 0
   m_Name: StudieGameObject
   m_TagString: Untagged
@@ -12467,7 +12471,7 @@ MonoBehaviour:
   scan: 0
   generateData: 0
   dontProceed: 0
-  isTraining: 1
+  isTraining: 0
   configFiles:
   - {fileID: 4900000, guid: f4f3eae5521c3004a91519e7da5c73b0, type: 3}
   - {fileID: 4900000, guid: c991bceabfdc8d340b9f442b7b21c15c, type: 3}
@@ -12489,7 +12493,7 @@ MonoBehaviour:
   selectedOperator: {fileID: 1636412993770294, guid: d8f4e5e681789a9499ed18eeca253843,
     type: 2}
   viewportOptimizer: {fileID: 0}
-  ptID: 2
+  ptID: 1
   testID: 0
   trialNR: 0
   algorithm: 
@@ -12501,6 +12505,81 @@ MonoBehaviour:
   sprite: {fileID: 1012297803}
   task1Sprite: {fileID: 21300000, guid: 4098a66e5add08d4a9009a8a295979bd, type: 3}
   task2Sprite: {fileID: 21300000, guid: c6fce57b29c3c4a4b94fa65a96622a43, type: 3}
+--- !u!114 &1445120550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1445120545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fec1c4376d7348f4880a9f0e0f5bdb7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  alt1Data: {fileID: 4900000, guid: ede4ca79b75b65b49a64988f9d9ca626, type: 3}
+  alt2Data: {fileID: 4900000, guid: baac548267e3c484787df58d516a4753, type: 3}
+  chosenData: {fileID: 4900000, guid: 1662567847247b041ac2957407a45445, type: 3}
+  overallData: {fileID: 4900000, guid: 506fdaf3e0b9926408747c6248c871d9, type: 3}
+  delta: 1
+  calculate: 0
+  edgeCrossWeight: 0
+  nodeOverlapWeight: 0
+  edgeLengthWeight: 0
+  angResWeight: 0
+  edgeCrossAngleWeight: 0
+  min: 0
+  max: 0
+  prethEdgeCrossWeight: 0
+  prethNodeOverlapWeight: 0
+  prethEdgeLengthWeight: 0
+  prethAngResWeight: 0
+  prethEdgeCrossAngleWeight: 0
+  publicPath: Pt0S0
+  a: 3
+  b: 4
+--- !u!114 &1445120551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1445120545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81a4dad0dab89304cbc9311ad1a8d5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  alt1Data: {fileID: 4900000, guid: ede4ca79b75b65b49a64988f9d9ca626, type: 3}
+  alt2Data: {fileID: 4900000, guid: baac548267e3c484787df58d516a4753, type: 3}
+  chosenData: {fileID: 4900000, guid: 1662567847247b041ac2957407a45445, type: 3}
+  overallData: {fileID: 4900000, guid: 506fdaf3e0b9926408747c6248c871d9, type: 3}
+  newOverallData: {fileID: 4900000, guid: 3dc4b818d186f4643a1788f2d36aa078, type: 3}
+  publicPath: Pt0St0
+  participant: 0
+  study: 0
+  CALCULATE: 0
+--- !u!114 &1445120552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1445120545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 328926ddc06d0ab47bc128abb689f93c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  alt1Data: {fileID: 0}
+  alt2Data: {fileID: 0}
+  chosenData: {fileID: 0}
+  publicPath: 
+  calculate: 0
+  participant: 0
+  study: 0
+  edgeCrossingWeight: 0
+  nodeOverlapWeight: 0
+  edgeCrossingAngleWeight: 0
+  angularResolutionWeight: 0
+  edgeLengthWeight: 0
 --- !u!1 &1447772035
 GameObject:
   m_ObjectHideFlags: 0
@@ -18734,7 +18813,7 @@ Prefab:
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 1181
+      value: 1005
       objectReference: {fileID: 0}
     - target: {fileID: 224000012623161658, guid: d46cf6b1ad9d84a48ae7548a2a6b41b3,
         type: 2}

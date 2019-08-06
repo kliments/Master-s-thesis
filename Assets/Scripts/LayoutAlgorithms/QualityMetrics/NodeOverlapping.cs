@@ -12,7 +12,7 @@ using System.Linq;
 public class NodeOverlapping : MonoBehaviour {
 
     public bool calculateNodeOverlapping;
-    public float count;
+    public float count, totalArea;
     public List<GenericOperator> sortedList;
     private int layerMask;
     private Vector3 dir, center, currentPoint, startXY, endX, endY, tempX, tempY;
@@ -108,7 +108,7 @@ public class NodeOverlapping : MonoBehaviour {
             if (observer.GetOperators()[i].GetType().Equals(typeof(NewOperator))) continue;
             sum++;
         }
-
+        totalArea = TotalAreaOfTree(sortedList);
         return coef / sum;
     }
 
@@ -116,5 +116,26 @@ public class NodeOverlapping : MonoBehaviour {
     void SortListOfNodes()
     {
         sortedList = observer.GetOperators().OrderBy(node => -Vector3.Distance(Camera.main.transform.position, node.GetIcon().transform.position)).ToList();
+    }
+
+    float TotalAreaOfTree(List<GenericOperator> operators)
+    {
+        float mostLeft, mostRight, mostDown, mostUp;
+        Vector3 iconPos = new Vector3();
+        mostLeft = Camera.main.pixelWidth;
+        mostRight = 0;
+        mostDown = Camera.main.pixelHeight;
+        mostUp = 0;
+
+        foreach(var op in operators)
+        {
+            iconPos = Camera.main.WorldToScreenPoint(op.GetIcon().transform.position);
+            if (iconPos.x < mostLeft) mostLeft = iconPos.x;
+            if (iconPos.x > mostRight) mostRight = iconPos.x;
+            if (iconPos.y < mostDown) mostDown = iconPos.y;
+            if (iconPos.y > mostUp) mostUp = iconPos.y;
+        }
+
+        return (mostRight - mostLeft) * (mostUp - mostDown);
     }
 }

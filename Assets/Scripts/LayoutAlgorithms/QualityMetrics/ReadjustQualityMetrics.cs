@@ -116,21 +116,14 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         edgeLenWeight = Normalize(edgeLenWeight);
         angResWeight = Normalize(angResWeight);
         edgeCrossResWeight = Normalize(edgeCrossResWeight);
-
-        //multiply by delta factor
-        edgeCrossingWeight *= delta;
-        nodeOverlapWeight *= delta;
-        edgeLenWeight *= delta;
-        angResWeight *= delta;
-        edgeCrossResWeight *= delta;
-
+        
         //multiply to current values of quality metric weights
         edgeCrossingWeight *= _viewport.edgeCrossSlider.qualityFactor;
         nodeOverlapWeight *= _viewport.nodeOverlapSlider.qualityFactor;
         edgeLenWeight *= _viewport.edgeLengthSlider.qualityFactor;
         angResWeight *= _viewport.angResSlider.qualityFactor;
         edgeCrossResWeight *= _viewport.edgeCrossAngSlider.qualityFactor;
-
+        
         //renormalize new values so their sum is 5
         sum = edgeCrossingWeight + nodeOverlapWeight + edgeLenWeight + angResWeight + edgeCrossResWeight;
         sum = 5 / sum;
@@ -139,7 +132,7 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
         edgeLenWeight *= sum;
         angResWeight *= sum;
         edgeCrossResWeight *= sum;
-        
+
         //check if the difference with the previous values is more than 0.05 and normalize
         CheckAndRenormalize();
 
@@ -321,6 +314,13 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
             edgeLenWeight = _viewport.edgeLengthSlider.qualityFactor + ((0.1f) * ((dif3 - minValue) / (maxValue - minValue)) - 0.05f);
             angResWeight = _viewport.angResSlider.qualityFactor + ((0.1f) * ((dif4 - minValue) / (maxValue - minValue)) - 0.05f);
             edgeCrossResWeight = _viewport.edgeCrossAngSlider.qualityFactor + ((0.1f) * ((dif5 - minValue) / (maxValue - minValue)) - 0.05f);
+            
+            //multiply by delta factor
+            edgeCrossingWeight *= delta;
+            nodeOverlapWeight *= delta;
+            edgeLenWeight *= delta;
+            angResWeight *= delta;
+            edgeCrossResWeight *= delta;
 
             //renormalize new values so their sum is 5
             sum = edgeCrossingWeight + nodeOverlapWeight + edgeLenWeight + angResWeight + edgeCrossResWeight;
@@ -330,6 +330,7 @@ public class ReadjustQualityMetrics : MonoBehaviour, IMenueComponentListener {
             edgeLenWeight *= sum;
             angResWeight *= sum;
             edgeCrossResWeight *= sum;
+            
         }
     }
 

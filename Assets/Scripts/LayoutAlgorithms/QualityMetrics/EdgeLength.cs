@@ -8,7 +8,7 @@ using UnityEngine;
  * returns the standard deviation of it
  */
 public class EdgeLength : MonoBehaviour {
-    public float edgeLengthSTD;
+    public float edgeLengthSTD, totalEdgeLength;
     public List<float> edges;
     public bool calculateEdgeLength;
 
@@ -32,6 +32,7 @@ public class EdgeLength : MonoBehaviour {
     public float CalculateEdgeLength()
     {
         edgeLengthSTD = 0;
+        totalEdgeLength = 0;
         edges = new List<float>();
 
         foreach(var op in _observer.GetOperators())
@@ -45,6 +46,7 @@ public class EdgeLength : MonoBehaviour {
                 }
         }
         edgeLengthSTD = CalculateSTD(edges);
+        totalEdgeLength = TotalEdgeLength(edges);
         return edgeLengthSTD;
     }
 
@@ -64,5 +66,15 @@ public class EdgeLength : MonoBehaviour {
         }
         sum /= edges.Count;
         return Mathf.Sqrt(sum);
+    }
+
+    private float TotalEdgeLength(List<float> edges)
+    {
+        float sum = 0;
+        foreach(var edge in edges)
+        {
+            sum += edge;
+        }
+        return sum;
     }
 }

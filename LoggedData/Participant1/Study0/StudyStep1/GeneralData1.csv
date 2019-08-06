@@ -1,0 +1,3 @@
+userID,stepNumber,algorithm,task,edgeCrossingWeight,nodeOverlappingWeight,edgeCrossingAngleWeight,angularResolutionWeight,edgeLengthWeight,cameraOffset
+1,1,ConeBurst, Task1,0.9840404,1.006465,0.9807891,0.9636353,1.065071,13
+
